@@ -1,0 +1,30 @@
+<section aria-labelledby="collection-title">
+  <h1 id="collection-title">Cobrança administrativa sintética</h1>
+  <p>
+    Nenhuma cobrança avança sem validação. A autorização ocorre na API.
+    Créditos suspensos, extintos ou bloqueados permanecem inalterados.
+  </p>
+  @if (state === 'idle') {
+    <p role="status">Informe um crédito VALIDATED e ENFORCEABLE.</p>
+  }
+  <form (ngSubmit)="submit()">
+    <label for="credit-id">Identificador do crédito</label>
+    <input id="credit-id" name="creditId" [(ngModel)]="creditId" autocomplete="off" />
+    <label for="territory-id">Território</label>
+    <input id="territory-id" name="territoryId" [(ngModel)]="territoryId" autocomplete="off" />
+    <label for="purpose-id">Finalidade</label>
+    <input id="purpose-id" name="purposeId" [(ngModel)]="purposeId" autocomplete="off" />
+    <label for="access-token">Token OIDC local</label>
+    <input id="access-token" name="accessToken" [(ngModel)]="accessToken" type="password" autocomplete="off" />
+    <button type="submit">Iniciar cobrança administrativa</button>
+  </form>
+  @if (state === 'loading') {
+    <p role="status">Enviando comando…</p>
+  }
+  @if (state === 'ok') {
+    <p role="status" class="status-administrative">Cobrança em {{ collectionStatus }}.</p>
+  }
+  @if (state === 'forbidden' || state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

@@ -1,0 +1,3 @@
+58 passed (python pytest)
+10 SUCCESS (Angular ChromeHeadless)
+OpenAPI sirta-v1.yaml OK

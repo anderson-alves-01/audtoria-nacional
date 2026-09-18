@@ -6,10 +6,11 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from sirta_api.adapters.db.models import TaxCredit, TaxCreditEvidence
+from sirta_api.adapters.db.models import CollectionCase, TaxCredit, TaxCreditEvidence
 from sirta_api.adapters.db.session import get_session
 from sirta_api.adapters.http.deps import get_access_context
 from sirta_api.application.audit import record_audit
+from sirta_api.application.start_collection import execute_start_collection
 from sirta_api.application.validate_credit import execute_validate_credit
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.credit import Decision
@@ -195,3 +196,61 @@ def validate_tax_credit(
         payload=payload.model_dump(mode="json"),
         idempotency_key=idempotency_key,
     )
+
+
+@router.post("/v1/tax-credits/{credit_id}/collection-cases", status_code=201)
+def start_administrative_collection(
+    credit_id: UUID,
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
+) -> dict:
+    return execute_start_collection(
+        session,
+        context=context,
+        credit_id=credit_id,
+        idempotency_key=idempotency_key,
+    )
+
+
+@router.get("/v1/collection-cases")
+def list_collection_cases(
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+    page: int = Query(0, ge=0),
+    size: int = Query(20, ge=1, le=100),
+) -> dict:
+    context.ensure_fiscal_read()
+    rows = session.scalars(
+        select(CollectionCase)
+        .where(
+            CollectionCase.tenant_id == context.tenant_id,
+            CollectionCase.territory_id == context.territory_id,
+        )
+        .order_by(CollectionCase.opened_at)
+        .offset(page * size)
+        .limit(size)
+    ).all()
+    record_audit(
+        session,
+        context=context,
+        action="collection_case.list",
+        route="/v1/collection-cases",
+        outcome="allowed",
+        resource_type="collection_case",
+    )
+    return {
+        "items": [
+            {
+                "id": str(row.id),
+                "creditId": str(row.credit_id),
+                "status": row.status,
+                "slaDueAt": row.sla_due_at.isoformat(),
+                "openedAt": row.opened_at.isoformat(),
+                "timeline": row.timeline,
+            }
+            for row in rows
+        ],
+        "page": page,
+        "size": size,
+    }

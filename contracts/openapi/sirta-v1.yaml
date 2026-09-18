@@ -4,8 +4,8 @@ info:
   version: 0.3.0
   description: >
     Active OpenAPI source of truth for SIRTA. implementation_version 0.3.2
-    implements Sprint 2 credit validation on the 0.3.0 specification.
-    Collection, ISR and transfer writes remain specified and not served.
+    implements Sprint 2 credit validation and Sprint 3 collection on the 0.3.0 specification.
+    ISR and transfer writes remain specified and are not served until later local slices.
     Sensitive operations require OIDC plus tenant, territory and purpose context.
 servers:
   - url: http://localhost:8080
@@ -119,14 +119,42 @@ paths:
   /v1/tax-credits/{creditId}/collection-cases:
     post:
       operationId: startAdministrativeCollection
-      description: Not implemented in F0. Specified for Sprint 3.
+      description: >
+        Collector starts administrative collection only when the credit is
+        VALIDATED and ENFORCEABLE. Unvalidated or blocked credits return 409
+        without state change.
       parameters:
         - {$ref: '#/components/parameters/CreditId'}
         - {$ref: '#/components/parameters/IdempotencyKey'}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
       responses:
-        '201': {description: Collection case created after all gates}
-        '409': {description: Credit state blocks collection}
+        '201':
+          description: Collection case created after all gates
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/CollectionCase'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
         '422': {$ref: '#/components/responses/ValidationProblem'}
+  /v1/collection-cases:
+    get:
+      operationId: listCollectionCases
+      parameters:
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200':
+          description: Authorized collection cases
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/CollectionCasePage'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
   /v1/transfer-occurrences:
     get:
       operationId: listTransferOccurrences
@@ -318,6 +346,28 @@ components:
           properties:
             validationId: {type: string, format: uuid}
             decision: {type: string, enum: [APPROVE, REJECT, REQUEST_INFORMATION]}
+    CollectionCase:
+      type: object
+      required: [id, creditId, status, slaDueAt, openedAt, timeline, version]
+      properties:
+        id: {type: string, format: uuid}
+        creditId: {type: string, format: uuid}
+        status: {type: string, enum: [ADMINISTRATIVE, ACTIVE_DEBT, LEGAL_COUNSEL, JUDICIAL, CLOSED]}
+        collectionStatus: {type: string}
+        validationStatus: {type: string}
+        slaDueAt: {type: string, format: date-time}
+        openedAt: {type: string, format: date-time}
+        timeline: {type: array, items: {type: object, additionalProperties: true}}
+        version: {type: integer}
+    CollectionCasePage:
+      type: object
+      required: [items, page, size]
+      properties:
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/CollectionCase'}
+        page: {type: integer}
+        size: {type: integer}
     TransferOccurrenceInput:
       type: object
       required: [transferType, competence, officialSource, receivedAmount]

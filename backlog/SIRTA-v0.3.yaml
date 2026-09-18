@@ -123,9 +123,43 @@ epics:
           - Collection remains 404
   - id: EP-SIRTA-004
     title: Controlled administrative collection
-    stories: [SIRTA-030, SIRTA-031, SIRTA-032, SIRTA-033]
-    status: blocked
-    note: Out of F0 authorization
+    status: done
+    stories:
+      - id: SIRTA-030
+        title: StartAdministrativeCollection command
+        status: done
+        sprint: 3
+        depends_on: [SIRTA-023]
+        fixtures: collector.alpha and CREDIT_ALPHA
+        acceptance:
+          - IDENTIFIED credit returns 409 without collection case
+          - VALIDATED ENFORCEABLE credit opens ADMINISTRATIVE case with SLA
+      - id: SIRTA-031
+        title: Block unvalidated or unenforceable credits
+        status: done
+        sprint: 3
+        depends_on: [SIRTA-030]
+        fixtures: SUSPENDED synthetic credit
+        acceptance:
+          - Suspended validated credit returns 409
+      - id: SIRTA-032
+        title: Collector role isolation
+        status: done
+        sprint: 3
+        depends_on: [SIRTA-031]
+        fixtures: analyst.alpha collector.alpha
+        acceptance:
+          - Analyst receives 403
+          - Cross-tenant collection returns 404
+      - id: SIRTA-033
+        title: Collection timeline and UI
+        status: done
+        sprint: 3
+        depends_on: [SIRTA-032]
+        fixtures: synthetic SLA 15 days
+        acceptance:
+          - Case timeline contains opened event
+          - Angular page shows blocked-credit conflict
   - id: EP-SIRTA-005
     title: Synthetic data pipeline and dashboard
     stories: [SIRTA-040, SIRTA-041, SIRTA-042, SIRTA-043]

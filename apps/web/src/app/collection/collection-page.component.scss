@@ -1,0 +1,21 @@
+section {
+  max-width: 42rem;
+  padding: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-top: 0.75rem;
+  font-weight: 600;
+}
+
+input,
+button {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.status-administrative {
+  border-left: 4px solid #1e40af;
+  padding-left: 0.5rem;
+}

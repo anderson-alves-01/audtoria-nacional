@@ -37,6 +37,10 @@ class AccessContext:
         if self.role != Role.VALIDATOR:
             raise ForbiddenError("Only a validator role may record a credit validation")
 
+    def ensure_can_collect(self) -> None:
+        if self.role != Role.COLLECTOR:
+            raise ForbiddenError("Only a collector role may start administrative collection")
+
     def ensure_same_tenant(self, resource_tenant_id: UUID) -> None:
         if resource_tenant_id != self.tenant_id:
             raise NotVisibleError()

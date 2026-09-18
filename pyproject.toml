@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sirta"
-version = "0.3.2"
-description = "SIRTA Municipal local implementation (Sprint 2 credit validation)"
+version = "0.3.3"
+description = "SIRTA Municipal local implementation (Sprint 3 collection)"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "All Rights Reserved" }

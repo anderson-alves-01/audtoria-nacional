@@ -1,14 +1,14 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.2
-version: 0.3.2
-status: S2_CREDIT_VALIDATION_GREEN
+implementation_version: 0.3.3
+version: 0.3.3
+status: S3_COLLECTION_GREEN_LOCAL
 baseline:
   inspired_by: cfq-censo-platform
   architecture: bronze-silver-gold
   deployment_region: southamerica-east1
-current_phase: S2_CREDIT_VALIDATION
-release_stage: S2_CREDIT_VALIDATION
+current_phase: S3_COLLECTION
+release_stage: S3_COLLECTION
 completed:
   - product_scope_defined
   - reference_architecture_defined
@@ -25,21 +25,22 @@ completed:
   - authentication
   - tenant_and_territory
   - tax_credit_validation
+  - administrative_collection
 pending:
   - data_catalog
   - first_iss_pipeline
   - executive_dashboard
   - case_management
   - municipal_g0_authorization
-  - administrative_collection
 gates:
   f0_technical_local: GO
   s2_credit_validation: GO
+  s3_collection_local: GO_PENDING_CI
   independent_security_review: BLOCKED_UNTIL_HUMAN_REVIEW
   g0_municipal_program: NO-GO
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
   production_deploy: BLOCKED_UNTIL_SECURITY_AND_UAT
-  sprint_3_collection: NO-GO_UNTIL_NEW_AUTHORIZATION
-evidence: evidence/releases/0.3.2/
-next_action: Stop after Sprint 2. Do not implement collection, ISS pipelines or prompt 01 without a new authorization. G0 municipal remains a human gate. Independent security review of ValidateCredit is still required.
+  sprint_4_data_panel: NO-GO_UNTIL_S3_CI
+evidence: evidence/releases/0.3.3/
+next_action: Wait for GitHub CI on 0.3.3. Do not start Sprint 4 until that pipeline is green. G0 remains a human gate.
