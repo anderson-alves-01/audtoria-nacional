@@ -1,25 +1,15 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.4
-version: 0.3.4
-status: S4_SYNTHETIC_DATA_LOCAL
+implementation_version: 0.3.5
+version: 0.3.5
+status: G6_FINANCE_LOCAL
+current_phase: G6_FINANCE
+release_stage: G6_FINANCE
 baseline:
   inspired_by: cfq-censo-platform
   architecture: bronze-silver-gold
   deployment_region: southamerica-east1
-current_phase: S4_SYNTHETIC_DATA
-release_stage: S4_SYNTHETIC_DATA
 completed:
-  - product_scope_defined
-  - reference_architecture_defined
-  - cursor_governance_created
-  - curated_superpowers_skills_added
-  - roadmap_skill_policy_defined
-  - sirta_product_defined
-  - sirta_domain_model_defined
-  - sirta_openapi_contract_defined
-  - sirta_v03_sprint_plan_defined
-  - municipal_checklists_defined
   - executable_monorepo_scaffold
   - local_environment
   - authentication
@@ -28,22 +18,18 @@ completed:
   - administrative_collection
   - first_iss_pipeline
   - executive_dashboard
-pending:
-  - data_catalog
-  - case_management
-  - municipal_g0_authorization
   - installment_and_active_debt
+pending:
   - transfer_occurrences
   - ibs_cbs_calendar
+  - municipal_g0_authorization
 gates:
-  f0_technical_local: GO
-  s2_credit_validation: GO
   s3_collection_local: GO
-  s4_synthetic_data_local: GO_PENDING_CI
+  s4_synthetic_data_local: GO
+  g6_finance_local: GO_PENDING_CI
   g0_municipal_program: NO-GO
-  g4_iss_specialist_homologation: NO-GO
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
   production_deploy: BLOCKED_UNTIL_SECURITY_AND_UAT
-evidence: evidence/releases/0.3.4/
-next_action: Wait for GitHub CI on 0.3.4 before G6. G0/G4 specialist/cloud remain blocked.
+evidence: evidence/releases/0.3.5/
+next_action: Wait for CI on 0.3.5 then implement G7 transfers. Official payment integrations remain blocked.

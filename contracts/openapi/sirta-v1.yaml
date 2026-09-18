@@ -155,15 +155,56 @@ paths:
               schema: {$ref: '#/components/schemas/CollectionCasePage'}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/tax-credits/{creditId}/payments:
+    post:
+      operationId: registerReconciledPayment
+      description: Collector records a recovered payment only after reconciliation.
+      parameters:
+        - {$ref: '#/components/parameters/CreditId'}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reconciliationRef]
+              properties:
+                reconciliationRef: {type: string, minLength: 3}
+      responses:
+        '200': {description: Payment recovered}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /v1/tax-credits/{creditId}/installments:
+    post:
+      operationId: startInstallment
+      parameters:
+        - {$ref: '#/components/parameters/CreditId'}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Installment current}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /v1/tax-credits/{creditId}/active-debt-proposals:
+    post:
+      operationId: proposeActiveDebt
+      parameters:
+        - {$ref: '#/components/parameters/CreditId'}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Collection moved to ACTIVE_DEBT}
+        '409': {$ref: '#/components/responses/Conflict'}
   /v1/transfer-occurrences:
     get:
       operationId: listTransferOccurrences
-      description: Not implemented in F0.
+      description: Specified for G7. A transfer never creates a tax credit.
       responses:
         '200': {description: Authorized transfer occurrences}
     post:
       operationId: createTransferOccurrence
-      description: Not implemented in F0. A transfer never creates a tax credit.
+      description: Specified for G7. A transfer never creates a tax credit.
       requestBody:
         required: true
         content:

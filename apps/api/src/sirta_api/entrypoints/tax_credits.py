@@ -10,6 +10,7 @@ from sirta_api.adapters.db.models import CollectionCase, TaxCredit, TaxCreditEvi
 from sirta_api.adapters.db.session import get_session
 from sirta_api.adapters.http.deps import get_access_context
 from sirta_api.application.audit import record_audit
+from sirta_api.application.finance import execute_active_debt, execute_installment, execute_payment
 from sirta_api.application.start_collection import execute_start_collection
 from sirta_api.application.validate_credit import execute_validate_credit
 from sirta_api.domain.authorization import AccessContext
@@ -254,3 +255,40 @@ def list_collection_cases(
         "page": page,
         "size": size,
     }
+
+
+class PaymentIn(BaseModel):
+    reconciliationRef: str = Field(min_length=3)
+
+
+@router.post("/v1/tax-credits/{credit_id}/payments")
+def register_payment(
+    credit_id: UUID,
+    payload: PaymentIn,
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> dict:
+    return execute_payment(
+        session,
+        context=context,
+        credit_id=credit_id,
+        reconciliation_ref=payload.reconciliationRef,
+    )
+
+
+@router.post("/v1/tax-credits/{credit_id}/installments")
+def register_installment(
+    credit_id: UUID,
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> dict:
+    return execute_installment(session, context=context, credit_id=credit_id)
+
+
+@router.post("/v1/tax-credits/{credit_id}/active-debt-proposals")
+def register_active_debt(
+    credit_id: UUID,
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> dict:
+    return execute_active_debt(session, context=context, credit_id=credit_id)

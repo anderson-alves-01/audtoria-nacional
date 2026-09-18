@@ -41,6 +41,10 @@ class AccessContext:
         if self.role != Role.COLLECTOR:
             raise ForbiddenError("Only a collector role may start administrative collection")
 
+    def ensure_can_propose_debt(self) -> None:
+        if self.role != Role.DEBT_OFFICER:
+            raise ForbiddenError("Only a debt officer may propose active-debt inscription")
+
     def ensure_same_tenant(self, resource_tenant_id: UUID) -> None:
         if resource_tenant_id != self.tenant_id:
             raise NotVisibleError()

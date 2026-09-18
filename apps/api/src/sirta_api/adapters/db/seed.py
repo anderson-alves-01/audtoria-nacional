@@ -35,6 +35,7 @@ from sirta_api.adapters.db.synthetic_ids import (
     USER_ANALYST_ALPHA,
     USER_ANALYST_BETA,
     USER_COLLECTOR_ALPHA,
+    USER_DEBT_ALPHA,
     USER_VALIDATOR_ALPHA,
 )
 
@@ -90,6 +91,13 @@ def seed_synthetic(session: Session) -> None:
                 role="collector",
             ),
             User(
+                id=USER_DEBT_ALPHA,
+                tenant_id=TENANT_ALPHA,
+                subject=str(USER_DEBT_ALPHA),
+                username="debt.alpha",
+                role="debt_officer",
+            ),
+            User(
                 id=USER_ANALYST_BETA,
                 tenant_id=TENANT_BETA,
                 subject=str(USER_ANALYST_BETA),
@@ -105,6 +113,7 @@ def seed_synthetic(session: Session) -> None:
             UserTerritory(user_id=USER_VALIDATOR_ALPHA, territory_id=TERRITORY_ALPHA_CENTRO),
             UserTerritory(user_id=USER_ADMIN_ALPHA, territory_id=TERRITORY_ALPHA_CENTRO),
             UserTerritory(user_id=USER_COLLECTOR_ALPHA, territory_id=TERRITORY_ALPHA_CENTRO),
+            UserTerritory(user_id=USER_DEBT_ALPHA, territory_id=TERRITORY_ALPHA_CENTRO),
             UserTerritory(user_id=USER_ANALYST_BETA, territory_id=TERRITORY_BETA_SEDE),
         ]
     )
