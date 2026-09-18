@@ -1,0 +1,45 @@
+section {
+  max-width: 42rem;
+  padding: 1.5rem;
+}
+
+label,
+legend {
+  display: block;
+  margin-top: 0.75rem;
+  font-weight: 600;
+}
+
+input,
+textarea,
+button {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+button {
+  margin-top: 1rem;
+  width: auto;
+}
+
+.status-identified {
+  border-left: 4px solid #b45309;
+  padding-left: 0.5rem;
+}
+
+.status-validated {
+  border-left: 4px solid #166534;
+  padding-left: 0.5rem;
+}
+
+.status-rejected,
+.status-cancelled {
+  border-left: 4px solid #991b1b;
+  padding-left: 0.5rem;
+}
+
+.status-under_review {
+  border-left: 4px solid #1e40af;
+  padding-left: 0.5rem;
+}

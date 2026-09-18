@@ -1,0 +1,68 @@
+<section aria-labelledby="validation-title">
+  <h1 id="validation-title">Validação de crédito sintético</h1>
+  <p>
+    A autorização ocorre na API. Ocultar este formulário não concede acesso.
+    Checklist <code>credit-legality-v1</code> — não é parecer jurídico.
+  </p>
+
+  @if (state === 'idle') {
+    <p role="status">Preencha o crédito identificado para registrar a decisão.</p>
+  }
+
+  <form (ngSubmit)="submit()">
+    <label for="credit-id">Identificador do crédito</label>
+    <input id="credit-id" name="creditId" [(ngModel)]="creditId" autocomplete="off" />
+
+    <label for="evidence-id">Evidência com hash</label>
+    <input id="evidence-id" name="evidenceId" [(ngModel)]="evidenceId" autocomplete="off" />
+
+    <label for="territory-id">Território</label>
+    <input id="territory-id" name="territoryId" [(ngModel)]="territoryId" autocomplete="off" />
+
+    <label for="purpose-id">Finalidade</label>
+    <input id="purpose-id" name="purposeId" [(ngModel)]="purposeId" autocomplete="off" />
+
+    <label for="access-token">Token OIDC local</label>
+    <input id="access-token" name="accessToken" [(ngModel)]="accessToken" type="password" autocomplete="off" />
+
+    <fieldset>
+      <legend>Decisão</legend>
+      <label><input type="radio" name="decision" [(ngModel)]="decision" value="APPROVE" /> Aprovar</label>
+      <label><input type="radio" name="decision" [(ngModel)]="decision" value="REJECT" /> Rejeitar</label>
+      <label>
+        <input type="radio" name="decision" [(ngModel)]="decision" value="REQUEST_INFORMATION" />
+        Pedir informação
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Checklist de legalidade (homologável)</legend>
+      @for (item of items; track item.code) {
+        <label>
+          <input type="checkbox" [(ngModel)]="item.satisfied" [name]="item.code" />
+          {{ item.label }}
+        </label>
+      }
+    </fieldset>
+
+    <label for="rationale">Parecer</label>
+    <textarea id="rationale" name="rationale" [(ngModel)]="rationale" minlength="10"></textarea>
+
+    <button type="submit">Registrar validação</button>
+  </form>
+
+  @if (state === 'loading') {
+    <p role="status">Enviando decisão…</p>
+  }
+  @if (state === 'ok') {
+    <p role="status" [class]="'status-' + validationStatus.toLowerCase()">
+      Crédito atualizado para {{ validationStatus }}. Cobrança permanece não iniciada.
+    </p>
+  }
+  @if (state === 'forbidden') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>
