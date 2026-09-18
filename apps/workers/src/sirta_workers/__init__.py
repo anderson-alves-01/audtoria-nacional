@@ -1,0 +1,1 @@
+"""SIRTA local worker package."""
