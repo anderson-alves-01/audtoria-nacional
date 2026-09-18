@@ -1,0 +1,25 @@
+"""Configurable credit legality checklist. Not a legal opinion."""
+
+CHECKLIST_VERSION = "credit-legality-v1"
+
+REQUIRED_ITEM_CODES = (
+    "ORIGIN_IDENTIFIED",
+    "TAX_COMPETENCE_CONFIRMED",
+    "TAXPAYER_LINKED",
+    "FACT_AND_LEGAL_BASIS",
+    "PRINCIPAL_AND_ADDITIONS",
+    "CALCULATION_MEMORY",
+    "PAYMENTS_RECONCILED",
+    "DUPLICITY_DISCARDED",
+    "ENFORCEABILITY_CHECKED",
+    "SUSPENSION_EXTINCTION_BLOCK",
+    "DEADLINES_REVIEWED",
+    "EVIDENCE_HASHED",
+    "CONTRADICTION_PRESERVED",
+    "OPINION_RECORDED",
+    "VALIDATOR_AUTHORIZED",
+)
+
+
+def required_item_codes() -> tuple[str, ...]:
+    return REQUIRED_ITEM_CODES

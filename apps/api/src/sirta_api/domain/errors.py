@@ -25,3 +25,8 @@ class NotVisibleError(ProblemError):
 class ValidationFailedError(ProblemError):
     def __init__(self, detail: str) -> None:
         super().__init__(422, "Unprocessable Entity", "validation-failed", detail)
+
+
+class ConflictError(ProblemError):
+    def __init__(self, detail: str) -> None:
+        super().__init__(409, "Conflict", "conflict", detail)
