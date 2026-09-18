@@ -1,0 +1,11 @@
+---
+description: Mandatory project governance
+alwaysApply: true
+---
+# Governance
+
+Read `AGENTS.md` and `current-state.yaml` before acting. Treat them as binding.
+Work in vertical slices. Never claim success without evidence.
+Use explicit file paths, commands, assumptions, risks and test results.
+Stop at authorization gates. Never access cloud or real fiscal data implicitly.
+

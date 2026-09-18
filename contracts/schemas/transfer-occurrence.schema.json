@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditoria-nacional.local/schemas/transfer-occurrence.schema.json",
+  "title": "Transfer Occurrence",
+  "type": "object",
+  "required": ["id", "tenantId", "transferType", "competence", "officialSource", "receivedAmount", "status"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "tenantId": {"type": "string", "format": "uuid"},
+    "transferType": {"type": "string", "enum": ["FPM", "ICMS_SHARE", "IPVA_SHARE", "ITR", "IPI_EXPORT", "CIDE", "FUNDEB", "ROYALTY", "OTHER"]},
+    "competence": {"type": "string"},
+    "officialSource": {"type": "string"},
+    "expectedAmount": {"type": ["number", "null"], "minimum": 0},
+    "receivedAmount": {"type": "number", "minimum": 0},
+    "differenceAmount": {"type": ["number", "null"]},
+    "status": {"type": "string", "enum": ["DETECTED", "UNDER_REVIEW", "JUSTIFIED", "RECONCILED", "CLOSED"]}
+  },
+  "additionalProperties": false
+}
+

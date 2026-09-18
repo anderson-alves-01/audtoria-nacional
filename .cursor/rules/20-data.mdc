@@ -1,0 +1,16 @@
+---
+description: Data engineering and analytics rules
+globs: pipelines/**,analytics/**,database/**
+alwaysApply: false
+---
+# Data
+
+- Preserve immutable source bytes and checksum in Bronze when legally permitted.
+- Silver normalizes; Gold serves stable, documented metrics.
+- Each pipeline supports dry-run, resume and idempotency keys.
+- Quarantine invalid records; never silently discard them.
+- Validate SQL syntax, referenced columns and contracts before execution.
+- Consolidate BigQuery ALTER operations and avoid rate-limit-prone loops.
+- Publishing requires quality status APPROVED and human homologation when specified.
+- Every projection exposes formula, source, base year, assumptions and confidence.
+

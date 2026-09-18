@@ -1,0 +1,32 @@
+version: 0.3.0
+epics:
+  - id: EP-SIRTA-001
+    title: Local executable baseline
+    stories: [SIRTA-001, SIRTA-002, SIRTA-003, SIRTA-004]
+  - id: EP-SIRTA-002
+    title: Tenant and authorization context
+    stories: [SIRTA-010, SIRTA-011, SIRTA-012, SIRTA-013]
+  - id: EP-SIRTA-003
+    title: Tax credit validation
+    stories: [SIRTA-020, SIRTA-021, SIRTA-022, SIRTA-023]
+  - id: EP-SIRTA-004
+    title: Controlled administrative collection
+    stories: [SIRTA-030, SIRTA-031, SIRTA-032, SIRTA-033]
+  - id: EP-SIRTA-005
+    title: Synthetic data pipeline and dashboard
+    stories: [SIRTA-040, SIRTA-041, SIRTA-042, SIRTA-043]
+definition_of_ready:
+  - acceptance_criteria_defined
+  - dependencies_known
+  - synthetic_fixture_available
+  - security_impact_classified
+  - human_gate_identified
+definition_of_done:
+  - tests_green
+  - contracts_valid
+  - authorization_negative_tests_green
+  - audit_event_verified
+  - documentation_updated
+  - evidence_saved
+  - rollback_documented
+

@@ -1,0 +1,34 @@
+asyncapi: 3.0.0
+info:
+  title: SIRTA Tax Credit Events
+  version: 0.3.0
+channels:
+  taxCreditValidated:
+    address: sirta.tax-credit.validated.v1
+    messages:
+      validated:
+        payload:
+          type: object
+          required: [eventId, occurredAt, tenantId, creditId, actorId, policyVersion]
+          properties:
+            eventId: {type: string}
+            occurredAt: {type: string, format: date-time}
+            tenantId: {type: string}
+            creditId: {type: string}
+            actorId: {type: string}
+            policyVersion: {type: string}
+  collectionStarted:
+    address: sirta.collection.started.v1
+    messages:
+      started:
+        payload:
+          type: object
+          required: [eventId, occurredAt, tenantId, creditId, caseId, actorId]
+          properties:
+            eventId: {type: string}
+            occurredAt: {type: string, format: date-time}
+            tenantId: {type: string}
+            creditId: {type: string}
+            caseId: {type: string}
+            actorId: {type: string}
+

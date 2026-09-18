@@ -1,0 +1,36 @@
+openapi: 3.1.0
+info:
+  title: Auditoria Nacional API
+  version: 0.1.0
+paths:
+  /health:
+    get:
+      operationId: health
+      responses:
+        '200': {description: Healthy}
+  /v1/indicators/revenue-potential:
+    get:
+      operationId: getRevenuePotential
+      parameters:
+        - {name: territoryId, in: query, required: true, schema: {type: string}}
+        - {name: tax, in: query, required: true, schema: {type: string}}
+        - {name: fromYear, in: query, required: true, schema: {type: integer}}
+        - {name: toYear, in: query, required: true, schema: {type: integer}}
+      responses:
+        '200': {description: Indicator series}
+  /v1/findings:
+    get:
+      operationId: listFindings
+      responses:
+        '200': {description: Paginated findings}
+  /v1/cases:
+    post:
+      operationId: createCase
+      responses:
+        '201': {description: Case created}
+  /v1/audit-events:
+    get:
+      operationId: listAuditEvents
+      responses:
+        '200': {description: Authorized audit events}
+

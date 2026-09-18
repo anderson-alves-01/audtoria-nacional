@@ -1,0 +1,33 @@
+project: auditoria-nacional
+version: 0.3.0
+status: SIRTA_IMPLEMENTATION_READY
+baseline:
+  inspired_by: cfq-censo-platform
+  architecture: bronze-silver-gold
+  deployment_region: southamerica-east1
+current_phase: F0_FOUNDATION
+completed:
+  - product_scope_defined
+  - reference_architecture_defined
+  - cursor_governance_created
+  - curated_superpowers_skills_added
+  - roadmap_skill_policy_defined
+  - sirta_product_defined
+  - sirta_domain_model_defined
+  - sirta_openapi_contract_defined
+  - sirta_v03_sprint_plan_defined
+  - municipal_checklists_defined
+pending:
+  - executable_monorepo_scaffold
+  - local_environment
+  - authentication
+  - tenant_and_territory
+  - data_catalog
+  - first_iss_pipeline
+  - executive_dashboard
+  - case_management
+gates:
+  cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
+  real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
+  production_deploy: BLOCKED_UNTIL_SECURITY_AND_UAT
+next_action: Run prompts/00-bootstrap-audit.md, then prompts/07-sirta-v03-implementation.md starting with Sprint 0.

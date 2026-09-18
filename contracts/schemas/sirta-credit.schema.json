@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://auditoria-nacional.local/schemas/sirta-credit.schema.json",
+  "title": "SIRTA Tax Credit",
+  "type": "object",
+  "required": ["id", "tenantId", "territoryId", "taxpayerId", "taxType", "competence", "sourceId", "principalAmount", "validationStatus", "enforceabilityStatus", "collectionStatus", "paymentStatus", "version"],
+  "properties": {
+    "id": {"type": "string", "format": "uuid"},
+    "tenantId": {"type": "string", "format": "uuid"},
+    "territoryId": {"type": "string", "format": "uuid"},
+    "taxpayerId": {"type": "string", "format": "uuid"},
+    "taxType": {"type": "string", "enum": ["ISS", "IPTU", "ITBI", "FEE", "IRRF", "OTHER"]},
+    "competence": {"type": "string", "pattern": "^[0-9]{4}(-[0-9]{2})?$"},
+    "sourceId": {"type": "string"},
+    "principalAmount": {"type": "number", "minimum": 0},
+    "validationStatus": {"type": "string", "enum": ["IDENTIFIED", "UNDER_REVIEW", "VALIDATED", "REJECTED", "CANCELLED"]},
+    "enforceabilityStatus": {"type": "string", "enum": ["ENFORCEABLE", "SUSPENDED", "EXTINGUISHED", "BLOCKED", "LEGAL_REVIEW"]},
+    "collectionStatus": {"type": "string", "enum": ["NOT_STARTED", "ADMINISTRATIVE", "ACTIVE_DEBT", "LEGAL_COUNSEL", "JUDICIAL", "CLOSED"]},
+    "paymentStatus": {"type": "string", "enum": ["OPEN", "PARTIAL", "PAID", "COMPENSATED", "INSTALLMENT_CURRENT", "INSTALLMENT_BREACHED"]},
+    "version": {"type": "integer", "minimum": 0}
+  },
+  "additionalProperties": false
+}
+

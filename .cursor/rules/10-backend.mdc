@@ -1,0 +1,15 @@
+---
+description: Backend and API rules
+globs: apps/api/**,services/**,contracts/openapi/**
+alwaysApply: false
+---
+# Backend
+
+- Use ports-and-adapters boundaries: domain, application, adapters and entrypoints.
+- Keep tenant, territory, purpose and user context mandatory in sensitive operations.
+- Validate requests with typed schemas and return RFC 9457 problem details.
+- Use pagination, deterministic ordering and UTC timestamps.
+- Generate and validate OpenAPI in CI.
+- Use database transactions and outbox for state changes that emit events.
+- Never log tokens, CPF/CNPJ in full, document bodies or query results.
+

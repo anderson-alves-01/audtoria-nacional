@@ -1,0 +1,152 @@
+version: 0.3.0
+precedence:
+  - AGENTS.md
+  - current-state.yaml
+  - docs/architecture/DECISIONS.md
+  - contracts
+  - .cursor/rules
+  - project_domain_skills
+  - curated_engineering_skills
+
+defaults:
+  autonomous_local_work: true
+  real_data_allowed: false
+  cloud_mutation_allowed: false
+  production_deploy_allowed: false
+  destructive_actions_allowed: false
+  telemetry_allowed: false
+  max_debug_hypotheses: 3
+  plan_task_minutes: [15, 45]
+  evidence_root: evidence/releases
+
+skills:
+  sirta-domain:
+    mode: mandatory
+    activate_on: [tax_credit, validation, collection, installment, active_debt, recovery]
+  transfer-reconciliation:
+    mode: mandatory
+    activate_on: [fpm, state_transfer, federal_transfer, reconciliation]
+  ibs-cbs-readiness:
+    mode: mandatory
+    activate_on: [tax_reform, ibs, cbs, regulatory_calendar, fiscal_layout]
+  writing-plans:
+    mode: mandatory
+    activate_on: [phase_start, multi_component_feature, migration, new_pipeline]
+    output: docs/plans/YYYY-MM-DD-<phase>-<feature>.md
+  test-driven-development:
+    mode: profile_based
+    activate_on: [feature, bugfix, behavior_change, refactor]
+  systematic-debugging:
+    mode: mandatory
+    activate_on: [test_failure, build_failure, job_failure, incident, unexpected_behavior]
+    max_hypotheses: 3
+  requesting-code-review:
+    mode: mandatory
+    activate_on: [vertical_slice_complete, phase_gate, release_candidate]
+  receiving-code-review:
+    mode: mandatory
+    activate_on: [review_feedback_received]
+  verification-before-completion:
+    mode: mandatory
+    activate_on: [task_completion, bugfix_completion, phase_gate, release_candidate]
+
+tdd_profiles:
+  strict:
+    applies_to: [domain, tax_calculation, authorization, tenant_isolation, case_workflow, api, idempotency, bugfix]
+    required_cycle: [red, verify_red, green, verify_green, refactor]
+  data_contract_first:
+    applies_to: [pipeline, sql, bronze, silver, gold, data_quality]
+    required_checks: [synthetic_fixture, schema, counts, quarantine, idempotency, reconciliation, logical_rollback]
+  validation_first:
+    applies_to: [terraform, ci_cd, configuration]
+    required_checks: [format, static_validation, policy, plan, no_apply]
+  ui_behavior_first:
+    applies_to: [angular_component, dashboard, workflow]
+    required_checks: [component_test, accessibility, contract, critical_e2e]
+
+roadmap:
+  F0_FOUNDATION:
+    required_skills: [writing-plans, test-driven-development, requesting-code-review, verification-before-completion]
+    conditional_skills: [systematic-debugging, receiving-code-review]
+    gates: [reproducible_build, local_tests, secret_scan, tenant_isolation]
+  F1_DATA_PLATFORM:
+    required_skills: [writing-plans, test-driven-development, requesting-code-review, verification-before-completion]
+    conditional_skills: [systematic-debugging, receiving-code-review]
+    gates: [schema_validation, sql_validation, idempotency, quarantine, lineage, logical_rollback]
+  F2_ISS_RJ_MVP:
+    required_skills: [writing-plans, test-driven-development, requesting-code-review, verification-before-completion]
+    conditional_skills: [systematic-debugging, receiving-code-review]
+    gates: [financial_reconciliation, formula_explainability, source_freshness, specialist_homologation]
+  F3_CASES_RECOVERY:
+    required_skills: [writing-plans, test-driven-development, requesting-code-review, verification-before-completion]
+    conditional_skills: [systematic-debugging, receiving-code-review]
+    gates: [workflow_integrity, evidence_chain, audit_log, recovery_funnel]
+  F4_DF_MULTITAX:
+    required_skills: [writing-plans, test-driven-development, requesting-code-review, verification-before-completion]
+    conditional_skills: [systematic-debugging, receiving-code-review]
+    gates: [rule_homologation, institutional_isolation, regional_filtering, tax_contracts]
+  F5_PRIVATE_AI:
+    required_skills: [writing-plans, test-driven-development, requesting-code-review, verification-before-completion]
+    conditional_skills: [systematic-debugging, receiving-code-review]
+    gates: [rag_authorization, citation_accuracy, prompt_injection, dlp, human_review]
+  F6_REGIONAL_EXPANSION:
+    required_skills: [writing-plans, requesting-code-review, verification-before-completion]
+    conditional_skills: [test-driven-development, systematic-debugging, receiving-code-review]
+    gates: [template_validation, connector_contract, regional_homologation, deployment_plan]
+  F7_NATIONAL_CONSOLIDATION:
+    required_skills: [writing-plans, requesting-code-review, verification-before-completion]
+    conditional_skills: [test-driven-development, systematic-debugging, receiving-code-review]
+    gates: [benchmark_methodology, anonymization, federative_governance, national_security_review]
+
+human_gates:
+  - credentials
+  - restricted_or_real_data
+  - tax_or_legal_interpretation
+  - iam_or_network_policy
+  - paid_resource
+  - destructive_change
+  - external_publication
+  - production_deployment
+
+excluded_superpowers_skills:
+  brainstorming: Use product-architect and roadmap specs; reconsider only for a new product line.
+  using-git-worktrees: Reconsider after F0 baseline is green and parallel branches are needed.
+  subagent-driven-development: Reconsider after contracts are stable and file ownership is defined.
+  dispatching-parallel-agents: Reconsider after F1 with non-overlapping tasks.
+  executing-plans: Replaced by the project orchestrator loop.
+  finishing-a-development-branch: Git merge, discard and cleanup remain human-controlled.
+
+sirta_delivery:
+  G0_MOBILIZATION:
+    required_skills: [product-architect, writing-plans, requesting-code-review, verification-before-completion]
+    gate: program_authorized
+  G1_DIAGNOSIS:
+    required_skills: [product-architect, data-engineer, writing-plans, requesting-code-review, verification-before-completion]
+    gate: diagnosis_homologated
+  G2_FOUNDATION:
+    required_skills: [devops-platform, backend-engineer, security-reviewer, test-driven-development, requesting-code-review, verification-before-completion]
+    gate: reproducible_build_and_tenant_isolation
+  G3_DATA:
+    required_skills: [data-engineer, test-driven-development, requesting-code-review, verification-before-completion]
+    gate: idempotency_quarantine_lineage_reconciliation
+  G4_ISS_MVP:
+    required_skills: [sirta-domain, data-engineer, test-driven-development, requesting-code-review, verification-before-completion]
+    gate: financial_and_methodological_homologation
+  G5_CASES_COLLECTION:
+    required_skills: [sirta-domain, backend-engineer, frontend-engineer, test-driven-development, requesting-code-review, verification-before-completion]
+    gate: no_collection_without_validation
+  G6_INSTALLMENTS_ACTIVE_DEBT:
+    required_skills: [sirta-domain, security-reviewer, test-driven-development, requesting-code-review, verification-before-completion]
+    gate: end_to_end_financial_traceability
+  G7_TRANSFERS:
+    required_skills: [transfer-reconciliation, data-engineer, test-driven-development, requesting-code-review, verification-before-completion]
+    gate: official_source_reconciliation
+  G8_IBS_CBS:
+    required_skills: [ibs-cbs-readiness, product-architect, writing-plans, requesting-code-review, verification-before-completion]
+    gate: official_rules_homologated
+  G9_PILOT:
+    required_skills: [qa-release, security-reviewer, requesting-code-review, verification-before-completion]
+    gate: integrated_acceptance
+  G10_DEPLOYMENT:
+    required_skills: [devops-platform, qa-release, requesting-code-review, verification-before-completion]
+    gate: explicit_production_authorization

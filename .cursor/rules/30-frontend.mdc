@@ -1,0 +1,14 @@
+---
+description: Frontend and accessibility rules
+globs: apps/web/**,apps/admin/**
+alwaysApply: false
+---
+# Frontend
+
+- Use Angular strict mode, typed API clients and accessible semantic components.
+- Meet WCAG 2.2 AA for navigation, contrast, focus and labels.
+- Distinguish potential, finding, assessed credit and recovered value visually.
+- Never expose restricted fields based only on hidden UI elements; API authorization is authoritative.
+- Provide loading, empty, partial-data and error states.
+- Display data freshness, source and methodology near fiscal metrics.
+

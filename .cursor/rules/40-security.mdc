@@ -1,0 +1,15 @@
+---
+description: Security, privacy and AI controls
+alwaysApply: true
+---
+# Security
+
+- Default deny. Enforce RBAC plus ABAC for tenant, territory, purpose and classification.
+- Require MFA in non-local environments.
+- Encrypt in transit and at rest; keep secrets outside code and logs.
+- Test cross-tenant isolation automatically.
+- Use synthetic or masked fixtures outside production.
+- AI retrieval is limited to authorized collections and must cite evidence IDs.
+- Prompt input and output pass through DLP and policy checks.
+- Tool calls require least privilege and produce immutable audit events.
+

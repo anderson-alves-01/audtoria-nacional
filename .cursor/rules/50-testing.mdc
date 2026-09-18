@@ -1,0 +1,12 @@
+---
+description: Test and release evidence rules
+globs: tests/**,scripts/**,.github/**
+alwaysApply: false
+---
+# Testing
+
+Minimum gates: format, lint, unit, integration, contract, migration, SQL validation, dependency scan, secret scan and build.
+Critical flows also require E2E, tenant isolation, authorization, audit-log and recovery tests.
+Store machine-readable results and a concise verdict under `evidence/releases/<version>/`.
+Do not weaken assertions to make a failing test pass.
+

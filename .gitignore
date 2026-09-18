@@ -1,0 +1,71 @@
+# Secrets and local env
+.env
+.env.*
+!.env.example
+*.pem
+!tests/fixtures/jwt/*.pem
+*.p12
+*.key
+credentials.json
+**/secrets/
+gha-creds*.json
+*.tfvars
+!*.tfvars.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Node / Angular
+node_modules/
+.angular/
+apps/web/dist/
+apps/web/.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Docker volumes and local data
+volumes/
+docker-data/
+pgdata/
+minio-data/
+keycloak-data/
+
+# Terraform (never apply prod in F0)
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Test / tool caches
+.cache/
+coverage/
+test-results/
+playwright-report/

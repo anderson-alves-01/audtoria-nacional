@@ -1,0 +1,27 @@
+# Conteúdo do kit
+
+- `README.md`: visão e início rápido.
+- `AGENTS.md`: constituição operacional dos agentes.
+- `current-state.yaml`: estado retomável.
+- `.cursor/rules/`: regras automáticas por área.
+- `.cursor/skills/`: onze skills de domínio e seis skills de engenharia curadas.
+- `config/skills-policy.yaml`: parâmetros, precedência, perfis de TDD e ativação F0-F7.
+- `prompts/`: auditoria, loop autônomo, feature, dados, segurança, release e handoff.
+- `docs/product/`: plataforma, regiões e painéis.
+- `docs/architecture/`: arquitetura e ADRs.
+- `docs/data/`: ingestão e qualidade.
+- `docs/security/`: segurança, LGPD e IA privada.
+- `docs/delivery/`: roadmap, backlog, aceite e workflow.
+- `contracts/openapi/`: contrato inicial da API.
+- `apps/`, `pipelines/`, `infra/`, `tests/`: destinos da implementação.
+- `evidence/`: provas de testes e releases.
+- `docs/releases/RELEASE-v0.2.0.md`: notas desta release.
+- `docs/product/SIRTA-PRODUCT.md`: definição do produto municipal.
+- `docs/architecture/SIRTA-DOMAIN.md`: agregados, estados e invariantes.
+- `docs/delivery/ROADMAP-SIRTA-2026.md`: roadmap completo atualizado.
+- `docs/delivery/SPRINT-PLAN-v0.3.md`: execução local em cinco sprints.
+- `contracts/openapi/sirta-v1.yaml`: API inicial do SIRTA.
+- `contracts/schemas/`: contratos de crédito e transferências.
+- `contracts/events/`: eventos de domínio.
+- `checklists/`: diagnóstico, legalidade e homologação.
+- `backlog/SIRTA-v0.3.yaml`: backlog estruturado.
