@@ -8,6 +8,8 @@
 **Data-base:** setembro de 2026  
 **Horizonte:** implantação inicial de 6 a 8 meses e evolução contínua
 
+**Estado local (2026-09-18):** fatias sintéticas G2/G3/G5–G8 executáveis até implementação 0.3.7. Gates humanos G0, G1, G4, G7 oficial, G8 oficial, G9 e G10 estão **BLOQUEADOS** — ver `docs/delivery/HUMAN-GATES.md`.
+
 ---
 
 ## 1. Decisão de produto

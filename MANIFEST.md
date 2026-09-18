@@ -7,7 +7,7 @@
 - `.cursor/rules/` e `.cursor/skills/`: governança Cursor.
 - `config/skills-policy.yaml`: política de skills.
 - `prompts/`: auditoria, feature, dados, segurança, release e handoff. Prompt 01 não está autorizado após a Sprint 2.
-- `docs/delivery/ROADMAP-SIRTA-2026.md`: **roadmap vigente**.
+- `docs/delivery/HUMAN-GATES.md`: G0/G1/G4/G7 oficial/G8 oficial/G9/G10 bloqueados.
 - `docs/delivery/ROADMAP.md`: legado.
 - `docs/plans/2026-09-18-F0-foundation.md`: plano F0 executado.
 - `docs/plans/2026-09-18-g8-ibs-cbs-calendar.md`: plano G8 local.

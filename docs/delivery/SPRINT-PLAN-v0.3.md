@@ -56,3 +56,5 @@ Gate: reexecução idempotente e números reconciliados.
 
 Aplicação local demonstrável, OpenAPI validada, testes e evidências; nenhuma integração real, nuvem ou produção.
 
+Extensão local 2026 (G6–G8 sintético) está em `current-state.yaml` e `docs/delivery/HUMAN-GATES.md`. Gates G0, G1, G4, G7 oficial, G8 oficial, G9 e G10 permanecem humanos.
+

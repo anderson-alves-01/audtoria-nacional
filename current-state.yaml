@@ -2,8 +2,8 @@ project: auditoria-nacional
 spec_version: 0.3.0
 implementation_version: 0.3.7
 version: 0.3.7
-status: G8_IBS_CBS_LOCAL
-current_phase: G8_IBS_CBS
+status: LOCAL_EXECUTABLE_COMPLETE_HUMAN_GATES_BLOCKED
+current_phase: HUMAN_GATES
 release_stage: G8_IBS_CBS_LOCAL
 baseline:
   inspired_by: cfq-censo-platform
@@ -18,10 +18,16 @@ completed:
   - ibs_cbs_calendar_local
 pending:
   - municipal_g0_authorization
+  - diagnosis_g1
+  - specialist_homologation_g4
+  - official_tesouro_connectors_g7
+  - official_ibs_cbs_homologation_g8
+  - pilot_g9
+  - production_g10
 gates:
   g6_finance_local: GO
   g7_transfers_local: GO
-  g8_calendar_local: GO_PENDING_CI
+  g8_calendar_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -32,4 +38,5 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 evidence: evidence/releases/0.3.7/
-next_action: Wait CI for G8. Official IBS/CBS homologation and G0/G1/G9/G10 remain blocked.
+next_action: Stop. Local synthetic roadmap slices are done. Resume only after a listed human gate is authorized.
+human_gates: docs/delivery/HUMAN-GATES.md
