@@ -1,0 +1,7 @@
+Command: docker build -f apps/api/Dockerfile -t sirta-api:0.3.1 .
+Result: exit 0
+
+Local image (no registry push):
+sirta-api:0.3.1 dbd43bce7f0f 2026-09-18 12:08:21 -0300
+
+Includes httpx in runtime dependencies for OIDC JWKS. Synthetic data only.

@@ -1,0 +1,7 @@
+Command: docker build -f apps/workers/Dockerfile -t sirta-worker:0.3.1 .
+Result: exit 0
+
+Local image (no registry push):
+sirta-worker:0.3.1 a17104935cf3 2026-09-18 12:07:15 -0300
+
+No cloud queue. No real fiscal payloads.

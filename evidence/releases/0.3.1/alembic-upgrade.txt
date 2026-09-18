@@ -1,0 +1,12 @@
+Command: alembic upgrade head
+Target: local Compose PostgreSQL localhost:55432 (synthetic only)
+
+Result: applied through 0003_f0_synthetic_seed (head)
+
+Verified 2026-09-18:
+  python -m alembic current
+  INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+  INFO  [alembic.runtime.migration] Will assume transactional DDL.
+  0003_f0_synthetic_seed (head)
+
+No cloud database. No real fiscal data.
