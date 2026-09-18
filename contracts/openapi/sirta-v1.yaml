@@ -199,12 +199,18 @@ paths:
   /v1/transfer-occurrences:
     get:
       operationId: listTransferOccurrences
-      description: Specified for G7. A transfer never creates a tax credit.
+      description: Synthetic transfer occurrences. Never tax credits.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
       responses:
         '200': {description: Authorized transfer occurrences}
     post:
       operationId: createTransferOccurrence
-      description: Specified for G7. A transfer never creates a tax credit.
+      description: Synthetic transfer occurrence. Never creates a tax credit.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
       requestBody:
         required: true
         content:

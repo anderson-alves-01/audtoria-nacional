@@ -216,3 +216,23 @@ class GoldFunnel(Base):
     silver_row_count: Mapped[int] = mapped_column(Integer, nullable=False)
     methodology_version: Mapped[str] = mapped_column(String(64), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class TransferOccurrence(Base):
+    __tablename__ = "transfer_occurrences"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "transfer_type", "competence", "official_source"),
+    )
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    transfer_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    competence: Mapped[str] = mapped_column(String(7), nullable=False)
+    official_source: Mapped[str] = mapped_column(String(128), nullable=False)
+    expected_amount: Mapped[float | None] = mapped_column(Numeric(18, 2), nullable=True)
+    received_amount: Mapped[float] = mapped_column(Numeric(18, 2), nullable=False)
+    classification: Mapped[str] = mapped_column(
+        String(64), nullable=False, default="OCCURRENCE_NOT_TAX_CREDIT"
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

@@ -1,35 +1,29 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.5
-version: 0.3.5
-status: G6_FINANCE_LOCAL
-current_phase: G6_FINANCE
-release_stage: G6_FINANCE
+implementation_version: 0.3.6
+version: 0.3.6
+status: G7_TRANSFERS_LOCAL
+current_phase: G7_TRANSFERS
+release_stage: G7_TRANSFERS
 baseline:
   inspired_by: cfq-censo-platform
   architecture: bronze-silver-gold
   deployment_region: southamerica-east1
 completed:
-  - executable_monorepo_scaffold
-  - local_environment
-  - authentication
-  - tenant_and_territory
   - tax_credit_validation
   - administrative_collection
   - first_iss_pipeline
-  - executive_dashboard
   - installment_and_active_debt
-pending:
   - transfer_occurrences
+pending:
   - ibs_cbs_calendar
   - municipal_g0_authorization
 gates:
-  s3_collection_local: GO
-  s4_synthetic_data_local: GO
-  g6_finance_local: GO_PENDING_CI
+  g6_finance_local: GO
+  g7_transfers_local: GO_PENDING_CI
   g0_municipal_program: NO-GO
+  g7_official_tesouro_connectors: NO-GO
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
-  production_deploy: BLOCKED_UNTIL_SECURITY_AND_UAT
-evidence: evidence/releases/0.3.5/
-next_action: Wait for CI on 0.3.5 then implement G7 transfers. Official payment integrations remain blocked.
+evidence: evidence/releases/0.3.6/
+next_action: Wait CI then G8 calendar. Official Tesouro connectors remain blocked.
