@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from sirta_api.adapters.db.models import (
     AccessPurpose,
+    Evidence,
     Organization,
     TaxCredit,
     TaxCreditEvidence,
@@ -16,7 +17,9 @@ from sirta_api.adapters.db.synthetic_ids import (
     CREDIT_ALPHA,
     CREDIT_BETA,
     EVIDENCE_ALPHA,
+    EVIDENCE_ALPHA_SHA256,
     EVIDENCE_BETA,
+    EVIDENCE_BETA_SHA256,
     ORG_PILOT,
     PURPOSE_ALPHA_ACTIVE,
     PURPOSE_ALPHA_EXPIRED,
@@ -119,6 +122,25 @@ def seed_synthetic(session: Session) -> None:
                 code="audit-iss",
                 description="Synthetic ISS audit beta",
                 expires_at=None,
+            ),
+        ]
+    )
+    session.flush()
+    session.add_all(
+        [
+            Evidence(
+                id=EVIDENCE_ALPHA,
+                tenant_id=TENANT_ALPHA,
+                sha256=EVIDENCE_ALPHA_SHA256,
+                source="synthetic-ledger",
+                media_type="text/plain",
+            ),
+            Evidence(
+                id=EVIDENCE_BETA,
+                tenant_id=TENANT_BETA,
+                sha256=EVIDENCE_BETA_SHA256,
+                source="synthetic-ledger",
+                media_type="text/plain",
             ),
         ]
     )

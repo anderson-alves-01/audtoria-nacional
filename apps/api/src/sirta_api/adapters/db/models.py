@@ -1,8 +1,8 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID as PGUUID
+from sqlalchemy import DateTime, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint
+from sqlalchemy.dialects.postgresql import JSONB, UUID as PGUUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -92,12 +92,51 @@ class TaxCredit(Base):
     created_by: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
 
 
+class Evidence(Base):
+    __tablename__ = "evidences"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    source: Mapped[str] = mapped_column(String(128), nullable=False)
+    media_type: Mapped[str] = mapped_column(String(64), nullable=False, default="text/plain")
+
+
 class TaxCreditEvidence(Base):
     __tablename__ = "tax_credit_evidences"
     __table_args__ = (UniqueConstraint("credit_id", "evidence_id"),)
 
     credit_id: Mapped[UUID] = mapped_column(ForeignKey("tax_credits.id"), primary_key=True)
-    evidence_id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True)
+    evidence_id: Mapped[UUID] = mapped_column(ForeignKey("evidences.id"), primary_key=True)
+
+
+class CreditValidation(Base):
+    __tablename__ = "credit_validations"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    credit_id: Mapped[UUID] = mapped_column(ForeignKey("tax_credits.id"), nullable=False)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    actor_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
+    decision: Mapped[str] = mapped_column(String(32), nullable=False)
+    checklist_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    checklist_items: Mapped[list] = mapped_column(JSONB, nullable=False)
+    rationale: Mapped[str] = mapped_column(Text, nullable=False)
+    resulting_status: Mapped[str] = mapped_column(String(32), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class IdempotencyRecord(Base):
+    __tablename__ = "idempotency_records"
+    __table_args__ = (UniqueConstraint("tenant_id", "key"),)
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    key: Mapped[str] = mapped_column(String(128), nullable=False)
+    route: Mapped[str] = mapped_column(String(256), nullable=False)
+    request_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    status_code: Mapped[int] = mapped_column(Integer, nullable=False)
+    response_body: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
 class AuditEvent(Base):

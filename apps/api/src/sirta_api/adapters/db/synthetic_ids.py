@@ -1,3 +1,4 @@
+import hashlib
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
@@ -20,6 +21,10 @@ TAXPAYER_ALPHA = UUID("11111111-1111-4111-8111-111111111061")
 TAXPAYER_BETA = UUID("22222222-2222-4222-8222-222222222061")
 EVIDENCE_ALPHA = UUID("11111111-1111-4111-8111-111111111071")
 EVIDENCE_BETA = UUID("22222222-2222-4222-8222-222222222071")
+EVIDENCE_ALPHA_LABEL = "synthetic-alpha-evidence"
+EVIDENCE_BETA_LABEL = "synthetic-beta-evidence"
+EVIDENCE_ALPHA_SHA256 = hashlib.sha256(EVIDENCE_ALPHA_LABEL.encode("utf-8")).hexdigest()
+EVIDENCE_BETA_SHA256 = hashlib.sha256(EVIDENCE_BETA_LABEL.encode("utf-8")).hexdigest()
 
 ISSUER = "http://localhost:8081/realms/sirta"
 AUDIENCE = "sirta-api"
