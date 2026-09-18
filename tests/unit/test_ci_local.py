@@ -8,5 +8,5 @@ def test_ci_has_no_cloud_credentials() -> None:
     assert "aws_access" not in lowered
     assert "tf_token" not in lowered
     assert "googleapis" not in lowered
-    assert "node-version: \"20.19.0\"" in text
-    assert "python-version: \"3.12\"" in text
+    assert 'node-version: "20.19.0"' in text
+    assert 'python-version: "3.12"' in text

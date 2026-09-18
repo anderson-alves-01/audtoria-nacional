@@ -1,6 +1,8 @@
 # Roadmap executável legado
 
-> Este arquivo registra a estrutura anterior à definição do SIRTA. Para implementação corrente, use `ROADMAP-SIRTA-2026.md` e `SPRINT-PLAN-v0.3.md`. Em conflito, os documentos SIRTA têm precedência.
+> **LEGADO.** Este arquivo registra a estrutura anterior à definição do SIRTA.
+> O roadmap vigente é `docs/delivery/ROADMAP-SIRTA-2026.md`, com execução local em `docs/delivery/SPRINT-PLAN-v0.3.md`.
+> Em conflito, os documentos SIRTA têm precedência. Não use este arquivo como plano de implementação.
 
 ## F0 - Fundação (sprints 1-3)
 

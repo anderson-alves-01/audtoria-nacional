@@ -1,0 +1,1 @@
+﻿contracts/openapi/sirta-v1.yaml: OK

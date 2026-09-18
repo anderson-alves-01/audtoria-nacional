@@ -1,5 +1,21 @@
 # Backlog inicial
 
+> Documento legado de épicos da plataforma. O backlog executável vigente é `backlog/SIRTA-v0.3.yaml`. Em conflito, o YAML SIRTA e `SPRINT-PLAN-v0.3.md` têm precedência.
+
+## EP-SIRTA-001 Fundação local (Sprint 0) — feito em 0.3.1
+
+Workspace Python/Angular, Compose, health/ready, CI e seed sintético.
+
+## EP-SIRTA-002 Identidade (Sprint 1) — feito em 0.3.1
+
+OIDC, tenant, território, finalidade, isolamento e auditoria.
+
+## EP-SIRTA-003+ (não autorizados em F0)
+
+Validação tributária, cobrança, pipeline Gold e painéis permanecem bloqueados até nova autorização.
+
+## Épicos legados da plataforma (não vigentes para F0)
+
 ## EP01 Fundação
 
 - Criar workspace Python e Angular.
@@ -50,4 +66,3 @@
 - Pesquisa RAG com citação.
 - Resumo e minuta.
 - Avaliações de exatidão, autorização e vazamento.
-

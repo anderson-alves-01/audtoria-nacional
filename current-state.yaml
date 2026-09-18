@@ -1,11 +1,14 @@
 project: auditoria-nacional
-version: 0.3.0
-status: SIRTA_IMPLEMENTATION_READY
+spec_version: 0.3.0
+implementation_version: 0.3.1
+version: 0.3.1
+status: F0_LOCAL_FOUNDATION_GREEN
 baseline:
   inspired_by: cfq-censo-platform
   architecture: bronze-silver-gold
   deployment_region: southamerica-east1
 current_phase: F0_FOUNDATION
+release_stage: F0_FOUNDATION
 completed:
   - product_scope_defined
   - reference_architecture_defined
@@ -17,17 +20,22 @@ completed:
   - sirta_openapi_contract_defined
   - sirta_v03_sprint_plan_defined
   - municipal_checklists_defined
-pending:
   - executable_monorepo_scaffold
   - local_environment
   - authentication
   - tenant_and_territory
+pending:
   - data_catalog
   - first_iss_pipeline
   - executive_dashboard
   - case_management
+  - municipal_g0_authorization
 gates:
+  f0_technical_local: GO
+  g0_municipal_program: NO-GO
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
   production_deploy: BLOCKED_UNTIL_SECURITY_AND_UAT
-next_action: Run prompts/00-bootstrap-audit.md, then prompts/07-sirta-v03-implementation.md starting with Sprint 0.
+  advance_beyond_f0: NO-GO_UNTIL_NEW_AUTHORIZATION
+evidence: evidence/releases/0.3.1/
+next_action: Stop. F0 local foundation is evidenced. Do not run prompt 01 or Sprints 2-4 without a new authorization. G0 municipal remains a human gate.

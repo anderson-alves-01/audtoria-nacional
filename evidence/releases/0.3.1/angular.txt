@@ -1,0 +1,10 @@
+Angular 18 tests (ChromeHeadless), Node engines >=20.19.0 <21
+
+Command: npm --prefix apps/web test
+Result: TOTAL: 4 SUCCESS (AppComponent x2, HealthPageComponent loading/error)
+
+Command: npm --prefix apps/web run build
+Result: Application bundle generation complete; output apps/web/dist/sirta-web
+
+Command: docker build -f apps/web/Dockerfile -t sirta-web:0.3.1 .
+Result: image sirta-web:0.3.1 (Node 20.19.0-alpine build stage)

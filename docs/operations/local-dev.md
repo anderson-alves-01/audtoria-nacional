@@ -1,6 +1,8 @@
 # Ambiente local SIRTA (implementation 0.3.1)
 
-Somente dados sintéticos. Não conectar a projetos GCP/AWS nem carregar bases municipais.
+Não conectar a projetos GCP/AWS nem carregar bases municipais.
+
+PostgreSQL é publicado em `localhost:55432` para evitar colisão com outro Postgres na 5432.
 
 ## Subir
 

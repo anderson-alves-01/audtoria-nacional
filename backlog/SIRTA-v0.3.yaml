@@ -1,20 +1,117 @@
-version: 0.3.0
+version: 0.3.1
+spec_version: 0.3.0
 epics:
   - id: EP-SIRTA-001
     title: Local executable baseline
-    stories: [SIRTA-001, SIRTA-002, SIRTA-003, SIRTA-004]
+    stories:
+      - id: SIRTA-001
+        title: Git baseline and proprietary license
+        status: done
+        sprint: 0
+        depends_on: []
+        fixtures: none
+        acceptance:
+          - Git initialized only after confirming no parent repository
+          - .gitignore excludes .env, secrets, volumes, node_modules and IDE files
+          - LICENSE is All Rights Reserved
+      - id: SIRTA-002
+        title: FastAPI hexagonal health workspace
+        status: done
+        sprint: 0
+        depends_on: [SIRTA-001]
+        fixtures: none
+        acceptance:
+          - GET /health returns spec 0.3.0 and implementation 0.3.1
+      - id: SIRTA-003
+        title: Local Docker Compose stack
+        status: done
+        sprint: 0
+        depends_on: [SIRTA-002]
+        fixtures: synthetic Keycloak users analyst.alpha validator.alpha admin.alpha analyst.beta
+        acceptance:
+          - compose.yaml defines postgres redis minio keycloak api worker web
+          - no GCP/AWS endpoints
+      - id: SIRTA-004
+        title: Readiness tracing Alembic and CI
+        status: done
+        sprint: 0
+        depends_on: [SIRTA-003]
+        fixtures: none
+        acceptance:
+          - GET /ready returns 503 when the database is unreachable
+          - JSON logs include trace_id
+          - CI lints Python, OpenAPI, secrets, Angular and container builds
   - id: EP-SIRTA-002
     title: Tenant and authorization context
-    stories: [SIRTA-010, SIRTA-011, SIRTA-012, SIRTA-013]
+    stories:
+      - id: SIRTA-010
+        title: Identity persistence
+        status: done
+        sprint: 1
+        depends_on: [SIRTA-004]
+        fixtures: tests/fixtures/synthetic.py tenants alpha and beta
+        acceptance:
+          - Organization Tenant Territory User Role AccessPurpose persist
+      - id: SIRTA-011
+        title: OIDC fail-closed context
+        status: done
+        sprint: 1
+        depends_on: [SIRTA-010]
+        fixtures: tests/fixtures/jwt
+        acceptance:
+          - Missing bearer returns 401 RFC 9457
+          - Missing or expired purpose returns 403
+      - id: SIRTA-012
+        title: RBAC ABAC fiscal isolation
+        status: done
+        sprint: 1
+        depends_on: [SIRTA-011]
+        fixtures: CREDIT_ALPHA CREDIT_BETA
+        acceptance:
+          - tech_admin cannot read tax credits
+          - denied territory returns 403
+          - cross-tenant GET returns 404
+          - protected /v1 routes declare get_access_context
+      - id: SIRTA-013
+        title: Immutable audit and log redaction
+        status: done
+        sprint: 1
+        depends_on: [SIRTA-012]
+        fixtures: synthetic credits
+        acceptance:
+          - Listing credits emits tax_credit.list without amounts
+          - Logs do not contain bearer tokens or CPF patterns
   - id: EP-SIRTA-003
     title: Tax credit validation
-    stories: [SIRTA-020, SIRTA-021, SIRTA-022, SIRTA-023]
+    stories:
+      - id: SIRTA-020
+        title: ValidateCredit command
+        status: blocked
+        sprint: 2
+        depends_on: [SIRTA-013]
+        note: Out of F0 authorization
+      - id: SIRTA-021
+        title: Validation checklist
+        status: blocked
+        sprint: 2
+      - id: SIRTA-022
+        title: Evidence hashes
+        status: blocked
+        sprint: 2
+      - id: SIRTA-023
+        title: Invalid transition tests
+        status: blocked
+        sprint: 2
   - id: EP-SIRTA-004
     title: Controlled administrative collection
     stories: [SIRTA-030, SIRTA-031, SIRTA-032, SIRTA-033]
+    status: blocked
+    note: Out of F0 authorization
   - id: EP-SIRTA-005
     title: Synthetic data pipeline and dashboard
     stories: [SIRTA-040, SIRTA-041, SIRTA-042, SIRTA-043]
+    status: blocked
+    note: Out of F0 authorization
 definition_of_ready:
   - acceptance_criteria_defined
   - dependencies_known
@@ -29,4 +126,3 @@ definition_of_done:
   - documentation_updated
   - evidence_saved
   - rollback_documented
-

@@ -1,53 +1,59 @@
 # Auditoria Nacional - SIRTA Municipal
 
-Plataforma segura de inteligência fiscal, auditoria e recuperação de receitas para municípios, estados, Distrito Federal e órgãos de controle.
+Plataforma segura de inteligência fiscal, auditoria e recuperação de receitas municipais.
 
-Este repositório é o ponto de partida para desenvolvimento ponta a ponta no Cursor. Ele preserva os padrões bem-sucedidos do projeto CFQ - monorepositório, ingestão em camadas, contratos estáveis, jobs separados da API, migrações aditivas, gates e releases auditáveis - acrescentando isolamento institucional, cadeia de custódia, finalidade de acesso, gestão de casos e IA privada.
+**Especificação:** 0.3.0 (`docs/releases/RELEASE-v0.3.0.md`, não reescrita).  
+**Implementação local:** 0.3.1 (`docs/releases/RELEASE-v0.3.1.md`).  
+**Fase:** F0 Fundação. **Roadmap vigente:** `docs/delivery/ROADMAP-SIRTA-2026.md`.  
+`docs/delivery/ROADMAP.md` é legado.
 
-## Resultado esperado
+## Execução local (sintético)
 
-1. Importar dados públicos e restritos com rastreabilidade.
-2. Normalizar e cruzar dados fiscais, econômicos, cadastrais e patrimoniais.
-3. Calcular potencial tributário com memória de cálculo.
-4. Produzir indícios individualizados, nunca acusações automáticas.
-5. Permitir validação humana e abertura de casos.
-6. Acompanhar valor potencial, apurado, constituído, cobrado e recuperado.
-7. Disponibilizar painéis executivos e operacionais por território, tributo e setor.
-
-## Stack de referência
-
-- Python 3.12, FastAPI, Pydantic e SQLAlchemy/Alembic.
-- Angular e TypeScript para o portal.
-- PostgreSQL transacional; BigQuery para analytics; Cloud Storage para arquivos.
-- Cloud Run Services para API e web; Cloud Run Jobs para ingestões.
-- Pub/Sub para eventos; Secret Manager e Cloud KMS.
-- Terraform, Docker, GitHub Actions, OpenTelemetry, Prometheus/Grafana.
-- Keycloak local; Identity Platform ou provedor OIDC homologado em produção.
-
-## Começo rápido para o Cursor
-
-1. Leia `AGENTS.md`.
-2. Leia `current-state.yaml`.
-3. Execute `prompts/00-bootstrap-audit.md` em modo de planejamento.
-4. Execute `prompts/01-master-autonomous-loop.md`.
-5. Implemente uma fase por vez, respeitando os gates em `docs/delivery/ROADMAP.md`.
-
-## Release v0.3.0 - SIRTA Municipal
-
-Esta release acrescenta o produto municipal, domínio do crédito, regra “nenhuma cobrança sem validação”, transferências intergovernamentais, prontidão IBS/CBS, contratos OpenAPI/AsyncAPI, schemas, checklists e plano de implementação em cinco sprints locais.
-
-Depois da auditoria inicial, execute:
-
-```text
-@prompts/07-sirta-v03-implementation.md
+```bash
+cp .env.example .env
+docker compose up -d postgres redis
+alembic upgrade head
+python -m pip install -e ".[dev]"
+python -m pytest tests -q
+uvicorn sirta_api.entrypoints.main:app --host 0.0.0.0 --port 8080
 ```
 
-Consulte `docs/delivery/SPRINT-PLAN-v0.3.md` e `docs/delivery/ROADMAP-SIRTA-2026.md`.
+Portal Angular (Node 20.19.0; engines `>=20.19.0 <21`):
 
-## Skills de engenharia curadas
+```bash
+cd apps/web
+npm ci
+npm test
+npm start
+```
 
-Esta release contém onze skills de domínio, incluindo SIRTA, reconciliação de transferências e prontidão IBS/CBS, além de seis skills curadas da metodologia Superpowers: planejamento, TDD, debugging sistemático, solicitação e recebimento de review e verificação antes da conclusão. A ativação por fase está em `config/skills-policy.yaml` e `docs/delivery/SKILLS-BY-ROADMAP.md`.
+Pilha completa: `docker compose up --build`.
 
-As regras do projeto sempre têm precedência. Brainstorming, worktrees e execução paralela foram deliberadamente excluídos desta release.
+PostgreSQL no host usa a porta **55432** para não colidir com outros servidores locais.
 
-Nenhum agente pode executar operações em nuvem, carregar dados reais, publicar uma versão ou alterar segurança sem autorização explícita.
+## Portas
+
+| Serviço | Porta |
+|---|---|
+| API | 8080 |
+| Web | 4200 |
+| PostgreSQL (host) | 55432 |
+| Redis | 6379 |
+| MinIO | 9000 / 9001 |
+| Keycloak | 8081 |
+
+## Rollback
+
+```bash
+docker compose down -v
+git revert <sha>
+```
+
+## Cursor
+
+1. `AGENTS.md` e `current-state.yaml`
+2. Auditoria: `prompts/00-bootstrap-audit.md`
+3. Implementação F0 concluída nesta árvore. Não usar `prompts/01-master-autonomous-loop.md` até nova autorização além de F0.
+4. Próxima fase só com autorização explícita.
+
+G0 municipal (patrocinador, município piloto, diagnóstico) **não** está concluído.

@@ -1,27 +1,22 @@
-# Conteúdo do kit
+# Conteúdo do kit e da implementação 0.3.1
 
-- `README.md`: visão e início rápido.
+- `README.md`: visão e execução local.
 - `AGENTS.md`: constituição operacional dos agentes.
 - `current-state.yaml`: estado retomável.
-- `.cursor/rules/`: regras automáticas por área.
-- `.cursor/skills/`: onze skills de domínio e seis skills de engenharia curadas.
-- `config/skills-policy.yaml`: parâmetros, precedência, perfis de TDD e ativação F0-F7.
-- `prompts/`: auditoria, loop autônomo, feature, dados, segurança, release e handoff.
-- `docs/product/`: plataforma, regiões e painéis.
-- `docs/architecture/`: arquitetura e ADRs.
-- `docs/data/`: ingestão e qualidade.
-- `docs/security/`: segurança, LGPD e IA privada.
-- `docs/delivery/`: roadmap, backlog, aceite e workflow.
-- `contracts/openapi/`: contrato inicial da API.
-- `apps/`, `pipelines/`, `infra/`, `tests/`: destinos da implementação.
-- `evidence/`: provas de testes e releases.
-- `docs/releases/RELEASE-v0.2.0.md`: notas desta release.
-- `docs/product/SIRTA-PRODUCT.md`: definição do produto municipal.
-- `docs/architecture/SIRTA-DOMAIN.md`: agregados, estados e invariantes.
-- `docs/delivery/ROADMAP-SIRTA-2026.md`: roadmap completo atualizado.
-- `docs/delivery/SPRINT-PLAN-v0.3.md`: execução local em cinco sprints.
-- `contracts/openapi/sirta-v1.yaml`: API inicial do SIRTA.
-- `contracts/schemas/`: contratos de crédito e transferências.
-- `contracts/events/`: eventos de domínio.
-- `checklists/`: diagnóstico, legalidade e homologação.
-- `backlog/SIRTA-v0.3.yaml`: backlog estruturado.
+- `LICENSE`: All Rights Reserved.
+- `.cursor/rules/` e `.cursor/skills/`: governança Cursor.
+- `config/skills-policy.yaml`: política de skills.
+- `prompts/`: auditoria, feature, dados, segurança, release e handoff. Prompt 01 não está autorizado após F0.
+- `docs/delivery/ROADMAP-SIRTA-2026.md`: **roadmap vigente**.
+- `docs/delivery/ROADMAP.md`: legado.
+- `docs/plans/2026-09-18-F0-foundation.md`: plano F0 executado.
+- `docs/releases/RELEASE-v0.3.0.md`: especificação (imutável nesta entrega).
+- `docs/releases/RELEASE-v0.3.1.md`: implementação F0.
+- `contracts/openapi/sirta-v1.yaml`: **única OpenAPI ativa**.
+- `contracts/openapi/api-outline.yaml`: legado/depreciado.
+- `apps/api`, `apps/web`, `apps/workers`: código executável local.
+- `compose.yaml`: PostgreSQL, Redis, Keycloak, MinIO, API, worker, web.
+- `tests/`: unitário, integração, contrato e isolamento.
+- `evidence/releases/0.3.1/`: evidências F0.
+- `backlog/SIRTA-v0.3.yaml`: backlog com critérios e fixtures.
+- `infra/terraform/environments/*`: vazios; não aplicar.
