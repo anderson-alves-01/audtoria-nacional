@@ -3,6 +3,7 @@ import { CalendarPageComponent } from './calendar/calendar-page.component';
 import { CollectionPageComponent } from './collection/collection-page.component';
 import { FunnelPageComponent } from './funnel/funnel-page.component';
 import { HealthPageComponent } from './health/health-page.component';
+import { SourcesPageComponent } from './sources/sources-page.component';
 import { ValidationPageComponent } from './validation/validation-page.component';
 
 export const routes: Routes = [
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: 'cobranca', component: CollectionPageComponent },
   { path: 'funil', component: FunnelPageComponent },
   { path: 'calendario', component: CalendarPageComponent },
+  { path: 'fontes', component: SourcesPageComponent },
   { path: '**', redirectTo: '' },
 ];

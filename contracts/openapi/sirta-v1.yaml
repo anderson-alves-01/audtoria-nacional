@@ -255,6 +255,31 @@ paths:
         '200': {description: Non-binding catalog; operational=false}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/data-sources:
+    get:
+      operationId: listDataSources
+      description: Synthetic master source registry. Public sources never create tax credits.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Catalog items with ingestAllowed and createsTaxCredit=false}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/data-sources/{sourceId}/dry-run:
+    post:
+      operationId: dryRunDataSource
+      description: Synthetic dry-run. Never downloads a full base or creates a tax credit.
+      parameters:
+        - name: sourceId
+          in: path
+          required: true
+          schema: {type: string}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Dry-run accepted for synthetic fixtures}
+        '403': {$ref: '#/components/responses/Forbidden'}
   /v1/indicators/sirta-recovery-index:
     get:
       operationId: getSirtaRecoveryIndex

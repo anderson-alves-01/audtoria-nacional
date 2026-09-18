@@ -1,37 +1,24 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.8
+implementation_version: 0.3.9
 roadmap_version: "1.2"
-version: 0.3.8
-status: ALEMBIC_HYGIENE_RESOLVED
+version: 0.3.9
+status: F3_SOURCE_CATALOG_LOCAL
 current_phase: F3_SOURCE_CATALOG_SYNTHETIC
-release_stage: ALEMBIC_HYGIENE
-baseline:
-  inspired_by: cfq-censo-platform
-  architecture: bronze-silver-gold
-  deployment_region: southamerica-east1
+release_stage: F3_SOURCE_CATALOG_LOCAL
 completed:
-  - tax_credit_validation
-  - administrative_collection
-  - first_iss_pipeline
-  - installment_and_active_debt
-  - transfer_occurrences
-  - ibs_cbs_calendar_local
   - alembic_hygiene
-pending:
   - source_master_registry_synthetic
+pending:
+  - program_gates_api
+  - terraform_validate_only
   - municipal_g0_authorization
-  - diagnosis_g1
-  - specialist_homologation_g4
-  - official_tesouro_connectors_g7
-  - official_ibs_cbs_homologation_g8
-  - pilot_g9
-  - production_g10
 gates:
   g6_finance_local: GO
   g7_transfers_local: GO
   g8_calendar_local: GO
   alembic_hygiene: GO
+  f3_source_catalog_local: GO_PENDING_CI
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -42,6 +29,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.8/
-next_action: After CI green on feat/roadmap-technical-completion, implement F3.0 synthetic source master registry.
+evidence: evidence/releases/0.3.9/
+next_action: Wait CI then implement program-gates API and Terraform validate-only.
 human_gates: docs/delivery/HUMAN-GATES.md

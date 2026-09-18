@@ -1,0 +1,21 @@
+<section aria-labelledby="sources-title">
+  <h1 id="sources-title">Registro mestre de fontes (sintético)</h1>
+  <p>Fontes públicas não constituem crédito nem autorizam cobrança. Ingestão real permanece bloqueada.</p>
+  @if (state === 'loading') {
+    <p role="status">Carregando catálogo…</p>
+  }
+  @if (state === 'ok') {
+    <ul>
+      @for (item of items; track item.sourceId) {
+        <li [class.estimate]="!item.ingestAllowed" [class.assessed]="item.ingestAllowed">
+          <strong>{{ item.sourceId }}</strong> — {{ item.name }}
+          <span>{{ item.sourceRole }} · {{ item.accessClassification }} · {{ item.status }}</span>
+          <span>Ingestão {{ item.ingestAllowed ? 'sintética permitida' : 'bloqueada' }}. Cria crédito: {{ item.createsTaxCredit ? 'sim' : 'não' }}.</span>
+        </li>
+      }
+    </ul>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>
