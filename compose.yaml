@@ -80,6 +80,18 @@ services:
       retries: 30
       start_period: 40s
 
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://sirta:sirta_local_only@postgres:5432/sirta
+    command: ["sh", "-c", "alembic upgrade head && python -m sirta_api.adapters.db.seed"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
   api:
     build:
       context: .
@@ -104,6 +116,8 @@ services:
         condition: service_healthy
       keycloak:
         condition: service_started
+      migrate:
+        condition: service_completed_successfully
 
   worker:
     build:

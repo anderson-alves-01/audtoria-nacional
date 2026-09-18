@@ -1,4 +1,4 @@
-# Conteúdo do kit e da implementação 0.3.7
+# Conteúdo do kit e da implementação 0.3.8
 
 - `README.md`: visão e execução local.
 - `AGENTS.md`: constituição operacional dos agentes.
@@ -12,7 +12,8 @@
 - `docs/plans/2026-09-18-F0-foundation.md`: plano F0 executado.
 - `docs/plans/2026-09-18-g8-ibs-cbs-calendar.md`: plano G8 local.
 - `docs/releases/RELEASE-v0.3.0.md`: especificação (imutável nesta entrega).
-- `docs/releases/RELEASE-v0.3.7.md`: implementação G8 calendário sintético.
+- `docs/releases/RELEASE-v0.3.8.md`: higiene Alembic e seed idempotente.
+- `evidence/releases/0.3.8/`: evidências da correção de migration.
 - `docs/releases/RELEASE-v0.3.1.md`: implementação F0.
 - `docs/releases/RELEASE-v0.3.2.md`: implementação Sprint 2.
 - `contracts/openapi/sirta-v1.yaml`: **única OpenAPI ativa**.

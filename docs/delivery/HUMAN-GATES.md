@@ -3,7 +3,7 @@
 Este arquivo registra o que a implementação local **não** pode avançar sem autorização institucional. Não altera a especificação 0.3.0.
 
 Data: 2026-09-18  
-Implementação: 0.3.7 (`G8_IBS_CBS_LOCAL`)  
+Implementação: 0.3.8 (`ALEMBIC_HYGIENE`)  
 CI G8: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367451209
 
 ## Concluído localmente (sintético)
@@ -17,6 +17,7 @@ CI G8: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367
 | G6 financeiro | 0.3.5 | current-state | Pagamento só após conciliação |
 | G7 transferências | 0.3.6 | CI `35366037839` | Ocorrência nunca cria `TaxCredit` |
 | G8 calendário IBS/CBS | 0.3.7 | `evidence/releases/0.3.7/` | Catálogo `NON_BINDING`, não operacional |
+| Higiene Alembic | 0.3.8 | `evidence/releases/0.3.8/` | Schema separado do seed; caminhos `base/0004 -> head` |
 
 ## Bloqueado até decisão humana
 
@@ -40,4 +41,4 @@ CI G8: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367
 
 ## Próxima ação automática
 
-Nenhuma. O trabalho executável local do recorte 2026 (G3/G5–G8 sintético) está encerrado. Qualquer avanço exige um dos gates da tabela acima.
+Após CI verde de `0.3.8`, o Registro Mestre de Fontes sintético (F3.0). Gates da tabela acima continuam bloqueados.

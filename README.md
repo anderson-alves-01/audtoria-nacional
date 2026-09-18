@@ -3,7 +3,7 @@
 Plataforma segura de inteligência fiscal, auditoria e recuperação de receitas municipais.
 
 **Especificação:** 0.3.0 (`docs/releases/RELEASE-v0.3.0.md`, não reescrita).  
-**Implementação local:** 0.3.7 (`docs/releases/RELEASE-v0.3.7.md`).  
+**Implementação local:** 0.3.8 (`docs/releases/RELEASE-v0.3.8.md`).  
 **Fase:** G8 calendário IBS/CBS sintético (não vinculante). **Roadmap vigente:** `docs/delivery/ROADMAP-SIRTA-2026.md`.  
 `docs/delivery/ROADMAP.md` é legado.
 

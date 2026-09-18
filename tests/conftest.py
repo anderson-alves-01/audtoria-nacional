@@ -3,15 +3,30 @@ from collections.abc import Generator
 from pathlib import Path
 
 import pytest
+from alembic import command
+from alembic.config import Config
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
-from sirta_api.adapters.db.models import Base
 from sirta_api.adapters.db.seed import seed_synthetic
 from sirta_api.adapters.db.session import get_session
 from sirta_api.config import get_settings
 from sirta_api.entrypoints.main import create_app
+
+
+def _alembic_upgrade(database_url: str) -> None:
+    previous = os.environ.get("DATABASE_URL")
+    os.environ["DATABASE_URL"] = database_url
+    config = Config("alembic.ini")
+    config.set_main_option("sqlalchemy.url", database_url)
+    try:
+        command.upgrade(config, "head")
+    finally:
+        if previous is None:
+            os.environ.pop("DATABASE_URL", None)
+        else:
+            os.environ["DATABASE_URL"] = previous
 
 
 @pytest.fixture(scope="session")
@@ -34,8 +49,7 @@ def engine(database_url: str):
             "Start it with: docker compose up -d postgres. "
             f"Original error: {exc}"
         )
-    Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
+    _alembic_upgrade(database_url)
     yield engine
     engine.dispose()
 
