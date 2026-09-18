@@ -25,7 +25,8 @@ gates:
   g8_calendar_local: GO
   alembic_hygiene: GO
   f3_source_catalog_local: GO
-  program_gates_local: GO_PENDING_CI
+  program_gates_local: GO
+  terraform_docs_no_apply: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -37,5 +38,5 @@ gates:
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
 evidence: evidence/releases/0.3.10/
-next_action: Wait CI. Remaining product work is human-gated.
+next_action: Stop. Remaining roadmap items require a human gate. Report docs/delivery/TECHNICAL-COMPLETION-REPORT.md
 human_gates: docs/delivery/HUMAN-GATES.md
