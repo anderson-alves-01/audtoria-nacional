@@ -9,8 +9,28 @@ paths:
   /health:
     get:
       operationId: health
+      security: []
       responses:
-        '200': {description: Healthy}
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/HealthStatus'}
+  /ready:
+    get:
+      operationId: ready
+      security: []
+      responses:
+        '200':
+          description: Ready
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/HealthStatus'}
+        '503':
+          description: Database unavailable
+          content:
+            application/problem+json:
+              schema: {$ref: '#/components/schemas/Problem'}
   /v1/tax-credits:
     get:
       operationId: listTaxCredits
@@ -112,6 +132,14 @@ components:
       required: true
       schema: {type: string, minLength: 16, maxLength: 128}
   schemas:
+    HealthStatus:
+      type: object
+      required: [status, specVersion, implementationVersion, releaseStage]
+      properties:
+        status: {type: string}
+        specVersion: {type: string}
+        implementationVersion: {type: string}
+        releaseStage: {type: string}
     CreateTaxCredit:
       type: object
       required: [taxpayerId, taxType, competence, sourceId, principalAmount]

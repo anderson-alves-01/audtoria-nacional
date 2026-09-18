@@ -12,3 +12,4 @@ def test_health_returns_implementation_metadata() -> None:
     assert body["specVersion"] == "0.3.0"
     assert body["implementationVersion"] == "0.3.1"
     assert body["releaseStage"] == "F0_FOUNDATION"
+    assert response.headers.get("x-trace-id")
