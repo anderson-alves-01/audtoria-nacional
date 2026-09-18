@@ -1,7 +1,11 @@
 openapi: 3.1.0
 info:
-  title: Auditoria Nacional API
+  title: Auditoria Nacional API (legacy, deprecated)
   version: 0.1.0
+  description: >
+    DEPRECATED. This outline is retained only for historical comparison.
+    The active OpenAPI source of truth is contracts/openapi/sirta-v1.yaml.
+    Do not implement or lint this file as the product contract.
 paths:
   /health:
     get:

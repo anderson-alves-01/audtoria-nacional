@@ -104,7 +104,7 @@ paths:
         - {name: from, in: query, required: true, schema: {type: string, format: date}}
         - {name: to, in: query, required: true, schema: {type: string, format: date}}
       responses:
-        '200': {description: ISR with numerator, denominator, exclusions and policy version}
+        '200': {description: "ISR with numerator, denominator, exclusions and policy version"}
   /v1/audit-events:
     get:
       operationId: listAuditEvents
