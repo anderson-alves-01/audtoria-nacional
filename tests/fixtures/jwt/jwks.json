@@ -1,0 +1,15 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "key_ops": [
+        "verify"
+      ],
+      "n": "3xgBoL_7DsRA4eTwEzvLg_eFRpI9OYOWpHg2V1Oi31ynKAxL7nCeBGOzj7z2CHon_K751UsyvtVQM51F8XmBJhWE7fOowtI974C7mSnekSO1q9ujALXYjuNfG2k8A1a9hGFV-_4GUzt9gCpQSYnA7RyB8x2yH_VqEvouSIuabNa_sK-wmzY_qGjoGuafy3MUJN3YprNUXpgYYUgJSigFZlV_mSEYM4CsVgwoWqEaSDHdx1kyyM3nMnW5_Z-g1bYftmnLJOgNtDG_bA9_MMby5bvzRoIwByyj8GCLZXK3iE990Qk27WWMKGJ_px9I8daISIM7eH6gzvPFKR3TkuiFYw",
+      "e": "AQAB",
+      "kid": "sirta-test",
+      "use": "sig",
+      "alg": "RS256"
+    }
+  ]
+}

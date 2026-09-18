@@ -15,7 +15,7 @@ docker compose up --build
 |---|---|---|
 | API | 8080 | FastAPI |
 | Web | 4200 | Angular (após S0.5) |
-| PostgreSQL | 5432 | Transacional |
+| PostgreSQL | 55432 | Transacional (host; container 5432) |
 | Redis | 6379 | Cache sem PII persistente |
 | MinIO S3 | 9000 | Storage local |
 | MinIO console | 9001 | Console local |
