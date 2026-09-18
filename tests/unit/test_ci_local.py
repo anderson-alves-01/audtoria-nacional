@@ -11,3 +11,8 @@ def test_ci_has_no_cloud_credentials() -> None:
     assert 'node-version: "20.19.0"' in text
     assert 'python-version: "3.12"' in text
     assert text.index("- name: Migrate") < text.index("- name: Tests")
+
+
+def test_alembic_env_honors_database_url() -> None:
+    text = Path("alembic/env.py").read_text(encoding="utf-8")
+    assert 'os.environ.get("DATABASE_URL")' in text
