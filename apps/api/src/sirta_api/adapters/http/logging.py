@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import uuid
 
 import structlog
@@ -17,6 +18,25 @@ REDACTED_HEADER_NAMES = frozenset(
         "x-api-key",
     }
 )
+TOKEN_RE = re.compile(r"(?i)bearer\s+\S+")
+CPF_RE = re.compile(r"\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b")
+CNPJ_RE = re.compile(r"\b\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}\b")
+
+
+def _redact(value: str) -> str:
+    value = TOKEN_RE.sub("Bearer [REDACTED]", value)
+    value = CPF_RE.sub("[REDACTED]", value)
+    value = CNPJ_RE.sub("[REDACTED]", value)
+    return value
+
+
+def redact_log_processor(_logger, _method, event_dict: dict) -> dict:
+    for key, value in list(event_dict.items()):
+        if isinstance(value, str):
+            event_dict[key] = _redact(value)
+        elif key.lower() in {"authorization", "token", "access_token", "password"}:
+            event_dict[key] = "[REDACTED]"
+    return event_dict
 
 
 def configure_logging() -> None:
@@ -25,6 +45,7 @@ def configure_logging() -> None:
             structlog.contextvars.merge_contextvars,
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="iso", utc=True),
+            redact_log_processor,
             structlog.processors.JSONRenderer(),
         ],
         wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),

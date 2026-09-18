@@ -17,8 +17,9 @@
     "enforceabilityStatus": {"type": "string", "enum": ["ENFORCEABLE", "SUSPENDED", "EXTINGUISHED", "BLOCKED", "LEGAL_REVIEW"]},
     "collectionStatus": {"type": "string", "enum": ["NOT_STARTED", "ADMINISTRATIVE", "ACTIVE_DEBT", "LEGAL_COUNSEL", "JUDICIAL", "CLOSED"]},
     "paymentStatus": {"type": "string", "enum": ["OPEN", "PARTIAL", "PAID", "COMPENSATED", "INSTALLMENT_CURRENT", "INSTALLMENT_BREACHED"]},
-    "version": {"type": "integer", "minimum": 0}
+    "version": {"type": "integer", "minimum": 0},
+    "calculationMemory": {"type": "string", "minLength": 10},
+    "evidenceIds": {"type": "array", "minItems": 1, "items": {"type": "string", "format": "uuid"}}
   },
   "additionalProperties": false
 }
-
