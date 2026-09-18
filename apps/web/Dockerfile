@@ -1,0 +1,11 @@
+FROM node:20.19.0-alpine AS build
+WORKDIR /web
+COPY apps/web/package.json apps/web/package-lock.json* ./
+RUN npm install --omit=dev=false
+COPY apps/web/ ./
+RUN npm run build
+
+FROM nginx:1.27-alpine
+COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /web/dist/sirta-web/browser /usr/share/nginx/html
+EXPOSE 80
