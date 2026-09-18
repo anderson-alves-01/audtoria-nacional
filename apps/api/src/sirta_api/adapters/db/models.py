@@ -168,3 +168,51 @@ class AuditEvent(Base):
     outcome: Mapped[str] = mapped_column(String(32), nullable=False)
     resource_type: Mapped[str | None] = mapped_column(String(64), nullable=True)
     resource_id: Mapped[UUID | None] = mapped_column(PGUUID(as_uuid=True), nullable=True)
+
+
+class DataLoadRun(Base):
+    __tablename__ = "data_load_runs"
+    __table_args__ = (UniqueConstraint("tenant_id", "checksum", "layout_version"),)
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    layout_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    competence: Mapped[str] = mapped_column(String(7), nullable=False)
+    checksum: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    received_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    silver_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    quarantined_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    published: Mapped[bool] = mapped_column(nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class DataLoadRow(Base):
+    __tablename__ = "data_load_rows"
+    __table_args__ = (UniqueConstraint("run_id", "row_id"),)
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    run_id: Mapped[UUID] = mapped_column(ForeignKey("data_load_runs.id"), nullable=False)
+    row_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    layer: Mapped[str] = mapped_column(String(16), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    reason: Mapped[str | None] = mapped_column(String(256), nullable=True)
+
+
+class GoldFunnel(Base):
+    __tablename__ = "gold_funnels"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    run_id: Mapped[UUID] = mapped_column(ForeignKey("data_load_runs.id"), nullable=False)
+    published: Mapped[bool] = mapped_column(nullable=False, default=True)
+    identified_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    validated_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    in_collection_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    silver_row_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    methodology_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

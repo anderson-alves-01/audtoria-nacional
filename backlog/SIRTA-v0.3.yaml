@@ -162,9 +162,24 @@ epics:
           - Angular page shows blocked-credit conflict
   - id: EP-SIRTA-005
     title: Synthetic data pipeline and dashboard
-    stories: [SIRTA-040, SIRTA-041, SIRTA-042, SIRTA-043]
-    status: blocked
-    note: Out of F0 authorization
+    status: done
+    stories:
+      - id: SIRTA-040
+        title: Synthetic ISS load manifest
+        status: done
+        sprint: 4
+      - id: SIRTA-041
+        title: Quarantine invalid rows
+        status: done
+        sprint: 4
+      - id: SIRTA-042
+        title: Idempotent replay and logical rollback
+        status: done
+        sprint: 4
+      - id: SIRTA-043
+        title: Credit funnel Gold without regional R$
+        status: done
+        sprint: 4
 definition_of_ready:
   - acceptance_criteria_defined
   - dependencies_known

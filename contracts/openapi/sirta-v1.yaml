@@ -171,10 +171,34 @@ paths:
             schema: {$ref: '#/components/schemas/TransferOccurrenceInput'}
       responses:
         '201': {description: Occurrence created; no tax credit is generated}
+  /v1/data-loads/synthetic-iss:
+    post:
+      operationId: runSyntheticIssLoad
+      description: Local synthetic ISS Bronze/Silver/Gold load. Never creates a tax credit.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - name: dry_run
+          in: query
+          schema: {type: boolean, default: false}
+      responses:
+        '200': {description: Load accepted or replayed}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/indicators/credit-funnel:
+    get:
+      operationId: getCreditFunnel
+      description: Published synthetic counts. Regional R$ hypotheses are not included.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Funnel counts with methodology version}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
   /v1/indicators/sirta-recovery-index:
     get:
       operationId: getSirtaRecoveryIndex
-      description: Not implemented in F0. Regional R$ hypotheses are not KPIs.
+      description: Not implemented. Regional R$ hypotheses are not KPIs.
       parameters:
         - {name: from, in: query, required: true, schema: {type: string, format: date}}
         - {name: to, in: query, required: true, schema: {type: string, format: date}}

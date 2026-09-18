@@ -1,0 +1,26 @@
+{
+  "sourceId": "synthetic-iss-ledger",
+  "layoutVersion": "iss-declaration-v1",
+  "competence": "2026-01",
+  "purpose": "synthetic-audit",
+  "rows": [
+    {
+      "rowId": "iss-alpha-1",
+      "activity": "software",
+      "declaredAmount": 1000.00,
+      "competence": "2026-01"
+    },
+    {
+      "rowId": "iss-alpha-2",
+      "activity": "engineering",
+      "declaredAmount": 250.50,
+      "competence": "2026-01"
+    },
+    {
+      "rowId": "iss-alpha-bad",
+      "activity": "unknown",
+      "declaredAmount": -15,
+      "competence": ""
+    }
+  ]
+}

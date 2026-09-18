@@ -1,0 +1,21 @@
+<section aria-labelledby="funnel-title">
+  <h1 id="funnel-title">Funil sintético de créditos</h1>
+  <p>Valores regionais em reais permanecem hipóteses e não entram neste painel.</p>
+  @if (state === 'loading') {
+    <p role="status">Carregando Gold publicado…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status">Nenhum Gold publicado. Execute a carga sintética local.</p>
+  }
+  @if (state === 'ok') {
+    <ul>
+      <li class="finding">Identificados: {{ identified }}</li>
+      <li class="assessed">Validados: {{ validated }}</li>
+      <li class="collection">Em cobrança: {{ inCollection }}</li>
+    </ul>
+    <p>Metodologia {{ methodology }}. {{ note }}</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

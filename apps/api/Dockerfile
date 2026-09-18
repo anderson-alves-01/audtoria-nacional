@@ -7,6 +7,7 @@ ENV PYTHONUNBUFFERED=1
 COPY pyproject.toml README.md LICENSE alembic.ini ./
 COPY alembic ./alembic
 COPY apps/api/src ./apps/api/src
+COPY pipelines ./pipelines
 
 RUN pip install --no-cache-dir .
 

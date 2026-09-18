@@ -10,6 +10,6 @@ def test_health_returns_implementation_metadata() -> None:
     body = response.json()
     assert body["status"] == "ok"
     assert body["specVersion"] == "0.3.0"
-    assert body["implementationVersion"] == "0.3.3"
-    assert body["releaseStage"] == "S3_COLLECTION"
+    assert body["implementationVersion"] == "0.3.4"
+    assert body["releaseStage"] == "S4_SYNTHETIC_DATA"
     assert response.headers.get("x-trace-id")

@@ -1,14 +1,14 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.3
-version: 0.3.3
-status: S3_COLLECTION_GREEN_LOCAL
+implementation_version: 0.3.4
+version: 0.3.4
+status: S4_SYNTHETIC_DATA_LOCAL
 baseline:
   inspired_by: cfq-censo-platform
   architecture: bronze-silver-gold
   deployment_region: southamerica-east1
-current_phase: S3_COLLECTION
-release_stage: S3_COLLECTION
+current_phase: S4_SYNTHETIC_DATA
+release_stage: S4_SYNTHETIC_DATA
 completed:
   - product_scope_defined
   - reference_architecture_defined
@@ -26,21 +26,24 @@ completed:
   - tenant_and_territory
   - tax_credit_validation
   - administrative_collection
-pending:
-  - data_catalog
   - first_iss_pipeline
   - executive_dashboard
+pending:
+  - data_catalog
   - case_management
   - municipal_g0_authorization
+  - installment_and_active_debt
+  - transfer_occurrences
+  - ibs_cbs_calendar
 gates:
   f0_technical_local: GO
   s2_credit_validation: GO
-  s3_collection_local: GO_PENDING_CI
-  independent_security_review: BLOCKED_UNTIL_HUMAN_REVIEW
+  s3_collection_local: GO
+  s4_synthetic_data_local: GO_PENDING_CI
   g0_municipal_program: NO-GO
+  g4_iss_specialist_homologation: NO-GO
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
   production_deploy: BLOCKED_UNTIL_SECURITY_AND_UAT
-  sprint_4_data_panel: NO-GO_UNTIL_S3_CI
-evidence: evidence/releases/0.3.3/
-next_action: Wait for GitHub CI on 0.3.3. Do not start Sprint 4 until that pipeline is green. G0 remains a human gate.
+evidence: evidence/releases/0.3.4/
+next_action: Wait for GitHub CI on 0.3.4 before G6. G0/G4 specialist/cloud remain blocked.
