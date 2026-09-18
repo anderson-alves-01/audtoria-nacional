@@ -3,9 +3,9 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.1
-    implements F0 foundation only. ValidateCredit, collection, ISR and
-    transfer writes are specified for later sprints and are not served in F0.
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.2
+    implements Sprint 2 credit validation on the 0.3.0 specification.
+    Collection, ISR and transfer writes remain specified and not served.
     Sensitive operations require OIDC plus tenant, territory and purpose context.
 servers:
   - url: http://localhost:8080
@@ -91,18 +91,30 @@ paths:
   /v1/tax-credits/{creditId}/validations:
     post:
       operationId: validateTaxCredit
-      description: Not implemented in F0. Specified for Sprint 2.
+      description: >
+        Validator records APPROVE, REJECT or REQUEST_INFORMATION. Invalid
+        transitions return 409 and leave the credit unchanged. Collection is
+        not started by this operation.
       parameters:
         - {$ref: '#/components/parameters/CreditId'}
         - {$ref: '#/components/parameters/IdempotencyKey'}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
       requestBody:
         required: true
         content:
           application/json:
             schema: {$ref: '#/components/schemas/ValidationDecision'}
       responses:
-        '200': {description: Validation recorded}
-        '409': {description: Invalid or concurrent transition}
+        '200':
+          description: Validation recorded
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/ValidationOutcome'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '409': {$ref: '#/components/responses/Conflict'}
         '422': {$ref: '#/components/responses/ValidationProblem'}
   /v1/tax-credits/{creditId}/collection-cases:
     post:
@@ -283,12 +295,29 @@ components:
         size: {type: integer}
     ValidationDecision:
       type: object
-      required: [decision, checklistVersion, evidenceIds, rationale]
+      required: [decision, checklistVersion, evidenceIds, rationale, checklistItems]
       properties:
         decision: {type: string, enum: [APPROVE, REJECT, REQUEST_INFORMATION]}
-        checklistVersion: {type: string}
+        checklistVersion: {type: string, example: credit-legality-v1}
         evidenceIds: {type: array, minItems: 1, items: {type: string, format: uuid}}
         rationale: {type: string, minLength: 10}
+        checklistItems:
+          type: array
+          items: {$ref: '#/components/schemas/ChecklistItem'}
+    ChecklistItem:
+      type: object
+      required: [code, satisfied]
+      properties:
+        code: {type: string}
+        satisfied: {type: boolean}
+    ValidationOutcome:
+      allOf:
+        - {$ref: '#/components/schemas/TaxCredit'}
+        - type: object
+          required: [validationId, decision]
+          properties:
+            validationId: {type: string, format: uuid}
+            decision: {type: string, enum: [APPROVE, REJECT, REQUEST_INFORMATION]}
     TransferOccurrenceInput:
       type: object
       required: [transferType, competence, officialSource, receivedAmount]
@@ -320,6 +349,11 @@ components:
           schema: {$ref: '#/components/schemas/Problem'}
     NotFound:
       description: Resource not found or not visible in the current context
+      content:
+        application/problem+json:
+          schema: {$ref: '#/components/schemas/Problem'}
+    Conflict:
+      description: Invalid or concurrent credit transition
       content:
         application/problem+json:
           schema: {$ref: '#/components/schemas/Problem'}

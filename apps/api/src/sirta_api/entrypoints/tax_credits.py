@@ -1,7 +1,7 @@
 from decimal import Decimal
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Header, Query
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -10,7 +10,9 @@ from sirta_api.adapters.db.models import TaxCredit, TaxCreditEvidence
 from sirta_api.adapters.db.session import get_session
 from sirta_api.adapters.http.deps import get_access_context
 from sirta_api.application.audit import record_audit
+from sirta_api.application.validate_credit import execute_validate_credit
 from sirta_api.domain.authorization import AccessContext
+from sirta_api.domain.credit import Decision
 from sirta_api.domain.errors import NotVisibleError, ValidationFailedError
 
 router = APIRouter()
@@ -53,6 +55,19 @@ def _to_response(credit: TaxCredit, evidence_ids: list[UUID]) -> dict:
         "evidenceIds": [str(item) for item in evidence_ids],
         "version": credit.version,
     }
+
+
+class ChecklistItemIn(BaseModel):
+    code: str
+    satisfied: bool
+
+
+class ValidationDecision(BaseModel):
+    decision: Decision
+    checklistVersion: str
+    evidenceIds: list[UUID] = Field(min_length=1)
+    rationale: str = Field(min_length=10)
+    checklistItems: list[ChecklistItemIn] = Field(default_factory=list)
 
 
 @router.get("/v1/tax-credits")
@@ -163,3 +178,20 @@ def get_tax_credit(
         resource_id=credit.id,
     )
     return _to_response(credit, evidence_ids)
+
+
+@router.post("/v1/tax-credits/{credit_id}/validations")
+def validate_tax_credit(
+    credit_id: UUID,
+    payload: ValidationDecision,
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
+) -> dict:
+    return execute_validate_credit(
+        session,
+        context=context,
+        credit_id=credit_id,
+        payload=payload.model_dump(mode="json"),
+        idempotency_key=idempotency_key,
+    )

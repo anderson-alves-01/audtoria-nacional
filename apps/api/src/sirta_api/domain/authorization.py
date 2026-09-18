@@ -33,6 +33,10 @@ class AccessContext:
     def ensure_fiscal_write(self) -> None:
         self.ensure_fiscal_read()
 
+    def ensure_can_validate(self) -> None:
+        if self.role != Role.VALIDATOR:
+            raise ForbiddenError("Only a validator role may record a credit validation")
+
     def ensure_same_tenant(self, resource_tenant_id: UUID) -> None:
         if resource_tenant_id != self.tenant_id:
             raise NotVisibleError()

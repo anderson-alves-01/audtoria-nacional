@@ -122,11 +122,9 @@ def test_beta_analyst_cannot_list_alpha_credits(api_client) -> None:
     assert all(item["tenantId"] == str(TENANT_BETA) for item in response.json()["items"])
 
 
-def test_validation_and_collection_are_not_implemented(api_client) -> None:
+def test_collection_is_not_implemented(api_client) -> None:
     headers = _analyst_headers()
     credit_list = api_client.get("/v1/tax-credits", headers=headers)
     credit_id = credit_list.json()["items"][0]["id"]
-    validation = api_client.post(f"/v1/tax-credits/{credit_id}/validations", headers=headers)
     collection = api_client.post(f"/v1/tax-credits/{credit_id}/collection-cases", headers=headers)
-    assert validation.status_code == 404
     assert collection.status_code == 404

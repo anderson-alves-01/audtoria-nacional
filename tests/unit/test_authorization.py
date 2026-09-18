@@ -65,3 +65,12 @@ def test_cross_tenant_resource_is_not_visible() -> None:
     except NotVisibleError:
         return
     raise AssertionError("expected NotVisibleError")
+
+
+def test_only_validator_may_validate() -> None:
+    try:
+        _context(Role.ANALYST).ensure_can_validate()
+    except ForbiddenError as exc:
+        assert "validator" in exc.detail.lower()
+        return
+    raise AssertionError("expected ForbiddenError")

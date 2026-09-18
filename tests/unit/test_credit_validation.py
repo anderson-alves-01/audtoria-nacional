@@ -19,7 +19,9 @@ VALIDATOR = uuid4()
 SHA = "a" * 64
 
 
-def _credit(status: ValidationStatus = ValidationStatus.IDENTIFIED, version: int = 1) -> CreditSnapshot:
+def _credit(
+    status: ValidationStatus = ValidationStatus.IDENTIFIED, version: int = 1
+) -> CreditSnapshot:
     return CreditSnapshot(
         credit_id=CREDIT_ID,
         created_by=CREATOR,
@@ -31,17 +33,22 @@ def _credit(status: ValidationStatus = ValidationStatus.IDENTIFIED, version: int
 def _items(complete: bool = True) -> list:
     from sirta_api.domain.checklist import required_item_codes
 
-    return [
-        {"code": code, "satisfied": complete}
-        for code in required_item_codes()
-    ]
+    return [{"code": code, "satisfied": complete} for code in required_item_codes()]
 
 
 def _evidence() -> list[EvidenceRef]:
     return [EvidenceRef(evidence_id=uuid4(), sha256=SHA)]
 
 
-def _decide(*, role=Role.VALIDATOR, actor=VALIDATOR, decision=Decision.APPROVE, status=ValidationStatus.IDENTIFIED, items=None, evidence=None):
+def _decide(
+    *,
+    role=Role.VALIDATOR,
+    actor=VALIDATOR,
+    decision=Decision.APPROVE,
+    status=ValidationStatus.IDENTIFIED,
+    items=None,
+    evidence=None,
+):
     return decide_validation(
         credit=_credit(status),
         actor_id=actor,
