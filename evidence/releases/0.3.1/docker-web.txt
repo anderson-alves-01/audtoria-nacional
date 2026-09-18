@@ -1,0 +1,9 @@
+Docker image sirta-web:0.3.1 built from apps/web/Dockerfile (Node 20.19.0-alpine).
+
+Command: docker build -f apps/web/Dockerfile -t sirta-web:0.3.1 .
+Result: exit 0; tagged docker.io/library/sirta-web:0.3.1
+
+Image inspect (local only, no registry push):
+sirta-web:0.3.1 a08ac32cb9e6 2026-09-18 12:10:04 -0300
+
+No cloud registry, no paid resource, no real fiscal data.
