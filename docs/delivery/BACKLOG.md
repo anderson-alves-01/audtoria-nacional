@@ -10,9 +10,13 @@ Workspace Python/Angular, Compose, health/ready, CI e seed sintético.
 
 OIDC, tenant, território, finalidade, isolamento e auditoria.
 
-## EP-SIRTA-003+ (não autorizados em F0)
+## EP-SIRTA-003 Validação (Sprint 2) — feito em 0.3.2
 
-Validação tributária, cobrança, pipeline Gold e painéis permanecem bloqueados até nova autorização.
+ValidateCredit, checklist `credit-legality-v1`, hashes de evidência e testes de transição inválida.
+
+## EP-SIRTA-004+ (não autorizados)
+
+Cobrança, pipeline Gold e painéis permanecem bloqueados até nova autorização.
 
 ## Épicos legados da plataforma (não vigentes para F0)
 

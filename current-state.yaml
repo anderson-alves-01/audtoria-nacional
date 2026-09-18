@@ -1,14 +1,14 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.1
-version: 0.3.1
-status: F0_LOCAL_FOUNDATION_GREEN
+implementation_version: 0.3.2
+version: 0.3.2
+status: S2_CREDIT_VALIDATION_GREEN
 baseline:
   inspired_by: cfq-censo-platform
   architecture: bronze-silver-gold
   deployment_region: southamerica-east1
-current_phase: F0_FOUNDATION
-release_stage: F0_FOUNDATION
+current_phase: S2_CREDIT_VALIDATION
+release_stage: S2_CREDIT_VALIDATION
 completed:
   - product_scope_defined
   - reference_architecture_defined
@@ -24,18 +24,22 @@ completed:
   - local_environment
   - authentication
   - tenant_and_territory
+  - tax_credit_validation
 pending:
   - data_catalog
   - first_iss_pipeline
   - executive_dashboard
   - case_management
   - municipal_g0_authorization
+  - administrative_collection
 gates:
   f0_technical_local: GO
+  s2_credit_validation: GO
+  independent_security_review: BLOCKED_UNTIL_HUMAN_REVIEW
   g0_municipal_program: NO-GO
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
   production_deploy: BLOCKED_UNTIL_SECURITY_AND_UAT
-  advance_beyond_f0: NO-GO_UNTIL_NEW_AUTHORIZATION
-evidence: evidence/releases/0.3.1/
-next_action: Stop. F0 local foundation is evidenced. Do not run prompt 01 or Sprints 2-4 without a new authorization. G0 municipal remains a human gate.
+  sprint_3_collection: NO-GO_UNTIL_NEW_AUTHORIZATION
+evidence: evidence/releases/0.3.2/
+next_action: Stop after Sprint 2. Do not implement collection, ISS pipelines or prompt 01 without a new authorization. G0 municipal remains a human gate. Independent security review of ValidateCredit is still required.

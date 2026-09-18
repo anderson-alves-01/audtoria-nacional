@@ -1,4 +1,4 @@
-# Conteúdo do kit e da implementação 0.3.1
+# Conteúdo do kit e da implementação 0.3.2
 
 - `README.md`: visão e execução local.
 - `AGENTS.md`: constituição operacional dos agentes.
@@ -6,17 +6,20 @@
 - `LICENSE`: All Rights Reserved.
 - `.cursor/rules/` e `.cursor/skills/`: governança Cursor.
 - `config/skills-policy.yaml`: política de skills.
-- `prompts/`: auditoria, feature, dados, segurança, release e handoff. Prompt 01 não está autorizado após F0.
+- `prompts/`: auditoria, feature, dados, segurança, release e handoff. Prompt 01 não está autorizado após a Sprint 2.
 - `docs/delivery/ROADMAP-SIRTA-2026.md`: **roadmap vigente**.
 - `docs/delivery/ROADMAP.md`: legado.
 - `docs/plans/2026-09-18-F0-foundation.md`: plano F0 executado.
+- `docs/plans/2026-09-18-sprint2-credit-validation.md`: plano Sprint 2.
 - `docs/releases/RELEASE-v0.3.0.md`: especificação (imutável nesta entrega).
 - `docs/releases/RELEASE-v0.3.1.md`: implementação F0.
+- `docs/releases/RELEASE-v0.3.2.md`: implementação Sprint 2.
 - `contracts/openapi/sirta-v1.yaml`: **única OpenAPI ativa**.
 - `contracts/openapi/api-outline.yaml`: legado/depreciado.
 - `apps/api`, `apps/web`, `apps/workers`: código executável local.
 - `compose.yaml`: PostgreSQL, Redis, Keycloak, MinIO, API, worker, web.
 - `tests/`: unitário, integração, contrato e isolamento.
 - `evidence/releases/0.3.1/`: evidências F0.
+- `evidence/releases/0.3.2/`: evidências Sprint 2.
 - `backlog/SIRTA-v0.3.yaml`: backlog com critérios e fixtures.
 - `infra/terraform/environments/*`: vazios; não aplicar.

@@ -15,10 +15,10 @@ describe('AppComponent', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render the F0 heading context', () => {
+  it('should render the Sprint 2 heading context', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('header')?.textContent).toContain('F0 Fundação');
+    expect(compiled.querySelector('header')?.textContent).toContain('Sprint 2');
   });
 });

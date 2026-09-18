@@ -8,7 +8,8 @@ Create Date: 2026-09-18
 from alembic import op
 from sqlalchemy.orm import Session
 
-from sirta_api.adapters.db.models import Base, Evidence
+from sirta_api.adapters.db.models import Base, Evidence, Tenant
+from sirta_api.adapters.db.seed import seed_synthetic
 from sirta_api.adapters.db.synthetic_ids import (
     EVIDENCE_ALPHA,
     EVIDENCE_ALPHA_SHA256,
@@ -28,27 +29,31 @@ def upgrade() -> None:
     bind = op.get_bind()
     Base.metadata.create_all(bind=bind)
     session = Session(bind=bind)
-    if session.get(Evidence, EVIDENCE_ALPHA) is None:
-        session.add(
-            Evidence(
-                id=EVIDENCE_ALPHA,
-                tenant_id=TENANT_ALPHA,
-                sha256=EVIDENCE_ALPHA_SHA256,
-                source="synthetic-ledger",
-                media_type="text/plain",
+    if session.get(Tenant, TENANT_ALPHA) is None:
+        seed_synthetic(session)
+        session.flush()
+    else:
+        if session.get(Evidence, EVIDENCE_ALPHA) is None:
+            session.add(
+                Evidence(
+                    id=EVIDENCE_ALPHA,
+                    tenant_id=TENANT_ALPHA,
+                    sha256=EVIDENCE_ALPHA_SHA256,
+                    source="synthetic-ledger",
+                    media_type="text/plain",
+                )
             )
-        )
-    if session.get(Evidence, EVIDENCE_BETA) is None:
-        session.add(
-            Evidence(
-                id=EVIDENCE_BETA,
-                tenant_id=TENANT_BETA,
-                sha256=EVIDENCE_BETA_SHA256,
-                source="synthetic-ledger",
-                media_type="text/plain",
+        if session.get(Evidence, EVIDENCE_BETA) is None:
+            session.add(
+                Evidence(
+                    id=EVIDENCE_BETA,
+                    tenant_id=TENANT_BETA,
+                    sha256=EVIDENCE_BETA_SHA256,
+                    source="synthetic-ledger",
+                    media_type="text/plain",
+                )
             )
-        )
-    session.flush()
+        session.flush()
     op.execute(
         "UPDATE schema_meta SET value = '0.3.2' WHERE key = 'implementation_version'"
     )

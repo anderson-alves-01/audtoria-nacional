@@ -25,6 +25,8 @@ docker compose up --build
 
 Usuários sintéticos Keycloak: `analyst.alpha`, `validator.alpha`, `admin.alpha`, `analyst.beta`. Senha local: `synthetic`.
 
+Validação: `POST /v1/tax-credits/{id}/validations` (validador). Cobrança permanece 404.
+
 ## Rollback
 
 ```bash

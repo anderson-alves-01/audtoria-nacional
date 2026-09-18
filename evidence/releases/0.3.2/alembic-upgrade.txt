@@ -1,0 +1,6 @@
+Command: python -m alembic upgrade head
+Result: Running upgrade 0003_f0_synthetic_seed -> 0004_s2_validation
+Verified: python -m alembic current → 0004_s2_validation (head)
+
+Local Compose PostgreSQL :55432, synthetic only.
+0004 reseeds identity if tenants were wiped by integration tests sharing this database.

@@ -1,4 +1,4 @@
-version: 0.3.1
+version: 0.3.2
 spec_version: 0.3.0
 epics:
   - id: EP-SIRTA-001
@@ -86,22 +86,41 @@ epics:
     stories:
       - id: SIRTA-020
         title: ValidateCredit command
-        status: blocked
+        status: done
         sprint: 2
         depends_on: [SIRTA-013]
-        note: Out of F0 authorization
+        fixtures: CREDIT_ALPHA hashed EVIDENCE_ALPHA and validator.alpha
+        acceptance:
+          - Validator APPROVE with complete checklist moves IDENTIFIED to VALIDATED
+          - Invalid transition returns 409 without changing version
+          - Idempotency-Key replays the same body
       - id: SIRTA-021
         title: Validation checklist
-        status: blocked
+        status: done
         sprint: 2
+        depends_on: [SIRTA-020]
+        fixtures: credit-legality-v1
+        acceptance:
+          - Incomplete checklist on APPROVE returns 422 and leaves IDENTIFIED
       - id: SIRTA-022
         title: Evidence hashes
-        status: blocked
+        status: done
         sprint: 2
+        depends_on: [SIRTA-021]
+        fixtures: sha256 of synthetic-alpha-evidence
+        acceptance:
+          - Seeded evidences persist 64-character SHA-256
+          - Evidence without hash is rejected by the domain
       - id: SIRTA-023
         title: Invalid transition tests
-        status: blocked
+        status: done
         sprint: 2
+        depends_on: [SIRTA-022]
+        fixtures: CREDIT_ALPHA CREDIT_BETA
+        acceptance:
+          - Analyst and credit creator receive 403
+          - Cross-tenant validation returns 404
+          - Collection remains 404
   - id: EP-SIRTA-004
     title: Controlled administrative collection
     stories: [SIRTA-030, SIRTA-031, SIRTA-032, SIRTA-033]
