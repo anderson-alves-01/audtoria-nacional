@@ -8,6 +8,7 @@ COPY pyproject.toml README.md LICENSE alembic.ini ./
 COPY alembic ./alembic
 COPY apps/api/src ./apps/api/src
 COPY pipelines ./pipelines
+COPY config ./config
 
 RUN pip install --no-cache-dir .
 

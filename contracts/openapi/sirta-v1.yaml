@@ -280,6 +280,17 @@ paths:
       responses:
         '200': {description: Dry-run accepted for synthetic fixtures}
         '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/program-gates:
+    get:
+      operationId: listProgramGates
+      description: Local/official gate snapshot. Human approvals are never fabricated.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Flags disabled; G0/G1/G4/G9/G10 BLOCKED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
   /v1/indicators/sirta-recovery-index:
     get:
       operationId: getSirtaRecoveryIndex

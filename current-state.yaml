@@ -1,24 +1,31 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.9
+implementation_version: 0.3.10
 roadmap_version: "1.2"
-version: 0.3.9
-status: F3_SOURCE_CATALOG_LOCAL
-current_phase: F3_SOURCE_CATALOG_SYNTHETIC
-release_stage: F3_SOURCE_CATALOG_LOCAL
+version: 0.3.10
+status: PROGRAM_GATES_LOCAL
+current_phase: PROGRAM_GATES_LOCAL
+release_stage: PROGRAM_GATES_LOCAL
 completed:
   - alembic_hygiene
   - source_master_registry_synthetic
+  - program_gates_snapshot
+  - terraform_docs_no_apply
 pending:
-  - program_gates_api
-  - terraform_validate_only
   - municipal_g0_authorization
+  - diagnosis_g1
+  - specialist_homologation_g4
+  - official_tesouro_connectors_g7
+  - official_ibs_cbs_homologation_g8
+  - pilot_g9
+  - production_g10
 gates:
   g6_finance_local: GO
   g7_transfers_local: GO
   g8_calendar_local: GO
   alembic_hygiene: GO
-  f3_source_catalog_local: GO_PENDING_CI
+  f3_source_catalog_local: GO
+  program_gates_local: GO_PENDING_CI
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -29,6 +36,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.9/
-next_action: Wait CI then implement program-gates API and Terraform validate-only.
+evidence: evidence/releases/0.3.10/
+next_action: Wait CI. Remaining product work is human-gated.
 human_gates: docs/delivery/HUMAN-GATES.md
