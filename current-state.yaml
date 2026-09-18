@@ -1,10 +1,10 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.6
-version: 0.3.6
-status: G7_TRANSFERS_LOCAL
-current_phase: G7_TRANSFERS
-release_stage: G7_TRANSFERS
+implementation_version: 0.3.7
+version: 0.3.7
+status: G8_IBS_CBS_LOCAL
+current_phase: G8_IBS_CBS
+release_stage: G8_IBS_CBS_LOCAL
 baseline:
   inspired_by: cfq-censo-platform
   architecture: bronze-silver-gold
@@ -15,15 +15,21 @@ completed:
   - first_iss_pipeline
   - installment_and_active_debt
   - transfer_occurrences
+  - ibs_cbs_calendar_local
 pending:
-  - ibs_cbs_calendar
   - municipal_g0_authorization
 gates:
   g6_finance_local: GO
-  g7_transfers_local: GO_PENDING_CI
+  g7_transfers_local: GO
+  g8_calendar_local: GO_PENDING_CI
+  g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
+  g1_diagnosis: NO-GO
+  g4_specialist_homologation: NO-GO
   g7_official_tesouro_connectors: NO-GO
+  g9_pilot: NO-GO
+  g10_production: NO-GO
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
-evidence: evidence/releases/0.3.6/
-next_action: Wait CI then G8 calendar. Official Tesouro connectors remain blocked.
+evidence: evidence/releases/0.3.7/
+next_action: Wait CI for G8. Official IBS/CBS homologation and G0/G1/G9/G10 remain blocked.

@@ -1,4 +1,4 @@
-# Conteúdo do kit e da implementação 0.3.2
+# Conteúdo do kit e da implementação 0.3.7
 
 - `README.md`: visão e execução local.
 - `AGENTS.md`: constituição operacional dos agentes.
@@ -10,8 +10,9 @@
 - `docs/delivery/ROADMAP-SIRTA-2026.md`: **roadmap vigente**.
 - `docs/delivery/ROADMAP.md`: legado.
 - `docs/plans/2026-09-18-F0-foundation.md`: plano F0 executado.
-- `docs/plans/2026-09-18-sprint2-credit-validation.md`: plano Sprint 2.
+- `docs/plans/2026-09-18-g8-ibs-cbs-calendar.md`: plano G8 local.
 - `docs/releases/RELEASE-v0.3.0.md`: especificação (imutável nesta entrega).
+- `docs/releases/RELEASE-v0.3.7.md`: implementação G8 calendário sintético.
 - `docs/releases/RELEASE-v0.3.1.md`: implementação F0.
 - `docs/releases/RELEASE-v0.3.2.md`: implementação Sprint 2.
 - `contracts/openapi/sirta-v1.yaml`: **única OpenAPI ativa**.
@@ -20,6 +21,6 @@
 - `compose.yaml`: PostgreSQL, Redis, Keycloak, MinIO, API, worker, web.
 - `tests/`: unitário, integração, contrato e isolamento.
 - `evidence/releases/0.3.1/`: evidências F0.
-- `evidence/releases/0.3.2/`: evidências Sprint 2.
+- `evidence/releases/0.3.7/`: evidências G8 local.
 - `backlog/SIRTA-v0.3.yaml`: backlog com critérios e fixtures.
 - `infra/terraform/environments/*`: vazios; não aplicar.

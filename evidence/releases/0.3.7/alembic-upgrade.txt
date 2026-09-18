@@ -1,0 +1,1 @@
+Local `alembic upgrade head` was not re-run against a wiped schema: pytest `drop_all` left alembic_version at 0004 without tenants, so 0005 collector seed hits FK. CI starts from empty Postgres and applies 0001-0009. Migration 0009 is additive `create_all`.

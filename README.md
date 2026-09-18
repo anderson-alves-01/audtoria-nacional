@@ -3,8 +3,8 @@
 Plataforma segura de inteligência fiscal, auditoria e recuperação de receitas municipais.
 
 **Especificação:** 0.3.0 (`docs/releases/RELEASE-v0.3.0.md`, não reescrita).  
-**Implementação local:** 0.3.2 (`docs/releases/RELEASE-v0.3.2.md`).  
-**Fase:** Sprint 2 validação (F0 local permanece verde). **Roadmap vigente:** `docs/delivery/ROADMAP-SIRTA-2026.md`.  
+**Implementação local:** 0.3.7 (`docs/releases/RELEASE-v0.3.7.md`).  
+**Fase:** G8 calendário IBS/CBS sintético (não vinculante). **Roadmap vigente:** `docs/delivery/ROADMAP-SIRTA-2026.md`.  
 `docs/delivery/ROADMAP.md` é legado.
 
 ## Execução local (sintético)
@@ -36,7 +36,7 @@ POST /v1/tax-credits/{creditId}/validations
 Idempotency-Key: <16+ chars>
 ```
 
-Cobrança administrativa permanece **não implementada**.
+Cobrança administrativa, funil sintético, transferências (nunca geram crédito) e calendário IBS/CBS **não vinculante** estão implementados localmente.
 
 PostgreSQL no host usa a porta **55432** para não colidir com outros servidores locais.
 
@@ -62,7 +62,7 @@ git revert <sha>
 
 1. `AGENTS.md` e `current-state.yaml`
 2. Auditoria: `prompts/00-bootstrap-audit.md`
-3. Implementação F0 e Sprint 2 de validação nesta árvore. Não usar `prompts/01-master-autonomous-loop.md` até nova autorização além da Sprint 2.
-4. Próxima fase (Sprint 3 cobrança) só com autorização explícita.
+3. Implementação local até G8 sintético nesta árvore. Não usar `prompts/01-master-autonomous-loop.md`.
+4. G0 municipal, G1 diagnóstico, G8 oficial, G9 piloto e G10 produção permanecem bloqueados.
 
 G0 municipal (patrocinador, município piloto, diagnóstico) **não** está concluído.

@@ -3,8 +3,8 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.2
-    implements Sprint 2 credit validation and Sprint 3 collection on the 0.3.0 specification.
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.7
+    implements local slices through G8 synthetic IBS/CBS calendar on the 0.3.0 specification.
     ISR and transfer writes remain specified and are not served until later local slices.
     Sensitive operations require OIDC plus tenant, territory and purpose context.
 servers:
@@ -240,6 +240,19 @@ paths:
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
         '200': {description: Funnel counts with methodology version}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/regulatory/ibs-cbs:
+    get:
+      operationId: getIbsCbsCalendar
+      description: >
+        Synthetic IBS/CBS regulatory calendar. Items are NON_BINDING.
+        Official dates and layouts require homologation before operational use.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Non-binding catalog; operational=false}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/indicators/sirta-recovery-index:

@@ -1,4 +1,4 @@
-version: 0.3.2
+version: 0.3.7
 spec_version: 0.3.0
 epics:
   - id: EP-SIRTA-001
@@ -180,6 +180,23 @@ epics:
         title: Credit funnel Gold without regional R$
         status: done
         sprint: 4
+  - id: EP-SIRTA-006
+    title: Local G6-G8 finance transfers and IBS/CBS catalog
+    status: done
+    stories:
+      - id: SIRTA-050
+        title: Synthetic installment payment and active-debt proposal
+        status: done
+      - id: SIRTA-051
+        title: Transfer occurrences never create tax credits
+        status: done
+      - id: SIRTA-052
+        title: IBS/CBS synthetic non-binding calendar
+        status: done
+        acceptance:
+          - GET /v1/regulatory/ibs-cbs returns binding false and operational false
+          - Catalog items are NON_BINDING
+          - Official homologation is not claimed
 definition_of_ready:
   - acceptance_criteria_defined
   - dependencies_known

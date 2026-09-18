@@ -236,3 +236,21 @@ class TransferOccurrence(Base):
         String(64), nullable=False, default="OCCURRENCE_NOT_TAX_CREDIT"
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class RegulatoryItem(Base):
+    __tablename__ = "regulatory_items"
+    __table_args__ = (UniqueConstraint("tenant_id", "territory_id", "code"),)
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    code: Mapped[str] = mapped_column(String(64), nullable=False)
+    title: Mapped[str] = mapped_column(String(256), nullable=False)
+    source: Mapped[str] = mapped_column(String(256), nullable=False)
+    version: Mapped[str] = mapped_column(String(32), nullable=False)
+    kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    affected_system: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    binding: Mapped[bool] = mapped_column(nullable=False, default=False)
+    notes: Mapped[str] = mapped_column(Text, nullable=False)
