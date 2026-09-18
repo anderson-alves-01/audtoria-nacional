@@ -54,12 +54,8 @@ def upgrade() -> None:
                 )
             )
         session.flush()
-    op.execute(
-        "UPDATE schema_meta SET value = '0.3.2' WHERE key = 'implementation_version'"
-    )
-    op.execute(
-        "UPDATE schema_meta SET value = 'S2_CREDIT_VALIDATION' WHERE key = 'release_stage'"
-    )
+    op.execute("UPDATE schema_meta SET value = '0.3.2' WHERE key = 'implementation_version'")
+    op.execute("UPDATE schema_meta SET value = 'S2_CREDIT_VALIDATION' WHERE key = 'release_stage'")
 
 
 def downgrade() -> None:
