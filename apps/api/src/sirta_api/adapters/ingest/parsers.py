@@ -364,6 +364,100 @@ def parse_state_ro_csv(
     return silver, quarantined
 
 
+def parse_state_ac_csv(
+    body: bytes,
+    *,
+    tax: str,
+    uf: str = "AC",
+    competence_year: str = "2021",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse AC SEPLAG wide annual CSV; native IBGE7; ICMS only; no credit."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key != "ICMS":
+        raise ValueError(f"unsupported state AC tax filter: {tax}")
+    year = str(competence_year or "2021").strip()[:4]
+    reader = csv.reader(io.StringIO(_decode_csv_bytes(body)), delimiter=";")
+    rows = list(reader)
+    if not rows:
+        return [], [({"rowId": "ac-header"}, "empty CSV")]
+    header = [str(cell or "").strip() for cell in rows[0]]
+    year_indexes = {
+        str(name).strip(): index
+        for index, name in enumerate(header)
+        if re.fullmatch(r"\d{4}", str(name or "").strip())
+    }
+    if year not in year_indexes:
+        return [], [({"rowId": "ac-header"}, f"missing year column {year}")]
+    amount_index = year_indexes[year]
+    ibge_index = next(
+        (
+            index
+            for index, name in enumerate(header)
+            if "IBGE" in normalize_place(name)
+        ),
+        1 if len(header) > 1 else None,
+    )
+    if ibge_index is None:
+        return [], [({"rowId": "ac-header"}, "missing Cod IBGE column")]
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for index, item in enumerate(rows[1:]):
+        if not item:
+            continue
+        raw_name = str(item[0] or "").strip()
+        if not raw_name:
+            continue
+        place = normalize_place(raw_name)
+        if place in {"ACRE", "TOTAL"} or place.startswith("TOTAL"):
+            continue
+        ibge = str(item[ibge_index] if len(item) > ibge_index else "").strip()
+        if len(item) <= amount_index:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"ac-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                    },
+                    f"missing {tax_key} column",
+                )
+            )
+            continue
+        amount_raw = item[amount_index]
+        try:
+            value = parse_brazilian_number(amount_raw)
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"ac-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        row = {
+            "rowId": f"ac-{tax_key.lower()}-{ibge or index}-{year}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": year,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def _decode_csv_bytes(body: bytes) -> str:
     payload = body
     if len(payload) >= 2 and payload[0] == 0x1F and payload[1] == 0x8B:

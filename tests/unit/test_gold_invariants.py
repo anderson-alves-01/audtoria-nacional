@@ -8,6 +8,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_cnes_datasus_open,
     parse_epe_open_files,
     parse_ibge_sidra_series,
+    parse_state_ac_csv,
     parse_state_ba_csv,
     parse_state_es_csv,
     parse_state_go_csv,
@@ -288,6 +289,24 @@ def test_state_ro_csv_joins_name_and_ibge6_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-RO-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-RO-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_ac_csv_uses_native_ibge7_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/ac-icms-repasses-2021.csv").read_bytes()
+    icms, quarantined = parse_state_ac_csv(body, tax="ICMS")
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"1200013", "1200054"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "AC" for row in icms)
+    assert all(row["competence"] == "2021" for row in icms)
+    acrelandia = next(row for row in icms if row["ibgeCode"] == "1200013")
+    assert acrelandia["value"] == 4109661.0
+    assis = next(row for row in icms if row["ibgeCode"] == "1200054")
+    assert assis["value"] == 4416079.0
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "missing IBGE municipality code"
+    assert presentation_for("ESTADO-AC-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-AC-ICMS-QUOTA")["createsTaxCredit"] is False
 
 
 def test_aneel_indqual_aggregates_by_ibge7() -> None:

@@ -74,6 +74,11 @@ SNAPSHOT_URLS = {
         "ipva-portal-2019-2022.csv"
     ): "ro-ipva-repasses-2022.csv",
     (
+        "https://dados.ac.gov.br/dataset/e9f7ca08-2c55-45d5-a948-ef25a1acb296/"
+        "resource/d0deaa76-c075-4b0d-8cf3-468c5fcb1267/download/"
+        "repasse-constitucional-de-icms-para-os-municipios.csv"
+    ): "ac-icms-repasses-2021.csv",
+    (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
     (

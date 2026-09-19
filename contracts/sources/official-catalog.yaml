@@ -1108,6 +1108,46 @@ sources:
     notes: >
       CSV 2019-2022 downloadável em 2026-09-19. Homologação humana pendente.
 
+  - source_id: ESTADO-AC-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (AC)
+    maintainer: SEPLAG-AC / dados.ac.gov.br
+    official_domain: dados.ac.gov.br
+    official_url: https://dados.ac.gov.br/dataset/repasse-constitucional-de-icms-para-os-municipios
+    endpoint: https://dados.ac.gov.br/dataset/e9f7ca08-2c55-45d5-a948-ef25a1acb296/resource/d0deaa76-c075-4b0d-8cf3-468c5fcb1267/download/repasse-constitucional-de-icms-para-os-municipios.csv
+    documentation_url: https://dados.ac.gov.br/dataset/repasse-constitucional-de-icms-para-os-municipios
+    dataset: ESTADO-AC-ICMS-2021
+    dictionary_url: https://dados.ac.gov.br/dataset/repasse-constitucional-de-icms-para-os-municipios
+    purpose: Transferência estadual de ICMS — valores publicados por município
+    legal_basis: Dados abertos oficiais do Acre (repasse constitucional ICMS)
+    license_terms: termos do portal dados.ac.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ac_csv
+    layout_version: state-ac-icms-v1
+    periodicity: annual
+    competence: "2021"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: AC
+      competence_year: "2021"
+      normalize: ibge7_native
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ac_icms_quota
+    formula: >
+      Valor da coluna anual do CSV SEPLAG Repasse Constitucional de ICMS,
+      competência filtrada por ano, município com Cod IBGE de 7 dígitos nativo.
+      Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-ac-icms-v1
+    notes: >
+      CSV 2018-2021 downloadável em 2026-09-19. IPVA não publicado. Homologação
+      humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil
