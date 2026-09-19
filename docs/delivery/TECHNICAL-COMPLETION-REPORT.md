@@ -23,8 +23,9 @@ Não restam itens técnicos desbloqueados. G0/G1/G4/G7 oficial/G8 oficial/G9/G10
 | `06cce47` | relatório intermediário de gates humanos |
 | `0a03c3c` | 0.3.11 ingestão IBGE sintética |
 | `cd412dd` | 0.3.12 stub Tesouro + checklists G0/G1 BLOCKED |
+| `2e5dd38` | 0.3.13 módulos Terraform documentation-only |
 
-Base em `86022ad`. SHA 0.3.13 preenchido após o commit desta fatia.
+Base em `86022ad`.
 
 ## 3. Arquivos principais
 
@@ -54,6 +55,7 @@ Base em `86022ad`. SHA 0.3.13 preenchido após o commit desta fatia.
 | `09ab340` | https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35379564590 |
 | `0a03c3c` | https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35409091892 |
 | `cd412dd` | https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35409413760 |
+| `2e5dd38` | https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35409721281 |
 
 Sem merge em `main`.
 
