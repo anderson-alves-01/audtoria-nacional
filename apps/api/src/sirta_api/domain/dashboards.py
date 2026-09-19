@@ -53,8 +53,7 @@ DASHBOARDS = (
         "title": "Pagamentos e parcelamentos",
         "goldSourceIds": (),
         "emptyReason": (
-            "CREDENTIAL_REQUIRED — painel oficial /v1/payments vazio; "
-            "sem recuperação inventada."
+            "CREDENTIAL_REQUIRED — painel oficial /v1/payments vazio; sem recuperação inventada."
         ),
         "commandsDisabled": True,
     },
@@ -64,8 +63,7 @@ DASHBOARDS = (
         "title": "Dívida ativa",
         "goldSourceIds": (),
         "emptyReason": (
-            "CREDENTIAL_REQUIRED — painel oficial /v1/active-debt vazio; "
-            "inscrição desativada."
+            "CREDENTIAL_REQUIRED — painel oficial /v1/active-debt vazio; inscrição desativada."
         ),
         "commandsDisabled": True,
     },
