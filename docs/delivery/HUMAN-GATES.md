@@ -3,7 +3,7 @@
 Este arquivo registra o que a implementação local **não** pode avançar sem autorização institucional. Não altera a especificação 0.3.0.
 
 Data: 2026-09-18  
-Implementação: 0.3.12 (`TESOURO_STUB_GATES_LOCAL`)  
+Implementação: 0.3.13 (`TERRAFORM_MODULES_DOCS`)  
 CI G8: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367451209
 
 ## Concluído localmente (sintético)
@@ -22,6 +22,7 @@ CI G8: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367
 | Gates + Terraform docs | 0.3.10 | `evidence/releases/0.3.10/` | Snapshot LOCAL_GO/OFFICIAL_BLOCKED; sem apply |
 | Ingestão IBGE sintética | 0.3.11 | `evidence/releases/0.3.11/` | Landing/Gold de enriquecimento; nunca cria crédito |
 | Stub Tesouro + checklists G0/G1 | 0.3.12 | `evidence/releases/0.3.12/` | Fixture sintético; UI `/gates` somente leitura |
+| Módulos Terraform docs | 0.3.13 | `evidence/releases/0.3.13/` | null provider; validate sem apply |
 
 ## Bloqueado até decisão humana
 
@@ -45,4 +46,4 @@ CI G8: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367
 
 ## Próxima ação automática
 
-Após CI verde de `0.3.12`, módulos Terraform documentation-only (sem apply). Gates da tabela acima continuam bloqueados.
+Não há próximo item técnico automático. Gates da tabela acima continuam bloqueados até autorização institucional.

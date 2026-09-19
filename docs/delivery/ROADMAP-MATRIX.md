@@ -1,4 +1,4 @@
-# Matriz técnica ROADMAP 1.2 versus código (pós-0.3.12)
+# Matriz técnica ROADMAP 1.2 versus código (pós-0.3.13)
 
 Gerada em 2026-09-18. Spec `0.3.0`. Branch `feat/roadmap-technical-completion`.
 
@@ -15,7 +15,7 @@ Gerada em 2026-09-18. Spec `0.3.0`. Branch `feat/roadmap-technical-completion`.
 | G4 regras ISS reais | G1 | genérico local | — | não inventar fórmula | BLOCKED | especialista | feature flag off |
 | G7 conectores Tesouro | F3.0 | ocorrência local + stub sintético | 0.3.12 | nunca cria crédito | LOCAL_GO/OFFICIAL_BLOCKED | credencial | sem conector oficial |
 | G8 calendário oficial | G8 local | NON_BINDING | 0.3.7 | binding false | LOCAL_GO/OFFICIAL_BLOCKED | homologação | manter |
-| Terraform generate/validate | F0 | docs locais 0.3.10 | `evidence/releases/0.3.10/` | fmt/validate | G10 BLOCKED | apply | módulos sem apply |
+| Terraform generate/validate | F0 | módulos docs 0.3.13 | `evidence/releases/0.3.13/` | `test_terraform_local` | G10 BLOCKED | apply | — |
 | G9/G10 | G0 | bloqueado | — | — | BLOCKED | aceite | checklists |
 
-DAG: `0.3.12 Tesouro stub + G0/G1 UI → terraform modules no-apply`. Parar em G0/G1/G4/G7 oficial/G8 oficial/G9/G10.
+DAG: itens técnicos locais encerrados em 0.3.13. Parar em G0/G1/G4/G7 oficial/G8 oficial/G9/G10.

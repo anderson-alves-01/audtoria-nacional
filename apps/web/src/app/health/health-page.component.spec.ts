@@ -19,8 +19,8 @@ describe('HealthPageComponent', () => {
     http.expectOne('/health').flush({
       status: 'ok',
       specVersion: '0.3.0',
-      implementationVersion: '0.3.12',
-      releaseStage: 'TESOURO_STUB_GATES_LOCAL',
+      implementationVersion: '0.3.13',
+      releaseStage: 'TERRAFORM_MODULES_DOCS',
     });
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Spec 0.3.0');

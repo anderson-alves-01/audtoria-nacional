@@ -24,4 +24,4 @@
 - `evidence/releases/0.3.1/`: evidências F0.
 - `evidence/releases/0.3.7/`: evidências G8 local.
 - `backlog/SIRTA-v0.3.yaml`: backlog com critérios e fixtures.
-- `infra/terraform/environments/*`: vazios; não aplicar.
+- `infra/terraform/modules/documentation_stack` e `infra/terraform/environments/*`: documentation-only; não aplicar.

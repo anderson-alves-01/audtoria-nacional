@@ -1,4 +1,4 @@
-# Documentation-only local stack. terraform apply is forbidden.
+# Documentation-only staging stack. terraform apply is forbidden.
 
 terraform {
   required_version = ">= 1.5.0"
@@ -12,5 +12,5 @@ terraform {
 
 module "documentation_stack" {
   source      = "../../modules/documentation_stack"
-  environment = "local"
+  environment = "staging"
 }

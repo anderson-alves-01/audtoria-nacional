@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sirta"
-version = "0.3.12"
-description = "SIRTA Municipal local implementation (Tesouro stub and blocked G0/G1 checklists)"
+version = "0.3.13"
+description = "SIRTA Municipal local implementation (Terraform documentation modules, no apply)"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "All Rights Reserved" }

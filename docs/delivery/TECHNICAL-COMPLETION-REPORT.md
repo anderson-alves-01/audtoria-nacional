@@ -4,12 +4,14 @@ Data: 2026-09-18
 Branch: `feat/roadmap-technical-completion` (sem merge em `main`)  
 Spec: `0.3.0`  
 Roadmap: `1.2`  
-Implementação corrente: `0.3.12`
+Implementação final técnica local: `0.3.13`
 
 ## 1. Versão alcançada
 
-`implementation_version: 0.3.12`  
-`release_stage: TESOURO_STUB_GATES_LOCAL`
+`implementation_version: 0.3.13`  
+`release_stage: TERRAFORM_MODULES_DOCS`
+
+Não restam itens técnicos desbloqueados. G0/G1/G4/G7 oficial/G8 oficial/G9/G10 continuam BLOCKED.
 
 ## 2. Commits e fatias
 
@@ -18,28 +20,30 @@ Implementação corrente: `0.3.12`
 | `74e7852` | 0.3.8 higiene Alembic / seed idempotente |
 | `140e24c` | 0.3.9 registro mestre de fontes sintético |
 | `09ab340` | 0.3.10 snapshot de gates + Terraform documentation-only |
-| `06cce47` | relatório de parada nos gates humanos (antes de F3.1) |
+| `06cce47` | relatório intermediário de gates humanos |
 | `0a03c3c` | 0.3.11 ingestão IBGE sintética |
+| `cd412dd` | 0.3.12 stub Tesouro + checklists G0/G1 BLOCKED |
 
-Base em `86022ad`. SHA 0.3.12 preenchido após o commit desta fatia.
+Base em `86022ad`. SHA 0.3.13 preenchido após o commit desta fatia.
 
 ## 3. Arquivos principais
 
-- Alembic até `0014_tesouro_stub_gates`
-- `POST /v1/data-sources/{sourceId}/ingest` (IBGE e Tesouro sintéticos)
-- `GET /v1/indicators/source-enrichment`, `GET /v1/program-gates` com checklists G0/G1 unmet
-- Páginas `/fontes` e `/gates`
+- Alembic até `0015_terraform_modules`
+- Catálogo + ingestão sintética IBGE/Tesouro (`gold_enrichments`)
+- `GET /v1/program-gates` com checklists unmet e `canApprove=false`
+- `infra/terraform/modules/documentation_stack` + ambientes local/dev/staging/prod
 
-## 4. Funcionalidades
+## 4. Funcionalidades locais
 
 - Ingestão catalog-driven sintética sem `TaxCredit` e sem download de base oficial
-- Checklists G0/G1 visíveis e bloqueados; `canApprove=false`
-- G7/G8 oficiais `OFFICIAL_BLOCKED`; flags false
+- Checklists G0/G1 visíveis e bloqueados
+- Terraform documentation-only (`hashicorp/null`, `prevent_destroy`, validate sem apply)
 
 ## 5. Testes locais
 
-- 0.3.11: 95 pytest; 14 Angular
-- 0.3.12: 96 pytest; 15 Angular
+- 0.3.11: 95 pytest; 14 Angular; CI `35409091892`
+- 0.3.12: 96 pytest; 15 Angular; CI `35409413760`
+- 0.3.13: 99 pytest; 15 Angular; `terraform validate` OK; nenhum apply
 
 ## 6. CI
 
@@ -49,25 +53,45 @@ Base em `86022ad`. SHA 0.3.12 preenchido após o commit desta fatia.
 | `140e24c` | https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35379184092 |
 | `09ab340` | https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35379564590 |
 | `0a03c3c` | https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35409091892 |
+| `cd412dd` | https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35409413760 |
 
 Sem merge em `main`.
 
 ## 7. Evidências
 
-`evidence/releases/0.3.8/` … `0.3.12/`
+`evidence/releases/0.3.8/` … `0.3.13/`
 
 ## 8. Migrations
 
-Cadeia: `0001` … `0014_tesouro_stub_gates`.
+Cadeia: `0001` … `0015_terraform_modules`.
 
 ## 9. Gates
 
-- LOCAL_GO: F0/S0-S4, G6-G8 local, Alembic, F3.0, F3.1 sintético IBGE/Tesouro stub, checklists G0/G1 em BLOCKED
-- OFFICIAL_BLOCKED: G7 Tesouro, G8 IBS/CBS
+- LOCAL_GO: F0/S0-S4, G6-G8 local, Alembic, F3.0, F3.1 sintético, checklists G0/G1 em BLOCKED, Terraform docs/módulos
+- OFFICIAL_BLOCKED: G7 Tesouro, G8 IBS/CBS (`binding=false`, `operational=false`, `homologated=false`, `NON_BINDING`)
 - BLOCKED: G0, G1, G4, G9, G10, ingestão real, cloud apply, produção
 
-## 10. Confirmações
+## 10. Riscos
+
+- Migrations aditivas ainda usam `create_all`
+- Módulos Terraform não representam infra real; apply continua proibido
+- Stubs públicos não substituem conectores oficiais
+
+## 11. Itens que dependem de decisão humana
+
+G0, G1, G4 especialista, G7 oficial, G8 oficial, G9, G10, DPA, credenciais, dado fiscal real.
+
+## 12. Confirmações
 
 Não houve `terraform apply`, recurso pago, IAM real, produção, download de base fiscal real, nem alteração de `main`.
 
-Próximo item técnico: 0.3.13 módulos Terraform documentation-only (sem apply).
+## 13. Como retomar quando um gate for autorizado
+
+```bash
+git checkout feat/roadmap-technical-completion
+git pull
+# Após autorização explícita do gate (ex.: G0), abrir nova fatia na mesma branch
+# ou em feat/<gate> a partir deste HEAD. Não usar dado real sem DPA.
+```
+
+Próximo item quando G0 for autorizado: diagnóstico G1 e, só então, F3.2 conectores públicos oficiais com dry-run/amostra mínima.
