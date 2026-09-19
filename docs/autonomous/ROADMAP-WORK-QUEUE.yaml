@@ -226,7 +226,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.23/
     versao: "0.3.23"
-    commit: null
+    commit: 1add7b0
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -248,7 +248,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.23/
     versao: "0.3.23"
-    commit: null
+    commit: 1add7b0
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -270,7 +270,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.23/
     versao: "0.3.23"
-    commit: null
+    commit: 1add7b0
     ci: null
     motivo_bloqueio: null
     next_action: >
