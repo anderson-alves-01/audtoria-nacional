@@ -376,7 +376,7 @@ items:
     evidencia: evidence/releases/0.3.39/
     versao: "0.3.39"
     commit: 55f6bf9
-    ci: null
+    ci: "35464893357"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS, RO, AC e CE ICMS (+IPVA onde publicado) + GO IPVA ativados.
@@ -399,7 +399,7 @@ items:
     evidencia: evidence/releases/0.3.39/
     versao: "0.3.39"
     commit: 55f6bf9
-    ci: null
+    ci: "35464893357"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO, MS, RO e CE IPVA ativados. AC sem IPVA publicado. Seguir
