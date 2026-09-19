@@ -126,23 +126,6 @@ if (-not $Gh) { $Gh = "C:\Program Files\GitHub CLI\gh.exe" }
 function Invoke-Preflight {
     if (-not $Agent) { throw "Cursor CLI 'agent' não encontrado. Instale com irm https://cursor.com/install?win32=true | iex" }
     & $Agent --version | Out-Host
-    $statusJob = Start-Job -ScriptBlock {
-        param($AgentPath)
-        & $AgentPath --trust status 2>&1 | Out-String
-    } -ArgumentList $Agent
-    $statusReady = Wait-Job $statusJob -Timeout 20
-    if ($statusReady) {
-        $statusOut = Receive-Job $statusJob | Out-String
-        Write-Host $statusOut
-        if ($statusOut -match "Not logged in") {
-            throw "Cursor CLI não autenticado. Execute 'agent login' e recarregue o orquestrador."
-        }
-    }
-    else {
-        Write-Host "agent status não retornou em 20s; seguindo após --version."
-        Stop-Job $statusJob -ErrorAction SilentlyContinue
-    }
-    Remove-Job $statusJob -Force -ErrorAction SilentlyContinue
     if (-not (Test-Path $Gh)) { throw "GitHub CLI gh não encontrado." }
     & $Gh --version | Out-Host
     & $Gh auth status | Out-Host
