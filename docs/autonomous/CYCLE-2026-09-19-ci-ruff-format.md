@@ -26,6 +26,8 @@ CI `python` vermelha nos runs `35442958209` / `35442955746`. Regra do controlado
 - `ruff format --check` + `ruff check`: OK
 - `pytest tests/unit/test_backfill_controls.py tests/unit/test_ingest_observability.py`: 13 passed
 - `evidence/releases/0.3.23/ruff-format-fix-tests.txt`
+- CI push `35443104642`: python/web/containers SUCCESS
+- Commit: `00dd268`
 
 ## Não feito
 

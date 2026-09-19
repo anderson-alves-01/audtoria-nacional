@@ -28,12 +28,12 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.23/ruff-format-fix-tests.txt
     versao: "0.3.23"
-    commit: 0978085
-    ci: "35442955746"
+    commit: 00dd268
+    ci: "35443104642"
     motivo_bloqueio: null
     next_action: >
-      Corrigido ruff format após falha Format no job python. Confirmar CI
-      verde após push deste ciclo; então retomar RFB/estados/setorial.
+      CI python/web/containers verdes após ruff format (run 35443104642).
+      Próximo ciclo: RFB territorial, estados ICMS/IPVA, ativação setorial.
 
   - id: F2-TENANT-ISOLATION
     fase: F2

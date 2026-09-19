@@ -11,6 +11,8 @@ No national unlimited ingest executed.
 PR #2 `python` job failed on `ruff format --check` (3 files). Reformatted;
 `ruff format --check` / `ruff check` green; 13 unit tests passed
 (`evidence/releases/0.3.23/ruff-format-fix-tests.txt`).
+CI run https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35443104642
+SUCCESS (python, web, containers).
 
 ## Notes
 
