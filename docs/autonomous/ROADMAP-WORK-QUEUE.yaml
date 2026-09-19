@@ -525,7 +525,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.21/
     versao: "0.3.21"
-    commit: null
+    commit: faf825b
     ci: null
     motivo_bloqueio: DPA e G0 ausentes; uploadEnabled=false.
     next_action: >
@@ -567,7 +567,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.21/
     versao: "0.3.21"
-    commit: null
+    commit: faf825b
     ci: null
     motivo_bloqueio: Escopo territorial RFB e DPA ausentes; piiPresent=false.
     next_action: >
