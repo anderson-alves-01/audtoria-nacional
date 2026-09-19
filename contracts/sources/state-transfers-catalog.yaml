@@ -6,10 +6,10 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  RJ tem CSV catalogado no CKAN (PROVENANCE_VERIFIED); demais UFs DISCOVERED.
-  Nenhuma UF ativada para ingest. Portais HTML sem arquivo/API estruturado não
-  bastam. Agregadores privados foram recusados. Download RJ bloqueado por filtro
-  de IP da SEFAZ neste runtime — schema pendente.
+  PE e BA têm CSV PUBLIC_OPEN baixável (PROVENANCE_VERIFIED). RJ catalogado no
+  CKAN mas download bloqueado por IP SEFAZ. MG tem datapackage/IBGE no CKAN;
+  download gzip 403 neste runtime. Nenhuma UF com ingest ativado. Portais HTML
+  e agregadores privados recusados. Próxima ativação preferencial: PE.
 states:
   - uf: AC
     name: Acre
@@ -33,9 +33,18 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: BA
     name: Bahia
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
+    official_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
+    endpoint: https://dados.ba.gov.br/dataset/2ac6387d-80ee-4855-aaba-d6820a5f8a71/resource/76430704-b1a2-484f-87dc-c86248f4f288/download/2024.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    ibge_field: name_only
+    download_probe_2026_09_19: csv_bytes_ok_multi_header
+    reason: >
+      CSV anual baixável com ICMS/IPVA. Cabeçalho multi-linha; município por
+      denominação (mapear IBGE7). Sem ingest até layout normalizado + fixture.
   - uf: CE
     name: Ceará
     status: DISCOVERED
@@ -73,9 +82,18 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: MG
     name: Minas Gerais
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: ckan_frictionless_schema
+    dataset_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    official_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    endpoint: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV.gz
+    ibge_field: cd_municipio_ibge
+    download_probe_2026_09_19: ckan_ok_gzip_download_403
+    reason: >
+      CKAN + datapackage com IBGE nativo (vr_icms/vr_ipva). Download gzip
+      retornou 403 neste runtime. Ativar quando bytes forem obtíveis.
   - uf: PA
     name: Pará
     status: DISCOVERED
@@ -93,9 +111,21 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: PE
     name: Pernambuco
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    official_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    endpoint: https://dados.pe.gov.br/dataset/d157c770-7680-454e-9b0f-ddb777de4888/resource/ff98eec8-cce6-43ba-b8a8-bf55493c554f/download/transferencias_municipais_2024_.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    columns: [ano, mes, MUNICÍPIO, ICMS, IPI, IPVA, TOTAL]
+    ibge_field: name_only
+    download_probe_2026_09_19: csv_bytes_ok
+    preferred_activation: true
+    reason: >
+      CSV 2024 baixável (ano,mes,município,ICMS,IPI,IPVA,TOTAL). Preferencial
+      para próxima ativação com fixture mínima e join IBGE7 por nome+UF.
+      IPVA pode vir zerado em algumas competências — tratar como publicado.
   - uf: PI
     name: Piauí
     status: DISCOVERED

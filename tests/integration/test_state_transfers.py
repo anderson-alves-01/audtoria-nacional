@@ -36,10 +36,12 @@ def test_state_transfers_endpoint_is_empty_shell(api_client) -> None:
     assert body["commandsDisabled"] is True
     assert body["items"] == []
     assert body["total"] == 0
-    assert body["verifiedCount"] >= 1
+    assert body["verifiedCount"] >= 3
     by_uf = {row["uf"]: row for row in body["states"]}
+    assert by_uf["PE"]["status"] == "PROVENANCE_VERIFIED"
+    assert by_uf["PE"]["ingestAllowed"] is False
+    assert by_uf["BA"]["status"] == "PROVENANCE_VERIFIED"
     assert by_uf["RJ"]["status"] == "PROVENANCE_VERIFIED"
-    assert by_uf["RJ"]["ingestAllowed"] is False
 
 
 def test_state_transfers_command_is_rejected(api_client) -> None:

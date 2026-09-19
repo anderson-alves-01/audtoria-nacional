@@ -94,5 +94,5 @@ gates:
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
 evidence: evidence/releases/0.3.24/
-next_action: Activate state ICMS/IPVA only after CSV schema bytes are verified (RJ download IP-blocked here). RFB remains READY_FOR_TERRITORIAL_SCOPE without national load. CI green (run 35445715071). Human validation of Gold remains pending and is not requested now.
+next_action: Next cycle prefer PE state ICMS/IPVA activation (downloadable CSV verified). BA secondary; MG schema-ready but gzip 403; RJ IP-blocked. RFB remains READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

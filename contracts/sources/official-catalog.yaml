@@ -619,9 +619,9 @@ sources:
     formula: none
     methodology_version: none
     notes: >
-      Catálogo dos 26 estados e DF em state-transfers-catalog.yaml. RJ CSV de
-      repasses catalogado (PROVENANCE_VERIFIED) sem schema baixável neste runtime.
-      Nenhuma UF com ingest ativado. Sem agregador privado. Ver /v1/state-transfers.
+      Catálogo dos 26 estados e DF em state-transfers-catalog.yaml. PE/BA CSV
+      baixáveis e MG datapackage (PROVENANCE_VERIFIED); RJ catalogado com
+      download IP-blocked. Nenhuma UF com ingest ativado. Ver /v1/state-transfers.
 
   - source_id: ESTADO-IPVA-QUOTA
     name: Quota-parte de IPVA estadual
