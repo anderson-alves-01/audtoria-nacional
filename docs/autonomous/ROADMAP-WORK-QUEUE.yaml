@@ -353,7 +353,7 @@ items:
     evidencia: evidence/releases/0.3.26/
     versao: "0.3.26"
     commit: 38689e9
-    ci: null
+    ci: "35447881235"
     motivo_bloqueio: null
     next_action: >
       PE e BA TECHNICALLY_APPROVED. MG PROVENANCE_VERIFIED sem gzip; RJ
@@ -375,7 +375,7 @@ items:
     evidencia: evidence/releases/0.3.26/
     versao: "0.3.26"
     commit: 38689e9
-    ci: null
+    ci: "35447881235"
     motivo_bloqueio: null
     next_action: >
       PE e BA ativados (state_pe_csv / state_ba_csv). Expandir MG quando
@@ -397,7 +397,7 @@ items:
     evidencia: evidence/releases/0.3.26/
     versao: "0.3.26"
     commit: 38689e9
-    ci: null
+    ci: "35447881235"
     motivo_bloqueio: null
     next_action: >
       PE e BA ativados. Seguir MG; sem inventar valores. Normalizar IBGE7.
