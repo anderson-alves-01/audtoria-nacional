@@ -609,7 +609,7 @@ def _iter_epe_xlsx_records(body: bytes):
             continue
         if len(values) < len(header):
             values = values + [""] * (len(header) - len(values))
-        yield dict(zip(header, values))
+        yield dict(zip(header, values, strict=False))
 
 
 def parse_aneel_ckan_open(
