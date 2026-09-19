@@ -205,9 +205,7 @@ def test_state_es_csv_joins_native_ibge_and_quarantines_territory() -> None:
 
 
 def test_state_go_csv_joins_name_uf_and_quarantines_territory() -> None:
-    body = Path(
-        "tests/fixtures/official-snapshots/go-repasses-municipios-202608.csv"
-    ).read_bytes()
+    body = Path("tests/fixtures/official-snapshots/go-repasses-municipios-202608.csv").read_bytes()
     lookup = {
         ("ABADIA DE GOIAS", "GO"): "5200050",
         ("GOIANIA", "GO"): "5208707",
