@@ -352,7 +352,7 @@ items:
     evidencia: evidence/releases/0.3.25/
     versao: "0.3.25"
     commit: 46a1e02
-    ci: null
+    ci: "35446917195"
     motivo_bloqueio: null
     next_action: >
       PE TECHNICALLY_APPROVED. BA/MG PROVENANCE_VERIFIED sem ingest; RJ
@@ -374,7 +374,7 @@ items:
     evidencia: evidence/releases/0.3.25/
     versao: "0.3.25"
     commit: 46a1e02
-    ci: null
+    ci: "35446917195"
     motivo_bloqueio: null
     next_action: >
       PE ativado (state_pe_csv). Expandir BA/MG quando layout+bytes ok;
@@ -396,7 +396,7 @@ items:
     evidencia: evidence/releases/0.3.25/
     versao: "0.3.25"
     commit: 46a1e02
-    ci: null
+    ci: "35446917195"
     motivo_bloqueio: null
     next_action: >
       PE ativado; IPVA zero publicado como oficial. Seguir BA/MG; sem inventar
