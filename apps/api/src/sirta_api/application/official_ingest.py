@@ -734,9 +734,9 @@ def _parse(
             fetched.body,
             tax=str(parameters.get("tax") or "ICMS"),
             uf=str(parameters.get("uf") or "CE"),
-            competence=str(
-                parameters.get("competence") or catalog.get("competence") or "2025-01"
-            )[:7],
+            competence=str(parameters.get("competence") or catalog.get("competence") or "2025-01")[
+                :7
+            ],
             ibge_lookup=_ibge_lookup(session, context=context),
         )
     if connector == "anp_revendedores_api":
