@@ -246,6 +246,45 @@ sources:
     methodology_version: official-siconfi-dca-v1
     notes: Volume nacional controlado por max_entes_per_run. Sem interpolação.
 
+  - source_id: SICONFI-RGF
+    name: SICONFI — RGF municipal
+    maintainer: Tesouro Nacional
+    official_domain: apidatalake.tesouro.gov.br
+    official_url: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf
+    endpoint: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf
+    documentation_url: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf
+    dataset: SICONFI-RGF
+    dictionary_url: https://siconfi.tesouro.gov.br/
+    purpose: Demonstrativo RGF municipal publicado
+    legal_basis: API pública SICONFI/Tesouro Nacional
+    license_terms: termos de uso da API Data Lake do Tesouro Nacional
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: siconfi_statement
+    layout_version: siconfi-rgf-v1
+    periodicity: quadrimestral
+    competence: "2025"
+    granularity: municipality
+    parameters:
+      resource: rgf
+      max_entes_per_run: 1
+      query:
+        an_exercicio: "2025"
+        nr_periodo: "3"
+        co_tipo_demonstrativo: RGF
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: siconfi_rgf
+    formula: Linhas do RGF publicadas por ente, exercício e período. Carga particionada com checkpoint. Não constitui crédito tributário.
+    methodology_version: official-siconfi-rgf-v1
+    notes: >
+      Mesmo envelope API Data Lake que RREO/DCA. Backfill nacional limitado por
+      max_entes_per_run. Não cria crédito, cobrança ou ocorrência automática.
+
   - source_id: PLANALTO-LEGISLACAO
     name: Planalto / Senado — Emenda Constitucional 132/2023
     maintainer: Presidência da República / Senado Federal

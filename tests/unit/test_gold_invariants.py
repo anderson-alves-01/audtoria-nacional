@@ -44,6 +44,8 @@ def test_catalog_metadata_is_not_financial() -> None:
     assert presentation_for("SICONFI-ENTES")["isCoverageRegistry"] is True
     assert presentation_for("SICONFI-ENTES")["isFiscalStatement"] is False
     assert presentation_for("SICONFI-RREO")["isFiscalStatement"] is True
+    assert presentation_for("SICONFI-RGF")["isFiscalStatement"] is True
+    assert presentation_for("SICONFI-RGF")["createsTaxCredit"] is False
 
 
 def test_public_source_cannot_create_credit_or_collection() -> None:

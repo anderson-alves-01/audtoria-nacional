@@ -3,7 +3,7 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.16
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.17
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
@@ -262,13 +262,40 @@ paths:
     get:
       operationId: getIbsCbsCalendar
       description: >
-        Synthetic IBS/CBS regulatory calendar. Items are NON_BINDING.
-        Official dates and layouts require homologation before operational use.
+        Non-binding IBS/CBS regulatory calendar (catalog-official-docs-v1).
+        Links preservedDocuments to Gold PLANALTO-LEGISLACAO and PLANALTO-LC-214
+        when published. Items remain NON_BINDING; operational=false; homologated=false.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
-        '200': {description: Non-binding catalog; operational=false}
+        '200': {description: Non-binding catalog; preservedDocuments; operational=false}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/diagnosis:
+    get:
+      operationId: getMunicipalDiagnosis
+      description: >
+        Technical municipal diagnosis shell. Checklist unmet; recoveryMeta=null;
+        no recovery target. G1 remains BLOCKED. commandsDisabled=true.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty technical diagnosis; recoveryMeta=null}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/audit-rules:
+    get:
+      operationId: listAuditRules
+      description: >
+        Non-binding audit rule catalog. binding=false; createsTaxCredit=false;
+        taxPotentialAsCredit=false. G4 homologation absent.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Non-binding rule placeholders; commandsDisabled}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/data-sources:

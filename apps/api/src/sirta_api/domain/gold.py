@@ -47,6 +47,10 @@ PRESENTATION = {
         "valueKind": "FISCAL_STATEMENT_LINE",
         "label": "Linhas do DCA/FINBRA. Não constituem crédito tributário.",
     },
+    "SICONFI-RGF": {
+        "valueKind": "FISCAL_STATEMENT_LINE",
+        "label": "Linhas do RGF municipal. Não constituem crédito tributário.",
+    },
     "PLANALTO-LEGISLACAO": {
         "valueKind": "REGULATORY_DOCUMENT",
         "label": "Documento regulatório. binding=false, operational=false, homologated=false.",

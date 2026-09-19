@@ -38,9 +38,7 @@ def test_fifteen_dashboards_are_empty_without_synthetic_fill(api_client) -> None
         assert body_detail["createsTaxCredit"] is False
         assert body_detail["commandsDisabled"] is True
         assert body_detail["roiCalculated"] is False
-        assert body_detail["homologationStatus"] == (
-            "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
-        )
+        assert body_detail["homologationStatus"] == ("REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION")
         assert body_detail["emptyReason"]
         assert "emptySources" in body_detail
         assert isinstance(body_detail["emptySources"], list)

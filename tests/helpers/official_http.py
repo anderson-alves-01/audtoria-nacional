@@ -31,6 +31,7 @@ SNAPSHOT_URLS = {
     ): "tesouro-fpm-202608.csv",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo": "siconfi-rreo.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca": "siconfi-dca.json",
+    "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf": "siconfi-rgf.json",
 }
 
 

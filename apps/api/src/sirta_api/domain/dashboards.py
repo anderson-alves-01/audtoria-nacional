@@ -11,7 +11,7 @@ DASHBOARDS = (
         "id": "financeiro",
         "path": "/financeiro",
         "title": "Financeiro e ROI",
-        "goldSourceIds": ("TESOURO-FPM-VALORES", "SICONFI-RREO", "SICONFI-DCA"),
+        "goldSourceIds": ("TESOURO-FPM-VALORES", "SICONFI-RREO", "SICONFI-DCA", "SICONFI-RGF"),
         "emptyReason": "ROI e recuperação exigem valores elegíveis e recebidos reais homologados.",
         "commandsDisabled": True,
     },

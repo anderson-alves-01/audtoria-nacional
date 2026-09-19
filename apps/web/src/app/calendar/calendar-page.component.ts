@@ -14,6 +14,19 @@ export interface RegulatoryItemView {
   notes: string;
 }
 
+export interface PreservedDocumentView {
+  sourceId: string;
+  published: boolean;
+  methodologyVersion: string | null;
+  officialUrl: string | null;
+  bronzeSha256: string | null;
+  checksumSha256: string | null;
+  landingManifestPath: string | null;
+  binding: boolean;
+  operational: boolean;
+  homologated: boolean;
+}
+
 @Component({
   selector: 'app-calendar-page',
   standalone: true,
@@ -29,6 +42,7 @@ export class CalendarPageComponent implements OnInit {
   operational = false;
   homologated = false;
   items: RegulatoryItemView[] = [];
+  preservedDocuments: PreservedDocumentView[] = [];
   errorMessage = '';
 
   ngOnInit(): void {
@@ -39,6 +53,7 @@ export class CalendarPageComponent implements OnInit {
         homologated: boolean;
         disclaimer: string;
         catalogVersion: string;
+        preservedDocuments?: PreservedDocumentView[];
         items: RegulatoryItemView[];
       }>('/v1/regulatory/ibs-cbs')
       .subscribe({
@@ -48,10 +63,11 @@ export class CalendarPageComponent implements OnInit {
           this.operational = body.operational;
           this.homologated = body.homologated;
           this.items = body.items;
+          this.preservedDocuments = body.preservedDocuments ?? [];
           this.state = body.items.length ? 'ok' : 'empty';
         },
         error: () => {
-          this.errorMessage = 'Não foi possível carregar o calendário sintético IBS/CBS.';
+          this.errorMessage = 'Não foi possível carregar o calendário IBS/CBS.';
           this.state = 'error';
         },
       });

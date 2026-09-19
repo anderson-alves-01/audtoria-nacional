@@ -57,6 +57,10 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     rreo = api_client.post("/v1/data-sources/SICONFI-RREO/ingest", headers=_admin())
     assert rreo.status_code == 200
     assert rreo.json()["silverCount"] == 1
+    rgf = api_client.post("/v1/data-sources/SICONFI-RGF/ingest", headers=_admin())
+    assert rgf.status_code == 200
+    assert rgf.json()["silverCount"] == 1
+    assert rgf.json()["taxCreditCreated"] is False
     blocked = api_client.post("/v1/data-sources/RFB-DADOS-ABERTOS/ingest", headers=_admin())
     assert blocked.status_code == 403
     portal = api_client.post(
@@ -74,12 +78,14 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "PLANALTO-LC-214",
         "TESOURO-FPM-VALORES",
         "SICONFI-RREO",
+        "SICONFI-RGF",
     }
     assert expected <= set(by_id)
     assert by_id["PLANALTO-LC-214"]["valueKind"] == "REGULATORY_DOCUMENT"
     assert by_id["SICONFI-ENTES"]["valueKind"] == "COVERAGE_REGISTRY"
     assert by_id["TESOURO-FPM-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["SICONFI-RREO"]["valueKind"] == "FISCAL_STATEMENT_LINE"
+    assert by_id["SICONFI-RGF"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert all(
         item["homologationStatus"] == "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
         for item in body["items"]
@@ -106,3 +112,5 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["PORTAL-TRANSPARENCIA-TRANSFERENCIAS"]["ingestAllowed"] is False
     assert by_id["PLANALTO-LC-214"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["PLANALTO-LC-214"]["ingestAllowed"] is True
+    assert by_id["SICONFI-RGF"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["SICONFI-RGF"]["ingestAllowed"] is True

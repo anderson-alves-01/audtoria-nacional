@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
+import { AuditRulesPageComponent } from './audit-rules/audit-rules-page.component';
 import { CalendarPageComponent } from './calendar/calendar-page.component';
 import { CollectionPageComponent } from './collection/collection-page.component';
 import { DashboardPageComponent } from './dashboard/dashboard-page.component';
+import { DiagnosisPageComponent } from './diagnosis/diagnosis-page.component';
 import { FunnelPageComponent } from './funnel/funnel-page.component';
 import { GatesPageComponent } from './gates/gates-page.component';
 import { HealthPageComponent } from './health/health-page.component';
@@ -14,6 +16,8 @@ export const routes: Routes = [
   { path: 'cobranca', component: CollectionPageComponent },
   { path: 'funil', component: FunnelPageComponent },
   { path: 'calendario', component: CalendarPageComponent },
+  { path: 'diagnostico', component: DiagnosisPageComponent },
+  { path: 'regras-auditoria', component: AuditRulesPageComponent },
   { path: 'fontes', component: SourcesPageComponent },
   { path: 'gates', component: GatesPageComponent },
   { path: 'executivo', component: DashboardPageComponent, data: { dashboardId: 'executivo' } },

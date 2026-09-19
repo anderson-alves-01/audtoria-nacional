@@ -9,7 +9,13 @@ from sirta_api.adapters.db.synthetic_ids import AUDIENCE, ISSUER
 PRIVATE_KEY = Path("tests/fixtures/jwt/private.pem").read_bytes()
 
 
-def issue_token(*, subject: UUID, tenant_id: UUID, expires_in: int = 3600) -> str:
+def issue_token(
+    *,
+    subject: UUID,
+    tenant_id: UUID,
+    expires_in: int = 3600,
+    mfa: bool = False,
+) -> str:
     now = datetime.now(UTC)
     payload = {
         "sub": str(subject),
@@ -19,6 +25,8 @@ def issue_token(*, subject: UUID, tenant_id: UUID, expires_in: int = 3600) -> st
         "exp": now + timedelta(seconds=expires_in),
         "tenant_id": str(tenant_id),
     }
+    if mfa:
+        payload["amr"] = ["pwd", "mfa"]
     return jwt.encode(payload, PRIVATE_KEY, algorithm="RS256", headers={"kid": "sirta-test"})
 
 
@@ -28,9 +36,10 @@ def auth_headers(
     tenant_id: UUID,
     territory_id: UUID,
     purpose_id: UUID,
+    mfa: bool = False,
 ) -> dict[str, str]:
     return {
-        "Authorization": f"Bearer {issue_token(subject=subject, tenant_id=tenant_id)}",
+        "Authorization": f"Bearer {issue_token(subject=subject, tenant_id=tenant_id, mfa=mfa)}",
         "X-Territory-Id": str(territory_id),
         "X-Purpose-Id": str(purpose_id),
     }
