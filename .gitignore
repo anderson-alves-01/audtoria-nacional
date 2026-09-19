@@ -59,6 +59,9 @@ pgdata/
 minio-data/
 keycloak-data/
 
+# Autonomous orchestrator runtime (locks, logs, PIDs). No secrets or payloads.
+.cursor-autonomous/
+
 # Terraform (never apply prod in F0)
 .terraform/
 *.tfstate

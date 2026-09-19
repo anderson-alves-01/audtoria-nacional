@@ -1,0 +1,955 @@
+schema_version: 1
+updated_at: "2026-09-19T10:45:00-03:00"
+branch: feat/official-public-ingest
+pr: 2
+implementation_version: "0.3.15"
+release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
+initial_head: 1d7a601
+notes: >
+  Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
+  não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
+
+items:
+  - id: F2-CI-CD
+    fase: F2
+    dominio: D1
+    descricao: CI Python, web e containers reproduzível
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: LOCAL_GO
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.15/
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Manter CI verde a cada ciclo.
+
+  - id: F2-TENANT-ISOLATION
+    fase: F2
+    dominio: D1
+    descricao: Testes de isolamento de tenant e autorização negativa
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: LOCAL_GO
+    dados_necessarios: synthetic_test_only
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: false
+    testes: true
+    evidencia: tests/security/test_isolation.py
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Expandir casos negativos se novos recursos forem adicionados.
+
+  - id: F2-OBSERVABILITY
+    fase: F2
+    dominio: D1
+    descricao: Observabilidade de API, jobs e ingestão (métricas, logs, traces)
+    dependencias: [F2-CI-CD]
+    estado_tecnico: PENDING
+    estado_institucional: LOCAL_GO
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Instrumentar ingestão oficial e jobs com run_id, volumes e falhas.
+
+  - id: F2-BACKUP-RESTORE
+    fase: F10
+    dominio: D1
+    descricao: Continuidade, backup e restauração documentados e testáveis localmente
+    dependencias: [F2-CI-CD]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Scripts de dump/restore locais com dry-run; sem apply em nuvem.
+
+  - id: F2-SECURITY-HARDENING
+    fase: F2
+    dominio: D1
+    descricao: MFA não local, DLP de prompt, auditoria de tool calls, secrets fora do código
+    dependencias: [F2-TENANT-ISOLATION]
+    estado_tecnico: PENDING
+    estado_institucional: LOCAL_GO
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Completar controles locais restantes sem enfraquecer isolamento.
+
+  - id: F3-SOURCE-CATALOG
+    fase: F3.0
+    dominio: D2
+    descricao: Registro mestre de fontes oficiais
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [contracts/sources/official-catalog.yaml]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: contracts/sources/official-catalog.yaml
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Atualizar catálogo a cada fonte investigada.
+
+  - id: F3-GOLD-LINEAGE
+    fase: F3.1
+    dominio: D3
+    descricao: Lineage Gold por linha até Silver, Bronze, landing e URL
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: true
+    evidencia: tests/unit/test_gold_invariants.py
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Garantir lineage em toda nova carga Gold.
+
+  - id: F3-IBGE-SIDRA
+    fase: F3.2
+    dominio: D3
+    descricao: IBGE SIDRA 6579 e 5938; variável 6575 em quarentena
+    dependencias: [F3-GOLD-LINEAGE]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [IBGE-SIDRA, IBGE-SIDRA-PIB]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/official-ingest/2026-09-19/
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Manter 6575 sem interpolação; exibir cobertura 5571 vs 5570.
+
+  - id: F3-SICONFI-ENTES
+    fase: F3.2
+    dominio: D3
+    descricao: Cadastro SICONFI/entes como cobertura, não demonstrativo
+    dependencias: [F3-GOLD-LINEAGE]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [SICONFI-ENTES]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/official-ingest/2026-09-19/
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Não apresentar como RREO/DCA.
+
+  - id: F3-TESOURO-DICTIONARY
+    fase: F3.2
+    dominio: D9
+    descricao: Dicionário Aria de tipos de transferência
+    dependencias: [F3-GOLD-LINEAGE]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [TESOURO-TRANSPARENTE]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/official-ingest/2026-09-19/
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Nunca apresentar como valor de FPM.
+
+  - id: F3-FPM-MUNICIPAL
+    fase: F3.2
+    dominio: D9
+    descricao: Valores mensais de FPM por município (CKAN) com retenções FUNDEB
+    dependencias: [F3-SICONFI-ENTES]
+    estado_tecnico: PENDING
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [TESOURO-FPM-VALORES]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: tests/fixtures/official-snapshots/tesouro-fpm-202608.csv
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Conector existe; executar backfill controlado por competência com espaço em disco e join IBGE.
+
+  - id: F3-RREO-BACKFILL
+    fase: F3.2
+    dominio: D3
+    descricao: Backfill controlado SICONFI RREO com paginação, checkpoint e limite de entes
+    dependencias: [F3-SICONFI-ENTES]
+    estado_tecnico: PENDING
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [SICONFI-RREO]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: tests/fixtures/official-snapshots/siconfi-rreo.json
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: null
+    motivo_bloqueio: null
+    next_action: Aumentar max_entes_per_run com métricas de volume/tempo/armazenamento; backfill por exercício/período.
+
+  - id: F3-DCA-FINBRA-BACKFILL
+    fase: F3.2
+    dominio: D3
+    descricao: Backfill controlado SICONFI DCA/FINBRA
+    dependencias: [F3-SICONFI-ENTES]
+    estado_tecnico: PENDING
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [SICONFI-DCA]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: tests/fixtures/official-snapshots/siconfi-dca.json
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: null
+    motivo_bloqueio: null
+    next_action: Carga particionada do exercício completo mais recente e corrente publicado.
+
+  - id: F3-SICONFI-OTHER-STATEMENTS
+    fase: F3.2
+    dominio: D3
+    descricao: Demais demonstrativos SICONFI necessários aos indicadores (RGF e anexos)
+    dependencias: [F3-RREO-BACKFILL]
+    estado_tecnico: PENDING
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [SICONFI]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Investigar API oficial /rgf e anexos; ativar só PUBLIC_OPEN estruturado.
+
+  - id: F3-PORTAL-TRANSPARENCIA
+    fase: F3.2
+    dominio: D9
+    descricao: Portal da Transparência da União para transferências quando API estruturada existir
+    dependencias: [F3-TESOURO-DICTIONARY]
+    estado_tecnico: PENDING
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: PUBLIC_CONTROLLED
+    fontes_oficiais: [portaldatransparencia.gov.br]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Documentar 401/credencial; não scrapar; manter vazio se não houver PUBLIC_OPEN.
+
+  - id: F3-REGULATORY-BEYOND-EC132
+    fase: F3.2
+    dominio: D10
+    descricao: Catálogo documental LC 214, normas CGIBS, RFB e demais oficiais além da EC 132
+    dependencias: []
+    estado_tecnico: PENDING
+    estado_institucional: NON_BINDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [PLANALTO-LEGISLACAO]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Obter HTML/PDF oficiais com checksum; binding=false operational=false homologated=false.
+
+  - id: F3-STATE-CATALOG
+    fase: F3.2
+    dominio: D9
+    descricao: Catálogo dos 26 estados e DF para ICMS/IPVA
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: DISCOVERED
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [contracts/sources/state-transfers-catalog.yaml]
+    backend: true
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: contracts/sources/state-transfers-catalog.yaml
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Verificar tecnicamente cada UF; ativar só PUBLIC_OPEN estruturado comprovado.
+
+  - id: F3-STATE-ICMS-ACTIVATION
+    fase: F3.2
+    dominio: D9
+    descricao: Ativar quotas ICMS estaduais PUBLIC_OPEN verificadas
+    dependencias: [F3-STATE-CATALOG]
+    estado_tecnico: PENDING
+    estado_institucional: DISCOVERED
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ESTADO-ICMS-QUOTA]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Investigar APIs/arquivos oficiais por UF; sem agregadores privados.
+
+  - id: F3-STATE-IPVA-ACTIVATION
+    fase: F3.2
+    dominio: D9
+    descricao: Ativar quotas IPVA estaduais PUBLIC_OPEN verificadas
+    dependencias: [F3-STATE-CATALOG]
+    estado_tecnico: PENDING
+    estado_institucional: DISCOVERED
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ESTADO-IPVA-QUOTA]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Idem ICMS; normalizar por código IBGE.
+
+  - id: F3-RFB-CNPJ
+    fase: F3.2
+    dominio: D4
+    descricao: Conector RFB CNPJ com minimização, streaming e escopo territorial
+    dependencias: []
+    estado_tecnico: PENDING
+    estado_institucional: READY_FOR_TERRITORIAL_SCOPE
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [RFB-DADOS-ABERTOS]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: false
+    evidencia: contracts/sources/official-catalog.yaml
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: null
+    motivo_bloqueio: null
+    next_action: Completar download retomável, manifesto, filtro territorial e política de EI; sem carga nacional.
+
+  - id: F3-SECTORAL-ANP
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar dados abertos oficiais ANP
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: PENDING
+    estado_institucional: DISCOVERED
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ANP]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Catalogar endpoint oficial; ativar só se PUBLIC_OPEN estruturado.
+
+  - id: F3-SECTORAL-ANEEL-EPE
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar dados abertos oficiais ANEEL/EPE
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: PENDING
+    estado_institucional: DISCOVERED
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ANEEL, EPE]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Catalogar e ativar somente fonte estruturada oficial.
+
+  - id: F3-SECTORAL-ANATEL
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar dados abertos oficiais Anatel
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: PENDING
+    estado_institucional: DISCOVERED
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ANATEL]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Catalogar endpoint oficial.
+
+  - id: F3-SECTORAL-BCB
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar dados abertos oficiais do Banco Central
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: PENDING
+    estado_institucional: DISCOVERED
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [BCB]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Catalogar SGS/OLINDA oficiais; sem crédito tributário.
+
+  - id: F3-SECTORAL-CNES
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar CNES/DATASUS oficial
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: PENDING
+    estado_institucional: DISCOVERED
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [CNES, DATASUS]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Catalogar arquivo/API oficial; minimização de dados pessoais.
+
+  - id: F3-MUNICIPAL-RESTRICTED
+    fase: F3.3
+    dominio: D2
+    descricao: Conectores ISS IPTU ITBI DA pagamentos parcelamentos processos
+    dependencias: []
+    estado_tecnico: PENDING
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: false
+    evidencia: contracts/sources/official-catalog.yaml
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: null
+    motivo_bloqueio: null
+    next_action: Completar upload controlado, schemas, quarentena, tenant e telas vazias; sem amostra.
+
+  - id: F4-DIAGNOSIS
+    fase: F4
+    dominio: D5
+    descricao: Diagnóstico municipal técnico com estado vazio funcional
+    dependencias: [F3-IBGE-SIDRA]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: APIs e tela de diagnóstico vazias; sem meta de recuperação.
+
+  - id: F4-CADASTRO-360
+    fase: F4
+    dominio: D4
+    descricao: Cadastro 360 técnico sem PII real
+    dependencias: [F3-RFB-CNPJ, F3-MUNICIPAL-RESTRICTED]
+    estado_tecnico: PENDING
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Modelo, API e tela vazia; minimização; sem território inventado.
+
+  - id: F4-AUDIT-RULES
+    fase: F4
+    dominio: D5
+    descricao: Regras de auditoria versionadas não vinculantes
+    dependencias: [F4-DIAGNOSIS]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Catálogo de regras binding=false; sem potencial como crédito.
+
+  - id: F5-FINDINGS-CASES
+    fase: F5
+    dominio: D5
+    descricao: Achados, evidências e casos com APIs vazias
+    dependencias: [F4-AUDIT-RULES]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: CRUD técnico vazio; comandos jurídicos desativados.
+
+  - id: F5-HUMAN-VALIDATION
+    fase: F5
+    dominio: D5
+    descricao: Workflow de validação humana (não a homologação institucional)
+    dependencias: [F5-FINDINGS-CASES]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Estados IDENTIFIED/VALIDATED sem crédito público; comandos desativados até G4.
+
+  - id: F5-NOTIFICATIONS
+    fase: F5
+    dominio: D6
+    descricao: Notificações administrativas desativadas até aprovação humana
+    dependencias: [F5-HUMAN-VALIDATION]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: API e tela vazias; envio real desativado.
+
+  - id: F5-COLLECTION
+    fase: F5
+    dominio: D6
+    descricao: Cobrança administrativa controlada
+    dependencias: [F5-HUMAN-VALIDATION]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: null
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: null
+    motivo_bloqueio: null
+    next_action: Completar painel vazio oficial; manter comandos desativados; fluxo sintético só em teste.
+
+  - id: F6-PAYMENTS
+    fase: F6
+    dominio: D7
+    descricao: Pagamentos e parcelamentos
+    dependencias: [F5-COLLECTION]
+    estado_tecnico: PENDING
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: APIs e /pagamentos vazios; sem recuperação inventada.
+
+  - id: F6-ACTIVE-DEBT
+    fase: F6
+    dominio: D8
+    descricao: Dívida ativa
+    dependencias: [F6-PAYMENTS]
+    estado_tecnico: PENDING
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Conector e /divida-ativa vazios; inscrição desativada.
+
+  - id: F6-PROCURADORIA
+    fase: F6
+    dominio: D8
+    descricao: Módulo Procuradoria
+    dependencias: [F6-ACTIVE-DEBT]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Workflow vazio; sem alteração jurídica automática.
+
+  - id: F7-TRANSFER-RECONCILIATION
+    fase: F7
+    dominio: D9
+    descricao: Conciliação previsto versus realizado de transferências
+    dependencias: [F3-FPM-MUNICIPAL, F3-STATE-ICMS-ACTIVATION]
+    estado_tecnico: PENDING
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [TESOURO-FPM-VALORES]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Comparar somente quando ambos existirem; ocorrência não é crédito.
+
+  - id: F8-IBS-CBS
+    fase: F8
+    dominio: D10
+    descricao: Prontidão IBS/CBS documental e calendário não vinculante
+    dependencias: [F3-REGULATORY-BEYOND-EC132]
+    estado_tecnico: PENDING
+    estado_institucional: NON_BINDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [PLANALTO-LEGISLACAO]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: tests/integration/test_regulatory.py
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: null
+    motivo_bloqueio: null
+    next_action: Substituir dependência de catálogo sintético por documento oficial; manter NON_BINDING.
+
+  - id: F9-PILOT-TECHNICAL
+    fase: F9
+    dominio: D1
+    descricao: Prontidão técnica de piloto assistido sem município aprovado
+    dependencias: [DASHBOARDS-COMPLETE]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: false
+    evidencia: null
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Checklist técnico em /prontidao; G9 permanece BLOCKED.
+
+  - id: F10-OPS-GOVERNANCE
+    fase: F10
+    dominio: D1
+    descricao: Operação, governança e gates sem fabricar aprovação
+    dependencias: [F2-OBSERVABILITY]
+    estado_tecnico: PENDING
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: apps/web/src/app/gates/
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: null
+    motivo_bloqueio: null
+    next_action: Completar runbooks locais; G10 BLOCKED.
+
+  - id: DASHBOARDS-COMPLETE
+    fase: D11
+    dominio: D11
+    descricao: Quinze dashboards com backend real, vazios oficiais e testes
+    dependencias: [F3-GOLD-LINEAGE]
+    estado_tecnico: PENDING
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: tests/integration/test_dashboards.py
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: >
+      Completar cada rota (executivo financeiro economia operacao achados cobranca
+      pagamentos divida-ativa transferencias ibs-cbs qualidade auditoria gates
+      publico prontidao) com loading/erro/vazio, fonte, competência, fórmula,
+      qualidade, lineage e homologação pendente.
+
+  - id: DOC-HOMOLOGATION-PACKAGE
+    fase: F10
+    dominio: D1
+    descricao: Pacote único final de homologação humana
+    dependencias: [DASHBOARDS-COMPLETE, F3-RREO-BACKFILL, F3-FPM-MUNICIPAL, F8-IBS-CBS]
+    estado_tecnico: PENDING
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN_VALIDATION_PACKAGE.md
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: null
+    motivo_bloqueio: null
+    next_action: Não solicitar homologação agora; consolidar somente quando a fila técnica fechar.
+
+  - id: G0-HUMAN
+    fase: G0
+    dominio: D1
+    descricao: Autorização institucional do programa municipal
+    dependencias: []
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Patrocinador, município piloto e DPA ausentes.
+    next_action: Nenhuma ação automática. Não fabricar aprovação.
+
+  - id: G1-HUMAN
+    fase: G1
+    dominio: D5
+    descricao: Homologação institucional do diagnóstico
+    dependencias: [F4-DIAGNOSIS]
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Diagnóstico municipal não homologado.
+    next_action: Nenhuma ação automática.
+
+  - id: G4-HUMAN
+    fase: G4
+    dominio: D5
+    descricao: Homologação especialista ISS
+    dependencias: [F4-AUDIT-RULES]
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Regras e fórmulas não homologadas.
+    next_action: Nenhuma ação automática.
+
+  - id: G9-HUMAN
+    fase: G9
+    dominio: D1
+    descricao: Aceite de piloto
+    dependencias: [F9-PILOT-TECHNICAL]
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Município e usuários do piloto ausentes.
+    next_action: Nenhuma ação automática.
+
+  - id: G10-HUMAN
+    fase: G10
+    dominio: D1
+    descricao: Autorização de produção
+    dependencias: [F10-OPS-GOVERNANCE]
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Segurança, operação e aceite institucional ausentes.
+    next_action: Nenhuma ação automática.

@@ -12,6 +12,8 @@
 - `docs/delivery/ROADMAP-SIRTA-2026.md`: roadmap 1.2 em progresso.
 - `docs/plans/2026-09-19-roadmap-continuation.md`: plano 0.3.15.
 - `docs/delivery/RELEASE_NOTES_0.3.15.md`: notas desta fatia.
+- `docs/autonomous/AUTONOMOUS-EXECUTION.md` e `docs/autonomous/ROADMAP-WORK-QUEUE.yaml`: orquestrador persistente do roadmap.
+- `tools/autonomous/run-roadmap-autonomous.ps1` e `verify-roadmap.ps1`.
 - `contracts/openapi/sirta-v1.yaml`: **única OpenAPI ativa**.
 - `contracts/openapi/api-outline.yaml`: legado/depreciado.
 - `contracts/sources/official-catalog.yaml` e `contracts/sources/state-transfers-catalog.yaml`.
