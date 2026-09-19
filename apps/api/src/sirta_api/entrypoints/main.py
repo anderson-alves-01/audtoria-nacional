@@ -4,11 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from sirta_api.adapters.http.logging import TraceMiddleware, configure_logging
 from sirta_api.adapters.http.problem import problem_response
 from sirta_api.domain.errors import ProblemError
+from sirta_api.entrypoints.active_debt_panel import router as active_debt_panel_router
 from sirta_api.entrypoints.audit import router as audit_router
 from sirta_api.entrypoints.audit_cases import router as audit_cases_router
 from sirta_api.entrypoints.audit_rules import router as audit_rules_router
 from sirta_api.entrypoints.catalog import router as catalog_router
-from sirta_api.entrypoints.active_debt_panel import router as active_debt_panel_router
 from sirta_api.entrypoints.collection_panel import router as collection_panel_router
 from sirta_api.entrypoints.dashboards import router as dashboard_router
 from sirta_api.entrypoints.diagnosis import router as diagnosis_router

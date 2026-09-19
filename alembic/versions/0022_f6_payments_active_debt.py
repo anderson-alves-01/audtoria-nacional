@@ -7,7 +7,6 @@ Create Date: 2026-09-19
 
 from alembic import op
 
-
 revision = "0022_f6_payments_active_debt"
 down_revision = "0021_findings_human_validation"
 branch_labels = None
