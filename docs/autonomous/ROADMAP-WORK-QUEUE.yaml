@@ -1,8 +1,8 @@
 schema_version: 1
-updated_at: "2026-09-19T09:00:00-03:00"
+updated_at: "2026-09-19T12:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.19"
+implementation_version: "0.3.20"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
@@ -749,20 +749,23 @@ items:
     dominio: D9
     descricao: Conciliação previsto versus realizado de transferências
     dependencias: [F3-FPM-MUNICIPAL, F3-STATE-ICMS-ACTIVATION]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [TESOURO-FPM-VALORES]
     backend: true
     frontend: true
     pipeline: true
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: evidence/releases/0.3.20/
+    versao: "0.3.20"
     commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Comparar somente quando ambos existirem; ocorrência não é crédito.
+    next_action: >
+      Manter /v1/transfer-reconciliation vazio, createsTaxCredit=false,
+      differenceIsOccurrenceOnly=true, POST → 409. Comparar só quando ambos
+      existirem após backfill FPM/ICMS. G7 oficial BLOCKED.
 
   - id: F8-IBS-CBS
     fase: F8
@@ -791,27 +794,7 @@ items:
     dominio: D1
     descricao: Prontidão técnica de piloto assistido sem município aprovado
     dependencias: [DASHBOARDS-COMPLETE]
-    estado_tecnico: PENDING
-    estado_institucional: BLOCKED
-    dados_necessarios: none
-    fontes_oficiais: []
-    backend: true
-    frontend: true
-    pipeline: false
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
-    commit: null
-    ci: null
-    motivo_bloqueio: null
-    next_action: Checklist técnico em /prontidao; G9 permanece BLOCKED.
-
-  - id: F10-OPS-GOVERNANCE
-    fase: F10
-    dominio: D1
-    descricao: Operação, governança e gates sem fabricar aprovação
-    dependencias: [F2-OBSERVABILITY]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
     dados_necessarios: none
     fontes_oficiais: []
@@ -819,12 +802,36 @@ items:
     frontend: true
     pipeline: false
     testes: true
-    evidencia: apps/web/src/app/gates/
-    versao: "0.3.15"
-    commit: 1d7a601
+    evidencia: evidence/releases/0.3.20/
+    versao: "0.3.20"
+    commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Completar runbooks locais; G10 BLOCKED.
+    next_action: >
+      Manter /v1/pilot-readiness e /prontidao; technicalReady possível;
+      institutionalReady=false; G9 BLOCKED. Sem município inventado.
+
+  - id: F10-OPS-GOVERNANCE
+    fase: F10
+    dominio: D1
+    descricao: Operação, governança e gates sem fabricar aprovação
+    dependencias: [F2-OBSERVABILITY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.20/
+    versao: "0.3.20"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter /v1/ops-governance e /operacao-governanca; canDeploy=false;
+      runbooks locais presentes; G10 BLOCKED. Sem terraform apply.
 
   - id: DASHBOARDS-COMPLETE
     fase: D11

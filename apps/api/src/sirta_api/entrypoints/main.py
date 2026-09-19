@@ -17,11 +17,16 @@ from sirta_api.entrypoints.gates import router as gates_router
 from sirta_api.entrypoints.health import router as health_router
 from sirta_api.entrypoints.human_validation import router as human_validation_router
 from sirta_api.entrypoints.notifications import router as notifications_router
+from sirta_api.entrypoints.ops_governance import router as ops_governance_router
 from sirta_api.entrypoints.payments_panel import router as payments_panel_router
+from sirta_api.entrypoints.pilot_readiness import router as pilot_readiness_router
 from sirta_api.entrypoints.pipeline import router as pipeline_router
 from sirta_api.entrypoints.procuradoria_panel import router as procuradoria_panel_router
 from sirta_api.entrypoints.regulatory import router as regulatory_router
 from sirta_api.entrypoints.tax_credits import router as tax_credit_router
+from sirta_api.entrypoints.transfer_reconciliation import (
+    router as transfer_reconciliation_router,
+)
 from sirta_api.entrypoints.transfers import router as transfer_router
 
 
@@ -29,7 +34,7 @@ def create_app() -> FastAPI:
     configure_logging()
     application = FastAPI(
         title="SIRTA Municipal API",
-        version="0.3.19",
+        version="0.3.20",
     )
     application.add_middleware(TraceMiddleware)
     application.add_middleware(
@@ -54,6 +59,9 @@ def create_app() -> FastAPI:
     application.include_router(payments_panel_router)
     application.include_router(active_debt_panel_router)
     application.include_router(procuradoria_panel_router)
+    application.include_router(transfer_reconciliation_router)
+    application.include_router(pilot_readiness_router)
+    application.include_router(ops_governance_router)
     application.include_router(catalog_router)
     application.include_router(dashboard_router)
     application.include_router(gates_router)

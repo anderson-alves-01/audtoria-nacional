@@ -78,7 +78,8 @@ DASHBOARDS = (
             "ESTADO-IPVA-QUOTA",
         ),
         "emptyReason": (
-            "Somente valores oficiais publicados. Dicionário FPM não é valor transferido."
+            "Somente valores oficiais publicados. Dicionário FPM não é valor transferido. "
+            "Conciliação previsto/realizado em /v1/transfer-reconciliation (ocorrência, não crédito)."
         ),
         "commandsDisabled": True,
     },
@@ -129,7 +130,9 @@ DASHBOARDS = (
         "path": "/prontidao",
         "title": "Prontidão para piloto e produção",
         "goldSourceIds": (),
-        "emptyReason": "Piloto e produção bloqueados até G9/G10. Sem território piloto aprovado.",
+        "emptyReason": (
+            "Checklist técnico em /v1/pilot-readiness. G9/G10 BLOCKED sem município e aceites."
+        ),
         "commandsDisabled": True,
     },
 )

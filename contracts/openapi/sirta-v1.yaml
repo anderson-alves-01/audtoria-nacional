@@ -3,7 +3,7 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.19
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.20
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
@@ -460,6 +460,57 @@ paths:
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
         '409': {description: Legal commands disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/transfer-reconciliation:
+    get:
+      operationId: getTransferReconciliation
+      description: >
+        Empty transfer reconciliation shell. Compares expected versus received only
+        when both exist. Differences are occurrences, never tax credits. G7 official blocked.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty reconciliation panel; createsTaxCredit=false}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandTransferReconciliation
+      description: Always rejected (409). No automatic reconciliation or credit creation.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Reconciliation commands disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/pilot-readiness:
+    get:
+      operationId: getPilotReadiness
+      description: >
+        Technical pilot readiness checklist. Technical items may be met; G9 remains
+        BLOCKED without municipality, users and institutional acceptances.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Technical checklist; institutionalReady=false; G9 BLOCKED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/ops-governance:
+    get:
+      operationId: getOpsGovernance
+      description: >
+        Local ops and governance readiness with runbook inventory. canDeploy=false;
+        terraformApplyAuthorized=false; G10 BLOCKED. No fabricated human approval.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Local runbooks listed; G10 BLOCKED}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/data-sources:

@@ -12,9 +12,12 @@ import { GatesPageComponent } from './gates/gates-page.component';
 import { HealthPageComponent } from './health/health-page.component';
 import { HumanValidationPageComponent } from './human-validation/human-validation-page.component';
 import { NotificationsPageComponent } from './notifications/notifications-page.component';
+import { OpsGovernancePageComponent } from './ops-governance/ops-governance-page.component';
 import { PaymentsPageComponent } from './payments/payments-page.component';
+import { PilotReadinessPageComponent } from './pilot-readiness/pilot-readiness-page.component';
 import { ProcuradoriaPageComponent } from './procuradoria/procuradoria-page.component';
 import { SourcesPageComponent } from './sources/sources-page.component';
+import { TransferReconciliationPageComponent } from './transfer-reconciliation/transfer-reconciliation-page.component';
 import { ValidationPageComponent } from './validation/validation-page.component';
 
 export const routes: Routes = [
@@ -33,16 +36,21 @@ export const routes: Routes = [
   { path: 'casos-auditoria', component: AuditCasesPageComponent },
   { path: 'fontes', component: SourcesPageComponent },
   { path: 'gates', component: GatesPageComponent },
+  { path: 'operacao-governanca', component: OpsGovernancePageComponent },
   { path: 'executivo', component: DashboardPageComponent, data: { dashboardId: 'executivo' } },
   { path: 'financeiro', component: DashboardPageComponent, data: { dashboardId: 'financeiro' } },
   { path: 'economia', component: DashboardPageComponent, data: { dashboardId: 'economia' } },
   { path: 'operacao', component: DashboardPageComponent, data: { dashboardId: 'operacao' } },
   { path: 'achados', component: FindingsPageComponent },
   { path: 'transferencias', component: DashboardPageComponent, data: { dashboardId: 'transferencias' } },
+  {
+    path: 'conciliacao-transferencias',
+    component: TransferReconciliationPageComponent,
+  },
   { path: 'ibs-cbs', component: DashboardPageComponent, data: { dashboardId: 'ibs-cbs' } },
   { path: 'qualidade', component: DashboardPageComponent, data: { dashboardId: 'qualidade' } },
   { path: 'auditoria', component: DashboardPageComponent, data: { dashboardId: 'auditoria' } },
   { path: 'publico', component: DashboardPageComponent, data: { dashboardId: 'publico' } },
-  { path: 'prontidao', component: DashboardPageComponent, data: { dashboardId: 'prontidao' } },
+  { path: 'prontidao', component: PilotReadinessPageComponent },
   { path: '**', redirectTo: '' },
 ];
