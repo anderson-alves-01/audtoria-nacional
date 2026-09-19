@@ -4,6 +4,7 @@ Data: 2026-09-19
 Branch: `feat/official-public-ingest`  
 PR: #2  
 HEAD pré-ciclo: `8f762c0`
+HEAD pós-ciclo: `b300d30`
 
 ## Seleção
 
