@@ -28,11 +28,7 @@ items:
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
     commit: 9938773
-    ci: null
-    motivo_bloqueio: null
-    next_action: >
-      Verificar CI após push 0.3.24. Próximo ciclo: schema estadual baixável
-      ou ativação setorial com fixture.
+    ci: "35445715071"
 
   - id: F2-TENANT-ISOLATION
     fase: F2
@@ -356,7 +352,7 @@ items:
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
     commit: 9938773
-    ci: null
+    ci: "35445715071"
     motivo_bloqueio: null
     next_action: >
       RJ PROVENANCE_VERIFIED no catálogo e shell /v1/state-transfers.
@@ -378,7 +374,7 @@ items:
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
     commit: 9938773
-    ci: null
+    ci: "35445715071"
     motivo_bloqueio: >
       RJ CSV catalogado no CKAN; download retornou HTML de filtro de IP SEFAZ
       neste runtime; schema de colunas não confirmado em bytes.
@@ -402,7 +398,7 @@ items:
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
     commit: 9938773
-    ci: null
+    ci: "35445715071"
     motivo_bloqueio: >
       Mesmo CSV RJ de repasses inclui IPVA; schema pendente pelo bloqueio de IP.
     next_action: Idem ICMS; normalizar por código IBGE.
@@ -423,7 +419,7 @@ items:
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
     commit: 9938773
-    ci: null
+    ci: "35445715071"
     motivo_bloqueio: null
     next_action: >
       Escopo, resume, manifesto e EI prontos. Manter ingestAllowed=false até
