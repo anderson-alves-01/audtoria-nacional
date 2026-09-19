@@ -759,7 +759,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.20/
     versao: "0.3.20"
-    commit: null
+    commit: 2aca756
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -804,7 +804,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.20/
     versao: "0.3.20"
-    commit: null
+    commit: 2aca756
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -826,7 +826,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.20/
     versao: "0.3.20"
-    commit: null
+    commit: 2aca756
     ci: null
     motivo_bloqueio: null
     next_action: >
