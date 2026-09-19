@@ -37,9 +37,7 @@ def test_statement_partition_key_includes_period_when_present() -> None:
         )
         == "2025:6"
     )
-    assert (
-        statement_partition_key(competence="2024", query={"an_exercicio": "2024"}) == "2024"
-    )
+    assert statement_partition_key(competence="2024", query={"an_exercicio": "2024"}) == "2024"
 
 
 def test_select_entes_slice_does_not_wrap_when_exhausted() -> None:
@@ -87,7 +85,9 @@ def test_assert_datalake_space_fails_closed_when_insufficient() -> None:
     usage = MagicMock(free=100)
     with patch("sirta_api.domain.backfill_controls.shutil.disk_usage", return_value=usage):
         with pytest.raises(ConflictError, match="disk"):
-            assert_datalake_space(root=Path("var/datalake"), min_free_bytes=1_000, required_bytes=50)
+            assert_datalake_space(
+                root=Path("var/datalake"), min_free_bytes=1_000, required_bytes=50
+            )
 
 
 def test_assert_datalake_space_passes_when_enough() -> None:

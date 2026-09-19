@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-09-19T09:35:00-03:00"
+updated_at: "2026-09-19T09:45:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
 implementation_version: "0.3.23"
@@ -9,6 +9,8 @@ notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
   Ciclo 0.3.23: backfill controlado FPM/RREO/DCA (hard_cap, disco, COMPLETE).
+  Ciclo CI: ruff format em config/backfill_controls/test_backfill_controls
+  após falha do job python na PR #2; sem nova funcionalidade neste ciclo.
 
 items:
   - id: F2-CI-CD
@@ -24,12 +26,14 @@ items:
     frontend: true
     pipeline: false
     testes: true
-    evidencia: evidence/releases/0.3.15/
-    versao: "0.3.15"
-    commit: 1d7a601
-    ci: "35437663525"
+    evidencia: evidence/releases/0.3.23/ruff-format-fix-tests.txt
+    versao: "0.3.23"
+    commit: 0978085
+    ci: "35442955746"
     motivo_bloqueio: null
-    next_action: Manter CI verde a cada ciclo.
+    next_action: >
+      Corrigido ruff format após falha Format no job python. Confirmar CI
+      verde após push deste ciclo; então retomar RFB/estados/setorial.
 
   - id: F2-TENANT-ISOLATION
     fase: F2

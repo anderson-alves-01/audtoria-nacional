@@ -43,9 +43,7 @@ class Settings(BaseSettings):
     )
     datalake_min_free_bytes: int = Field(
         default=67_108_864,
-        validation_alias=AliasChoices(
-            "SIRTA_DATALAKE_MIN_FREE_BYTES", "DATALAKE_MIN_FREE_BYTES"
-        ),
+        validation_alias=AliasChoices("SIRTA_DATALAKE_MIN_FREE_BYTES", "DATALAKE_MIN_FREE_BYTES"),
     )
 
     @model_validator(mode="after")

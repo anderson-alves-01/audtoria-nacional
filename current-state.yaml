@@ -90,5 +90,5 @@ gates:
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
 evidence: evidence/releases/0.3.23/
-next_action: Continue remaining technically implementable ROADMAP items (RFB territorial, state sources, sectoral activation with fixtures). Human validation of Gold remains pending and is not requested now.
+next_action: After CI green on PR #2 post ruff-format fix, continue RFB territorial, state sources, sectoral activation with fixtures. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

@@ -72,26 +72,20 @@ def build_backfill_metrics(
     }
 
 
-def assert_datalake_space(
-    *, root: Path, min_free_bytes: int, required_bytes: int = 0
-) -> int:
+def assert_datalake_space(*, root: Path, min_free_bytes: int, required_bytes: int = 0) -> int:
     path = Path(root)
     path.mkdir(parents=True, exist_ok=True)
     free = int(shutil.disk_usage(path).free)
     needed = max(int(min_free_bytes), int(required_bytes))
     if free < needed:
-        raise ConflictError(
-            f"insufficient datalake disk space: free={free} required={needed}"
-        )
+        raise ConflictError(f"insufficient datalake disk space: free={free} required={needed}")
     return free
 
 
 def resolve_fpm_endpoint(catalog: dict) -> str:
     parameters = catalog.get("parameters") or {}
     by_competence = parameters.get("resource_url_by_competence") or {}
-    competence = str(
-        parameters.get("competence") or catalog.get("competence") or ""
-    )
+    competence = str(parameters.get("competence") or catalog.get("competence") or "")
     if competence and isinstance(by_competence, dict):
         mapped = by_competence.get(competence)
         if mapped:
