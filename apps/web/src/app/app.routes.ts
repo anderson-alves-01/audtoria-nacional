@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { CalendarPageComponent } from './calendar/calendar-page.component';
 import { CollectionPageComponent } from './collection/collection-page.component';
 import { FunnelPageComponent } from './funnel/funnel-page.component';
+import { GatesPageComponent } from './gates/gates-page.component';
 import { HealthPageComponent } from './health/health-page.component';
 import { SourcesPageComponent } from './sources/sources-page.component';
 import { ValidationPageComponent } from './validation/validation-page.component';
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: 'funil', component: FunnelPageComponent },
   { path: 'calendario', component: CalendarPageComponent },
   { path: 'fontes', component: SourcesPageComponent },
+  { path: 'gates', component: GatesPageComponent },
   { path: '**', redirectTo: '' },
 ];

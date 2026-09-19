@@ -21,6 +21,7 @@ from sirta_api.domain.errors import ForbiddenError, NotVisibleError, ValidationF
 
 FIXTURES = {
     "IBGE-SIDRA": Path("pipelines/synthetic/ibge_sidra_2026_01.json"),
+    "TESOURO-TRANSPARENTE": Path("pipelines/synthetic/tesouro_transparente_2026_01.json"),
 }
 METHODOLOGY_VERSION = "source-enrichment-v1"
 

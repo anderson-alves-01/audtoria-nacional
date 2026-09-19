@@ -79,3 +79,28 @@ def test_logical_rollback_unpublishes_enrichment(api_client) -> None:
     assert gold.status_code == 200
     assert gold.json()["published"] is False
     assert gold.json()["createsTaxCredit"] is False
+
+
+def test_catalog_ingest_tesouro_stub_never_creates_tax_credit(api_client) -> None:
+    first = api_client.post("/v1/data-sources/TESOURO-TRANSPARENTE/ingest", headers=_admin())
+    assert first.status_code == 200
+    body = first.json()
+    assert body["sourceId"] == "TESOURO-TRANSPARENTE"
+    assert body["receivedCount"] == 3
+    assert body["silverCount"] == 2
+    assert body["quarantinedCount"] == 1
+    assert body["taxCreditCreated"] is False
+    assert body["wouldDownloadFullBase"] is False
+    second = api_client.post("/v1/data-sources/TESOURO-TRANSPARENTE/ingest", headers=_admin())
+    assert second.json()["runId"] == body["runId"]
+    gold = api_client.get(
+        "/v1/indicators/source-enrichment",
+        headers=_analyst(),
+        params={"sourceId": "TESOURO-TRANSPARENTE"},
+    )
+    assert gold.status_code == 200
+    payload = gold.json()
+    assert payload["published"] is True
+    assert payload["createsTaxCredit"] is False
+    assert payload["sourceRole"] == "OFFICIAL_TRANSFER"
+    assert payload["indicatorCount"] == 2

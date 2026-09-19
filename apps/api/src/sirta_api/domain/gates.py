@@ -11,9 +11,32 @@ def flags_path() -> Path:
     return Path("config/feature-flags.yaml")
 
 
+G0_CHECKLIST = (
+    {"id": "sponsor", "label": "Patrocinador nomeado", "met": False},
+    {"id": "pilot_municipality", "label": "Município piloto definido", "met": False},
+    {"id": "dpa", "label": "DPA assinado", "met": False},
+    {"id": "governance", "label": "Comitê gestor formalizado", "met": False},
+)
+G1_CHECKLIST = (
+    {"id": "systems_inventory", "label": "Inventário de sistemas homologado", "met": False},
+    {"id": "controlled_sample", "label": "Amostra controlada autorizada", "met": False},
+    {"id": "lgpd_diagnosis", "label": "Diagnóstico LGPD homologado", "met": False},
+    {"id": "no_recovery_promise", "label": "Sem promessa prévia de recuperação", "met": False},
+)
+
 GATES = (
-    {"id": "G0", "component": "municipal_program", "status": "BLOCKED"},
-    {"id": "G1", "component": "diagnosis", "status": "BLOCKED"},
+    {
+        "id": "G0",
+        "component": "municipal_program",
+        "status": "BLOCKED",
+        "checklist": list(G0_CHECKLIST),
+    },
+    {
+        "id": "G1",
+        "component": "diagnosis",
+        "status": "BLOCKED",
+        "checklist": list(G1_CHECKLIST),
+    },
     {"id": "G4", "component": "iss_specialist", "status": "BLOCKED"},
     {
         "id": "G6",
@@ -58,8 +81,15 @@ def assert_flag_disabled(name: str) -> None:
 
 
 def program_snapshot() -> dict:
+    gates = []
+    for item in GATES:
+        copied = dict(item)
+        if "checklist" in copied:
+            copied["checklist"] = [dict(row) for row in copied["checklist"]]
+        gates.append(copied)
     return {
         "flags": load_flags(),
-        "gates": [dict(item) for item in GATES],
+        "gates": gates,
         "humanApprovalFabricated": False,
+        "canApprove": False,
     }

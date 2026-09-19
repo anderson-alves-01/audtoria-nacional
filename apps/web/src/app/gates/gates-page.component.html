@@ -1,0 +1,38 @@
+<section aria-labelledby="gates-title">
+  <h1 id="gates-title">Gates do programa (somente leitura)</h1>
+  <p>
+    Checklists institucionais permanecem bloqueados. Esta tela não aprova G0, G1 nem conectores oficiais.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando snapshot de gates…</p>
+  }
+  @if (state === 'ok') {
+    <p role="status" class="estimate">
+      Aprovação humana fabricada: {{ humanApprovalFabricated ? 'sim' : 'não' }}.
+      Pode aprovar daqui: {{ canApprove ? 'sim' : 'não' }}.
+    </p>
+    <ul>
+      @for (gate of gates; track gate.id) {
+        <li class="estimate">
+          <strong>{{ gate.id }}</strong> — {{ gate.component }}
+          <span>
+            Status {{ gate.status || gate.localStatus }}.
+            @if (gate.officialStatus) {
+              Oficial {{ gate.officialStatus }}.
+            }
+          </span>
+          @if (gate.checklist?.length) {
+            <ul>
+              @for (item of gate.checklist; track item.id) {
+                <li>{{ item.label }}: {{ item.met ? 'atendido' : 'não atendido' }}</li>
+              }
+            </ul>
+          }
+        </li>
+      }
+    </ul>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

@@ -314,7 +314,7 @@ paths:
   /v1/program-gates:
     get:
       operationId: listProgramGates
-      description: Local/official gate snapshot. Human approvals are never fabricated.
+      description: Local/official gate snapshot with unmet G0/G1 checklists. Human approvals are never fabricated.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}

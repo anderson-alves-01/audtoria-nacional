@@ -27,6 +27,11 @@ def test_program_gates_remain_blocked_for_humans(api_client) -> None:
     assert g8["homologated"] is False
     g0 = next(item for item in body["gates"] if item["id"] == "G0")
     assert g0["status"] == "BLOCKED"
+    assert body["canApprove"] is False
+    assert all(item["met"] is False for item in g0["checklist"])
+    g1 = next(item for item in body["gates"] if item["id"] == "G1")
+    assert g1["status"] == "BLOCKED"
+    assert all(item["met"] is False for item in g1["checklist"])
 
 
 def test_tech_admin_cannot_read_program_gates(api_client) -> None:

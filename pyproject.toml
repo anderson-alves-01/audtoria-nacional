@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sirta"
-version = "0.3.11"
-description = "SIRTA Municipal local implementation (catalog-driven synthetic ingest)"
+version = "0.3.12"
+description = "SIRTA Municipal local implementation (Tesouro stub and blocked G0/G1 checklists)"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "All Rights Reserved" }

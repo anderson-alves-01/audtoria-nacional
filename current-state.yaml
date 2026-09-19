@@ -1,17 +1,18 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.11
+implementation_version: 0.3.12
 roadmap_version: "1.2"
-version: 0.3.11
-status: F3_SOURCE_INGEST_LOCAL
-current_phase: F3_SOURCE_INGEST_LOCAL
-release_stage: F3_SOURCE_INGEST_LOCAL
+version: 0.3.12
+status: TESOURO_STUB_GATES_LOCAL
+current_phase: TESOURO_STUB_GATES_LOCAL
+release_stage: TESOURO_STUB_GATES_LOCAL
 completed:
   - alembic_hygiene
   - source_master_registry_synthetic
   - program_gates_snapshot
   - terraform_docs_no_apply
   - catalog_driven_synthetic_ingest_ibge
+  - tesouro_stub_and_blocked_gate_checklists
 pending:
   - municipal_g0_authorization
   - diagnosis_g1
@@ -27,6 +28,7 @@ gates:
   alembic_hygiene: GO
   f3_source_catalog_local: GO
   f3_source_ingest_local: GO
+  tesouro_stub_gates_local: GO
   program_gates_local: GO
   terraform_docs_no_apply: GO
   g8_official_homologation: NO-GO
@@ -39,6 +41,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.11/
-next_action: After CI green, 0.3.12 Tesouro stub fixture plus G0/G1 blocked checklists UI. Human gates remain BLOCKED.
+evidence: evidence/releases/0.3.12/
+next_action: After CI green, 0.3.13 Terraform modules documentation-only (no apply). Human gates remain BLOCKED.
 human_gates: docs/delivery/HUMAN-GATES.md
