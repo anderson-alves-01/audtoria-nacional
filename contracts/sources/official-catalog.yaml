@@ -588,75 +588,80 @@ sources:
     notes: Conector pronto. Sem processo real. Módulo vazio funcional.
 
   - source_id: ESTADO-ICMS-QUOTA
-    name: Quota-parte de ICMS estadual
-    maintainer: Estados e Distrito Federal (catálogo genérico)
-    official_domain: unknown
-    official_url: official://state-icms-catalog
-    endpoint: none
-    documentation_url: none
-    dataset: ESTADO-ICMS-QUOTA
-    dictionary_url: none
-    purpose: Transferência estadual de ICMS — adaptador genérico
-    legal_basis: Constituição e legislação estadual após identificação da fonte PUBLIC_OPEN
-    license_terms: não aplicável até dataset oficial verificado
+    name: Quota-parte de ICMS estadual (PE)
+    maintainer: Governo de Pernambuco / dados.pe.gov.br
+    official_domain: dados.pe.gov.br
+    official_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    endpoint: https://dados.pe.gov.br/dataset/d157c770-7680-454e-9b0f-ddb777de4888/resource/ff98eec8-cce6-43ba-b8a8-bf55493c554f/download/transferencias_municipais_2024_.csv
+    documentation_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    dataset: ESTADO-PE-ICMS-2024
+    dictionary_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    purpose: Transferência estadual de ICMS — valores publicados por município
+    legal_basis: Dados abertos oficiais de Pernambuco (quota-parte municipal)
+    license_terms: termos do portal dados.pe.gov.br
     source_role: OFFICIAL_TRANSFER
     access_classification: PUBLIC_OPEN
-    status: DISCOVERED
-    fixture_kind: NONE
-    connector: state_transfer_adapter
-    layout_version: state-icms-v1
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_pe_csv
+    layout_version: state-pe-icms-v1
     periodicity: monthly
-    competence: unknown
+    competence: "2024"
     granularity: municipality
     parameters:
       tax: ICMS
+      uf: PE
       normalize: ibge7
-    authentication: unknown
-    rate_limit: unknown
+    authentication: none
+    rate_limit: not_published
     personal_data: false
-    retention: none
-    indicator: none
-    formula: none
-    methodology_version: none
+    retention: bronze_immutable
+    indicator: estado_pe_icms_quota
+    formula: >
+      Valor da coluna ICMS do CSV oficial de transferências municipais de PE,
+      competência ano-mês, município resolvido para IBGE7 por nome+UF via
+      SICONFI-ENTES. Sem ajuste; zero é valor publicado. Não constitui crédito.
+    methodology_version: official-state-pe-icms-v1
     notes: >
-      Catálogo dos 26 estados e DF em state-transfers-catalog.yaml. PE/BA CSV
-      baixáveis e MG datapackage (PROVENANCE_VERIFIED); RJ catalogado com
-      download IP-blocked. Nenhuma UF com ingest ativado. Ver /v1/state-transfers.
+      Primeira UF ativada. BA/MG/RJ permanecem sem ingest. Ver /v1/state-transfers.
 
   - source_id: ESTADO-IPVA-QUOTA
-    name: Quota-parte de IPVA estadual
-    maintainer: Estados e Distrito Federal (catálogo genérico)
-    official_domain: unknown
-    official_url: official://state-ipva-catalog
-    endpoint: none
-    documentation_url: none
-    dataset: ESTADO-IPVA-QUOTA
-    dictionary_url: none
-    purpose: Transferência estadual de IPVA — adaptador genérico
-    legal_basis: Constituição e legislação estadual após identificação da fonte PUBLIC_OPEN
-    license_terms: não aplicável até dataset oficial verificado
+    name: Quota-parte de IPVA estadual (PE)
+    maintainer: Governo de Pernambuco / dados.pe.gov.br
+    official_domain: dados.pe.gov.br
+    official_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    endpoint: https://dados.pe.gov.br/dataset/d157c770-7680-454e-9b0f-ddb777de4888/resource/ff98eec8-cce6-43ba-b8a8-bf55493c554f/download/transferencias_municipais_2024_.csv
+    documentation_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    dataset: ESTADO-PE-IPVA-2024
+    dictionary_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Dados abertos oficiais de Pernambuco (quota-parte municipal)
+    license_terms: termos do portal dados.pe.gov.br
     source_role: OFFICIAL_TRANSFER
     access_classification: PUBLIC_OPEN
-    status: DISCOVERED
-    fixture_kind: NONE
-    connector: state_transfer_adapter
-    layout_version: state-ipva-v1
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_pe_csv
+    layout_version: state-pe-ipva-v1
     periodicity: monthly
-    competence: unknown
+    competence: "2024"
     granularity: municipality
     parameters:
       tax: IPVA
+      uf: PE
       normalize: ibge7
-    authentication: unknown
-    rate_limit: unknown
+    authentication: none
+    rate_limit: not_published
     personal_data: false
-    retention: none
-    indicator: none
-    formula: none
-    methodology_version: none
+    retention: bronze_immutable
+    indicator: estado_pe_ipva_quota
+    formula: >
+      Valor da coluna IPVA do mesmo CSV oficial de PE. Zero é valor oficial
+      publicado (não inventar). Join IBGE7 por nome+UF. Não constitui crédito.
+    methodology_version: official-state-pe-ipva-v1
     notes: >
-      Mesmo catálogo estadual. RJ inclui IPVA no CSV de repasses catalogado;
-      ativação pendente de schema verificado. Ver /v1/state-transfers.
+      Mesmo endpoint CSV do ICMS; layout_version distinto evita colisão de
+      checksum na idempotência. Homologação humana pendente.
 
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ

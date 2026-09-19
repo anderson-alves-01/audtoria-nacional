@@ -6,10 +6,9 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE e BA têm CSV PUBLIC_OPEN baixável (PROVENANCE_VERIFIED). RJ catalogado no
-  CKAN mas download bloqueado por IP SEFAZ. MG tem datapackage/IBGE no CKAN;
-  download gzip 403 neste runtime. Nenhuma UF com ingest ativado. Portais HTML
-  e agregadores privados recusados. Próxima ativação preferencial: PE.
+  PE TECHNICALLY_APPROVED com connector state_pe_csv (fixture + join IBGE7).
+  BA CSV baixável e MG datapackage ainda sem ingest. RJ IP-blocked. Sem
+  agregador privado. IPVA zero em PE é valor oficial publicado.
 states:
   - uf: AC
     name: Acre
@@ -111,7 +110,8 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: PE
     name: Pernambuco
-    status: PROVENANCE_VERIFIED
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
     structured_official_source: ckan_csv_downloadable
     dataset_url: https://dados.pe.gov.br/dataset/transferencias-municipais
     official_url: https://dados.pe.gov.br/dataset/transferencias-municipais
@@ -120,12 +120,14 @@ states:
     format: CSV
     columns: [ano, mes, MUNICÍPIO, ICMS, IPI, IPVA, TOTAL]
     ibge_field: name_only
+    layout_version_icms: state-pe-icms-v1
+    layout_version_ipva: state-pe-ipva-v1
+    connector: state_pe_csv
     download_probe_2026_09_19: csv_bytes_ok
     preferred_activation: true
     reason: >
-      CSV 2024 baixável (ano,mes,município,ICMS,IPI,IPVA,TOTAL). Preferencial
-      para próxima ativação com fixture mínima e join IBGE7 por nome+UF.
-      IPVA pode vir zerado em algumas competências — tratar como publicado.
+      CSV 2024 ativado com connector state_pe_csv, fixture mínima e join IBGE7
+      por nome+UF. IPVA zero publicado como valor oficial. Sem crédito.
   - uf: PI
     name: Piauí
     status: DISCOVERED

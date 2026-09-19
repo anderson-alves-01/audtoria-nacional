@@ -217,6 +217,84 @@ def normalize_place(value: str) -> str:
     return re.sub(r"\s+", " ", ascii_only).strip().upper()
 
 
+def parse_state_pe_csv(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "PE",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse PE municipal transfer CSV; publish zero IPVA as official; no credit."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state PE tax filter: {tax}")
+    text = body.decode("utf-8-sig")
+    reader = csv.DictReader(io.StringIO(text))
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for index, item in enumerate(reader):
+        raw_name = ""
+        for key in item:
+            if "MUNICIP" in normalize_place(key):
+                raw_name = str(item.get(key) or "").strip()
+                break
+        if not raw_name:
+            raw_name = str(item.get("MUNICÍPIO") or item.get("MUNICIPIO") or "").strip()
+        year = str(item.get("ano") or item.get("ANO") or "").strip()
+        month = str(item.get("mes") or item.get("Mês") or item.get("Mes") or "").strip().zfill(2)
+        amount_raw = None
+        for key in item:
+            if normalize_place(key) == tax_key:
+                amount_raw = item.get(key)
+                break
+        if amount_raw is None:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"pe-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                    },
+                    f"missing {tax_key} column",
+                )
+            )
+            continue
+        try:
+            value = float(str(amount_raw).strip().replace(",", "."))
+        except ValueError:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"pe-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((normalize_place(raw_name), normalize_place(uf)), "")
+        row = {
+            "rowId": f"pe-{tax_key.lower()}-{ibge or index}-{year}-{month}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": f"{year}-{month}"[:7],
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def parse_tesouro_monthly_csv(
     body: bytes, *, ibge_lookup: dict[tuple[str, str], str] | None = None
 ) -> tuple[list[dict], list[tuple[dict, str]]]:

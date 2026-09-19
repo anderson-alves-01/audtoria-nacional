@@ -1,4 +1,4 @@
-"""State ICMS/IPVA transfer catalog shell. No tax credit; ingest gated per UF."""
+"""State ICMS/IPVA transfer catalog shell. No tax credit; PE ingest gated."""
 
 from __future__ import annotations
 
@@ -13,9 +13,9 @@ STATE_TRANSFERS_VERSION = "state-transfers-technical-v1"
 STATE_CATALOG_RELATIVE = Path("contracts/sources/state-transfers-catalog.yaml")
 
 DISCLAIMER = (
-    "Catálogo estadual ICMS/IPVA. Somente UF com fonte PUBLIC_OPEN estruturada "
-    "comprovada pode avançar; portais HTML e agregadores privados são recusados. "
-    "Estado vazio; ingestAllowed=false; diferença gera ocorrência, nunca crédito."
+    "Catálogo estadual ICMS/IPVA. PE ativado com CSV PUBLIC_OPEN e join IBGE7. "
+    "Demais UFs só avançam com fonte estruturada comprovada; portais HTML e "
+    "agregadores privados são recusados. Diferença gera ocorrência, nunca crédito."
 )
 
 
@@ -37,20 +37,28 @@ def build_state_transfers_panel(*, page: int = 1, size: int = 30) -> dict:
     catalog = load_state_transfers_catalog()
     states = []
     for row in catalog.get("states") or []:
+        status = row.get("status") or "DISCOVERED"
+        ingest_allowed = bool(row.get("ingest_allowed")) and status == "TECHNICALLY_APPROVED"
+        taxes = list(row.get("taxes") or catalog.get("taxes") or ["ICMS", "IPVA"])
         states.append(
             {
                 "uf": row["uf"],
                 "name": row["name"],
-                "status": row.get("status") or "DISCOVERED",
+                "status": status,
                 "structuredOfficialSource": row.get("structured_official_source"),
-                "taxes": list(catalog.get("taxes") or ["ICMS", "IPVA"]),
-                "ingestAllowed": False,
+                "taxes": taxes,
+                "ingestAllowed": ingest_allowed,
                 "officialUrl": row.get("official_url"),
                 "datasetUrl": row.get("dataset_url"),
                 "reason": row.get("reason"),
             }
         )
-    verified = [row for row in states if row["status"] == "PROVENANCE_VERIFIED"]
+    verified = [
+        row
+        for row in states
+        if row["status"] in {"PROVENANCE_VERIFIED", "TECHNICALLY_APPROVED"}
+    ]
+    ingest_enabled = any(row["ingestAllowed"] for row in states)
     return {
         "version": STATE_TRANSFERS_VERSION,
         "binding": False,
@@ -58,10 +66,10 @@ def build_state_transfers_panel(*, page: int = 1, size: int = 30) -> dict:
         "homologated": False,
         "commandsDisabled": True,
         "createsTaxCredit": False,
-        "ingestEnabled": False,
+        "ingestEnabled": ingest_enabled,
         "normalize": catalog.get("normalize") or "ibge7",
         "taxes": list(catalog.get("taxes") or ["ICMS", "IPVA"]),
-        "institutionalStatus": "DISCOVERED",
+        "institutionalStatus": "TECHNICALLY_APPROVED" if ingest_enabled else "DISCOVERED",
         "verifiedCount": len(verified),
         "states": states,
         "items": [],
@@ -76,6 +84,6 @@ def build_state_transfers_panel(*, page: int = 1, size: int = 30) -> dict:
 
 def reject_state_transfers_command() -> None:
     raise ConflictError(
-        "Transferências estaduais ICMS/IPVA desativadas até ativação por UF com "
-        "arquivo/API estruturado comprovado e schema verificado. Shell vazio; sem crédito."
+        "Comando agregado de transferências estaduais desativado. Use ingestão "
+        "catalogada por fonte (PE ICMS/IPVA) quando TECHNICALLY_APPROVED; sem crédito."
     )

@@ -27,6 +27,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_official_document,
     parse_siconfi_entes,
     parse_siconfi_statement,
+    parse_state_pe_csv,
     parse_tesouro_monthly_csv,
     parse_tesouro_transfer_types,
     sha256_bytes,
@@ -71,6 +72,7 @@ PARSERS = {
     "tesouro_transfer_types": parse_tesouro_transfer_types,
     "tesouro_monthly_csv": parse_tesouro_monthly_csv,
     "siconfi_statement": parse_siconfi_statement,
+    "state_pe_csv": parse_state_pe_csv,
 }
 
 
@@ -334,7 +336,7 @@ def ingest_official_source(
         and presentation_for(source.source_id)["valueKind"]
         in {"REFERENCE_QUANTITY", "TRANSFER_AMOUNT_AS_PUBLISHED"}
         and str(row.get("variableId") or "") != "6575"
-        and row.get("modality") in {None, "FPM_RECEIVED"}
+        and row.get("modality") in {None, "FPM_RECEIVED", "ICMS_QUOTA", "IPVA_QUOTA"}
     ]
     presentation = presentation_for(source.source_id)
     gold = GoldOfficial(
@@ -617,6 +619,14 @@ def _parse(
         raise ConflictError("Official connector is not implemented")
     if connector == "tesouro_monthly_csv":
         return parser(fetched.body, ibge_lookup=_ibge_lookup(session, context=context))
+    if connector == "state_pe_csv":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "ICMS"),
+            uf=str(parameters.get("uf") or "PE"),
+            ibge_lookup=_ibge_lookup(session, context=context),
+        )
     if connector == "siconfi_statement":
         return parser(fetched.body, dataset=str(catalog.get("dataset") or "RREO"))
     return parser(fetched.body)

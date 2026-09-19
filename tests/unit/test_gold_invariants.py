@@ -1,6 +1,10 @@
 from pathlib import Path
 
-from sirta_api.adapters.ingest.parsers import parse_ibge_sidra_series, parse_tesouro_monthly_csv
+from sirta_api.adapters.ingest.parsers import (
+    parse_ibge_sidra_series,
+    parse_state_pe_csv,
+    parse_tesouro_monthly_csv,
+)
 from sirta_api.domain.catalog import creates_tax_credit
 from sirta_api.domain.gold import (
     assert_gold_lineage_complete,
@@ -93,3 +97,27 @@ def test_tesouro_monthly_csv_joins_ibge_and_keeps_fundeb_retention() -> None:
     received = [row for row in silver if row["modality"] == "FPM_RECEIVED"]
     assert {row["ibgeCode"] for row in received} == {"2103505", "2103554"}
     assert sum(row["value"] for row in received) == 356.0
+
+
+def test_state_pe_csv_joins_ibge_and_publishes_zero_ipva() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/pe-transferencias-municipais-2024.csv"
+    ).read_bytes()
+    lookup = {
+        ("ABREU E LIMA", "PE"): "2600054",
+        ("RECIFE", "PE"): "2611606",
+    }
+    icms, quarantined_icms = parse_state_pe_csv(body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"2600054", "2611606"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "PE" for row in icms)
+    assert len(quarantined_icms) == 1
+    ipva, quarantined_ipva = parse_state_pe_csv(body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    abreu = next(row for row in ipva if row["ibgeCode"] == "2600054")
+    assert abreu["value"] == 0.0
+    assert abreu["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-IPVA-QUOTA")["createsTaxCredit"] is False

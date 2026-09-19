@@ -11,17 +11,24 @@ describe('StateTransfersPageComponent', () => {
     });
   });
 
-  it('renders empty state transfers shell without tax credit or ingest', () => {
+  it('renders PE activated and other UFs without inventing credit', () => {
     const fixture = TestBed.createComponent(StateTransfersPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
     http.expectOne('/v1/state-transfers').flush({
       version: 'state-transfers-technical-v1',
-      ingestEnabled: false,
+      ingestEnabled: true,
       createsTaxCredit: false,
-      institutionalStatus: 'DISCOVERED',
-      verifiedCount: 1,
+      institutionalStatus: 'TECHNICALLY_APPROVED',
+      verifiedCount: 4,
       states: [
+        {
+          uf: 'PE',
+          name: 'Pernambuco',
+          status: 'TECHNICALLY_APPROVED',
+          structuredOfficialSource: 'ckan_csv_downloadable',
+          ingestAllowed: true,
+        },
         {
           uf: 'RJ',
           name: 'Rio de Janeiro',
@@ -36,9 +43,10 @@ describe('StateTransfersPageComponent', () => {
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent as string;
     expect(text).toContain('Transferências estaduais ICMS/IPVA');
-    expect(text).toContain('RJ');
-    expect(text).toContain('PROVENANCE_VERIFIED');
-    expect(text).toContain('Ingestão habilitada: não');
+    expect(text).toContain('PE');
+    expect(text).toContain('TECHNICALLY_APPROVED');
+    expect(text).toContain('ingestAllowed=true');
+    expect(text).toContain('Ingestão habilitada: sim');
     expect(text).toContain('Cria crédito: não');
     http.verify();
   });

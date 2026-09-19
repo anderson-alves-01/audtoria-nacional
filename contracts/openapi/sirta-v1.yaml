@@ -3,7 +3,7 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.24
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.25
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
@@ -592,8 +592,8 @@ paths:
     get:
       operationId: getStateTransfers
       description: >
-        State ICMS/IPVA catalog shell. RJ may be PROVENANCE_VERIFIED for CKAN CSV;
-        ingestEnabled=false; createsTaxCredit=false; no activated UF load.
+        State ICMS/IPVA catalog. PE may be TECHNICALLY_APPROVED with ingestAllowed;
+        createsTaxCredit=false; commandsDisabled; BA/MG/RJ without activated load.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}

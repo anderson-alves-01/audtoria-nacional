@@ -32,6 +32,11 @@ SNAPSHOT_URLS = {
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo": "siconfi-rreo.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca": "siconfi-dca.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf": "siconfi-rgf.json",
+    (
+        "https://dados.pe.gov.br/dataset/d157c770-7680-454e-9b0f-ddb777de4888/"
+        "resource/ff98eec8-cce6-43ba-b8a8-bf55493c554f/download/"
+        "transferencias_municipais_2024_.csv"
+    ): "pe-transferencias-municipais-2024.csv",
 }
 
 

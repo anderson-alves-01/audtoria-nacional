@@ -39,7 +39,7 @@ def test_official_gold_empty_until_ingest(api_client) -> None:
 def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 2
+    assert siconfi.json()["silverCount"] == 4
     assert siconfi.json()["quarantinedCount"] == 1
     pib = api_client.post("/v1/data-sources/IBGE-SIDRA-PIB/ingest", headers=_admin())
     assert pib.status_code == 200
@@ -54,6 +54,12 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     fpm = api_client.post("/v1/data-sources/TESOURO-FPM-VALORES/ingest", headers=_admin())
     assert fpm.status_code == 200
     assert fpm.json()["silverCount"] == 3
+    pe_icms = api_client.post("/v1/data-sources/ESTADO-ICMS-QUOTA/ingest", headers=_admin())
+    assert pe_icms.status_code == 200
+    assert pe_icms.json()["silverCount"] == 2
+    pe_ipva = api_client.post("/v1/data-sources/ESTADO-IPVA-QUOTA/ingest", headers=_admin())
+    assert pe_ipva.status_code == 200
+    assert pe_ipva.json()["silverCount"] == 2
     rreo = api_client.post("/v1/data-sources/SICONFI-RREO/ingest", headers=_admin())
     assert rreo.status_code == 200
     assert rreo.json()["silverCount"] >= 1
@@ -82,6 +88,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "PLANALTO-LEGISLACAO",
         "PLANALTO-LC-214",
         "TESOURO-FPM-VALORES",
+        "ESTADO-ICMS-QUOTA",
+        "ESTADO-IPVA-QUOTA",
         "SICONFI-RREO",
         "SICONFI-DCA",
         "SICONFI-RGF",
@@ -90,6 +98,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["PLANALTO-LC-214"]["valueKind"] == "REGULATORY_DOCUMENT"
     assert by_id["SICONFI-ENTES"]["valueKind"] == "COVERAGE_REGISTRY"
     assert by_id["TESOURO-FPM-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["SICONFI-RREO"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-DCA"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-RGF"]["valueKind"] == "FISCAL_STATEMENT_LINE"
@@ -110,8 +120,9 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     listing = api_client.get("/v1/data-sources", headers=_analyst())
     by_id = {item["sourceId"]: item for item in listing.json()["items"]}
     assert by_id["TESOURO-FPM-VALORES"]["status"] == "TECHNICALLY_APPROVED"
-    assert by_id["ESTADO-ICMS-QUOTA"]["status"] == "DISCOVERED"
-    assert by_id["ESTADO-IPVA-QUOTA"]["status"] == "DISCOVERED"
+    assert by_id["ESTADO-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["RFB-DADOS-ABERTOS"]["status"] == "READY_FOR_TERRITORIAL_SCOPE"
     assert by_id["RFB-DADOS-ABERTOS"]["ingestAllowed"] is False
     assert by_id["MUNICIPAL-IPTU-RESTRICTED"]["status"] == "CREDENTIAL_REQUIRED"
