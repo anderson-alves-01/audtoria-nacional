@@ -1,4 +1,4 @@
-"""Record F5 findings/cases and human-validation technical shells.
+"""Record F5 findings/cases/human-validation/notifications/collection shells.
 
 Revision ID: 0021_findings_human_validation
 Revises: 0020_diagnosis_audit_rules

@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-09-19T08:35:00-03:00"
+updated_at: "2026-09-19T08:50:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
 implementation_version: "0.3.18"
@@ -639,27 +639,7 @@ items:
     dominio: D6
     descricao: Notificações administrativas desativadas até aprovação humana
     dependencias: [F5-HUMAN-VALIDATION]
-    estado_tecnico: PENDING
-    estado_institucional: BLOCKED
-    dados_necessarios: RESTRICTED
-    fontes_oficiais: []
-    backend: true
-    frontend: true
-    pipeline: false
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
-    commit: null
-    ci: null
-    motivo_bloqueio: null
-    next_action: API e tela vazias; envio real desativado.
-
-  - id: F5-COLLECTION
-    fase: F5
-    dominio: D6
-    descricao: Cobrança administrativa controlada
-    dependencias: [F5-HUMAN-VALIDATION]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
     dados_necessarios: RESTRICTED
     fontes_oficiais: []
@@ -667,12 +647,36 @@ items:
     frontend: true
     pipeline: false
     testes: true
-    evidencia: null
-    versao: "0.3.15"
-    commit: 1d7a601
+    evidencia: evidence/releases/0.3.18/
+    versao: "0.3.18"
+    commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Completar painel vazio oficial; manter comandos desativados; fluxo sintético só em teste.
+    next_action: >
+      Manter items vazios, POST /v1/notifications → 409, sendEnabled=false.
+      Sem comunicação ao contribuinte. G5 BLOCKED.
+
+  - id: F5-COLLECTION
+    fase: F5
+    dominio: D6
+    descricao: Cobrança administrativa controlada
+    dependencias: [F5-HUMAN-VALIDATION]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.18/
+    versao: "0.3.18"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter painel oficial vazio, commandsDisabled=true; fluxo sintético só em
+      testes de API via tax-credit collection-cases. G0/G4/G5 BLOCKED.
 
   - id: F6-PAYMENTS
     fase: F6

@@ -28,7 +28,11 @@ completed:
   - siconfi_rgf_connector
   - local_security_hardening_mfa_dlp
   - local_postgres_backup_restore_dry_run
-  - findings_cases_human_validation_empty_shells
+  - findings_empty_technical_shell
+  - audit_cases_empty_technical_shell
+  - human_validation_workflow_empty_shell
+  - notifications_empty_technical_shell
+  - collection_panel_empty_official_shell
 pending:
   - municipal_g0_authorization
   - diagnosis_g1
@@ -53,10 +57,14 @@ gates:
   terraform_docs_no_apply: GO
   terraform_modules_docs: GO
   official_public_ingest_local: GO
+  f5_findings_cases_local: GO
+  f5_human_validation_workflow_local: GO
+  f5_notifications_collection_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
   g4_specialist_homologation: NO-GO
+  g5_case_validation: NO-GO
   g7_official_tesouro_connectors: NO-GO
   g9_pilot: NO-GO
   g10_production: NO-GO
@@ -64,5 +72,5 @@ gates:
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
 evidence: evidence/releases/0.3.18/
-next_action: Continue remaining technically implementable ROADMAP items. Do not treat wave 1 as programme completion. Human validation of Gold remains pending and is not requested now.
+next_action: Continue remaining technically implementable ROADMAP items (F6 payments/active-debt empty shells, backfills, state sources, RFB territorial). Do not treat wave 1 as programme completion. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

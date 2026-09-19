@@ -203,7 +203,15 @@ exit $code
     ) -WorkingDirectory $RepoRoot -PassThru -WindowStyle Hidden
     if (-not $p) { throw "Falha ao iniciar processo agent $Kind." }
     $timeoutMs = [Math]::Max(60000, $AgentTimeoutMinutes * 60000)
-    if (-not $p.WaitForExit($timeoutMs)) {
+    $waited = 0
+    $slice = 60000
+    $finished = $false
+    while ($waited -lt $timeoutMs) {
+        if ($p.WaitForExit($slice)) { $finished = $true; break }
+        $waited += $slice
+        Write-Log $LogPath ("AGENT_WAIT kind={0} pid={1} elapsed_s={2}" -f $Kind, $p.Id, [int]($waited / 1000))
+    }
+    if (-not $finished) {
         try { Stop-Process -Id $p.Id -Force } catch { }
         throw "Agent $Kind excedeu $AgentTimeoutMinutes min."
     }
@@ -221,10 +229,27 @@ function Wait-PullRequestCi {
     Write-Log $LogPath "CI_WAIT pr=$PullRequest"
     $prev = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
-    & $Gh pr checks $PullRequest --watch --fail-fast --interval 15
-    $ok = ($LASTEXITCODE -eq 0)
+    $deadline = (Get-Date).AddMinutes([Math]::Max(5, $CiTimeoutMinutes))
+    $ok = $false
+    while ((Get-Date) -lt $deadline) {
+        & $Gh pr checks $PullRequest | Out-Host
+        $code = $LASTEXITCODE
+        if ($code -eq 0) {
+            $ok = $true
+            break
+        }
+        if ($code -eq 8) {
+            Write-Log $LogPath "CI_PENDING"
+            Start-Sleep -Seconds 20
+            continue
+        }
+        Write-Log $LogPath "CI_FAIL exit=$code"
+        break
+    }
     $ErrorActionPreference = $prev
-    if ($ok) { Write-Log $LogPath "CI_OK" } else { Write-Log $LogPath "CI_FAIL" }
+    if ($ok) { Write-Log $LogPath "CI_OK" } elseif (-not $ok -and ((Get-Date) -ge $deadline)) {
+        Write-Log $LogPath "CI_TIMEOUT"
+    }
     return $ok
 }
 

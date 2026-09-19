@@ -10,6 +10,7 @@ import { FunnelPageComponent } from './funnel/funnel-page.component';
 import { GatesPageComponent } from './gates/gates-page.component';
 import { HealthPageComponent } from './health/health-page.component';
 import { HumanValidationPageComponent } from './human-validation/human-validation-page.component';
+import { NotificationsPageComponent } from './notifications/notifications-page.component';
 import { SourcesPageComponent } from './sources/sources-page.component';
 import { ValidationPageComponent } from './validation/validation-page.component';
 
@@ -17,6 +18,7 @@ export const routes: Routes = [
   { path: '', component: HealthPageComponent },
   { path: 'validacao', component: ValidationPageComponent },
   { path: 'validacao-humana', component: HumanValidationPageComponent },
+  { path: 'notificacoes', component: NotificationsPageComponent },
   { path: 'cobranca', component: CollectionPageComponent },
   { path: 'funil', component: FunnelPageComponent },
   { path: 'calendario', component: CalendarPageComponent },

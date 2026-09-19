@@ -1,62 +1,53 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, inject } from '@angular/core';
 
-export type CollectionViewState = 'idle' | 'loading' | 'ok' | 'error' | 'forbidden';
+export type CollectionViewState = 'loading' | 'empty' | 'ok' | 'error';
 
 @Component({
   selector: 'app-collection-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './collection-page.component.html',
   styleUrl: './collection-page.component.scss',
 })
-export class CollectionPageComponent {
+export class CollectionPageComponent implements OnInit {
   private readonly http = inject(HttpClient);
-  state: CollectionViewState = 'idle';
-  creditId = '';
-  territoryId = '';
-  purposeId = '';
-  accessToken = '';
+  state: CollectionViewState = 'loading';
+  disclaimer = '';
+  version = '';
+  g0Status = '';
+  g4Status = '';
+  g5Status = '';
   errorMessage = '';
-  collectionStatus = '';
 
-  submit(): void {
-    if (!this.creditId) {
-      this.state = 'error';
-      this.errorMessage = 'Informe o crédito validado.';
-      return;
-    }
-    this.state = 'loading';
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.accessToken}`,
-      'X-Territory-Id': this.territoryId,
-      'X-Purpose-Id': this.purposeId,
-      'Idempotency-Key': `ui-${crypto.randomUUID()}`,
-    });
+  ngOnInit(): void {
     this.http
-      .post<{ collectionStatus: string }>(
-        `/v1/tax-credits/${this.creditId}/collection-cases`,
-        {},
-        { headers },
-      )
+      .get<{
+        version: string;
+        commandsDisabled: boolean;
+        sendEnabled: boolean;
+        createsTaxCredit: boolean;
+        g0Status: string;
+        g4Status: string;
+        g5Status: string;
+        items: unknown[];
+        queue: unknown[];
+        disclaimer: string;
+      }>('/v1/collection')
       .subscribe({
         next: (body) => {
-          this.collectionStatus = body.collectionStatus;
-          this.state = 'ok';
+          this.disclaimer = body.disclaimer;
+          this.version = body.version;
+          this.g0Status = body.g0Status;
+          this.g4Status = body.g4Status;
+          this.g5Status = body.g5Status;
+          const empty = body.items.length === 0 && body.queue.length === 0;
+          this.state = empty ? 'empty' : 'ok';
         },
-        error: (err: HttpErrorResponse) => {
-          if (err.status === 403) {
-            this.state = 'forbidden';
-            this.errorMessage = 'A API recusou a cobrança para este papel ou contexto.';
-            return;
-          }
+        error: () => {
+          this.errorMessage = 'Não foi possível carregar o painel de cobrança.';
           this.state = 'error';
-          this.errorMessage =
-            err.status === 409
-              ? 'Cobrança bloqueada. O crédito não foi alterado.'
-              : 'Não foi possível iniciar a cobrança.';
         },
       });
   }
