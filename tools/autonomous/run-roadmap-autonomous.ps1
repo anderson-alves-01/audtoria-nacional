@@ -124,8 +124,8 @@ $Gh = Resolve-Bin @("gh", "gh.exe")
 if (-not $Gh) { $Gh = "C:\Program Files\GitHub CLI\gh.exe" }
 
 function Invoke-Preflight {
-    if (-not $Agent) { throw "Cursor CLI 'agent' não encontrado. Instale com irm https://cursor.com/install?win32=true | iex" }
-    & $Agent --version | Out-Host
+    if (-not $Agent -or -not (Test-Path $Agent)) { throw "Cursor CLI 'agent' não encontrado. Instale com irm https://cursor.com/install?win32=true | iex" }
+    Write-Host "agent=$Agent"
     if (-not (Test-Path $Gh)) { throw "GitHub CLI gh não encontrado." }
     & $Gh --version | Out-Host
     & $Gh auth status | Out-Host
