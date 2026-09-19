@@ -375,7 +375,7 @@ items:
     evidencia: evidence/releases/0.3.37/
     versao: "0.3.37"
     commit: 42ec43d
-    ci: null
+    ci: "35462724790"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS e RO ICMS/IPVA + GO IPVA ativados. GO ICMS não publicado no
@@ -397,7 +397,7 @@ items:
     evidencia: evidence/releases/0.3.37/
     versao: "0.3.37"
     commit: 42ec43d
-    ci: null
+    ci: "35462724790"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO, MS e RO IPVA ativados. Seguir outras UFs PUBLIC_OPEN; sem

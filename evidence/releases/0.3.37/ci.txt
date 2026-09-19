@@ -1,1 +1,3 @@
-ci: pending push — will update after GitHub Actions run
+ci: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35462724790
+conclusion: success
+head_sha: 770d34e78ed6c8878209eb8f72d5e3f5a597de32
