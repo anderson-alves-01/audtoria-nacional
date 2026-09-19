@@ -169,7 +169,7 @@ function Invoke-AgentCycle {
     param(
         [string]$Kind,
         [string]$Prompt,
-        [string[]]$Args,
+        [string[]]$ExtraArgs,
         [string]$OutFile
     )
     $dir = [System.IO.Path]::GetDirectoryName($OutFile)
@@ -177,7 +177,7 @@ function Invoke-AgentCycle {
     $stderr = Join-Path $dir "$Kind-stderr.txt"
     $payloadPath = Join-Path $dir "$Kind-payload.json"
     $runner = Join-Path $dir "$Kind-runner.ps1"
-    $argList = @("-p", "--trust", "--workspace", $RepoRoot) + @($Args) + @($Prompt)
+    $argList = @("-p", "--trust", "--workspace", $RepoRoot) + @($ExtraArgs) + @($Prompt)
     $payload = @{
         agent = $Agent
         cwd   = $RepoRoot
@@ -278,7 +278,7 @@ try {
 Leia .cursor/roadmap-controller.md integralmente e execute exatamente um ciclo autônomo de trabalho.
 CONTEXTO_ORQUESTRADOR: cycle=$cycle hint=$hint
 "@
-        $builder = Invoke-AgentCycle -Kind "builder" -Prompt $builderPrompt -Args @("--force") -OutFile $builderOut
+        $builder = Invoke-AgentCycle -Kind "builder" -Prompt $builderPrompt -ExtraArgs @("--force") -OutFile $builderOut
         $cycleResult = Get-LastProtocolValue -Text $builder.Text -Prefix "CYCLE_RESULT="
         if (-not $cycleResult) { $cycleResult = "CYCLE_RESULT=NO_PROGRESS" }
         Write-Log $LogPath "CYCLE $cycle $cycleResult"
@@ -319,7 +319,7 @@ CONTEXTO_ORQUESTRADOR: cycle=$cycle hint=$hint
 Leia .cursor/roadmap-auditor.md integralmente e execute exatamente uma auditoria somente leitura.
 Sessão auditora independente do ciclo $cycle.
 "@
-        $auditor = Invoke-AgentCycle -Kind "auditor" -Prompt $auditorPrompt -Args @("--mode=ask") -OutFile $auditorOut
+        $auditor = Invoke-AgentCycle -Kind "auditor" -Prompt $auditorPrompt -ExtraArgs @("--mode=ask") -OutFile $auditorOut
         $verdict = Get-LastProtocolValue -Text $auditor.Text -Prefix "VERDICT="
         $next = Get-LastProtocolValue -Text $auditor.Text -Prefix "NEXT_OBJECTIVE="
         Write-Log $LogPath "AUDITOR $verdict $next"
@@ -340,7 +340,7 @@ Sessão auditora independente do ciclo $cycle.
             $ciOk = Wait-PullRequestCi
             $clean = -not (git status --porcelain)
             $auditor2Out = Join-Path $cycleDir "auditor-2.txt"
-            $auditor2 = Invoke-AgentCycle -Kind "auditor2" -Prompt $auditorPrompt -Args @("--mode=ask") -OutFile $auditor2Out
+            $auditor2 = Invoke-AgentCycle -Kind "auditor2" -Prompt $auditorPrompt -ExtraArgs @("--mode=ask") -OutFile $auditor2Out
             $verdict2 = Get-LastProtocolValue -Text $auditor2.Text -Prefix "VERDICT="
             Write-Log $LogPath "COMPLETE_GATES verify=$verifyOk ci=$ciOk clean=$clean auditor2=$verdict2"
             if ($verifyOk -and $ciOk -and $clean -and $verdict2 -eq "VERDICT=COMPLETE") {
