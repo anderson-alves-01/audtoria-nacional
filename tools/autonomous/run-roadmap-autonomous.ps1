@@ -172,36 +172,51 @@ function Invoke-AgentCycle {
         [string[]]$Args,
         [string]$OutFile
     )
-    $argList = @("-p", "--trust", "--workspace", $RepoRoot) + $Args + @($Prompt)
+    $dir = [System.IO.Path]::GetDirectoryName($OutFile)
+    $stdout = Join-Path $dir "$Kind-stdout.txt"
+    $stderr = Join-Path $dir "$Kind-stderr.txt"
+    $payloadPath = Join-Path $dir "$Kind-payload.json"
+    $runner = Join-Path $dir "$Kind-runner.ps1"
+    $argList = @("-p", "--trust", "--workspace", $RepoRoot) + @($Args) + @($Prompt)
+    $payload = @{
+        agent = $Agent
+        cwd   = $RepoRoot
+        args  = $argList
+    } | ConvertTo-Json -Depth 6
+    Set-Content -Path $payloadPath -Value $payload -Encoding UTF8
+    $runnerText = @'
+param([string]$PayloadPath, [string]$StdoutPath, [string]$StderrPath)
+$ErrorActionPreference = "Continue"
+$payload = Get-Content -LiteralPath $PayloadPath -Raw -Encoding UTF8 | ConvertFrom-Json
+Set-Location -LiteralPath $payload.cwd
+$argArray = @($payload.args | ForEach-Object { [string]$_ })
+$out = & $payload.agent @argArray 2>&1 | Out-String
+$code = $LASTEXITCODE
+Set-Content -LiteralPath $StdoutPath -Value $out -Encoding UTF8
+Set-Content -LiteralPath $StderrPath -Value ("EXIT=" + $code) -Encoding UTF8
+exit $code
+'@
+    Set-Content -Path $runner -Value $runnerText -Encoding UTF8
     Write-Log $LogPath "AGENT_START kind=$Kind"
-    $stdout = Join-Path ([System.IO.Path]::GetDirectoryName($OutFile)) "$Kind-stdout.txt"
-    $stderr = Join-Path ([System.IO.Path]::GetDirectoryName($OutFile)) "$Kind-stderr.txt"
-    function ConvertTo-CmdArg([string]$Value) {
-        if ($Value -match '[\s"]') {
-            return '"' + ($Value -replace '\\', '\\' -replace '"', '\"') + '"'
-        }
-        return $Value
-    }
-    $joined = ($argList | ForEach-Object { ConvertTo-CmdArg $_ }) -join " "
-    if ($Agent -like "*.cmd" -or $Agent -like "*.bat") {
-        $filePath = $env:ComSpec
-        $arguments = "/c `"$Agent`" $joined"
-    }
-    else {
-        $filePath = $Agent
-        $arguments = $joined
-    }
-    $p = Start-Process -FilePath $filePath -ArgumentList $arguments -WorkingDirectory $RepoRoot -NoNewWindow -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+    $p = Start-Process -FilePath "powershell.exe" -ArgumentList @(
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-File", $runner,
+        "-PayloadPath", $payloadPath,
+        "-StdoutPath", $stdout,
+        "-StderrPath", $stderr
+    ) -WorkingDirectory $RepoRoot -PassThru -WindowStyle Hidden
+    if (-not $p) { throw "Falha ao iniciar processo agent $Kind." }
     $timeoutMs = [Math]::Max(60000, $AgentTimeoutMinutes * 60000)
     if (-not $p.WaitForExit($timeoutMs)) {
-        try { $p.Kill() } catch { }
+        try { Stop-Process -Id $p.Id -Force } catch { }
         throw "Agent $Kind excedeu $AgentTimeoutMinutes min."
     }
     $outText = ""
     $errText = ""
     if (Test-Path $stdout) { $outText = Get-Content $stdout -Raw -Encoding UTF8 }
     if (Test-Path $stderr) { $errText = Get-Content $stderr -Raw -Encoding UTF8 }
-    $combined = $outText + "`n" + $errText
+    $combined = (($outText + "`n" + $errText).Trim())
     Set-Content -Path $OutFile -Value $combined -Encoding UTF8
     Write-Log $LogPath "AGENT_END kind=$Kind exit=$($p.ExitCode)"
     return @{ ExitCode = $p.ExitCode; Text = $combined }
