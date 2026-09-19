@@ -375,8 +375,8 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.38/
     versao: "0.3.38"
-    commit: 0f8f4e1
-    ci: null
+    commit: f1b8c7f
+    ci: "35463661772"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS, RO e AC ICMS (+IPVA onde publicado) + GO IPVA ativados.
@@ -398,8 +398,8 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.38/
     versao: "0.3.38"
-    commit: 0f8f4e1
-    ci: null
+    commit: f1b8c7f
+    ci: "35463661772"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO, MS e RO IPVA ativados. AC sem IPVA publicado. Seguir

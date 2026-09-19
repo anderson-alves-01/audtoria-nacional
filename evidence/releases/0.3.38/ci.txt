@@ -1,0 +1,4 @@
+ci: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35463661772
+conclusion: success
+head_sha: f1b8c7fc3913dc1c71397cb449a1a83c3f36e85e
+jobs: python,web,containers
