@@ -390,11 +390,7 @@ def parse_state_ac_csv(
         return [], [({"rowId": "ac-header"}, f"missing year column {year}")]
     amount_index = year_indexes[year]
     ibge_index = next(
-        (
-            index
-            for index, name in enumerate(header)
-            if "IBGE" in normalize_place(name)
-        ),
+        (index for index, name in enumerate(header) if "IBGE" in normalize_place(name)),
         1 if len(header) > 1 else None,
     )
     if ibge_index is None:

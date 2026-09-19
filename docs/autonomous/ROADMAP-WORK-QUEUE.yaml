@@ -375,7 +375,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.38/
     versao: "0.3.38"
-    commit: null
+    commit: 0f8f4e1
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -398,7 +398,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.38/
     versao: "0.3.38"
-    commit: null
+    commit: 0f8f4e1
     ci: null
     motivo_bloqueio: null
     next_action: >
