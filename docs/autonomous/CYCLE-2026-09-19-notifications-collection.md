@@ -4,7 +4,8 @@ Data: 2026-09-19
 Branch: `feat/official-public-ingest`  
 PR: #2  
 HEAD pré-ciclo: `8f762c0`
-HEAD pós-ciclo: `b300d30`
+HEAD pós-ciclo: `b300d30` (docs `c5dda2a`)
+CI: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35440777157 (python/web/containers success)
 
 ## Seleção
 
