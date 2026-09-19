@@ -6,6 +6,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_es_csv,
     parse_state_go_csv,
     parse_state_mg_csv,
+    parse_state_ms_csv,
     parse_state_pe_csv,
     parse_tesouro_monthly_csv,
 )
@@ -224,3 +225,30 @@ def test_state_go_csv_joins_name_uf_and_quarantines_territory() -> None:
     assert quarantined[0][1] == "missing IBGE municipality code"
     assert presentation_for("ESTADO-GO-IPVA-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-GO-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_ms_csv_joins_name_uf_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/ms-repasses-municipios-202601.csv").read_bytes()
+    lookup = {
+        ("AGUA CLARA", "MS"): "5000203",
+        ("CAMPO GRANDE", "MS"): "5002704",
+    }
+    icms, quarantined_icms = parse_state_ms_csv(body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"5000203", "5002704"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "MS" for row in icms)
+    assert all(row["competence"] == "2026-01" for row in icms)
+    agua = next(row for row in icms if row["ibgeCode"] == "5000203")
+    assert agua["value"] == 4184093.08
+    assert agua["territoryName"] == "AGUA CLARA"
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_ms_csv(body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    campo = next(row for row in ipva if row["ibgeCode"] == "5002704")
+    assert campo["value"] == 102601792.57
+    assert campo["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-MS-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-MS-IPVA-QUOTA")["createsTaxCredit"] is False

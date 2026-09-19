@@ -946,6 +946,90 @@ sources:
       CSV upload HTTP 500; dump DataStore 200 OK em 2026-09-19. Schema mensal
       2026 sem colunas ICMS. Homologação humana pendente.
 
+  - source_id: ESTADO-MS-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (MS)
+    maintainer: Governo de Mato Grosso do Sul / dados.ms.gov.br
+    official_domain: dados.ms.gov.br
+    official_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    endpoint: https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026
+    documentation_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    dataset: ESTADO-MS-ICMS-202601
+    dictionary_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    purpose: Transferência estadual de ICMS — valores publicados por município
+    legal_basis: Dados abertos oficiais de Mato Grosso do Sul (repasses aos municípios)
+    license_terms: termos do portal dados.ms.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ms_csv
+    layout_version: state-ms-icms-v1
+    periodicity: monthly
+    competence: "2026-01"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: MS
+      normalize: ibge7_name_uf
+      tipo_repasse: REPASSE DE ICMS
+      datastore_dump: true
+      resource_id: repasses-dos-municipios-01_2026
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ms_icms_quota
+    formula: >
+      Valor_Total das linhas Tipo_Repasse=REPASSE DE ICMS no dump CKAN DataStore
+      mensal, competência Data (YYYYMM), município Municipio com prefixo
+      PREFEITURA MUNICIPAL DE removido e join IBGE7 por nome+UF. Sem ajuste.
+      Não constitui crédito.
+    methodology_version: official-state-ms-icms-v1
+    notes: >
+      Dump DataStore 200 OK em 2026-09-19. Recursos mensais
+      repasses-dos-municipios-MM_YYYY. Homologação humana pendente.
+
+  - source_id: ESTADO-MS-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (MS)
+    maintainer: Governo de Mato Grosso do Sul / dados.ms.gov.br
+    official_domain: dados.ms.gov.br
+    official_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    endpoint: https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026
+    documentation_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    dataset: ESTADO-MS-IPVA-202601
+    dictionary_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Dados abertos oficiais de Mato Grosso do Sul (repasses aos municípios)
+    license_terms: termos do portal dados.ms.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ms_csv
+    layout_version: state-ms-ipva-v1
+    periodicity: monthly
+    competence: "2026-01"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: MS
+      normalize: ibge7_name_uf
+      tipo_repasse: REPASSE DE IPVA
+      datastore_dump: true
+      resource_id: repasses-dos-municipios-01_2026
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ms_ipva_quota
+    formula: >
+      Valor_Total das linhas Tipo_Repasse=REPASSE DE IPVA no mesmo dump mensal
+      MS. IBGE7 por nome+UF. layout_version distinto evita colisão de checksum
+      com ICMS. Não constitui crédito.
+    methodology_version: official-state-ms-ipva-v1
+    notes: >
+      Mesmo endpoint DataStore do ICMS MS. Homologação humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil

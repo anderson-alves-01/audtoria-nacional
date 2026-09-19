@@ -386,6 +386,82 @@ def parse_state_es_csv(
     return silver, quarantined
 
 
+def _ms_municipality_name(raw: str) -> str:
+    text = str(raw or "").strip()
+    if normalize_place(text).startswith("PREFEITURA MUNICIPAL DE "):
+        parts = text.split()
+        if len(parts) >= 4:
+            return " ".join(parts[3:]).strip()
+    return text
+
+
+def parse_state_ms_csv(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "MS",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse MS CKAN datastore dump; filter Tipo_Repasse ICMS/IPVA; no credit."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state MS tax filter: {tax}")
+    target = normalize_place(f"REPASSE DE {tax_key}")
+    reader = csv.DictReader(io.StringIO(_decode_csv_bytes(body)))
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for index, item in enumerate(reader):
+        tipo = normalize_place(str(item.get("Tipo_Repasse") or ""))
+        if tipo != target:
+            continue
+        raw_label = str(item.get("Municipio") or "").strip()
+        raw_name = _ms_municipality_name(raw_label)
+        ano_mes = str(item.get("Data") or "").strip()
+        if len(ano_mes) == 6 and ano_mes.isdigit():
+            competence = f"{ano_mes[:4]}-{ano_mes[4:]}"
+        else:
+            competence = ""
+        amount_raw = item.get("Valor_Total")
+        try:
+            value = parse_brazilian_number(amount_raw)
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"ms-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((normalize_place(raw_name), normalize_place(uf)), "")
+        row_token = str(item.get("_id") or index)
+        row = {
+            "rowId": f"ms-{tax_key.lower()}-{ibge or row_token}-{competence or 'na'}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not competence:
+            quarantined.append((row, "missing competence YYYYMM"))
+            continue
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def parse_state_go_csv(
     body: bytes,
     *,

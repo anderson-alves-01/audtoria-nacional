@@ -6,11 +6,11 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA, MG, ES e GO TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv /
-  state_mg_csv / state_es_csv / state_go_csv). MG/ES usam IBGE7 nativo.
-  GO IPVA via CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026).
-  RJ IP-blocked. Sem agregador privado.
-  IPVA zero em PE é valor oficial publicado.
+  PE, BA, MG, ES, GO e MS TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv /
+  state_mg_csv / state_es_csv / state_go_csv / state_ms_csv). MG/ES usam IBGE7
+  nativo. GO IPVA via CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026).
+  MS ICMS/IPVA via CKAN DataStore mensal (Tipo_Repasse). RJ IP-blocked.
+  Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -114,9 +114,24 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: MS
     name: Mato Grosso do Sul
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_datastore_dump
+    dataset_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    official_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    endpoint: https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026
+    taxes: [ICMS, IPVA, IPI, CIDE]
+    format: CSV
+    columns: [_id, Tipo_Repasse, Data, Data_Contabilização, Municipio, Valor_Total]
+    ibge_field: name_only
+    layout_version_icms: state-ms-icms-v1
+    layout_version_ipva: state-ms-ipva-v1
+    connector: state_ms_csv
+    download_probe_2026_09_19: datastore_dump_ok_icms_ipva
+    reason: >
+      Dump mensal CKAN DataStore 200 OK com Tipo_Repasse REPASSE DE ICMS e
+      REPASSE DE IPVA. Connector state_ms_csv + join IBGE7 por nome+UF após
+      remover prefixo PREFEITURA MUNICIPAL DE. Fixture mínima. Sem crédito.
   - uf: MG
     name: Minas Gerais
     status: TECHNICALLY_APPROVED

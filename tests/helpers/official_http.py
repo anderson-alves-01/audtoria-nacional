@@ -61,6 +61,9 @@ SNAPSHOT_URLS = {
     (
         "https://dadosabertos.go.gov.br/datastore/dump/343d1fb0-a182-4005-9203-dce168d2ad60"
     ): "go-repasses-municipios-202608.csv",
+    (
+        "https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026"
+    ): "ms-repasses-municipios-202601.csv",
 }
 
 
