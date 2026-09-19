@@ -350,7 +350,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.30/
     versao: "0.3.30"
-    commit: pending
+    commit: 2c1df5b
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -373,7 +373,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.30/
     versao: "0.3.30"
-    commit: pending
+    commit: 2c1df5b
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -395,7 +395,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.30/
     versao: "0.3.30"
-    commit: pending
+    commit: 2c1df5b
     ci: null
     motivo_bloqueio: null
     next_action: >
