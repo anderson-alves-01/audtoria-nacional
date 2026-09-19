@@ -13,7 +13,7 @@ STATE_TRANSFERS_VERSION = "state-transfers-technical-v1"
 STATE_CATALOG_RELATIVE = Path("contracts/sources/state-transfers-catalog.yaml")
 
 DISCLAIMER = (
-    "Catálogo estadual ICMS/IPVA. PE ativado com CSV PUBLIC_OPEN e join IBGE7. "
+    "Catálogo estadual ICMS/IPVA. PE e BA ativados com CSV PUBLIC_OPEN e join IBGE7. "
     "Demais UFs só avançam com fonte estruturada comprovada; portais HTML e "
     "agregadores privados são recusados. Diferença gera ocorrência, nunca crédito."
 )
@@ -83,5 +83,5 @@ def build_state_transfers_panel(*, page: int = 1, size: int = 30) -> dict:
 def reject_state_transfers_command() -> None:
     raise ConflictError(
         "Comando agregado de transferências estaduais desativado. Use ingestão "
-        "catalogada por fonte (PE ICMS/IPVA) quando TECHNICALLY_APPROVED; sem crédito."
+        "catalogada por fonte (PE/BA ICMS/IPVA) quando TECHNICALLY_APPROVED; sem crédito."
     )

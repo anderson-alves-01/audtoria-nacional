@@ -37,6 +37,10 @@ SNAPSHOT_URLS = {
         "resource/ff98eec8-cce6-43ba-b8a8-bf55493c554f/download/"
         "transferencias_municipais_2024_.csv"
     ): "pe-transferencias-municipais-2024.csv",
+    (
+        "https://dados.ba.gov.br/dataset/2ac6387d-80ee-4855-aaba-d6820a5f8a71/"
+        "resource/76430704-b1a2-484f-87dc-c86248f4f288/download/2024.csv"
+    ): "ba-repasses-municipios-2024.csv",
 }
 
 

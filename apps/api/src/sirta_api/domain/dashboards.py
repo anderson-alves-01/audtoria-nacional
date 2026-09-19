@@ -76,6 +76,8 @@ DASHBOARDS = (
             "TESOURO-TRANSPARENTE",
             "ESTADO-ICMS-QUOTA",
             "ESTADO-IPVA-QUOTA",
+            "ESTADO-BA-ICMS-QUOTA",
+            "ESTADO-BA-IPVA-QUOTA",
         ),
         "emptyReason": (
             "Somente valores oficiais publicados. Dicionário FPM não é valor transferido. "

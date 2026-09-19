@@ -1,0 +1,22 @@
+# Plan — Ativação BA ICMS/IPVA (CSV multi-header)
+
+- Goal: Ativar ingestão técnica da quota ICMS/IPVA da Bahia via CSV PUBLIC_OPEN com cabeçalho multi-coluna, fixture mínima, join IBGE7 por nome+UF, lineage Gold e catálogo estadual atualizado.
+- Phase: F3.2 — F3-STATE-ICMS-ACTIVATION, F3-STATE-IPVA-ACTIVATION
+- Spec: ROADMAP 1.2, `contracts/sources/official-catalog.yaml`, `contracts/sources/state-transfers-catalog.yaml`
+- Components/files:
+  - `apps/api/.../adapters/ingest/parsers.py` — `parse_state_ba_csv`
+  - `apps/api/.../application/official_ingest.py` — registrar `state_ba_csv`
+  - `apps/api/.../domain/gold.py` — presentation ESTADO-BA-ICMS/IPVA
+  - `apps/api/.../domain/dashboards.py` — incluir fontes BA em transferências
+  - `apps/api/.../domain/state_transfers.py` — disclaimer PE+BA
+  - `contracts/sources/*` — BA TECHNICALLY_APPROVED; fontes distintas de PE
+  - `tests/fixtures/official-snapshots/ba-repasses-municipios-2024.csv`
+  - ampliar `siconfi-entes.json` com 2 municípios BA
+  - testes unit/integration + UI spec
+  - migration `0029_state_ba_activation` → 0.3.26
+- Interfaces: `POST /v1/data-sources/ESTADO-BA-ICMS-QUOTA|/ESTADO-BA-IPVA-QUOTA/ingest`; `GET /v1/state-transfers`
+- Data: PUBLIC_OPEN; fixture oficial minimizada só em testes; sem carga estadual completa em runtime
+- Security: sem crédito/cobrança; MG/RJ sem ingest; PE permanece ativo
+- Migration: aditiva meta 0.3.26; rollback downgrade 0029→0028
+- Acceptance: parser `;` + latin-1 + número BR; join IBGE7; ingest BA 200 com lineage; PE intacto; testes verdes; evidência `evidence/releases/0.3.26/`
+- Human gates: inalterados; Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`

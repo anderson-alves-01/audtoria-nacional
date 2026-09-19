@@ -1,15 +1,16 @@
 schema_version: 1
-updated_at: "2026-09-19T10:45:00-03:00"
+updated_at: "2026-09-19T11:15:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.25"
+implementation_version: "0.3.26"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.25: PE ICMS/IPVA ativado (state_pe_csv, fixture, IBGE7, lineage);
-  BA/MG/RJ sem ingest; RFB territorial sem carga nacional.
+  Ciclo 0.3.26: BA ICMS/IPVA ativado (state_ba_csv, multi-header, fixture,
+  IBGE7, lineage); PE intacto; MG/RJ sem ingest; RFB territorial sem carga
+  nacional.
 
 items:
   - id: F2-CI-CD
@@ -349,14 +350,14 @@ items:
     frontend: true
     pipeline: false
     testes: true
-    evidencia: evidence/releases/0.3.25/
-    versao: "0.3.25"
-    commit: 46a1e02
-    ci: "35446917195"
+    evidencia: evidence/releases/0.3.26/
+    versao: "0.3.26"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE TECHNICALLY_APPROVED. BA/MG PROVENANCE_VERIFIED sem ingest; RJ
-      IP-blocked. Próxima UF preferencial: BA (multi-header).
+      PE e BA TECHNICALLY_APPROVED. MG PROVENANCE_VERIFIED sem gzip; RJ
+      IP-blocked. Próxima UF preferencial: MG quando bytes obtíveis.
 
   - id: F3-STATE-ICMS-ACTIVATION
     fase: F3.2
@@ -371,14 +372,14 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.25/
-    versao: "0.3.25"
-    commit: 46a1e02
-    ci: "35446917195"
+    evidencia: evidence/releases/0.3.26/
+    versao: "0.3.26"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE ativado (state_pe_csv). Expandir BA/MG quando layout+bytes ok;
-      RJ permanece IP-blocked. Sem agregador privado.
+      PE e BA ativados (state_pe_csv / state_ba_csv). Expandir MG quando
+      gzip ok; RJ permanece IP-blocked. Sem agregador privado.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2
@@ -393,14 +394,13 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.25/
-    versao: "0.3.25"
-    commit: 46a1e02
-    ci: "35446917195"
+    evidencia: evidence/releases/0.3.26/
+    versao: "0.3.26"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE ativado; IPVA zero publicado como oficial. Seguir BA/MG; sem inventar
-      valores. Normalizar IBGE7.
+      PE e BA ativados. Seguir MG; sem inventar valores. Normalizar IBGE7.
 
   - id: F3-RFB-CNPJ
     fase: F3.2

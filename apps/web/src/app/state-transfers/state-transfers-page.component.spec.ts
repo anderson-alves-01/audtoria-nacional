@@ -11,7 +11,7 @@ describe('StateTransfersPageComponent', () => {
     });
   });
 
-  it('renders PE activated and other UFs without inventing credit', () => {
+  it('renders PE and BA activated without inventing credit', () => {
     const fixture = TestBed.createComponent(StateTransfersPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
@@ -25,6 +25,13 @@ describe('StateTransfersPageComponent', () => {
         {
           uf: 'PE',
           name: 'Pernambuco',
+          status: 'TECHNICALLY_APPROVED',
+          structuredOfficialSource: 'ckan_csv_downloadable',
+          ingestAllowed: true,
+        },
+        {
+          uf: 'BA',
+          name: 'Bahia',
           status: 'TECHNICALLY_APPROVED',
           structuredOfficialSource: 'ckan_csv_downloadable',
           ingestAllowed: true,
@@ -44,6 +51,7 @@ describe('StateTransfersPageComponent', () => {
     const text = fixture.nativeElement.textContent as string;
     expect(text).toContain('Transferências estaduais ICMS/IPVA');
     expect(text).toContain('PE');
+    expect(text).toContain('BA');
     expect(text).toContain('TECHNICALLY_APPROVED');
     expect(text).toContain('ingestAllowed=true');
     expect(text).toContain('Ingestão habilitada: sim');

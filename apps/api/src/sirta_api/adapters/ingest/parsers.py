@@ -217,6 +217,14 @@ def normalize_place(value: str) -> str:
     return re.sub(r"\s+", " ", ascii_only).strip().upper()
 
 
+def parse_brazilian_number(raw: object) -> float:
+    text = str(raw or "").strip()
+    if not text:
+        raise ValueError("empty amount")
+    normalized = text.replace(".", "").replace(",", ".")
+    return float(normalized)
+
+
 def parse_state_pe_csv(
     body: bytes,
     *,
@@ -283,6 +291,88 @@ def parse_state_pe_csv(
             "uf": uf,
             "ibgeCode": ibge,
             "competence": f"{year}-{month}"[:7],
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
+def parse_state_ba_csv(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "BA",
+    competence: str = "2024",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse BA multi-header semicolon CSV; monthly ICMS/IPVA columns; no credit."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state BA tax filter: {tax}")
+    amount_index = 4 if tax_key == "ICMS" else 13
+    try:
+        text = body.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        text = body.decode("latin-1")
+    reader = csv.reader(io.StringIO(text), delimiter=";")
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    competence_key = str(competence or "2024").strip()[:7]
+    for index, item in enumerate(reader):
+        if not item:
+            continue
+        raw_name = str(item[0] or "").strip()
+        if not raw_name:
+            continue
+        place = normalize_place(raw_name)
+        joined = normalize_place(";".join(item[:8]))
+        if place.startswith("DENOMINACAO") or "ICMS" in joined and index == 0:
+            continue
+        if place.startswith("PAGINA") or place.startswith("TOTAL"):
+            continue
+        if len(item) <= amount_index:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"ba-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                    },
+                    f"missing {tax_key} column",
+                )
+            )
+            continue
+        amount_raw = item[amount_index]
+        try:
+            value = parse_brazilian_number(amount_raw)
+        except ValueError:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"ba-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((normalize_place(raw_name), normalize_place(uf)), "")
+        row = {
+            "rowId": f"ba-{tax_key.lower()}-{ibge or index}-{competence_key}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence_key,
             "transferName": tax_key,
             "modality": modality,
             "value": value,

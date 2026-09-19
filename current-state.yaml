@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.25
+implementation_version: 0.3.26
 roadmap_version: "1.2"
-version: 0.3.25
+version: 0.3.26
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -46,12 +46,13 @@ completed:
     - rfb_territorial_connector_without_national_load
     - state_icms_ipva_rj_provenance_and_empty_shell
     - state_pe_icms_ipva_csv_activation
+    - state_ba_icms_ipva_csv_activation
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
     - specialist_homologation_g4
     - official_tesouro_national_backfill
-    - state_ba_mg_rj_activation_followup
+    - state_mg_rj_activation_followup
     - rfb_scoped_authorized_load
     - official_ibs_cbs_homologation_g8
     - remaining_roadmap_technical_items
@@ -84,6 +85,7 @@ gates:
   f3_rfb_territorial_local: GO
   f3_state_transfers_shell_local: GO
   f3_state_pe_activation_local: GO
+  f3_state_ba_activation_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -95,6 +97,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.25/
-next_action: Next cycle prefer BA state ICMS/IPVA layout+fixture (multi-header CSV) or MG when gzip downloadable. RJ remains IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold remains pending and is not requested now.
+evidence: evidence/releases/0.3.26/
+next_action: Next cycle prefer MG state ICMS/IPVA when gzip downloadable, or expand other PUBLIC_OPEN UFs. RJ remains IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

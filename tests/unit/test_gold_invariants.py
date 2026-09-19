@@ -2,6 +2,7 @@ from pathlib import Path
 
 from sirta_api.adapters.ingest.parsers import (
     parse_ibge_sidra_series,
+    parse_state_ba_csv,
     parse_state_pe_csv,
     parse_tesouro_monthly_csv,
 )
@@ -121,3 +122,30 @@ def test_state_pe_csv_joins_ibge_and_publishes_zero_ipva() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_ba_csv_parses_multi_header_and_joins_ibge() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/ba-repasses-municipios-2024.csv"
+    ).read_bytes()
+    lookup = {
+        ("ABAIRA", "BA"): "2900108",
+        ("ALAGOINHAS", "BA"): "2900702",
+    }
+    icms, quarantined_icms = parse_state_ba_csv(body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"2900108", "2900702"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "BA" for row in icms)
+    abaira = next(row for row in icms if row["ibgeCode"] == "2900108")
+    assert abaira["value"] == 374980.42
+    assert abaira["competence"] == "2024"
+    assert len(quarantined_icms) == 1
+    ipva, quarantined_ipva = parse_state_ba_csv(body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    alagoinhas = next(row for row in ipva if row["ibgeCode"] == "2900702")
+    assert alagoinhas["value"] == 1066957.0
+    assert alagoinhas["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-BA-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-BA-IPVA-QUOTA")["createsTaxCredit"] is False

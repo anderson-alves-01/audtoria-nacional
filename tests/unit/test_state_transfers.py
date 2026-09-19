@@ -14,8 +14,8 @@ def test_state_transfers_panel_empty_and_non_credit() -> None:
     by_uf = {row["uf"]: row for row in panel["states"]}
     assert by_uf["PE"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["PE"]["ingestAllowed"] is True
-    assert by_uf["BA"]["status"] == "PROVENANCE_VERIFIED"
-    assert by_uf["BA"]["ingestAllowed"] is False
+    assert by_uf["BA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_uf["BA"]["ingestAllowed"] is True
     assert by_uf["RJ"]["status"] == "PROVENANCE_VERIFIED"
     assert by_uf["SP"]["status"] == "DISCOVERED"
     assert panel["ingestEnabled"] is True

@@ -6,9 +6,9 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE TECHNICALLY_APPROVED com connector state_pe_csv (fixture + join IBGE7).
-  BA CSV baixável e MG datapackage ainda sem ingest. RJ IP-blocked. Sem
-  agregador privado. IPVA zero em PE é valor oficial publicado.
+  PE e BA TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv, fixture, IBGE7).
+  MG datapackage ainda sem ingest (gzip 403). RJ IP-blocked. Sem agregador
+  privado. IPVA zero em PE é valor oficial publicado.
 states:
   - uf: AC
     name: Acre
@@ -32,18 +32,24 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: BA
     name: Bahia
-    status: PROVENANCE_VERIFIED
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
     structured_official_source: ckan_csv_downloadable
     dataset_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
     official_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
     endpoint: https://dados.ba.gov.br/dataset/2ac6387d-80ee-4855-aaba-d6820a5f8a71/resource/76430704-b1a2-484f-87dc-c86248f4f288/download/2024.csv
     taxes: [ICMS, IPVA, IPI]
     format: CSV
+    columns_layout: multi_header_semicolon_latin1
     ibge_field: name_only
+    layout_version_icms: state-ba-icms-v1
+    layout_version_ipva: state-ba-ipva-v1
+    connector: state_ba_csv
     download_probe_2026_09_19: csv_bytes_ok_multi_header
     reason: >
-      CSV anual baixável com ICMS/IPVA. Cabeçalho multi-linha; município por
-      denominação (mapear IBGE7). Sem ingest até layout normalizado + fixture.
+      CSV anual ativado com connector state_ba_csv (`;`, latin-1, número BR).
+      Colunas posicionais ICMS=4 e IPVA=13 após cabeçalho multi-coluna.
+      Fixture mínima + join IBGE7 por nome+UF. Sem crédito.
   - uf: CE
     name: Ceará
     status: DISCOVERED
