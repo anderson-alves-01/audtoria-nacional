@@ -30,6 +30,9 @@ def test_catalog_does_not_create_tax_credits_and_blocks_restricted(api_client) -
     assert by_id["IBGE-SIDRA"]["fixtureKind"] == "OFFICIAL"
     assert by_id["MUNICIPAL-ISS-RESTRICTED"]["ingestAllowed"] is False
     assert by_id["MUNICIPAL-ISS-RESTRICTED"]["status"] == "CREDENTIAL_REQUIRED"
+    assert by_id["PORTAL-TRANSPARENCIA-TRANSFERENCIAS"]["ingestAllowed"] is False
+    assert by_id["PORTAL-TRANSPARENCIA-TRANSFERENCIAS"]["status"] == "CREDENTIAL_REQUIRED"
+    assert by_id["PLANALTO-LC-214"]["ingestAllowed"] is True
     dry = api_client.post("/v1/data-sources/IBGE-SIDRA/dry-run", headers=_analyst())
     assert dry.status_code == 200
     assert dry.json()["wouldCreateTaxCredit"] is False

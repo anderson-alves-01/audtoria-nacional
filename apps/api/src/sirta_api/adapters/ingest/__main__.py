@@ -11,7 +11,9 @@ from sirta_api.adapters.db.synthetic_ids import (
     TERRITORY_ALPHA_CENTRO,
     USER_ADMIN_ALPHA,
 )
+from sirta_api.adapters.http.logging import configure_logging
 from sirta_api.adapters.ingest.catalog_loader import catalog_sources
+from sirta_api.adapters.observability.ingest_events import log_ingest_finished
 from sirta_api.application.source_ingest import ingest_catalog_source
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.catalog import ingest_allowed
@@ -60,10 +62,22 @@ def run_official_ingest(session: Session, *, source_ids: list[str] | None = None
                     "error": str(exc),
                 }
             )
+            log_ingest_finished(
+                outcome="failed",
+                source_id=source_id,
+                tenant_id=str(context.tenant_id),
+                territory_id=str(context.territory_id),
+                run_id=None,
+                received_count=0,
+                silver_count=0,
+                quarantined_count=0,
+                error=str(exc),
+            )
     return results
 
 
 def main() -> None:
+    configure_logging()
     parser = argparse.ArgumentParser(description="Ingest cataloged PUBLIC_OPEN official sources")
     parser.add_argument("--sources", default="", help="Comma-separated source IDs")
     args = parser.parse_args()

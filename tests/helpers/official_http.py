@@ -22,6 +22,7 @@ SNAPSHOT_URLS = {
         "https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm"
     ): "planalto-ec132.html",
     "https://legis.senado.leg.br/norma/36873557": "planalto-ec132.html",
+    "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm": "planalto-lc214.html",
     (
         "https://www.tesourotransparente.gov.br/ckan/dataset/"
         "af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/"

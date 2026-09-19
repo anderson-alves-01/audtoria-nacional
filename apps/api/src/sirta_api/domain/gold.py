@@ -51,6 +51,13 @@ PRESENTATION = {
         "valueKind": "REGULATORY_DOCUMENT",
         "label": "Documento regulatório. binding=false, operational=false, homologated=false.",
     },
+    "PLANALTO-LC-214": {
+        "valueKind": "REGULATORY_DOCUMENT",
+        "label": (
+            "Lei Complementar 214/2025 preservada. "
+            "binding=false, operational=false, homologated=false."
+        ),
+    },
 }
 
 

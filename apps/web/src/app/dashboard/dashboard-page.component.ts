@@ -22,6 +22,24 @@ interface DashboardGoldItem {
   valueKind?: string;
   presentation?: string;
   financial?: boolean;
+  lineageLineCount?: number;
+  lineage?: {
+    bronzeSha256?: string;
+    landingPath?: string;
+    landingManifestPath?: string;
+    endpoint?: string;
+  };
+}
+
+interface EmptySource {
+  sourceId: string;
+  emptyReason?: string;
+  status?: string;
+  competence?: string;
+  formula?: string;
+  officialUrl?: string;
+  qualityLevel?: string;
+  homologationStatus?: string;
 }
 
 @Component({
@@ -38,7 +56,9 @@ export class DashboardPageComponent implements OnInit {
   title = '';
   banner = '';
   emptyReason = '';
+  homologationStatus = '';
   items: DashboardGoldItem[] = [];
+  emptySources: EmptySource[] = [];
   errorMessage = '';
   commandsDisabled = true;
 
@@ -50,13 +70,17 @@ export class DashboardPageComponent implements OnInit {
       emptyReason: string;
       published: boolean;
       commandsDisabled: boolean;
+      homologationStatus: string;
       items: DashboardGoldItem[];
+      emptySources: EmptySource[];
     }>(`/v1/dashboards/${dashboardId}`).subscribe({
       next: (body) => {
         this.title = body.title;
         this.banner = body.banner;
         this.emptyReason = body.emptyReason;
+        this.homologationStatus = body.homologationStatus;
         this.items = body.items || [];
+        this.emptySources = body.emptySources || [];
         this.commandsDisabled = body.commandsDisabled;
         this.state = body.published ? 'ok' : 'empty';
       },

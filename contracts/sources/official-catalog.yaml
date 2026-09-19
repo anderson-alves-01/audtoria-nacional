@@ -281,6 +281,74 @@ sources:
     methodology_version: official-planalto-ec132-v1
     notes: Planalto pode desconectar; o conector tenta o Legis Senado. Retry com backoff. Nenhuma regra extraída torna-se vinculante.
 
+  - source_id: PLANALTO-LC-214
+    name: Planalto — Lei Complementar 214/2025 (IBS/CBS)
+    maintainer: Presidência da República
+    official_domain: www.planalto.gov.br
+    official_url: https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm
+    endpoint: https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm
+    documentation_url: https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm
+    dataset: PLANALTO-LC-214
+    dictionary_url: https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm
+    purpose: Preservar documento regulatório oficial da LC 214 com checksum
+    legal_basis: Publicação oficial no portal do Planalto
+    license_terms: publicação oficial da União
+    source_role: REGULATORY
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: official_document
+    layout_version: planalto-lc214-html-v1
+    periodicity: as_published
+    competence: "2025"
+    granularity: document
+    parameters:
+      document: lcp214.htm
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: regulatory_document_lc214
+    formula: Documento HTML oficial preservado. binding=false, operational=false, homologated=false, estado NON_BINDING.
+    methodology_version: official-planalto-lc214-v1
+    notes: Documento além da EC 132. Nenhuma regra, alíquota ou prazo é inferido. binding=false.
+
+  - source_id: PORTAL-TRANSPARENCIA-TRANSFERENCIAS
+    name: Portal da Transparência da União — transferências
+    maintainer: Controladoria-Geral da União
+    official_domain: portaldatransparencia.gov.br
+    official_url: https://portaldatransparencia.gov.br/api-de-dados
+    endpoint: https://api.portaldatransparencia.gov.br/api-de-dados
+    documentation_url: https://portaldatransparencia.gov.br/api-de-dados
+    dataset: PORTAL-TRANSPARENCIA-TRANSFERENCIAS
+    dictionary_url: https://portaldatransparencia.gov.br/api-de-dados
+    purpose: Transferências da União quando API estruturada autenticada estiver autorizada
+    legal_basis: API oficial do Portal da Transparência (CGU)
+    license_terms: termos de uso do Portal da Transparência
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_CONTROLLED
+    status: CREDENTIAL_REQUIRED
+    fixture_kind: NONE
+    connector: portal_transparencia_api
+    layout_version: portal-transparencia-api-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: municipality
+    parameters:
+      authentication_header: chave-api-dados
+      scrape_forbidden: true
+    authentication: credential_required
+    rate_limit: published_by_cgu
+    personal_data: possible_beneficiary_minimized
+    retention: blocked_until_credential
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: >
+      API exige chave (401 sem credencial). Sem scraping de HTML.
+      Capacidade técnica catalogada; runtime permanece vazio até CREDENTIAL.
+      Não cria crédito, cobrança ou ocorrência automática.
+
   - source_id: MUNICIPAL-ISS-RESTRICTED
     name: Arrecadação ISS municipal (restrita)
     maintainer: Município piloto (não nomeado)

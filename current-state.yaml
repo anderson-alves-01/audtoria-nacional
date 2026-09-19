@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.15
+implementation_version: 0.3.16
 roadmap_version: "1.2"
-version: 0.3.15
+version: 0.3.16
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -19,6 +19,9 @@ completed:
   - tesouro_fpm_monthly_csv_connector
   - siconfi_rreo_dca_partitioned_connector
   - fifteen_official_dashboards_empty_when_unauthored
+  - ingest_structured_observability
+  - regulatory_lc214_document_ingest
+  - portal_transparencia_credential_catalog_stub
 pending:
   - municipal_g0_authorization
   - diagnosis_g1
@@ -53,6 +56,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.15/
+evidence: evidence/releases/0.3.16/
 next_action: Continue remaining technically implementable ROADMAP items. Do not treat wave 1 as programme completion. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

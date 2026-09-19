@@ -31,6 +31,10 @@ from sirta_api.adapters.ingest.parsers import (
     sha256_bytes,
     write_landing,
 )
+from sirta_api.adapters.observability.ingest_events import (
+    log_ingest_finished,
+    log_ingest_started,
+)
 from sirta_api.application.audit import record_audit
 from sirta_api.config import get_settings
 from sirta_api.domain.authorization import AccessContext
@@ -73,10 +77,20 @@ def ingest_official_source(
     )
     connector = str(catalog.get("connector") or "")
     endpoint = str(catalog.get("endpoint") or "")
-    if connector in {"rfb_cnpj_open", "restricted_upload", "state_transfer_adapter"}:
+    if connector in {
+        "rfb_cnpj_open",
+        "restricted_upload",
+        "state_transfer_adapter",
+        "portal_transparencia_api",
+    }:
         raise ForbiddenError("Official connector is waiting territorial scope or credentials")
     if connector in {"", "none"} or endpoint in {"", "none"}:
         raise ForbiddenError("Official connector is not activated for this source")
+    log_ingest_started(
+        source_id=source.source_id,
+        tenant_id=str(context.tenant_id),
+        territory_id=str(context.territory_id),
+    )
     timeout = get_settings().official_http_timeout_seconds
     try:
         fetched = _fetch_source(
@@ -92,7 +106,7 @@ def ingest_official_source(
     except Exception as exc:
         source.status = "UNAVAILABLE"
         session.flush()
-        return {
+        body = {
             "runId": None,
             "sourceId": source.source_id,
             "status": "UNAVAILABLE",
@@ -107,10 +121,22 @@ def ingest_official_source(
             "wouldDownloadFullBase": True,
             "error": str(exc),
         }
+        log_ingest_finished(
+            outcome="unavailable",
+            source_id=source.source_id,
+            tenant_id=str(context.tenant_id),
+            territory_id=str(context.territory_id),
+            run_id=None,
+            received_count=0,
+            silver_count=0,
+            quarantined_count=0,
+            error=str(exc),
+        )
+        return body
     if fetched.status_code >= 400:
         source.status = "UNAVAILABLE"
         session.flush()
-        return {
+        body = {
             "runId": None,
             "sourceId": source.source_id,
             "status": "UNAVAILABLE",
@@ -125,6 +151,19 @@ def ingest_official_source(
             "wouldDownloadFullBase": True,
             "httpStatus": fetched.status_code,
         }
+        log_ingest_finished(
+            outcome="unavailable",
+            source_id=source.source_id,
+            tenant_id=str(context.tenant_id),
+            territory_id=str(context.territory_id),
+            run_id=None,
+            received_count=0,
+            silver_count=0,
+            quarantined_count=0,
+            http_status=fetched.status_code,
+            error=f"http_status_{fetched.status_code}",
+        )
+        return body
     digest = sha256_bytes(fetched.body)
     layout = str(catalog.get("layout_version") or source.layout_version)
     existing = session.scalar(
@@ -135,7 +174,18 @@ def ingest_official_source(
         )
     )
     if existing is not None:
-        return _body(existing, source=source, catalog=catalog, replay=True)
+        body = _body(existing, source=source, catalog=catalog, replay=True)
+        log_ingest_finished(
+            outcome="replay",
+            source_id=source.source_id,
+            tenant_id=str(context.tenant_id),
+            territory_id=str(context.territory_id),
+            run_id=body["runId"],
+            received_count=body["receivedCount"],
+            silver_count=body["silverCount"],
+            quarantined_count=body["quarantinedCount"],
+        )
+        return body
     extracted_at = datetime.now(UTC)
     silver, quarantined = _parse(
         connector, fetched, session=session, context=context, catalog=catalog
@@ -326,7 +376,18 @@ def ingest_official_source(
         resource_id=run.id,
     )
     session.flush()
-    return _body(run, source=source, catalog=catalog, replay=False)
+    body = _body(run, source=source, catalog=catalog, replay=False)
+    log_ingest_finished(
+        outcome="success",
+        source_id=source.source_id,
+        tenant_id=str(context.tenant_id),
+        territory_id=str(context.territory_id),
+        run_id=body["runId"],
+        received_count=body["receivedCount"],
+        silver_count=body["silverCount"],
+        quarantined_count=body["quarantinedCount"],
+    )
+    return body
 
 
 def published_official_enrichment(
@@ -443,8 +504,13 @@ def list_official_gold(session: Session, *, context: AccessContext) -> dict:
             {
                 "sourceId": source_id,
                 "status": source.get("status"),
-                "emptyReason": source.get("notes"),
+                "emptyReason": source.get("notes")
+                or f"Sem Gold oficial publicado para {source_id}.",
                 "officialUrl": source.get("official_url"),
+                "competence": source.get("competence"),
+                "formula": source.get("formula"),
+                "qualityLevel": source.get("status"),
+                "homologationStatus": HOMOLOGATION_PENDING,
             }
         )
     return {

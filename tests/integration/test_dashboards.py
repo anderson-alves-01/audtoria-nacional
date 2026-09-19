@@ -31,16 +31,32 @@ def test_fifteen_dashboards_are_empty_without_synthetic_fill(api_client) -> None
         assert item["taxPotentialAsCredit"] is False
         assert item["commandsDisabled"] is True
         assert item["homologationStatus"] == "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
-    detail = api_client.get("/v1/dashboards/transferencias", headers=_analyst())
-    assert detail.status_code == 200
-    body_detail = detail.json()
-    assert body_detail["createsTaxCredit"] is False
-    assert body_detail["commandsDisabled"] is True
-    assert body_detail["roiCalculated"] is False
-    assert "Dicionário FPM" in body_detail["emptyReason"]
-    if body_detail["published"]:
-        assert all(item["createsTaxCredit"] is False for item in body_detail["items"])
+    for catalog in DASHBOARDS:
+        detail = api_client.get(f"/v1/dashboards/{catalog['id']}", headers=_analyst())
+        assert detail.status_code == 200
+        body_detail = detail.json()
+        assert body_detail["createsTaxCredit"] is False
+        assert body_detail["commandsDisabled"] is True
+        assert body_detail["roiCalculated"] is False
+        assert body_detail["homologationStatus"] == (
+            "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        )
+        assert body_detail["emptyReason"]
+        assert "emptySources" in body_detail
+        assert isinstance(body_detail["emptySources"], list)
+        if not body_detail["published"]:
+            assert body_detail["items"] == []
+        else:
+            assert all(item["createsTaxCredit"] is False for item in body_detail["items"])
+            for item in body_detail["items"]:
+                assert "lineage" in item
+                assert item.get("homologationStatus") == (
+                    "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+                )
+    transferencias = api_client.get("/v1/dashboards/transferencias", headers=_analyst()).json()
+    assert "Dicionário FPM" in transferencias["emptyReason"]
+    if transferencias["published"]:
         assert all(
             item.get("valueKind") != "CATALOG_METADATA" or item.get("financial") is False
-            for item in body_detail["items"]
+            for item in transferencias["items"]
         )

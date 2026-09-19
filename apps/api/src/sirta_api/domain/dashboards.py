@@ -82,7 +82,7 @@ DASHBOARDS = (
         "id": "ibs-cbs",
         "path": "/ibs-cbs",
         "title": "IBS/CBS",
-        "goldSourceIds": ("PLANALTO-LEGISLACAO",),
+        "goldSourceIds": ("PLANALTO-LEGISLACAO", "PLANALTO-LC-214"),
         "emptyReason": "Documento regulatório não vinculante. binding=false, operational=false.",
         "commandsDisabled": True,
     },

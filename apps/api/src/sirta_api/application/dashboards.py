@@ -31,11 +31,17 @@ def get_dashboard(session: Session, *, context: AccessContext, dashboard_id: str
 def _view(
     catalog: dict, *, gold_items: list[dict], empty_sources: list[dict] | None = None
 ) -> dict:
+    all_empty = empty_sources or []
     if catalog.get("includeAllGold"):
         items = list(gold_items)
+        scoped_empty = list(all_empty)
     else:
         allowed = set(catalog.get("goldSourceIds") or ())
         items = [item for item in gold_items if item.get("sourceId") in allowed]
+        if allowed:
+            scoped_empty = [item for item in all_empty if item.get("sourceId") in allowed]
+        else:
+            scoped_empty = []
     return {
         "id": catalog["id"],
         "path": catalog["path"],
@@ -47,7 +53,7 @@ def _view(
         "emptyReason": catalog["emptyReason"],
         "published": bool(items),
         "items": items,
-        "emptySources": empty_sources or [],
+        "emptySources": scoped_empty,
         "roiCalculated": False,
         "taxPotentialAsCredit": False,
     }

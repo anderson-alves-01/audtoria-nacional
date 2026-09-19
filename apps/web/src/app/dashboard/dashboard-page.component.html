@@ -1,12 +1,32 @@
 <section aria-labelledby="dashboard-title">
   <h1 id="dashboard-title">{{ title || 'Painel oficial' }}</h1>
   <p>{{ banner }}</p>
+  <p>Homologação {{ homologationStatus || 'REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION' }}.</p>
   <p>Comandos operacionais desativados até homologação humana. Nenhum valor sintético é exibido.</p>
   @if (state === 'loading') {
     <p role="status">Carregando painel oficial…</p>
   }
   @if (state === 'empty') {
     <p role="status">{{ emptyReason || 'Sem dados oficiais publicados. O painel permanece vazio.' }}</p>
+    @for (source of emptySources; track source.sourceId) {
+      <article>
+        <h2>{{ source.sourceId }}</h2>
+        <p>{{ source.emptyReason || 'Fonte sem Gold oficial publicado.' }}</p>
+        @if (source.competence) {
+          <p>Competência {{ source.competence }}</p>
+        }
+        @if (source.formula) {
+          <p>Fórmula: {{ source.formula }}</p>
+        }
+        @if (source.qualityLevel) {
+          <p>Qualidade {{ source.qualityLevel }}</p>
+        }
+        <p>Homologação {{ source.homologationStatus || homologationStatus }}</p>
+        @if (source.officialUrl) {
+          <p>Fonte {{ source.officialUrl }}</p>
+        }
+      </article>
+    }
   }
   @if (state === 'ok') {
     <ul>
@@ -18,12 +38,25 @@
           <span>Cobertura {{ item.coverageCount }} · qualidade {{ item.qualityLevel }} · homologação {{ item.homologationStatus }}</span>
           <span>Fórmula: {{ item.formula }} Metodologia {{ item.methodologyVersion }}.</span>
           <span>Fonte {{ item.officialUrl }} · quarentena {{ item.quarantinedCount }}</span>
+          @if (item.lineage) {
+            <span>
+              Lineage bronze {{ item.lineage.bronzeSha256 }} · manifesto
+              {{ item.lineage.landingManifestPath }} · endpoint {{ item.lineage.endpoint }} ·
+              linhas {{ item.lineageLineCount || 0 }}
+            </span>
+          }
           @if (item.financial && item.numericTotal !== null) {
             <span>Total publicado {{ item.numericTotal }} {{ item.valueKind }}. Não é crédito tributário.</span>
           }
         </li>
       }
     </ul>
+    @if (emptySources.length) {
+      <h2>Fontes sem dado oficial publicado</h2>
+      @for (source of emptySources; track source.sourceId) {
+        <p>{{ source.sourceId }}: {{ source.emptyReason }}</p>
+      }
+    }
   }
   @if (state === 'error') {
     <p role="alert">{{ errorMessage }}</p>

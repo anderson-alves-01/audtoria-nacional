@@ -48,6 +48,9 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     planalto = api_client.post("/v1/data-sources/PLANALTO-LEGISLACAO/ingest", headers=_admin())
     assert planalto.status_code == 200
     assert planalto.json()["silverCount"] == 1
+    lc214 = api_client.post("/v1/data-sources/PLANALTO-LC-214/ingest", headers=_admin())
+    assert lc214.status_code == 200
+    assert lc214.json()["silverCount"] == 1
     fpm = api_client.post("/v1/data-sources/TESOURO-FPM-VALORES/ingest", headers=_admin())
     assert fpm.status_code == 200
     assert fpm.json()["silverCount"] == 3
@@ -56,6 +59,10 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert rreo.json()["silverCount"] == 1
     blocked = api_client.post("/v1/data-sources/RFB-DADOS-ABERTOS/ingest", headers=_admin())
     assert blocked.status_code == 403
+    portal = api_client.post(
+        "/v1/data-sources/PORTAL-TRANSPARENCIA-TRANSFERENCIAS/ingest", headers=_admin()
+    )
+    assert portal.status_code == 403
     gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
     body = gold.json()
     assert body["published"] is True
@@ -64,10 +71,12 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "SICONFI-ENTES",
         "IBGE-SIDRA-PIB",
         "PLANALTO-LEGISLACAO",
+        "PLANALTO-LC-214",
         "TESOURO-FPM-VALORES",
         "SICONFI-RREO",
     }
     assert expected <= set(by_id)
+    assert by_id["PLANALTO-LC-214"]["valueKind"] == "REGULATORY_DOCUMENT"
     assert by_id["SICONFI-ENTES"]["valueKind"] == "COVERAGE_REGISTRY"
     assert by_id["TESOURO-FPM-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["SICONFI-RREO"]["valueKind"] == "FISCAL_STATEMENT_LINE"
@@ -93,3 +102,7 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["RFB-DADOS-ABERTOS"]["status"] == "READY_FOR_TERRITORIAL_SCOPE"
     assert by_id["RFB-DADOS-ABERTOS"]["ingestAllowed"] is False
     assert by_id["MUNICIPAL-IPTU-RESTRICTED"]["status"] == "CREDENTIAL_REQUIRED"
+    assert by_id["PORTAL-TRANSPARENCIA-TRANSFERENCIAS"]["status"] == "CREDENTIAL_REQUIRED"
+    assert by_id["PORTAL-TRANSPARENCIA-TRANSFERENCIAS"]["ingestAllowed"] is False
+    assert by_id["PLANALTO-LC-214"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["PLANALTO-LC-214"]["ingestAllowed"] is True
