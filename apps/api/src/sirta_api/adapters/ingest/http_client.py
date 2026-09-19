@@ -3,7 +3,7 @@ from time import sleep
 
 import httpx
 
-USER_AGENT = "SIRTA-official-ingest/0.3.28"
+USER_AGENT = "SIRTA-official-ingest/0.3.29"
 
 
 @dataclass(frozen=True)

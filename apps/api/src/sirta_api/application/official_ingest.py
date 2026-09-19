@@ -29,6 +29,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_siconfi_statement,
     parse_state_ba_csv,
     parse_state_es_csv,
+    parse_state_go_csv,
     parse_state_mg_csv,
     parse_state_pe_csv,
     parse_tesouro_monthly_csv,
@@ -79,6 +80,7 @@ PARSERS = {
     "state_ba_csv": parse_state_ba_csv,
     "state_mg_csv": parse_state_mg_csv,
     "state_es_csv": parse_state_es_csv,
+    "state_go_csv": parse_state_go_csv,
 }
 
 
@@ -674,6 +676,14 @@ def _parse(
             competence_year=str(
                 parameters.get("competence_year") or catalog.get("competence") or "2024"
             )[:4],
+        )
+    if connector == "state_go_csv":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "IPVA"),
+            uf=str(parameters.get("uf") or "GO"),
+            ibge_lookup=_ibge_lookup(session, context=context),
         )
     if connector == "siconfi_statement":
         return parser(fetched.body, dataset=str(catalog.get("dataset") or "RREO"))

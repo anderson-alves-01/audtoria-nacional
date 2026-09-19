@@ -58,6 +58,10 @@ SNAPSHOT_URLS = {
         "resource/f76f120c-ee95-440c-a77a-2fdace48b1bc/download/"
         "transfestadomunicipios-2024.csv"
     ): "es-transf-estado-municipios-2024.csv",
+    (
+        "https://dadosabertos.go.gov.br/datastore/dump/"
+        "343d1fb0-a182-4005-9203-dce168d2ad60"
+    ): "go-repasses-municipios-202608.csv",
 }
 
 

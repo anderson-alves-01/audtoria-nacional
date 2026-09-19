@@ -38,7 +38,7 @@ def create_app() -> FastAPI:
     configure_logging()
     application = FastAPI(
         title="SIRTA Municipal API",
-        version="0.3.28",
+        version="0.3.29",
     )
     application.add_middleware(TraceMiddleware)
     application.add_middleware(

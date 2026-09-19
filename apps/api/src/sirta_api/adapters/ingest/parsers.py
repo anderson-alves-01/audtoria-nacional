@@ -386,6 +386,68 @@ def parse_state_es_csv(
     return silver, quarantined
 
 
+def parse_state_go_csv(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "GO",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse GO CKAN datastore dump; IPVA only in published 2026 schema; no credit."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key != "IPVA":
+        raise ValueError(f"unsupported state GO tax filter: {tax}")
+    reader = csv.DictReader(io.StringIO(_decode_csv_bytes(body)))
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = "IPVA_QUOTA"
+    for index, item in enumerate(reader):
+        raw_name = str(item.get("DESC_MUN") or "").strip()
+        ano_mes = str(item.get("NUMR_ANO_MES") or "").strip()
+        if len(ano_mes) == 6 and ano_mes.isdigit():
+            competence = f"{ano_mes[:4]}-{ano_mes[4:]}"
+        else:
+            competence = ""
+        amount_raw = item.get("VALR_IPVA")
+        try:
+            value = float(str(amount_raw).strip().replace(",", "."))
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"go-ipva-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    "non numeric IPVA amount",
+                )
+            )
+            continue
+        ibge = lookup.get((normalize_place(raw_name), normalize_place(uf)), "")
+        row_token = str(item.get("_id") or index)
+        row = {
+            "rowId": f"go-ipva-{ibge or row_token}-{competence or 'na'}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence,
+            "transferName": "IPVA",
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not competence:
+            quarantined.append((row, "missing competence YYYYMM"))
+            continue
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def parse_state_pe_csv(
     body: bytes,
     *,

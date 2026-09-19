@@ -17,15 +17,15 @@
 | Item | Estado registrado |
 |---|---|
 | Versão da especificação | `0.3.0` |
-| Versão da implementação local | `0.3.28` |
-| Linha técnica em progresso | F0/S0-S4, G6–G8 locais, Alembic, F3, onda 1 PUBLIC_OPEN, lineage Gold, 15 dashboards, FPM/RREO/DCA/RGF, observabilidade, LC 214, Portal stub, diagnóstico, regras não vinculantes, calendário catalog-official-docs-v1, shells F5–F10, upload municipal, Cadastro 360, setoriais catalogados, backfill controlado FPM/RREO/DCA, RFB territorial sem carga nacional, PE+BA+MG+ES ICMS/IPVA TECHNICALLY_APPROVED (`state_pe_csv` / `state_ba_csv` / `state_mg_csv` / `state_es_csv`) |
+| Versão da implementação local | `0.3.29` |
+| Linha técnica em progresso | F0/S0-S4, G6–G8 locais, Alembic, F3, onda 1 PUBLIC_OPEN, lineage Gold, 15 dashboards, FPM/RREO/DCA/RGF, observabilidade, LC 214, Portal stub, diagnóstico, regras não vinculantes, calendário catalog-official-docs-v1, shells F5–F10, upload municipal, Cadastro 360, setoriais catalogados, backfill controlado FPM/RREO/DCA, RFB territorial sem carga nacional, PE+BA+MG+ES ICMS/IPVA + GO IPVA TECHNICALLY_APPROVED (`state_pe_csv` / `state_ba_csv` / `state_mg_csv` / `state_es_csv` / `state_go_csv`) |
 | Dívida Alembic `0004 -> 0005` | `RESOLVED` (`ALEMBIC_HYGIENE`) |
-| Próximo passo automático | Retry GO CSV (download 500 neste runtime) ou outra UF/setorial PUBLIC_OPEN; RJ IP-blocked. RFB sem carga nacional. Sem homologação humana agora. Gates G0/G1/G4/G5/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
+| Próximo passo automático | Outra UF/setorial PUBLIC_OPEN com fixture; GO ICMS quando datastore publicar colunas; RJ IP-blocked. RFB sem carga nacional. Sem homologação humana agora. Gates G0/G1/G4/G5/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
 | Commit de referência local | `feat/official-public-ingest` |
 | Nuvem, produção e dados fiscais restritos | Não autorizados |
 | Estado composto | `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS` |
 
-A implementação `0.3.28` ativa o CSV oficial de ES (ICMS/IPVA, IBGE7 nativo) além de PE, BA e MG, com fixture e lineage Gold. GO permanece DISCOVERED (HTTP 500 no download). Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`. O Programa SIRTA 2026 **não** está concluído. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
+A implementação `0.3.29` ativa IPVA oficial de GO via dump CKAN DataStore (CSV upload ainda 500; schema sem ICMS), além de PE, BA, MG e ES. Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`. O Programa SIRTA 2026 **não** está concluído. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
 
 ### Estados compostos dos gates
 

@@ -1,16 +1,16 @@
 schema_version: 1
-updated_at: "2026-09-19T12:00:00-03:00"
+updated_at: "2026-09-19T15:00:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.28"
+implementation_version: "0.3.29"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.28: ES ICMS/IPVA ativado (state_es_csv, IBGE7 nativo); PE/BA/MG
-  intactos; GO download 500; RJ IP-blocked; RFB territorial sem carga nacional.
-
+  Ciclo 0.3.29: GO IPVA ativado via CKAN DataStore dump (state_go_csv);
+  CSV upload ainda 500; schema sem ICMS; PE/BA/MG/ES intactos; RJ IP-blocked;
+  RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -349,14 +349,14 @@ items:
     frontend: true
     pipeline: false
     testes: true
-    evidencia: evidence/releases/0.3.28/
-    versao: "0.3.28"
-    commit: 85d90ed
-    ci: "35449688226"
+    evidencia: evidence/releases/0.3.29/
+    versao: "0.3.29"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG e ES TECHNICALLY_APPROVED. RJ IP-blocked. GO download CSV 500
-      neste runtime; retry no próximo ciclo. Sem agregador privado.
+      PE, BA, MG, ES e GO TECHNICALLY_APPROVED (GO só IPVA via DataStore).
+      RJ IP-blocked. GO ICMS aguarda colunas no datastore. Sem agregador privado.
 
   - id: F3-STATE-ICMS-ACTIVATION
     fase: F3.2
@@ -371,15 +371,14 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.28/
-    versao: "0.3.28"
-    commit: 85d90ed
-    ci: "35449688226"
+    evidencia: evidence/releases/0.3.29/
+    versao: "0.3.29"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG e ES ativados (state_pe_csv / state_ba_csv / state_mg_csv /
-      state_es_csv). Retry GO quando download OK; RJ permanece IP-blocked.
-      Sem agregador privado.
+      PE, BA, MG e ES ICMS/IPVA + GO IPVA ativados. GO ICMS não publicado no
+      datastore 2026. RJ permanece IP-blocked. Sem agregador privado.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2
@@ -394,14 +393,14 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.28/
-    versao: "0.3.28"
-    commit: 85d90ed
-    ci: "35449688226"
+    evidencia: evidence/releases/0.3.29/
+    versao: "0.3.29"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG e ES ativados. Seguir outras UFs PUBLIC_OPEN; sem inventar valores.
-      MG/ES usam IBGE7 nativo; PE/BA normalizam por nome+UF.
+      PE, BA, MG, ES e GO IPVA ativados. Seguir outras UFs PUBLIC_OPEN; sem
+      inventar valores. GO usa nome+UF; MG/ES usam IBGE7 nativo.
 
   - id: F3-RFB-CNPJ
     fase: F3.2

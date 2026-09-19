@@ -4,6 +4,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_ibge_sidra_series,
     parse_state_ba_csv,
     parse_state_es_csv,
+    parse_state_go_csv,
     parse_state_mg_csv,
     parse_state_pe_csv,
     parse_tesouro_monthly_csv,
@@ -201,3 +202,27 @@ def test_state_es_csv_joins_native_ibge_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-ES-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-ES-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_go_csv_joins_name_uf_and_quarantines_territory() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/go-repasses-municipios-202608.csv"
+    ).read_bytes()
+    lookup = {
+        ("ABADIA DE GOIAS", "GO"): "5200050",
+        ("GOIANIA", "GO"): "5208707",
+    }
+    ipva, quarantined = parse_state_go_csv(body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    assert {row["ibgeCode"] for row in ipva} == {"5200050", "5208707"}
+    assert all(row["modality"] == "IPVA_QUOTA" for row in ipva)
+    assert all(row["uf"] == "GO" for row in ipva)
+    assert all(row["competence"] == "2026-08" for row in ipva)
+    abadia = next(row for row in ipva if row["ibgeCode"] == "5200050")
+    assert abadia["value"] == 13397.86
+    goiania = next(row for row in ipva if row["ibgeCode"] == "5208707")
+    assert goiania["value"] == 3513965.9
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "missing IBGE municipality code"
+    assert presentation_for("ESTADO-GO-IPVA-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-GO-IPVA-QUOTA")["createsTaxCredit"] is False

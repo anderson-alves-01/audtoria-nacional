@@ -903,6 +903,49 @@ sources:
     notes: >
       Mesmo endpoint CSV do ICMS ES. Homologação humana pendente.
 
+  - source_id: ESTADO-GO-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (GO)
+    maintainer: Secretaria da Economia de Goiás / dadosabertos.go.gov.br
+    official_domain: dadosabertos.go.gov.br
+    official_url: https://dadosabertos.go.gov.br/dataset/repasses
+    endpoint: https://dadosabertos.go.gov.br/datastore/dump/343d1fb0-a182-4005-9203-dce168d2ad60
+    documentation_url: https://dadosabertos.go.gov.br/dataset/repasses
+    dataset: ESTADO-GO-IPVA-202608
+    dictionary_url: https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/9e086748-7027-4890-ba67-f2305255945c/download/dicionario_dados_repasses.pdf
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Dados abertos oficiais de Goiás (Repasses — ECONOMIA)
+    license_terms: Creative Commons Attribution / termos do portal dadosabertos.go.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_go_csv
+    layout_version: state-go-ipva-v1
+    periodicity: monthly
+    competence: "2026-08"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: GO
+      normalize: ibge7_name_uf
+      resource_id: 343d1fb0-a182-4005-9203-dce168d2ad60
+      csv_upload_status: http_500
+      datastore_dump: true
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_go_ipva_quota
+    formula: >
+      Valor VALR_IPVA do dump CKAN DataStore do recurso Repasses Agosto/2026,
+      competência NUMR_ANO_MES (YYYYMM), município DESC_MUN com join IBGE7 por
+      nome+UF. VALOR_TOTAL inclui FUNDEB e não é usado como ICMS. Sem ajuste.
+      Não constitui crédito.
+    methodology_version: official-state-go-ipva-v1
+    notes: >
+      CSV upload HTTP 500; dump DataStore 200 OK em 2026-09-19. Schema mensal
+      2026 sem colunas ICMS. Homologação humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil

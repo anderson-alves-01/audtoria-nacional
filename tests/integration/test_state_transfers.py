@@ -46,6 +46,9 @@ def test_state_transfers_endpoint_is_empty_shell(api_client) -> None:
     assert by_uf["MG"]["ingestAllowed"] is True
     assert by_uf["ES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["ES"]["ingestAllowed"] is True
+    assert by_uf["GO"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_uf["GO"]["ingestAllowed"] is True
+    assert by_uf["GO"]["taxes"] == ["IPVA"]
     assert by_uf["RJ"]["status"] == "PROVENANCE_VERIFIED"
 
 
@@ -64,7 +67,7 @@ def test_tech_admin_cannot_read_state_transfers(api_client) -> None:
 def test_state_pe_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 6
+    assert siconfi.json()["silverCount"] == 8
     icms = api_client.post("/v1/data-sources/ESTADO-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
@@ -96,7 +99,7 @@ def test_state_pe_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_ba_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 6
+    assert siconfi.json()["silverCount"] == 8
     icms = api_client.post("/v1/data-sources/ESTADO-BA-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
@@ -177,6 +180,35 @@ def test_state_es_ingest_publishes_gold_without_credit(api_client) -> None:
     )
     assert lines.status_code == 200
     assert any(item["value"] == 3268119.24 for item in lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_state_go_ipva_ingest_publishes_gold_without_credit(api_client) -> None:
+    siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
+    assert siconfi.status_code == 200
+    assert siconfi.json()["silverCount"] == 8
+    ipva = api_client.post("/v1/data-sources/ESTADO-GO-IPVA-QUOTA/ingest", headers=_admin())
+    assert ipva.status_code == 200
+    assert ipva.json()["silverCount"] == 2
+    assert ipva.json()["quarantinedCount"] == 1
+    assert ipva.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["ESTADO-GO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-GO-IPVA-QUOTA"]["createsTaxCredit"] is False
+    assert by_id["ESTADO-GO-IPVA-QUOTA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-GO-IPVA-QUOTA",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(item["value"] == 13397.86 for item in lines.json()["items"])
+    assert any(item["value"] == 3513965.9 for item in lines.json()["items"])
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
