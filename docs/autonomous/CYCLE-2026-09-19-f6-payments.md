@@ -4,7 +4,8 @@ Data: 2026-09-19
 Branch: `feat/official-public-ingest`  
 PR: #2  
 Versão: 0.3.19  
-HEAD: `4c4c2bf`
+HEAD: `4c4c2bf` (lint fix `e69c6b2`)  
+CI: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35441352522 (python/web/containers success)
 
 ## Seleção
 

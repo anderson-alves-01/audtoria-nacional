@@ -12,3 +12,4 @@ BLOCKED; G6 local remains LOCAL_GO with official blocked.
 Ver `docs/delivery/RELEASE_NOTES_0.3.19.md`.
 Migration `0022_f6_payments_active_debt` updates schema_meta only.
 Roadmap stage remains `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS`.
+CI green: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35441352522
