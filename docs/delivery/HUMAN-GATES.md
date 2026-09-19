@@ -3,7 +3,7 @@
 Este arquivo registra o que a implementação local **não** pode avançar sem autorização institucional. Não altera a especificação 0.3.0.
 
 Data: 2026-09-18  
-Implementação: 0.3.8 (`ALEMBIC_HYGIENE`)  
+Implementação: 0.3.11 (`F3_SOURCE_INGEST_LOCAL`)  
 CI G8: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367451209
 
 ## Concluído localmente (sintético)
@@ -18,6 +18,9 @@ CI G8: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367
 | G7 transferências | 0.3.6 | CI `35366037839` | Ocorrência nunca cria `TaxCredit` |
 | G8 calendário IBS/CBS | 0.3.7 | `evidence/releases/0.3.7/` | Catálogo `NON_BINDING`, não operacional |
 | Higiene Alembic | 0.3.8 | `evidence/releases/0.3.8/` | Schema separado do seed; caminhos `base/0004 -> head` |
+| Catálogo de fontes | 0.3.9 | `evidence/releases/0.3.9/` | Registro mestre sintético; ISS restrito sem ingestão |
+| Gates + Terraform docs | 0.3.10 | `evidence/releases/0.3.10/` | Snapshot LOCAL_GO/OFFICIAL_BLOCKED; sem apply |
+| Ingestão IBGE sintética | 0.3.11 | `evidence/releases/0.3.11/` | Landing/Gold de enriquecimento; nunca cria crédito |
 
 ## Bloqueado até decisão humana
 
@@ -41,4 +44,4 @@ CI G8: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367
 
 ## Próxima ação automática
 
-Após CI verde de `0.3.8`, o Registro Mestre de Fontes sintético (F3.0). Gates da tabela acima continuam bloqueados.
+Após CI verde de `0.3.11`, stub sintético Tesouro (sem conector oficial) e UI de checklists G0/G1 em estado BLOCKED. Gates da tabela acima continuam bloqueados.

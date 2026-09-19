@@ -242,6 +242,21 @@ paths:
         '200': {description: Funnel counts with methodology version}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/indicators/source-enrichment:
+    get:
+      operationId: getSourceEnrichment
+      description: Published synthetic enrichment counts. Public sources never create tax credits.
+      parameters:
+        - name: sourceId
+          in: query
+          required: true
+          schema: {type: string}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Enrichment counts; createsTaxCredit=false}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
   /v1/regulatory/ibs-cbs:
     get:
       operationId: getIbsCbsCalendar
@@ -279,6 +294,22 @@ paths:
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
         '200': {description: Dry-run accepted for synthetic fixtures}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/data-sources/{sourceId}/ingest:
+    post:
+      operationId: ingestCatalogSource
+      description: >
+        Catalog-driven synthetic ingest. Preserves landing checksum, quarantines invalid rows
+        and never creates a tax credit or downloads a full official base.
+      parameters:
+        - name: sourceId
+          in: path
+          required: true
+          schema: {type: string}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Ingest accepted or replayed; taxCreditCreated=false}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/program-gates:
     get:

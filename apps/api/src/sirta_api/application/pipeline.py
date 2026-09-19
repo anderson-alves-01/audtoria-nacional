@@ -7,7 +7,13 @@ from uuid import UUID, uuid4
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from sirta_api.adapters.db.models import DataLoadRow, DataLoadRun, GoldFunnel, TaxCredit
+from sirta_api.adapters.db.models import (
+    DataLoadRow,
+    DataLoadRun,
+    GoldEnrichment,
+    GoldFunnel,
+    TaxCredit,
+)
 from sirta_api.application.audit import record_audit
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.errors import ForbiddenError, ValidationFailedError
@@ -172,6 +178,9 @@ def rollback_gold(session: Session, *, context: AccessContext, run_id: UUID) -> 
     gold = session.scalar(select(GoldFunnel).where(GoldFunnel.run_id == run.id))
     if gold is not None:
         gold.published = False
+    enrichment = session.scalar(select(GoldEnrichment).where(GoldEnrichment.run_id == run.id))
+    if enrichment is not None:
+        enrichment.published = False
     session.flush()
     return _run_body(run, replay=False)
 
