@@ -1203,40 +1203,50 @@ sources:
       Não constitui crédito.
 
   - source_id: ANATEL-DADOS-ABERTOS
-    name: Anatel — infraestrutura e presença de telecomunicações (dados.gov.br)
+    name: Anatel — Meu Município acessos de telecomunicações (ZIP/CSV)
     maintainer: Agência Nacional de Telecomunicações
-    official_domain: dados.gov.br
+    official_domain: anatel.gov.br
     official_url: https://www.gov.br/anatel/pt-br/dados/dados-abertos
-    endpoint: https://dados.gov.br/dados/conjuntos-dados/infraestrutura-backhaul-em-municpios
-    documentation_url: https://www.gov.br/anatel/pt-br/dados/dados-abertos
-    dataset: ANATEL-INFRA-MUNICIPIOS
-    dictionary_url: https://dados.gov.br/dados/conjuntos-dados/infraestrutura---presenca-da-telefonia-movel---rqual
-    purpose: Cobertura de telecom por município como referência setorial
-    legal_basis: Plano de Dados Abertos da Anatel / Portal Brasileiro de Dados Abertos
-    license_terms: Creative Commons Attribution / termos dados.gov.br
+    endpoint: https://www.anatel.gov.br/dadosabertos/paineis_de_dados/meu_municipio/meu_municipio.zip
+    documentation_url: https://informacoes.anatel.gov.br/paineis/meu-municipio
+    dataset: ANATEL-MEU-MUNICIPIO-ACESSOS
+    dictionary_url: https://dados.gov.br/dados/conjuntos-dados/meu-municipio---acessos-e-cobertura-de-telecomunicacoes
+    purpose: Acessos de banda larga fixa por município como referência setorial
+    legal_basis: Plano de Dados Abertos da Anatel / painel Meu Município
+    license_terms: Creative Commons Attribution / termos Anatel dados abertos
     source_role: REFERENCE_ENRICHMENT
     access_classification: PUBLIC_OPEN
-    status: DISCOVERED
-    fixture_kind: NONE
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
     connector: anatel_dados_gov
-    layout_version: anatel-dados-gov-v1
-    periodicity: as_published
-    competence: unknown
+    layout_version: anatel-meu-municipio-acessos-v1
+    periodicity: monthly
+    competence: "2025-11"
     granularity: municipality
     parameters:
-      formats: [zip, odt]
+      uf: MS
+      competence_year: "2025"
+      competence_month: "11"
+      service: Banda Larga Fixa
+      max_rows: 8
+      acessos_member: Meu_Municipio_Acessos.csv
+      formats: [zip, csv]
       scrape_forbidden: true
-      activation: blocked_until_structured_csv_verified
     authentication: none
     rate_limit: not_published
     personal_data: false
-    retention: none_until_activation
-    indicator: none
-    formula: none
-    methodology_version: none
+    retention: bronze_immutable
+    indicator: anatel_banda_larga_fixa_acessos
+    formula: >
+      Contagem de acessos de Banda Larga Fixa publicada em Meu_Municipio_Acessos.csv
+      (ZIP oficial Meu Município), filtrada por UF, Ano, Mês e serviço, com Código
+      IBGE de 7 dígitos, limitada a max_rows. Sem carga nacional irrestrita.
+      Não constitui crédito.
+    methodology_version: official-anatel-meu-municipio-acessos-v1
     notes: >
-      Conjuntos oficiais em dados.gov.br (ZIP/ODT). Sem API REST estável verificada.
-      Ativar somente após CSV estruturado e normalização IBGE7. Não constitui crédito.
+      ZIP oficial anatel.gov.br verificado com CSV estruturado e IBGE7 nativo.
+      Ativação técnica com escopo UF=MS, competência 2025-11 e fixture CSV mínima.
+      Homologação humana pendente. Não constitui crédito.
 
   - source_id: BCB-SGS-OLINDA
     name: Banco Central — SGS Meta Selic (432) e IPCA (433)

@@ -144,6 +144,13 @@ PRESENTATION = {
             "Referência setorial; não constitui crédito tributário."
         ),
     },
+    "ANATEL-DADOS-ABERTOS": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Acessos de banda larga fixa Anatel Meu Município por IBGE7 (escopo UF). "
+            "Referência setorial; não constitui crédito tributário."
+        ),
+    },
     "SICONFI-RREO": {
         "valueKind": "FISCAL_STATEMENT_LINE",
         "label": "Linhas do RREO municipal. Não constituem crédito tributário.",

@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from sirta_api.adapters.ingest.parsers import (
+    parse_anatel_dados_gov,
     parse_aneel_ckan_open,
     parse_anp_revendedores_api,
     parse_bcb_sgs_olinda,
@@ -310,6 +311,33 @@ def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     assert all(row["uf"] == "MS" for row in silver)
     assert presentation_for("EPE-DADOS-ABERTOS")["valueKind"] == "REFERENCE_QUANTITY"
     assert presentation_for("EPE-DADOS-ABERTOS")["createsTaxCredit"] is False
+
+
+def test_anatel_meu_municipio_parses_uf_ibge7_scoped_acessos() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/anatel-meu-municipio-acessos-ms-2025-11.csv"
+    ).read_bytes()
+    silver, quarantined = parse_anatel_dados_gov(
+        body,
+        uf="MS",
+        competence_year="2025",
+        competence_month="11",
+        service="Banda Larga Fixa",
+        max_rows=8,
+    )
+    assert len(silver) == 6
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "invalid IBGE municipality code"
+    assert silver[0]["uf"] == "MS"
+    assert silver[0]["ibgeCode"] == "5005251"
+    assert silver[0]["competence"] == "2025-11"
+    assert silver[0]["value"] == 296
+    assert silver[0]["unit"] == "ACCESS_LINES"
+    assert silver[0]["transferName"] == "ANATEL_BANDA_LARGA_FIXA_ACESSOS"
+    assert all(row["uf"] == "MS" for row in silver)
+    assert all(len(row["ibgeCode"]) == 7 for row in silver)
+    assert presentation_for("ANATEL-DADOS-ABERTOS")["valueKind"] == "REFERENCE_QUANTITY"
+    assert presentation_for("ANATEL-DADOS-ABERTOS")["createsTaxCredit"] is False
 
 
 def test_anp_revendedores_aggregates_and_drops_cnpj() -> None:

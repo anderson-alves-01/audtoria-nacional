@@ -1,4 +1,4 @@
-"""Sectoral REFERENCE_ENRICHMENT shell. ANP+ANEEL+BCB+EPE activated; no tax credit."""
+"""Sectoral REFERENCE_ENRICHMENT shell. ANP+ANEEL+BCB+EPE+Anatel activated; no tax credit."""
 
 from sirta_api.domain.errors import ConflictError
 
@@ -42,11 +42,12 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         "sourceId": "ANATEL-DADOS-ABERTOS",
         "maintainer": "Anatel",
         "connector": "anatel_dados_gov",
-        "structuredOfficialSource": "dados_gov_zip_odt",
-        "status": "DISCOVERED",
-        "ingestAllowed": False,
+        "structuredOfficialSource": "meu_municipio_zip_csv_ibge7",
+        "status": "TECHNICALLY_APPROVED",
+        "ingestAllowed": True,
         "personalDataRisk": "none",
-        "activationGate": "STRUCTURED_CSV_VERIFIED",
+        "activationGate": "UF_SCOPED_FIXTURE",
+        "territorialScope": "MS",
     },
     {
         "sourceId": "BCB-SGS-OLINDA",
@@ -73,14 +74,13 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
 
 DISCLAIMER = (
     "Fontes setoriais oficiais catalogadas (ANP, ANEEL, EPE, Anatel, BCB, CNES). "
-    "ANP, ANEEL e EPE ativadas com escopo UF; BCB com allowlist SGS 432/433; "
-    "Anatel/CNES ingestAllowed=false. REFERENCE_ENRICHMENT apenas. "
+    "ANP, ANEEL, EPE e Anatel ativadas com escopo UF; BCB com allowlist SGS 432/433; "
+    "CNES ingestAllowed=false. REFERENCE_ENRICHMENT apenas. "
     "Não constitui crédito tributário."
 )
 
 BLOCKED_SECTORAL_CONNECTORS = frozenset(
     {
-        "anatel_dados_gov",
         "cnes_datasus_open",
     }
 )

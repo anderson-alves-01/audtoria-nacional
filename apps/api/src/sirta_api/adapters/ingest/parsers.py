@@ -461,6 +461,141 @@ def parse_bcb_sgs_olinda(
     return silver, quarantined
 
 
+def parse_anatel_dados_gov(
+    body: bytes,
+    *,
+    uf: str,
+    competence_year: str | int = "2025",
+    competence_month: str | int = "11",
+    service: str = "Banda Larga Fixa",
+    max_rows: int = 8,
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse Anatel Meu Município Acessos (ZIP or CSV); UF + IBGE7 scope; no tax credit."""
+    uf_key = normalize_place(uf)
+    if not uf_key or len(uf_key) != 2:
+        raise ValueError("Anatel territorial scope requires a two-letter UF")
+    year = str(competence_year or "").strip()
+    if not re.fullmatch(r"\d{4}", year):
+        raise ValueError("Anatel competence_year must be a four-digit year")
+    month = str(competence_month or "").strip().zfill(2)
+    if not re.fullmatch(r"\d{2}", month) or not (1 <= int(month) <= 12):
+        raise ValueError("Anatel competence_month must be 01..12")
+    service_key = str(service or "").strip().casefold()
+    if not service_key:
+        raise ValueError("Anatel service filter is required")
+    limit = int(max_rows or 0)
+    if limit <= 0:
+        raise ValueError("Anatel max_rows must be a positive integer")
+    records = (
+        _iter_anatel_zip_acessos_records(body)
+        if body[:2] == b"PK"
+        else _iter_anatel_csv_records(body)
+    )
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    for index, rec in enumerate(records):
+        if len(silver) >= limit:
+            break
+        row_uf = normalize_place(str(_anatel_field(rec, "UF") or ""))
+        if row_uf != uf_key:
+            continue
+        row_year = str(_anatel_field(rec, "Ano") or "").strip()
+        row_month = (
+            str(_anatel_field(rec, "Mês") or _anatel_field(rec, "Mes") or "").strip().zfill(2)
+        )
+        if row_year != year or row_month != month:
+            continue
+        row_service = str(_anatel_field(rec, "Serviço") or _anatel_field(rec, "Servico") or "")
+        if row_service.strip().casefold() != service_key:
+            continue
+        ibge = str(
+            _anatel_field(rec, "Código IBGE") or _anatel_field(rec, "Codigo IBGE") or ""
+        ).strip()
+        raw_name = str(
+            _anatel_field(rec, "Município") or _anatel_field(rec, "Municipio") or ""
+        ).strip()
+        territory = re.sub(rf"\s*-\s*{re.escape(row_uf)}\s*$", "", raw_name, flags=re.I).strip()
+        competence = f"{year}-{month}"
+        raw_accesses = _anatel_field(rec, "Acessos")
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"anatel-acessos-{index}",
+                        "territoryName": territory or raw_name,
+                        "uf": row_uf,
+                        "ibgeCode": ibge,
+                        "competence": competence,
+                        "value": raw_accesses,
+                    },
+                    "invalid IBGE municipality code",
+                )
+            )
+            continue
+        try:
+            accesses = int(parse_brazilian_number(raw_accesses))
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"anatel-acessos-{index}",
+                        "territoryName": territory or raw_name or ibge,
+                        "uf": row_uf,
+                        "ibgeCode": ibge,
+                        "competence": competence,
+                        "value": raw_accesses,
+                    },
+                    "invalid access count",
+                )
+            )
+            continue
+        silver.append(
+            {
+                "rowId": f"anatel-scm-{ibge}-{competence}"[:64],
+                "territoryName": territory or raw_name or ibge,
+                "uf": row_uf,
+                "ibgeCode": ibge,
+                "competence": competence,
+                "transferName": "ANATEL_BANDA_LARGA_FIXA_ACESSOS",
+                "value": accesses,
+                "unit": "ACCESS_LINES",
+            }
+        )
+    return silver, quarantined
+
+
+def _anatel_field(rec: dict, key: str) -> object:
+    if key in rec:
+        return rec.get(key)
+    target = key.casefold()
+    for actual, value in rec.items():
+        if str(actual).casefold() == target:
+            return value
+    return None
+
+
+def _iter_anatel_csv_records(body: bytes):
+    text = _decode_csv_bytes(body)
+    reader = csv.DictReader(io.StringIO(text), delimiter=";")
+    for row in reader:
+        if isinstance(row, dict):
+            yield {str(k): (v if v is not None else "") for k, v in row.items()}
+
+
+def _iter_anatel_zip_acessos_records(body: bytes):
+    import zipfile
+
+    with zipfile.ZipFile(io.BytesIO(body)) as archive:
+        candidates = [
+            name
+            for name in archive.namelist()
+            if name.lower().endswith("meu_municipio_acessos.csv")
+        ]
+        if not candidates:
+            return
+        yield from _iter_anatel_csv_records(archive.read(candidates[0]))
+
+
 def parse_epe_open_files(
     body: bytes,
     *,

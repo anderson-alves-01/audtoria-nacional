@@ -1,4 +1,4 @@
-import os
+﻿import os
 from pathlib import Path
 
 from sqlalchemy import func, inspect, select, text
@@ -25,8 +25,8 @@ def test_upgrade_base_to_head_on_empty_database() -> None:
             impl = connection.execute(
                 text("SELECT value FROM schema_meta WHERE key = 'implementation_version'")
             ).scalar()
-        assert version == "0037_epe_dados_brutos_activation"
-        assert impl == "0.3.34"
+        assert version == "0038_anatel_meu_municipio"
+        assert impl == "0.3.35"
         with Session(engine) as session:
             seed_synthetic(session)
             session.commit()

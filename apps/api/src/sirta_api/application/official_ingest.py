@@ -23,6 +23,7 @@ from sirta_api.adapters.ingest.parsers import (
     landing_dir,
     minimize_row,
     normalize_place,
+    parse_anatel_dados_gov,
     parse_aneel_ckan_open,
     parse_anp_revendedores_api,
     parse_bcb_sgs_olinda,
@@ -89,6 +90,7 @@ PARSERS = {
     "state_ms_csv": parse_state_ms_csv,
     "anp_revendedores_api": parse_anp_revendedores_api,
     "aneel_ckan_open": parse_aneel_ckan_open,
+    "anatel_dados_gov": parse_anatel_dados_gov,
     "bcb_sgs_olinda": parse_bcb_sgs_olinda,
     "epe_open_files": parse_epe_open_files,
 }
@@ -123,7 +125,6 @@ def ingest_official_source(
         "restricted_upload",
         "state_transfer_adapter",
         "portal_transparencia_api",
-        "anatel_dados_gov",
         "cnes_datasus_open",
     }:
         raise ForbiddenError("Official connector is waiting territorial scope or credentials")
@@ -731,6 +732,16 @@ def _parse(
             fetched.body,
             uf=str(parameters.get("uf") or ""),
             competence_year=str(parameters.get("competence_year") or "2024"),
+            max_rows=int(parameters.get("max_rows") or 8),
+        )
+    if connector == "anatel_dados_gov":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            uf=str(parameters.get("uf") or ""),
+            competence_year=str(parameters.get("competence_year") or "2025"),
+            competence_month=str(parameters.get("competence_month") or "11"),
+            service=str(parameters.get("service") or "Banda Larga Fixa"),
             max_rows=int(parameters.get("max_rows") or 8),
         )
     if connector == "siconfi_statement":

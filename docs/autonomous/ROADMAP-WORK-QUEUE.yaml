@@ -1,16 +1,16 @@
 schema_version: 1
-updated_at: "2026-09-19T14:50:00-03:00"
+updated_at: "2026-09-19T15:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.34"
+implementation_version: "0.3.35"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.34: EPE Anuário Dados brutos UF=MS ativado (epe_open_files); BCB/ANEEL/ANP
-  e UFs PE/BA/MG/ES/GO/MS intactos; Anatel/CNES DISCOVERED; RJ IP-blocked;
-  RFB territorial sem carga nacional.
+  Ciclo 0.3.35: Anatel Meu Município UF=MS ativado (anatel_dados_gov, IBGE7);
+  EPE/BCB/ANEEL/ANP e UFs PE/BA/MG/ES/GO/MS intactos; CNES DISCOVERED;
+  RJ IP-blocked; RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -476,20 +476,22 @@ items:
     descricao: Investigar dados abertos oficiais Anatel
     dependencias: [F3-SOURCE-CATALOG]
     estado_tecnico: TECH_COMPLETE
-    estado_institucional: DISCOVERED
+    estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [ANATEL-DADOS-ABERTOS]
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.22/
-    versao: "0.3.22"
-    commit: c046301
+    evidencia: evidence/releases/0.3.35/
+    versao: "0.3.35"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
-      dados.gov.br ZIP/ODT catalogado; ativar só após CSV estruturado + IBGE7.
+      Meu Município ZIP/CSV TECHNICALLY_APPROVED com escopo UF=MS,
+      competência 2025-11, serviço Banda Larga Fixa, IBGE7 nativo e
+      max_rows=8. Gold REFERENCE_QUANTITY. Sem crédito.
 
   - id: F3-SECTORAL-BCB
     fase: F3.2
