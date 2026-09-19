@@ -486,7 +486,7 @@ items:
     evidencia: evidence/releases/0.3.35/
     versao: "0.3.35"
     commit: c4e8962
-    ci: null
+    ci: "35460729005"
     motivo_bloqueio: null
     next_action: >
       Meu Município ZIP/CSV TECHNICALLY_APPROVED com escopo UF=MS,
