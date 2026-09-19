@@ -693,7 +693,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.19/
     versao: "0.3.19"
-    commit: null
+    commit: 4c4c2bf
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -715,7 +715,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.19/
     versao: "0.3.19"
-    commit: null
+    commit: 4c4c2bf
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -737,7 +737,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.19/
     versao: "0.3.19"
-    commit: null
+    commit: 4c4c2bf
     ci: null
     motivo_bloqueio: null
     next_action: >

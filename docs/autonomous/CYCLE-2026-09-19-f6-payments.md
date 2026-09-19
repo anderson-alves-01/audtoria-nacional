@@ -3,7 +3,8 @@
 Data: 2026-09-19  
 Branch: `feat/official-public-ingest`  
 PR: #2  
-Versão: 0.3.19
+Versão: 0.3.19  
+HEAD: `4c4c2bf`
 
 ## Seleção
 
