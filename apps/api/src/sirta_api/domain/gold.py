@@ -137,6 +137,20 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-CE-ICMS-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de ICMS estadual publicada (CE ativado via SEFAZ XLS). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-CE-IPVA-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPVA estadual publicada (CE ativado via SEFAZ XLS). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ANP-REVENDEDORES": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

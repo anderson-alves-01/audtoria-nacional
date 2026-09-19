@@ -6,14 +6,15 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA, MG, ES, GO, MS, RO e AC TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv /
-  state_mg_csv / state_es_csv / state_go_csv / state_ms_csv / state_ro_csv /
-  state_ac_csv). MG/ES/AC usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7.
-  GO IPVA via CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS
-  ICMS/IPVA via CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG
-  ativado; IPVA mensal só via Transparência POST+CSRF (não ativado). RJ
-  IP-blocked. SC/PR PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML). Sem agregador
-  privado.
+  PE, BA, MG, ES, GO, MS, RO, AC e CE TECHNICALLY_APPROVED (state_pe_csv /
+  state_ba_csv / state_mg_csv / state_es_csv / state_go_csv / state_ms_csv /
+  state_ro_csv / state_ac_csv / state_ce_xls). MG/ES/AC usam IBGE7 nativo.
+  RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via CKAN DataStore dump (CSV
+  upload 500; schema sem ICMS 2026). MS ICMS/IPVA via CKAN DataStore mensal
+  (Tipo_Repasse). AC ICMS anual SEPLAG ativado; IPVA mensal só via
+  Transparência POST+CSRF (não ativado). CE ICMS/IPVA via XLS mensal SEFAZ
+  (Portaria). RJ IP-blocked. SC/PR PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML).
+  Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -73,9 +74,25 @@ states:
       Fixture mínima + join IBGE7 por nome+UF. Sem crédito.
   - uf: CE
     name: Ceará
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_xls_downloadable
+    dataset_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    official_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    endpoint: https://www.ce.gov.br/sefaz/wp-content/uploads/sites/46/2020/08/1.Portaria-jan-25-ANEXO-UNICO.xls
+    taxes: [ICMS, IPVA, IPI]
+    format: XLS
+    columns: [Município, ICMS Total, ICMS Líquido, ICMS FUNDEB, IPVA Total, IPVA Líquido, IPVA FUNDEB, IPI Total, IPI Líquido, IPI FUNDEB]
+    ibge_field: name_only
+    layout_version_icms: state-ce-icms-v1
+    layout_version_ipva: state-ce-ipva-v1
+    connector: state_ce_xls
+    download_probe_2026_09_19: xls_bytes_ok_name_uf_join
+    reason: >
+      XLS mensal SEFAZ Portaria de distribuição ICMS/IPVA/IPI ativado com
+      connector state_ce_xls (xlrd). Coluna Total (quota constitucional) por
+      município; join IBGE7 por nome+UF via SICONFI-ENTES. Competência
+      2025-01. Fixture mínima. Sem crédito.
   - uf: DF
     name: Distrito Federal
     status: DISCOVERED
@@ -295,7 +312,9 @@ states:
     name: São Paulo
     status: DISCOVERED
     structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado nesta fatia.
+    reason: >
+      Portal SEFAZ-SP RepasseConsulta é HTML por município; dadosabertos.sp.gov.br
+      sem CSV/API de quota-parte municipal verificado nesta fatia.
   - uf: SE
     name: Sergipe
     status: DISCOVERED

@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.38
+implementation_version: 0.3.39
 roadmap_version: "1.2"
-version: 0.3.38
+version: 0.3.39
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -59,6 +59,7 @@ completed:
     - sectoral_cnes_demas_uf_scoped_activation
     - state_ro_icms_ipva_csv_activation
     - state_ac_icms_csv_activation
+    - state_ce_icms_ipva_xls_activation
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -111,6 +112,7 @@ gates:
   f3_cnes_demas_local: GO
   f3_state_ro_activation_local: GO
   f3_state_ac_activation_local: GO
+  f3_state_ce_activation_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -122,6 +124,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.38/
-next_action: Prefer SP/CE or other UF with downloadable CSV/API. PR/SC PROVENANCE_ONLY (HTML / SEF≤2017). AC IPVA via Transparência POST+CSRF is optional follow-up. GO ICMS when datastore publishes ICMS columns. RJ IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.39/
+next_action: Prefer RS MontaArquivo or other UF with downloadable CSV/API. SP remains HTML-only. PR/SC PROVENANCE_ONLY. AC IPVA via Transparência POST+CSRF optional. GO ICMS when datastore publishes ICMS columns. RJ IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

@@ -364,6 +364,89 @@ def parse_state_ro_csv(
     return silver, quarantined
 
 
+def parse_state_ce_xls(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "CE",
+    competence: str = "2025-01",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    try:
+        import xlrd
+        from xlrd.biffh import XLRDError
+    except ImportError as exc:  # pragma: no cover - dependency declared in pyproject
+        raise RuntimeError("xlrd is required for state_ce_xls") from exc
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state CE tax filter: {tax}")
+    competence_key = str(competence or "2025-01").strip()[:7]
+    if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
+        raise ValueError(f"invalid CE competence: {competence}")
+    try:
+        book = xlrd.open_workbook(file_contents=body)
+    except (XLRDError, OSError, ValueError) as exc:
+        return [], [({"rowId": "ce-header"}, f"invalid XLS: {exc}")]
+    sheet = book.sheet_by_index(0)
+    header_row = None
+    for row_index in range(min(sheet.nrows, 20)):
+        first = normalize_place(str(sheet.cell_value(row_index, 0) or ""))
+        if first.startswith("MUNICIP"):
+            header_row = row_index
+            break
+    if header_row is None:
+        return [], [({"rowId": "ce-header"}, "missing Município header")]
+    # Official layout: Município | ICMS Total/Líquido/FUNDEB | IPVA Total/...
+    amount_col = 1 if tax_key == "ICMS" else 4
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for index in range(header_row + 2, sheet.nrows):
+        raw_name = str(sheet.cell_value(index, 0) or "").strip()
+        if not raw_name:
+            continue
+        place = normalize_place(raw_name)
+        if place in {"TOTAL", "TOTAIS"} or place.startswith("TOTAL"):
+            continue
+        amount_raw = sheet.cell_value(index, amount_col) if amount_col < sheet.ncols else None
+        try:
+            if isinstance(amount_raw, (int, float)) and not isinstance(amount_raw, bool):
+                value = float(amount_raw)
+            else:
+                value = parse_brazilian_number(amount_raw)
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"ce-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((place, normalize_place(uf)), "")
+        row = {
+            "rowId": f"ce-{tax_key.lower()}-{ibge or index}-{competence_key}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence_key,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def parse_state_ac_csv(
     body: bytes,
     *,

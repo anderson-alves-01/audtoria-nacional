@@ -1148,6 +1148,84 @@ sources:
       CSV 2018-2021 downloadável em 2026-09-19. IPVA não publicado. Homologação
       humana pendente.
 
+  - source_id: ESTADO-CE-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (CE)
+    maintainer: SEFAZ-CE
+    official_domain: sefaz.ce.gov.br
+    official_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    endpoint: https://www.ce.gov.br/sefaz/wp-content/uploads/sites/46/2020/08/1.Portaria-jan-25-ANEXO-UNICO.xls
+    documentation_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    dataset: ESTADO-CE-ICMS-2025-01
+    dictionary_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    purpose: Transferência estadual de ICMS — valores publicados por município
+    legal_basis: Portaria SEFAZ-CE de distribuição das cotas-partes (anexo XLS)
+    license_terms: publicação oficial SEFAZ-CE
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ce_xls
+    layout_version: state-ce-icms-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: CE
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ce_icms_quota
+    formula: >
+      Valor da coluna Total ICMS (25%) do XLS mensal SEFAZ Portaria, competência
+      parametrizada, município via join IBGE7 por nome+UF. Sem ajuste. Não
+      constitui crédito.
+    methodology_version: official-state-ce-icms-v1
+    notes: >
+      XLS jan/2025 downloadável em 2026-09-19. Homologação humana pendente.
+
+  - source_id: ESTADO-CE-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (CE)
+    maintainer: SEFAZ-CE
+    official_domain: sefaz.ce.gov.br
+    official_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    endpoint: https://www.ce.gov.br/sefaz/wp-content/uploads/sites/46/2020/08/1.Portaria-jan-25-ANEXO-UNICO.xls
+    documentation_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    dataset: ESTADO-CE-IPVA-2025-01
+    dictionary_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Portaria SEFAZ-CE de distribuição das cotas-partes (anexo XLS)
+    license_terms: publicação oficial SEFAZ-CE
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ce_xls
+    layout_version: state-ce-ipva-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: CE
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ce_ipva_quota
+    formula: >
+      Valor da coluna Total IPVA (50%) do XLS mensal SEFAZ Portaria, competência
+      parametrizada, município via join IBGE7 por nome+UF. layout_version
+      distinto evita colisão de checksum com ICMS. Não constitui crédito.
+    methodology_version: official-state-ce-ipva-v1
+    notes: >
+      Mesmo XLS jan/2025 do ICMS. Homologação humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil

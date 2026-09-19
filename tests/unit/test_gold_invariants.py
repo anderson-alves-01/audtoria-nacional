@@ -10,6 +10,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_ibge_sidra_series,
     parse_state_ac_csv,
     parse_state_ba_csv,
+    parse_state_ce_xls,
     parse_state_es_csv,
     parse_state_go_csv,
     parse_state_mg_csv,
@@ -307,6 +308,32 @@ def test_state_ac_csv_uses_native_ibge7_and_quarantines_territory() -> None:
     assert quarantined[0][1] == "missing IBGE municipality code"
     assert presentation_for("ESTADO-AC-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-AC-ICMS-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/ce-repasses-2025-01.xls").read_bytes()
+    lookup = {
+        ("ABAIARA", "CE"): "2300101",
+        ("FORTALEZA", "CE"): "2304400",
+    }
+    icms, quarantined_icms = parse_state_ce_xls(body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"2300101", "2304400"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "CE" for row in icms)
+    assert all(row["competence"] == "2025-01" for row in icms)
+    abaiara = next(row for row in icms if row["ibgeCode"] == "2300101")
+    assert abaiara["value"] == 757926.87
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_ce_xls(body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    fortaleza = next(row for row in ipva if row["ibgeCode"] == "2304400")
+    assert fortaleza["value"] == 8000000.0
+    assert fortaleza["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-CE-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-CE-IPVA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_aneel_indqual_aggregates_by_ibge7() -> None:

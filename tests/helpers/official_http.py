@@ -79,6 +79,10 @@ SNAPSHOT_URLS = {
         "repasse-constitucional-de-icms-para-os-municipios.csv"
     ): "ac-icms-repasses-2021.csv",
     (
+        "https://www.ce.gov.br/sefaz/wp-content/uploads/sites/46/2020/08/"
+        "1.Portaria-jan-25-ANEXO-UNICO.xls"
+    ): "ce-repasses-2025-01.xls",
+    (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
     (
