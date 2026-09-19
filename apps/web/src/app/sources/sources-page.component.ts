@@ -10,6 +10,7 @@ interface SourceItem {
   status: string;
   ingestAllowed: boolean;
   createsTaxCredit: boolean;
+  fixtureKind?: string;
 }
 
 interface EnrichmentView {
@@ -18,6 +19,16 @@ interface EnrichmentView {
   published: boolean;
   indicatorCount: number;
   createsTaxCredit: boolean;
+  banner?: string;
+  homologationStatus?: string;
+  emptyReason?: string;
+  officialUrl?: string;
+  competence?: string;
+  formula?: string;
+  methodologyVersion?: string;
+  qualityLevel?: string;
+  quarantinedCount?: number;
+  note?: string;
 }
 
 @Component({
@@ -34,6 +45,8 @@ export class SourcesPageComponent implements OnInit {
   enrichment: EnrichmentView | null = null;
   ingestMessage = '';
   errorMessage = '';
+  readonly banner =
+    'DADOS DE FONTE OFICIAL — PROCESSAMENTO TÉCNICO CONCLUÍDO — HOMOLOGAÇÃO HUMANA PENDENTE';
 
   ngOnInit(): void {
     this.http.get<{ items: SourceItem[] }>('/v1/data-sources').subscribe({
@@ -43,7 +56,7 @@ export class SourcesPageComponent implements OnInit {
         this.loadEnrichment('IBGE-SIDRA');
       },
       error: () => {
-        this.errorMessage = 'Não foi possível carregar o catálogo sintético de fontes.';
+        this.errorMessage = 'Não foi possível carregar o catálogo oficial de fontes.';
         this.state = 'error';
       },
     });
@@ -53,11 +66,11 @@ export class SourcesPageComponent implements OnInit {
     this.ingestMessage = '';
     this.http.post(`/v1/data-sources/${item.sourceId}/ingest`, {}).subscribe({
       next: () => {
-        this.ingestMessage = `Fixture sintético ${item.sourceId} ingerido. Nenhum crédito tributário foi criado.`;
+        this.ingestMessage = `Fonte oficial ${item.sourceId} ingerida. Nenhum crédito tributário foi criado.`;
         this.loadEnrichment(item.sourceId);
       },
       error: () => {
-        this.ingestMessage = `Ingestão recusada para ${item.sourceId}.`;
+        this.ingestMessage = `Ingestão recusada ou indisponível para ${item.sourceId}.`;
       },
     });
   }

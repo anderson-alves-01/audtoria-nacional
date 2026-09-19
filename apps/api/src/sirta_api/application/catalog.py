@@ -4,104 +4,72 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from sirta_api.adapters.db.models import SourceRegistry, TaxCredit
+from sirta_api.adapters.ingest.catalog_loader import catalog_source, catalog_sources
 from sirta_api.application.audit import record_audit
+from sirta_api.config import get_settings
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.catalog import assert_ingest_allowed, creates_tax_credit, ingest_allowed
 from sirta_api.domain.errors import NotVisibleError
 
-SYNTHETIC_SOURCES = (
-    {
-        "source_id": "IBGE-SIDRA",
-        "name": "IBGE/SIDRA indicadores territoriais",
-        "maintainer": "IBGE",
-        "official_url": "https://sidra.ibge.gov.br/",
-        "source_role": "REFERENCE_ENRICHMENT",
-        "access_classification": "PUBLIC_OPEN",
-        "status": "APPROVED",
-        "purpose": "Contexto econômico sintético",
-        "legal_basis": "Dados abertos institucionais — catálogo local",
-        "license_terms": "termos do órgão mantenedor",
-        "layout_version": "catalog-synthetic-v1",
-        "fixture_kind": "SYNTHETIC",
-        "notes": "Metadados somente. Nenhuma base completa é baixada.",
-    },
-    {
-        "source_id": "TESOURO-TRANSPARENTE",
-        "name": "Tesouro Transparente — transferências",
-        "maintainer": "Tesouro Nacional",
-        "official_url": "https://www.tesourotransparente.gov.br/",
-        "source_role": "OFFICIAL_TRANSFER",
-        "access_classification": "PUBLIC_OPEN",
-        "status": "APPROVED",
-        "purpose": "Conciliação de transferências — catálogo",
-        "legal_basis": "Publicação oficial — uso operacional G7 bloqueado",
-        "license_terms": "termos do órgão mantenedor",
-        "layout_version": "catalog-synthetic-v1",
-        "fixture_kind": "SYNTHETIC",
-        "notes": "Catálogo v0.5; conciliação oficial permanece OFFICIAL_BLOCKED.",
-    },
-    {
-        "source_id": "PLANALTO-LEGISLACAO",
-        "name": "Planalto — legislação",
-        "maintainer": "Presidência da República",
-        "official_url": "https://www.planalto.gov.br/",
-        "source_role": "REGULATORY",
-        "access_classification": "PUBLIC_OPEN",
-        "status": "APPROVED",
-        "purpose": "Catálogo regulatório versionado",
-        "legal_basis": "Publicação oficial",
-        "license_terms": "termos do órgão mantenedor",
-        "layout_version": "catalog-synthetic-v1",
-        "fixture_kind": "SYNTHETIC",
-        "notes": "Não ativa regra IBS/CBS operacional.",
-    },
-    {
-        "source_id": "MUNICIPAL-ISS-RESTRICTED",
-        "name": "Arrecadação ISS municipal (restrita)",
-        "maintainer": "Município piloto (não nomeado)",
-        "official_url": "synthetic://blocked-municipal-iss",
-        "source_role": "PRIMARY_FISCAL",
-        "access_classification": "RESTRICTED",
-        "status": "DISCOVERED",
-        "purpose": "Constituição de crédito — bloqueado",
-        "legal_basis": "Exige G0/G1 e autorização do controlador",
-        "license_terms": "não aplicável até DPA",
-        "layout_version": "none",
-        "fixture_kind": "NONE",
-        "notes": "Interface de catálogo apenas. Ingestão real proibida.",
-    },
-)
+RUNTIME_STATUSES = frozenset({"ACTIVE", "SUSPENDED", "UNAVAILABLE", "RETIRED"})
+
+
+def _registry_payload(item: dict) -> dict:
+    return {
+        "name": item["name"],
+        "maintainer": item["maintainer"],
+        "official_url": item["official_url"],
+        "source_role": item["source_role"],
+        "access_classification": item["access_classification"],
+        "status": item["status"],
+        "purpose": item["purpose"],
+        "legal_basis": item["legal_basis"],
+        "license_terms": item["license_terms"],
+        "layout_version": str(item.get("layout_version") or "none"),
+        "fixture_kind": item["fixture_kind"],
+        "notes": item.get("notes") or "",
+    }
 
 
 def _ensure_catalog(session: Session, *, context: AccessContext) -> None:
-    existing = set(
-        session.scalars(
-            select(SourceRegistry.source_id).where(
+    existing_rows = {
+        row.source_id: row
+        for row in session.scalars(
+            select(SourceRegistry).where(
                 SourceRegistry.tenant_id == context.tenant_id,
                 SourceRegistry.territory_id == context.territory_id,
             )
         ).all()
-    )
-    for item in SYNTHETIC_SOURCES:
-        if item["source_id"] in existing:
-            continue
-        session.add(
-            SourceRegistry(
-                id=uuid4(),
-                tenant_id=context.tenant_id,
-                territory_id=context.territory_id,
-                **item,
+    }
+    for item in catalog_sources():
+        payload = _registry_payload(item)
+        current = existing_rows.get(item["source_id"])
+        if current is None:
+            session.add(
+                SourceRegistry(
+                    id=uuid4(),
+                    tenant_id=context.tenant_id,
+                    territory_id=context.territory_id,
+                    source_id=item["source_id"],
+                    **payload,
+                )
             )
-        )
+            continue
+        if current.status in RUNTIME_STATUSES:
+            payload["status"] = current.status
+        for field, value in payload.items():
+            setattr(current, field, value)
     session.flush()
 
 
 def _to_item(row: SourceRegistry) -> dict:
+    catalog = catalog_source(row.source_id) or {}
     allowed = ingest_allowed(
         source_role=row.source_role,
         access_classification=row.access_classification,
         status=row.status,
         fixture_kind=row.fixture_kind,
+        allow_synthetic_loads=get_settings().allow_synthetic_loads,
     )
     return {
         "id": str(row.id),
@@ -119,6 +87,15 @@ def _to_item(row: SourceRegistry) -> dict:
         "fixtureKind": row.fixture_kind,
         "ingestAllowed": allowed,
         "createsTaxCredit": creates_tax_credit(row.source_role),
+        "dataset": catalog.get("dataset"),
+        "documentationUrl": catalog.get("documentation_url"),
+        "competence": catalog.get("competence"),
+        "granularity": catalog.get("granularity"),
+        "authentication": catalog.get("authentication"),
+        "personalData": catalog.get("personal_data"),
+        "formula": catalog.get("formula"),
+        "methodologyVersion": catalog.get("methodology_version"),
+        "verifiedAt": catalog.get("verified_at"),
         "notes": row.notes,
     }
 
@@ -148,8 +125,9 @@ def list_sources(session: Session, *, context: AccessContext) -> dict:
         outcome="allowed",
         resource_type="source_registry",
     )
+    official = any(row.fixture_kind == "OFFICIAL" for row in rows)
     return {
-        "officialIngestion": False,
+        "officialIngestion": official,
         "taxCreditCreated": int(credits_after or 0) != int(credits_before or 0),
         "items": [_to_item(row) for row in rows],
     }
@@ -172,7 +150,9 @@ def dry_run_source(session: Session, *, context: AccessContext, source_id: str) 
         access_classification=row.access_classification,
         status=row.status,
         fixture_kind=row.fixture_kind,
+        allow_synthetic_loads=get_settings().allow_synthetic_loads,
     )
+    catalog = catalog_source(source_id) or {}
     record_audit(
         session,
         context=context,
@@ -182,10 +162,13 @@ def dry_run_source(session: Session, *, context: AccessContext, source_id: str) 
         resource_type="source_registry",
         resource_id=row.id,
     )
+    official = row.fixture_kind == "OFFICIAL"
     return {
         "sourceId": row.source_id,
         "dryRun": True,
-        "wouldDownloadFullBase": False,
+        "wouldDownloadFullBase": official,
         "wouldCreateTaxCredit": False,
         "fixtureKind": row.fixture_kind,
+        "endpoint": catalog.get("endpoint"),
+        "dataset": catalog.get("dataset"),
     }

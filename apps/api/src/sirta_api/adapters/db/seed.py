@@ -51,7 +51,7 @@ def _ensure(session: Session, model, ident, **fields):
         session.flush()
 
 
-def seed_synthetic(session: Session) -> None:
+def seed_identity(session: Session) -> None:
     _ensure(session, Organization, ORG_PILOT, name="Municipio Sintetico")
     _ensure(
         session, Tenant, TENANT_ALPHA, organization_id=ORG_PILOT, slug="alpha", name="Tenant Alpha"
@@ -139,6 +139,9 @@ def seed_synthetic(session: Session) -> None:
         description="Synthetic ISS audit beta",
         expires_at=None,
     )
+
+
+def seed_synthetic_fiscal(session: Session) -> None:
     _ensure(
         session,
         Evidence,
@@ -209,12 +212,20 @@ def seed_synthetic(session: Session) -> None:
     )
 
 
+def seed_synthetic(session: Session) -> None:
+    seed_identity(session)
+    seed_synthetic_fiscal(session)
+
+
 def run_seed() -> None:
     from sirta_api.adapters.db.session import get_session_factory
+    from sirta_api.config import get_settings
 
     session = get_session_factory()()
     try:
-        seed_synthetic(session)
+        seed_identity(session)
+        if get_settings().allow_synthetic_loads:
+            seed_synthetic_fiscal(session)
         session.commit()
     except Exception:
         session.rollback()

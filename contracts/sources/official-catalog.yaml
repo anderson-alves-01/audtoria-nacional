@@ -1,0 +1,326 @@
+contract_version: official-catalog-v1
+verified_at: "2026-09-18"
+homologation_status: REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION
+banner: "DADOS DE FONTE OFICIAL — PROCESSAMENTO TÉCNICO CONCLUÍDO — HOMOLOGAÇÃO HUMANA PENDENTE"
+sources:
+  - source_id: IBGE-SIDRA
+    name: IBGE/SIDRA — população residente estimada (tabela 6579)
+    maintainer: IBGE
+    official_domain: servicodados.ibge.gov.br
+    official_url: https://sidra.ibge.gov.br/tabela/6579
+    endpoint: https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2026/variaveis/9324?localidades=N6[all]
+    documentation_url: https://servicodados.ibge.gov.br/api/docs/agregados?versao=3
+    dataset: SIDRA-6579
+    dictionary_url: https://sidra.ibge.gov.br/tabela/6579
+    purpose: Indicador territorial de população publicado pelo IBGE
+    legal_basis: Publicação estatística oficial do IBGE
+    license_terms: termos de uso do IBGE para dados abertos da API Aggregates v3
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: ibge_sidra_series
+    layout_version: sidra-agregados-v3-6579
+    periodicity: annual
+    competence: "2026"
+    granularity: municipality
+    parameters:
+      agregado: "6579"
+      variavel: "9324"
+      localidades: N6[all]
+      periodo: "2026"
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: ibge_population_estimated
+    formula: Soma dos valores municipais publicados na tabela SIDRA 6579, variável 9324, localidades N6, competência da série oficial. Sem ajuste, projeção ou interpolação.
+    methodology_version: official-sidra-6579-v1
+    notes: Fonte PUBLIC_OPEN verificada em 2026-09-18. Não constitui crédito tributário.
+
+  - source_id: IBGE-SIDRA-PIB
+    name: IBGE/SIDRA — PIB municipal e valor adicionado de serviços (tabela 5938)
+    maintainer: IBGE
+    official_domain: servicodados.ibge.gov.br
+    official_url: https://sidra.ibge.gov.br/tabela/5938
+    endpoint: https://servicodados.ibge.gov.br/api/v3/agregados/5938/periodos/2023/variaveis/37|6575?localidades=N6[all]
+    documentation_url: https://servicodados.ibge.gov.br/api/docs/agregados?versao=3
+    dataset: SIDRA-5938
+    dictionary_url: https://sidra.ibge.gov.br/tabela/5938
+    purpose: PIB a preços correntes e valor adicionado bruto de serviços
+    legal_basis: Contas regionais publicadas pelo IBGE
+    license_terms: termos de uso do IBGE para dados abertos da API Aggregates v3
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: ibge_sidra_series
+    layout_version: sidra-agregados-v3-5938
+    periodicity: annual
+    competence: "2023"
+    granularity: municipality
+    parameters:
+      agregado: "5938"
+      variavel: "37|6575"
+      localidades: N6[all]
+      periodo: "2023"
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: ibge_gdp_and_services_va
+    formula: Valores publicados na tabela SIDRA 5938, variáveis 37 (PIB) e 6575 (VA serviços), localidades N6, competência da série oficial. Células SIDRA '...' são quarentenadas. Sem interpolação.
+    methodology_version: official-sidra-5938-v1
+    notes: Último período publicado verificado em 2026-09-18 foi 2023.
+
+  - source_id: SICONFI-ENTES
+    name: SICONFI — cadastro de entes
+    maintainer: Tesouro Nacional
+    official_domain: apidatalake.tesouro.gov.br
+    official_url: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes
+    endpoint: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes
+    documentation_url: https://apidatalake.tesouro.gov.br/docs/
+    dataset: SICONFI-ENTES
+    dictionary_url: https://siconfi.tesouro.gov.br/
+    purpose: Cobertura territorial de municípios publicados pelo SICONFI
+    legal_basis: API pública SICONFI/Tesouro Nacional
+    license_terms: termos de uso da API Data Lake do Tesouro Nacional
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: siconfi_entes
+    layout_version: siconfi-entes-v1
+    periodicity: annual
+    competence: "2026"
+    granularity: municipality
+    parameters:
+      resource: entes
+    authentication: none
+    rate_limit: not_published
+    personal_data: cnpj_of_public_entity_minimized
+    retention: bronze_immutable
+    indicator: siconfi_municipal_entes
+    formula: Contagem de entes com esfera M e código IBGE de 7 dígitos no recurso /entes. O total numérico é a soma do campo populacao publicado pelo SICONFI, distinta da série IBGE 6579. CNPJ não é promovido a Silver/Gold.
+    methodology_version: official-siconfi-entes-v1
+    notes: Minimização — campo cnpj permanece só no Bronze bruto.
+
+  - source_id: TESOURO-TRANSPARENTE
+    name: Tesouro Nacional — dicionário de transferências constitucionais
+    maintainer: Tesouro Nacional
+    official_domain: apiapex.tesouro.gov.br
+    official_url: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/transferencias
+    endpoint: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/transferencias
+    documentation_url: https://www.tesourotransparente.gov.br/
+    dataset: TESOURO-TRANSFERENCIAS-DICIONARIO
+    dictionary_url: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/transferencias
+    purpose: Identificar tipos oficiais de transferência, inclusive FPM
+    legal_basis: API pública Aria do Tesouro Nacional
+    license_terms: termos de uso do Tesouro Transparente / API Aria
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_transfer_types
+    layout_version: tesouro-aria-transferencias-v1
+    periodicity: as_published
+    competence: "2026"
+    granularity: transfer_type
+    parameters:
+      resource: transferencias
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_constitutional_transfer_types
+    formula: Lista publicada em /custom/transferencias. FPM corresponde ao codigo 3. Não interpreta valor recebido pelo município.
+    methodology_version: official-tesouro-transfer-types-v1
+    notes: Dicionário oficial. Valores de FPM por município permanecem não ativados até endpoint de valores ser parametrizado sem scraping.
+
+  - source_id: TESOURO-FPM-VALORES
+    name: Tesouro Nacional — valores de FPM por município
+    maintainer: Tesouro Nacional
+    official_domain: apiapex.tesouro.gov.br
+    official_url: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/
+    endpoint: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/
+    documentation_url: https://www.tesourotransparente.gov.br/
+    dataset: TESOURO-FPM-VALORES
+    dictionary_url: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/transferencias
+    purpose: Valores de FPM publicados pelo Tesouro
+    legal_basis: API pública Aria
+    license_terms: termos de uso do Tesouro Transparente / API Aria
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: UNAVAILABLE
+    fixture_kind: OFFICIAL
+    connector: none
+    layout_version: none
+    periodicity: monthly
+    competence: unknown
+    granularity: municipality
+    parameters: {}
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_fpm_received
+    formula: Não ativado. Endpoint de valores municipais não foi parametrizado de forma comprovável nesta fatia.
+    methodology_version: none
+    notes: Dicionário FPM (codigo 3) está ativo em TESOURO-TRANSPARENTE. Valores municipais aguardam contrato de consulta documentado.
+
+  - source_id: SICONFI-RREO
+    name: SICONFI — RREO municipal
+    maintainer: Tesouro Nacional
+    official_domain: apidatalake.tesouro.gov.br
+    official_url: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo
+    endpoint: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo
+    documentation_url: https://apidatalake.tesouro.gov.br/docs/
+    dataset: SICONFI-RREO
+    dictionary_url: https://siconfi.tesouro.gov.br/
+    purpose: Demonstrativos fiscais municipais
+    legal_basis: API pública SICONFI
+    license_terms: termos de uso da API Data Lake do Tesouro Nacional
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: PROVENANCE_VERIFIED
+    fixture_kind: OFFICIAL
+    connector: none
+    layout_version: siconfi-rreo-v1
+    periodicity: bimestral
+    competence: "2025"
+    granularity: municipality
+    parameters:
+      resource: rreo
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: siconfi_rreo
+    formula: Não ativado autonomamente. Carga nacional exige avaliação de volume e paginação completa.
+    methodology_version: none
+    notes: Endpoint respondeu 200 para um ente de teste. Ativação nacional adiada por volume.
+
+  - source_id: PLANALTO-LEGISLACAO
+    name: Planalto — Emenda Constitucional 132/2023
+    maintainer: Presidência da República
+    official_domain: www.planalto.gov.br
+    official_url: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
+    endpoint: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
+    documentation_url: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
+    dataset: PLANALTO-EC-132
+    dictionary_url: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
+    purpose: Preservar documento regulatório oficial, vigência e checksum
+    legal_basis: Publicação oficial no portal do Planalto
+    license_terms: publicação oficial da União
+    source_role: REGULATORY
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: official_document
+    layout_version: planalto-ec132-html-v1
+    periodicity: as_published
+    competence: "2023"
+    granularity: document
+    parameters:
+      document: emc132.htm
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: regulatory_document_ec132
+    formula: Documento HTML oficial preservado. Não ativa regra IBS/CBS operacional.
+    methodology_version: official-planalto-ec132-v1
+    notes: Recuperação do documento por URL catalogada. Sem scraping de busca. binding=false.
+
+  - source_id: MUNICIPAL-ISS-RESTRICTED
+    name: Arrecadação ISS municipal (restrita)
+    maintainer: Município piloto (não nomeado)
+    official_domain: none
+    official_url: official://blocked-municipal-iss
+    endpoint: none
+    documentation_url: none
+    dataset: MUNICIPAL-ISS
+    dictionary_url: none
+    purpose: Constituição de crédito — bloqueado até DPA e G0/G1
+    legal_basis: Exige autorização do controlador municipal
+    license_terms: não aplicável até DPA
+    source_role: PRIMARY_FISCAL
+    access_classification: RESTRICTED
+    status: CREDENTIAL_REQUIRED
+    fixture_kind: NONE
+    connector: none
+    layout_version: none
+    periodicity: monthly
+    competence: unknown
+    granularity: taxpayer
+    parameters: {}
+    authentication: credential_required
+    rate_limit: none
+    personal_data: true
+    retention: blocked
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: Sem inferência. Sem carga. Interface de catálogo apenas.
+
+  - source_id: ESTADO-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual
+    maintainer: Estado piloto (não selecionado)
+    official_domain: unknown
+    official_url: official://state-icms-not-selected
+    endpoint: none
+    documentation_url: none
+    dataset: ESTADO-ICMS-QUOTA
+    dictionary_url: none
+    purpose: Transferência estadual prevista no roadmap
+    legal_basis: Constituição e legislação estadual aplicável após escolha do estado
+    license_terms: não aplicável até identificação do dataset oficial
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: DISCOVERED
+    fixture_kind: NONE
+    connector: none
+    layout_version: none
+    periodicity: monthly
+    competence: unknown
+    granularity: municipality
+    parameters: {}
+    authentication: unknown
+    rate_limit: unknown
+    personal_data: false
+    retention: none
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: Estado piloto não selecionado. Dataset oficial estadual não catalogado.
+
+  - source_id: RFB-DADOS-ABERTOS
+    name: Receita Federal — dados abertos
+    maintainer: Receita Federal do Brasil
+    official_domain: dadosabertos.rfb.gov.br
+    official_url: https://dadosabertos.rfb.gov.br/
+    endpoint: none
+    documentation_url: https://dadosabertos.rfb.gov.br/
+    dataset: RFB-OPEN-DATA
+    dictionary_url: none
+    purpose: Contexto cadastral público com minimização
+    legal_basis: Dados abertos da RFB quando publicados
+    license_terms: termos do órgão mantenedor
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: DISCOVERED
+    fixture_kind: NONE
+    connector: none
+    layout_version: none
+    periodicity: as_published
+    competence: unknown
+    granularity: unknown
+    parameters: {}
+    authentication: unknown
+    rate_limit: unknown
+    personal_data: possible_individual_entrepreneur
+    retention: blocked_until_minimization_design
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: Carga nacional de grande volume não autorizada nesta fatia. Evitar exposição de empresário individual.

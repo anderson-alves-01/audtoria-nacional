@@ -3,8 +3,8 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.7
-    implements local slices through G8 synthetic IBS/CBS calendar on the 0.3.0 specification.
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.14
+    serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     ISR and transfer writes remain specified and are not served until later local slices.
     Sensitive operations require OIDC plus tenant, territory and purpose context.
 servers:
@@ -245,7 +245,7 @@ paths:
   /v1/indicators/source-enrichment:
     get:
       operationId: getSourceEnrichment
-      description: Published synthetic enrichment counts. Public sources never create tax credits.
+      description: Published official Gold enrichment. Public sources never create tax credits.
       parameters:
         - name: sourceId
           in: query
@@ -273,7 +273,7 @@ paths:
   /v1/data-sources:
     get:
       operationId: listDataSources
-      description: Synthetic master source registry. Public sources never create tax credits.
+      description: Official master source registry. Public sources never create tax credits.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
@@ -284,7 +284,7 @@ paths:
   /v1/data-sources/{sourceId}/dry-run:
     post:
       operationId: dryRunDataSource
-      description: Synthetic dry-run. Never downloads a full base or creates a tax credit.
+      description: Dry-run of a cataloged source. Official sources report the planned official URL.
       parameters:
         - name: sourceId
           in: path
@@ -293,14 +293,14 @@ paths:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
-        '200': {description: Dry-run accepted for synthetic fixtures}
+        '200': {description: Dry-run accepted for an allowed catalog source}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/data-sources/{sourceId}/ingest:
     post:
       operationId: ingestCatalogSource
       description: >
-        Catalog-driven synthetic ingest. Preserves landing checksum, quarantines invalid rows
-        and never creates a tax credit or downloads a full official base.
+        Catalog-driven official ingest for PUBLIC_OPEN sources. Preserves landing checksum,
+        quarantines invalid rows and never creates a tax credit. Synthetic fixtures are test-only.
       parameters:
         - name: sourceId
           in: path
@@ -310,6 +310,19 @@ paths:
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
         '200': {description: Ingest accepted or replayed; taxCreditCreated=false}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/indicators/official-gold:
+    get:
+      operationId: getOfficialGold
+      description: >
+        Official Gold indicators derived from Silver. Homologation remains
+        REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION. Empty sources are listed, never simulated.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Official Gold items or empty sources with reason}
+        '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/program-gates:
     get:

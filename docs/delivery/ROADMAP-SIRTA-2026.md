@@ -17,15 +17,14 @@
 | Item | Estado registrado |
 |---|---|
 | Versão da especificação | `0.3.0` |
-| Versão da implementação local | `0.3.13` |
-| Linha técnica concluída | F0/S0-S4, G6–G8 locais, Alembic, F3.0/F3.1 sintético, checklists G0/G1 BLOCKED, Terraform docs |
+| Versão da implementação local | `0.3.14` |
+| Linha técnica concluída | F0/S0-S4, G6–G8 locais, Alembic, F3.0/F3.1, ingestão PUBLIC_OPEN IBGE/SICONFI/Tesouro, Terraform docs |
 | Dívida Alembic `0004 -> 0005` | `RESOLVED` (`ALEMBIC_HYGIENE`) |
-| Próximo passo automático | Nenhum. Restam apenas gates humanos. |
-| Commit de referência local | `57d4b12` (`feat/roadmap-technical-completion`) |
-| Commit de gates humanos em `main` | `86022ad` |
-| Nuvem, produção e dados fiscais reais | Não autorizados |
+| Próximo passo automático | Homologação humana do Gold oficial. Gates G0/G1/G4/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
+| Commit de referência local | `feat/official-public-ingest` |
+| Nuvem, produção e dados fiscais restritos | Não autorizados |
 
-A implementação `0.3.13` encerra as fatias técnicas locais desbloqueadas do ROADMAP 1.2 nesta branch. Nenhum desses marcos conclui o Programa SIRTA 2026 nem homologação institucional, tributária ou jurídica. Relatório: `docs/delivery/TECHNICAL_COMPLETION_REPORT.md`.
+A implementação `0.3.14` ativa pipelines de fontes `PUBLIC_OPEN` com Gold `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`. Nenhum desses marcos conclui o Programa SIRTA 2026 nem homologação institucional, tributária ou jurídica. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
 
 ### Estados compostos dos gates
 

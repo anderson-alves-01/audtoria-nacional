@@ -37,7 +37,8 @@ def test_catalog_ingest_ibge_is_idempotent_and_never_creates_tax_credit(api_clie
     assert body["quarantinedCount"] == 1
     assert body["landingPreserved"] is True
     assert body["taxCreditCreated"] is False
-    assert body["wouldDownloadFullBase"] is False
+    assert body["wouldDownloadFullBase"] is True
+    assert body["homologationStatus"] == "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
     second = api_client.post("/v1/data-sources/IBGE-SIDRA/ingest", headers=_admin())
     assert second.status_code == 200
     assert second.json()["runId"] == body["runId"]
@@ -64,6 +65,8 @@ def test_analyst_cannot_ingest_but_can_read_enrichment(api_client) -> None:
     assert payload["createsTaxCredit"] is False
     assert payload["indicatorCount"] == 2
     assert payload["sourceRole"] == "REFERENCE_ENRICHMENT"
+    assert payload["homologationStatus"] == "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    assert "HOMOLOGAÇÃO HUMANA PENDENTE" in payload["banner"]
 
 
 def test_logical_rollback_unpublishes_enrichment(api_client) -> None:
@@ -86,11 +89,11 @@ def test_catalog_ingest_tesouro_stub_never_creates_tax_credit(api_client) -> Non
     assert first.status_code == 200
     body = first.json()
     assert body["sourceId"] == "TESOURO-TRANSPARENTE"
-    assert body["receivedCount"] == 3
-    assert body["silverCount"] == 2
-    assert body["quarantinedCount"] == 1
+    assert body["receivedCount"] == 18
+    assert body["silverCount"] == 18
+    assert body["quarantinedCount"] == 0
     assert body["taxCreditCreated"] is False
-    assert body["wouldDownloadFullBase"] is False
+    assert body["wouldDownloadFullBase"] is True
     second = api_client.post("/v1/data-sources/TESOURO-TRANSPARENTE/ingest", headers=_admin())
     assert second.json()["runId"] == body["runId"]
     gold = api_client.get(
@@ -103,4 +106,4 @@ def test_catalog_ingest_tesouro_stub_never_creates_tax_credit(api_client) -> Non
     assert payload["published"] is True
     assert payload["createsTaxCredit"] is False
     assert payload["sourceRole"] == "OFFICIAL_TRANSFER"
-    assert payload["indicatorCount"] == 2
+    assert payload["indicatorCount"] == 18

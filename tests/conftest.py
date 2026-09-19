@@ -8,9 +8,11 @@ from alembic.config import Config
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
+from tests.helpers.official_http import snapshot_http_client
 
 from sirta_api.adapters.db.seed import seed_synthetic
 from sirta_api.adapters.db.session import get_session
+from sirta_api.adapters.ingest.deps import get_official_http_client
 from sirta_api.config import get_settings
 from sirta_api.entrypoints.main import create_app
 
@@ -27,6 +29,15 @@ def _alembic_upgrade(database_url: str) -> None:
             os.environ.pop("DATABASE_URL", None)
         else:
             os.environ["DATABASE_URL"] = previous
+
+
+@pytest.fixture(autouse=True)
+def enable_synthetic_for_automated_tests(monkeypatch, tmp_path_factory) -> None:
+    monkeypatch.setenv("SIRTA_ALLOW_SYNTHETIC_LOADS", "true")
+    monkeypatch.setenv("SIRTA_DATALAKE_ROOT", str(tmp_path_factory.mktemp("datalake")))
+    get_settings.cache_clear()
+    yield
+    get_settings.cache_clear()
 
 
 @pytest.fixture(scope="session")
@@ -79,6 +90,7 @@ def api_client(db_session: Session, monkeypatch) -> Generator[TestClient, None, 
 
     app = create_app()
     app.dependency_overrides[get_session] = override_session
+    app.dependency_overrides[get_official_http_client] = snapshot_http_client
     with TestClient(app) as client:
         yield client
     app.dependency_overrides.clear()

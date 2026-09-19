@@ -1,4 +1,4 @@
-# Local SIRTA stack. Synthetic data only. Do not point these services at cloud projects.
+# Local SIRTA stack. Identity seed is synthetic; Gold/dashboards use official PUBLIC_OPEN extracts only.
 
 name: sirta-local
 
@@ -86,7 +86,9 @@ services:
       dockerfile: apps/api/Dockerfile
     environment:
       DATABASE_URL: postgresql+psycopg://sirta:sirta_local_only@postgres:5432/sirta
-    command: ["sh", "-c", "alembic upgrade head && python -m sirta_api.adapters.db.seed"]
+    command: ["sh", "-c", "alembic upgrade head && python -m sirta_api.adapters.db.seed && python -m sirta_api.adapters.ingest"]
+    volumes:
+      - ./var/datalake:/app/var/datalake
     depends_on:
       postgres:
         condition: service_healthy
@@ -107,6 +109,8 @@ services:
       S3_ACCESS_KEY: sirta
       S3_SECRET_KEY: sirta_local_only
       S3_BUCKET: sirta-local
+    volumes:
+      - ./var/datalake:/app/var/datalake
     ports:
       - "8080:8080"
     depends_on:

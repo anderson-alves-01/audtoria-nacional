@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from sirta_api import IMPLEMENTATION_VERSION, RELEASE_STAGE, SPEC_VERSION
@@ -22,6 +23,15 @@ class Settings(BaseSettings):
     s3_access_key: str = "sirta"
     s3_secret_key: str = "sirta_local_only"
     s3_bucket: str = "sirta-local"
+    allow_synthetic_loads: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("SIRTA_ALLOW_SYNTHETIC_LOADS", "ALLOW_SYNTHETIC_LOADS"),
+    )
+    datalake_root: str = Field(
+        default="var/datalake",
+        validation_alias=AliasChoices("SIRTA_DATALAKE_ROOT", "DATALAKE_ROOT"),
+    )
+    official_http_timeout_seconds: float = 120.0
 
 
 @lru_cache
