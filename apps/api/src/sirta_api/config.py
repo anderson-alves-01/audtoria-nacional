@@ -35,6 +35,18 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("SIRTA_DATALAKE_ROOT", "DATALAKE_ROOT"),
     )
     official_http_timeout_seconds: float = 120.0
+    official_max_entes_hard_cap: int = Field(
+        default=25,
+        validation_alias=AliasChoices(
+            "SIRTA_OFFICIAL_MAX_ENTES_HARD_CAP", "OFFICIAL_MAX_ENTES_HARD_CAP"
+        ),
+    )
+    datalake_min_free_bytes: int = Field(
+        default=67_108_864,
+        validation_alias=AliasChoices(
+            "SIRTA_DATALAKE_MIN_FREE_BYTES", "DATALAKE_MIN_FREE_BYTES"
+        ),
+    )
 
     @model_validator(mode="after")
     def reject_embedded_local_secrets_outside_local(self) -> "Settings":

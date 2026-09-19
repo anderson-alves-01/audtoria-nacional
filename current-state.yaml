@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.22
+implementation_version: 0.3.23
 roadmap_version: "1.2"
-version: 0.3.22
+version: 0.3.23
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -42,6 +42,7 @@ completed:
     - municipal_restricted_upload_empty_shell
     - cadastro_360_empty_technical_shell
     - sectoral_official_catalog_empty_shell
+    - controlled_backfill_fpm_rreo_dca
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -76,6 +77,7 @@ gates:
   f3_municipal_upload_shell_local: GO
   f4_cadastro_360_shell_local: GO
   f3_sectoral_catalog_shell_local: GO
+  f3_controlled_backfill_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -87,6 +89,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.22/
-next_action: Continue remaining technically implementable ROADMAP items (backfills, state sources, RFB territorial, sectoral activation with fixtures). Human validation of Gold remains pending and is not requested now.
+evidence: evidence/releases/0.3.23/
+next_action: Continue remaining technically implementable ROADMAP items (RFB territorial, state sources, sectoral activation with fixtures). Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

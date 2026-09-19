@@ -1,14 +1,14 @@
 schema_version: 1
-updated_at: "2026-09-19T09:20:00-03:00"
+updated_at: "2026-09-19T09:35:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.22"
+implementation_version: "0.3.23"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.22: setoriais catalogados com shell vazio; ingest bloqueado.
+  Ciclo 0.3.23: backfill controlado FPM/RREO/DCA (hard_cap, disco, COMPLETE).
 
 items:
   - id: F2-CI-CD
@@ -216,7 +216,7 @@ items:
     dominio: D9
     descricao: Valores mensais de FPM por município (CKAN) com retenções FUNDEB
     dependencias: [F3-SICONFI-ENTES]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [TESOURO-FPM-VALORES]
@@ -224,19 +224,21 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: tests/fixtures/official-snapshots/tesouro-fpm-202608.csv
-    versao: "0.3.15"
-    commit: 1d7a601
-    ci: "35437663525"
+    evidencia: evidence/releases/0.3.23/
+    versao: "0.3.23"
+    commit: null
+    ci: null
     motivo_bloqueio: null
-    next_action: Conector existe; executar backfill controlado por competência com espaço em disco e join IBGE.
+    next_action: >
+      Controles de competência e disco presentes. Carga nacional multi-mês
+      permanece fora sem autorização e espaço; manter join IBGE.
 
   - id: F3-RREO-BACKFILL
     fase: F3.2
     dominio: D3
     descricao: Backfill controlado SICONFI RREO com paginação, checkpoint e limite de entes
     dependencias: [F3-SICONFI-ENTES]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [SICONFI-RREO]
@@ -244,19 +246,21 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: tests/fixtures/official-snapshots/siconfi-rreo.json
-    versao: "0.3.15"
-    commit: 1d7a601
+    evidencia: evidence/releases/0.3.23/
+    versao: "0.3.23"
+    commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Aumentar max_entes_per_run com métricas de volume/tempo/armazenamento; backfill por exercício/período.
+    next_action: >
+      max_entes=5 com hard_cap=25, métricas e COMPLETE sem wrap. Sem carga
+      nacional ilimitada.
 
   - id: F3-DCA-FINBRA-BACKFILL
     fase: F3.2
     dominio: D3
     descricao: Backfill controlado SICONFI DCA/FINBRA
     dependencias: [F3-SICONFI-ENTES]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [SICONFI-DCA]
@@ -264,12 +268,14 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: tests/fixtures/official-snapshots/siconfi-dca.json
-    versao: "0.3.15"
-    commit: 1d7a601
+    evidencia: evidence/releases/0.3.23/
+    versao: "0.3.23"
+    commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Carga particionada do exercício completo mais recente e corrente publicado.
+    next_action: >
+      Controles iguais ao RREO; fixture DCA no fluxo de integração. Exercícios
+      adicionais só com max_entes e hard_cap.
 
   - id: F3-SICONFI-OTHER-STATEMENTS
     fase: F3.2

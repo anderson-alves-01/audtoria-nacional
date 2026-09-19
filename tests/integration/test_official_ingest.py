@@ -56,10 +56,15 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert fpm.json()["silverCount"] == 3
     rreo = api_client.post("/v1/data-sources/SICONFI-RREO/ingest", headers=_admin())
     assert rreo.status_code == 200
-    assert rreo.json()["silverCount"] == 1
+    assert rreo.json()["silverCount"] >= 1
+    assert rreo.json()["taxCreditCreated"] is False
+    dca = api_client.post("/v1/data-sources/SICONFI-DCA/ingest", headers=_admin())
+    assert dca.status_code == 200
+    assert dca.json()["silverCount"] >= 1
+    assert dca.json()["taxCreditCreated"] is False
     rgf = api_client.post("/v1/data-sources/SICONFI-RGF/ingest", headers=_admin())
     assert rgf.status_code == 200
-    assert rgf.json()["silverCount"] == 1
+    assert rgf.json()["silverCount"] >= 1
     assert rgf.json()["taxCreditCreated"] is False
     blocked = api_client.post("/v1/data-sources/RFB-DADOS-ABERTOS/ingest", headers=_admin())
     assert blocked.status_code == 403
@@ -78,6 +83,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "PLANALTO-LC-214",
         "TESOURO-FPM-VALORES",
         "SICONFI-RREO",
+        "SICONFI-DCA",
         "SICONFI-RGF",
     }
     assert expected <= set(by_id)
@@ -85,6 +91,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["SICONFI-ENTES"]["valueKind"] == "COVERAGE_REGISTRY"
     assert by_id["TESOURO-FPM-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["SICONFI-RREO"]["valueKind"] == "FISCAL_STATEMENT_LINE"
+    assert by_id["SICONFI-DCA"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-RGF"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert all(
         item["homologationStatus"] == "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"

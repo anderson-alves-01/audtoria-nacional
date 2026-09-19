@@ -165,6 +165,9 @@ sources:
       encoding: latin-1
       delimiter: ";"
       join: siconfi_entes_ibge_by_name_uf
+      competence: "2026-08"
+      resource_url_by_competence:
+        "2026-08": https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -172,7 +175,11 @@ sources:
     indicator: tesouro_fpm_received
     formula: Soma dos três decêndios das linhas em que Item transferência=FPM e Transferência=FPM. Join do município+UF ao código IBGE do SICONFI/entes. Linhas FPM destinadas a FUNDEB são retenção publicada, não crédito.
     methodology_version: official-tesouro-fpm-mensal-v1
-    notes: Arquivo 202609 contém competência de mês 08/2026 conforme publicado. Sem código IBGE no CSV. Previsto versus realizado somente quando ambos existirem.
+    notes: >
+      Arquivo 202609 contém competência de mês 08/2026 conforme publicado.
+      Backfill por competência via resource_url_by_competence; gate de disco antes
+      da Landing. Sem código IBGE no CSV. Previsto versus realizado somente quando
+      ambos existirem.
 
   - source_id: SICONFI-RREO
     name: SICONFI — RREO municipal
@@ -197,7 +204,7 @@ sources:
     granularity: municipality
     parameters:
       resource: rreo
-      max_entes_per_run: 1
+      max_entes_per_run: 5
       query:
         an_exercicio: "2025"
         nr_periodo: "6"
@@ -209,7 +216,10 @@ sources:
     indicator: siconfi_rreo
     formula: Linhas do RREO publicadas por ente, exercício e período. Carga particionada com checkpoint. Não constitui crédito tributário.
     methodology_version: official-siconfi-rreo-v1
-    notes: Backfill nacional limitado por max_entes_per_run. SICONFI-ENTES permanece cadastro, não substitui o RREO.
+    notes: >
+      Backfill nacional limitado por max_entes_per_run e hard_cap de settings.
+      Checkpoint COMPLETE por partição exercício:período; sem wrap silencioso.
+      SICONFI-ENTES permanece cadastro, não substitui o RREO.
 
   - source_id: SICONFI-DCA
     name: SICONFI — DCA/FINBRA municipal
@@ -234,7 +244,7 @@ sources:
     granularity: municipality
     parameters:
       resource: dca
-      max_entes_per_run: 1
+      max_entes_per_run: 5
       query:
         an_exercicio: "2024"
     authentication: none
@@ -244,7 +254,9 @@ sources:
     indicator: siconfi_dca
     formula: Linhas do DCA publicadas por ente e exercício. Carga particionada com checkpoint.
     methodology_version: official-siconfi-dca-v1
-    notes: Volume nacional controlado por max_entes_per_run. Sem interpolação.
+    notes: >
+      Volume nacional controlado por max_entes_per_run e hard_cap. Partição por
+      exercício; COMPLETE sem wrap. Sem interpolação.
 
   - source_id: SICONFI-RGF
     name: SICONFI — RGF municipal
@@ -269,7 +281,7 @@ sources:
     granularity: municipality
     parameters:
       resource: rgf
-      max_entes_per_run: 1
+      max_entes_per_run: 5
       query:
         an_exercicio: "2025"
         nr_periodo: "3"
@@ -283,7 +295,8 @@ sources:
     methodology_version: official-siconfi-rgf-v1
     notes: >
       Mesmo envelope API Data Lake que RREO/DCA. Backfill nacional limitado por
-      max_entes_per_run. Não cria crédito, cobrança ou ocorrência automática.
+      max_entes_per_run e hard_cap. COMPLETE por partição; sem wrap silencioso.
+      Não cria crédito, cobrança ou ocorrência automática.
 
   - source_id: PLANALTO-LEGISLACAO
     name: Planalto / Senado — Emenda Constitucional 132/2023

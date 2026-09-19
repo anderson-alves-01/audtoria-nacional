@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
@@ -38,6 +39,15 @@ from sirta_api.adapters.observability.ingest_events import (
 from sirta_api.application.audit import record_audit
 from sirta_api.config import get_settings
 from sirta_api.domain.authorization import AccessContext
+from sirta_api.domain.backfill_controls import (
+    assert_datalake_space,
+    build_backfill_metrics,
+    checkpoint_status_after_slice,
+    clamp_max_entes,
+    resolve_fpm_endpoint,
+    select_entes_slice,
+    statement_partition_key,
+)
 from sirta_api.domain.catalog import (
     HOMOLOGATION_PENDING,
     OFFICIAL_BANNER,
@@ -109,6 +119,8 @@ def ingest_official_source(
             context=context,
             source_id=source.source_id,
         )
+    except (ConflictError, ForbiddenError):
+        raise
     except Exception as exc:
         source.status = "UNAVAILABLE"
         session.flush()
@@ -200,7 +212,13 @@ def ingest_official_source(
         silver = [minimize_row(row) for row in silver]
         for row, _reason in quarantined:
             row.pop("cnpj", None)
-    datalake = Path(get_settings().datalake_root)
+    settings = get_settings()
+    datalake = Path(settings.datalake_root)
+    disk_free = assert_datalake_space(
+        root=datalake,
+        min_free_bytes=settings.datalake_min_free_bytes,
+        required_bytes=len(fetched.body),
+    )
     directory = landing_dir(
         root=datalake,
         source_id=source.source_id,
@@ -227,6 +245,7 @@ def ingest_official_source(
         "receivedCount": len(silver) + len(quarantined),
         "silverCount": len(silver),
         "quarantinedCount": len(quarantined),
+        "diskFreeBytes": disk_free,
     }
     write_landing(directory=directory, body=fetched.body, manifest=manifest)
     competence = str(catalog.get("competence") or "2026")[:7]
@@ -639,7 +658,10 @@ def _fetch_source(
             context=context,
             source_id=source_id,
         )
-    return _fetch_pages(client, endpoint=endpoint, connector=connector, timeout=timeout)
+    resolved = endpoint
+    if connector == "tesouro_monthly_csv":
+        resolved = resolve_fpm_endpoint(catalog) or endpoint
+    return _fetch_pages(client, endpoint=resolved, connector=connector, timeout=timeout)
 
 
 def _fetch_document(
@@ -676,10 +698,22 @@ def _fetch_siconfi_statement(
     context: AccessContext,
     source_id: str,
 ) -> OfficialHttpResponse:
+    settings = get_settings()
+    started = time.perf_counter()
     parameters = catalog.get("parameters") or {}
-    max_entes = int(parameters.get("max_entes_per_run") or 1)
+    max_entes = clamp_max_entes(
+        int(parameters.get("max_entes_per_run") or 1),
+        hard_cap=settings.official_max_entes_hard_cap,
+    )
     query = dict(parameters.get("query") or {})
-    partition_key = str(catalog.get("competence") or "current")
+    partition_key = statement_partition_key(
+        competence=str(catalog.get("competence") or "current"),
+        query=query,
+    )
+    disk_free = assert_datalake_space(
+        root=Path(settings.datalake_root),
+        min_free_bytes=settings.datalake_min_free_bytes,
+    )
     checkpoint = session.scalar(
         select(IngestCheckpoint).where(
             IngestCheckpoint.tenant_id == context.tenant_id,
@@ -688,6 +722,11 @@ def _fetch_siconfi_statement(
             IngestCheckpoint.partition_key == partition_key,
         )
     )
+    if checkpoint is not None and checkpoint.status == "COMPLETE":
+        raise ConflictError(
+            f"backfill partition {partition_key} already COMPLETE; "
+            "refuse silent restart without explicit allow_restart"
+        )
     if checkpoint is not None and str(checkpoint.cursor).isdigit():
         skip = int(checkpoint.cursor)
     else:
@@ -697,13 +736,11 @@ def _fetch_siconfi_statement(
     if not codes:
         default_ente = str(query.get("id_ente") or "3304557")
         codes = [default_ente]
-    selected = codes[skip : skip + max_entes]
-    if not selected:
-        selected = codes[:max_entes]
-        skip = 0
+    selected, skip, exhausted = select_entes_slice(codes, skip=skip, max_entes=max_entes)
     items: list[dict] = []
     base = str(catalog.get("endpoint") or "")
     last = client.fetch(base, timeout=timeout)
+    bytes_fetched = len(last.body)
     for code in selected:
         params = {**query, "id_ente": code}
         suffix = "&".join(
@@ -711,6 +748,7 @@ def _fetch_siconfi_statement(
         )
         url = f"{base}?{suffix}" if suffix else base
         last = client.fetch(url, timeout=timeout)
+        bytes_fetched += len(last.body)
         if last.status_code >= 400:
             continue
         try:
@@ -720,13 +758,23 @@ def _fetch_siconfi_statement(
         page_items = payload.get("items") if isinstance(payload, dict) else payload
         if isinstance(page_items, list):
             items.extend(item for item in page_items if isinstance(item, dict))
-    next_offset = skip + len(selected)
-    metrics = {
-        "offset": next_offset,
-        "lastEnte": selected[-1] if selected else None,
-        "entesThisRun": len(selected),
-        "itemCount": len(items),
-    }
+    next_offset = skip + len(selected) if not exhausted else skip
+    status = checkpoint_status_after_slice(next_offset=next_offset, total_entes=len(codes))
+    if exhausted:
+        status = "COMPLETE"
+        next_offset = len(codes)
+    duration_ms = int((time.perf_counter() - started) * 1000)
+    metrics = build_backfill_metrics(
+        offset=next_offset,
+        last_ente=selected[-1] if selected else None,
+        entes_this_run=len(selected),
+        item_count=len(items),
+        duration_ms=duration_ms,
+        bytes_fetched=bytes_fetched,
+        disk_free_bytes=disk_free,
+        total_entes=len(codes),
+        max_entes_per_run=max_entes,
+    )
     if checkpoint is None:
         session.add(
             IngestCheckpoint(
@@ -735,15 +783,26 @@ def _fetch_siconfi_statement(
                 source_id=source_id,
                 partition_key=partition_key,
                 cursor=str(next_offset),
-                status="IN_PROGRESS",
+                status=status,
                 metrics=metrics,
                 updated_at=datetime.now(UTC),
             )
         )
     else:
         checkpoint.cursor = str(next_offset)
+        checkpoint.status = status
         checkpoint.metrics = metrics
         checkpoint.updated_at = datetime.now(UTC)
+    if exhausted and not items:
+        merged = json.dumps({"items": []}, ensure_ascii=False).encode("utf-8")
+        return OfficialHttpResponse(
+            url=last.url,
+            status_code=200,
+            body=merged,
+            etag=last.etag,
+            last_modified=last.last_modified,
+            content_type="application/json",
+        )
     merged = json.dumps({"items": items}, ensure_ascii=False).encode("utf-8")
     return OfficialHttpResponse(
         url=last.url,
