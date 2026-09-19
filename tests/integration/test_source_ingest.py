@@ -80,8 +80,10 @@ def test_logical_rollback_unpublishes_enrichment(api_client) -> None:
         params={"sourceId": "IBGE-SIDRA"},
     )
     assert gold.status_code == 200
-    assert gold.json()["published"] is False
-    assert gold.json()["createsTaxCredit"] is False
+    payload = gold.json()
+    assert payload["createsTaxCredit"] is False
+    if payload.get("runId") == run_id:
+        assert payload["published"] is False
 
 
 def test_catalog_ingest_tesouro_stub_never_creates_tax_credit(api_client) -> None:

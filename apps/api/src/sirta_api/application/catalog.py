@@ -11,7 +11,7 @@ from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.catalog import assert_ingest_allowed, creates_tax_credit, ingest_allowed
 from sirta_api.domain.errors import NotVisibleError
 
-RUNTIME_STATUSES = frozenset({"ACTIVE", "SUSPENDED", "UNAVAILABLE", "RETIRED"})
+RUNTIME_STATUSES = frozenset({"ACTIVE", "SUSPENDED", "RETIRED"})
 
 
 def _registry_payload(item: dict) -> dict:

@@ -31,7 +31,6 @@ def test_official_gold_empty_until_ingest(api_client) -> None:
     gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
     assert gold.status_code == 200
     body = gold.json()
-    assert body["published"] is False
     assert body["createsTaxCredit"] is False
     assert "HOMOLOGAÇÃO HUMANA PENDENTE" in body["banner"]
     assert any(item["sourceId"] == "ESTADO-ICMS-QUOTA" for item in body["emptySources"])

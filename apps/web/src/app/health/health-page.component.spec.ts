@@ -20,7 +20,7 @@ describe('HealthPageComponent', () => {
       status: 'ok',
       specVersion: '0.3.0',
       implementationVersion: '0.3.14',
-      releaseStage: 'REAL_DATA_PIPELINES_AWAITING_HUMAN_VALIDATION',
+      releaseStage: 'REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION',
     });
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Spec 0.3.0');

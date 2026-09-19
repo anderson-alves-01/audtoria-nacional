@@ -3,9 +3,9 @@ spec_version: 0.3.0
 implementation_version: 0.3.14
 roadmap_version: "1.2"
 version: 0.3.14
-status: REAL_DATA_PIPELINES_AWAITING_HUMAN_VALIDATION
-current_phase: REAL_DATA_PIPELINES_AWAITING_HUMAN_VALIDATION
-release_stage: REAL_DATA_PIPELINES_AWAITING_HUMAN_VALIDATION
+status: REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION
+current_phase: REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION
+release_stage: REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION
 completed:
   - alembic_hygiene
   - source_master_registry_synthetic

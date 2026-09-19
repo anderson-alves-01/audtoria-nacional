@@ -1,6 +1,6 @@
 # Pacote de validação humana — Gold oficial 0.3.14
 
-Estado: `REAL_DATA_PIPELINES_AWAITING_HUMAN_VALIDATION`
+Estado: `REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION`
 
 Nenhum indicador abaixo está homologado, exigível, cobrável ou classificado como crédito tributário.
 

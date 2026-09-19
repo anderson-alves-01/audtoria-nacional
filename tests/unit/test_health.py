@@ -11,5 +11,5 @@ def test_health_returns_implementation_metadata() -> None:
     assert body["status"] == "ok"
     assert body["specVersion"] == "0.3.0"
     assert body["implementationVersion"] == "0.3.14"
-    assert body["releaseStage"] == "REAL_DATA_PIPELINES_AWAITING_HUMAN_VALIDATION"
+    assert body["releaseStage"] == "REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION"
     assert response.headers.get("x-trace-id")
