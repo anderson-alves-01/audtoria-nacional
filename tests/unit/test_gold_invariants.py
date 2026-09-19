@@ -125,9 +125,7 @@ def test_state_pe_csv_joins_ibge_and_publishes_zero_ipva() -> None:
 
 
 def test_state_ba_csv_parses_multi_header_and_joins_ibge() -> None:
-    body = Path(
-        "tests/fixtures/official-snapshots/ba-repasses-municipios-2024.csv"
-    ).read_bytes()
+    body = Path("tests/fixtures/official-snapshots/ba-repasses-municipios-2024.csv").read_bytes()
     lookup = {
         ("ABAIRA", "BA"): "2900108",
         ("ALAGOINHAS", "BA"): "2900702",
