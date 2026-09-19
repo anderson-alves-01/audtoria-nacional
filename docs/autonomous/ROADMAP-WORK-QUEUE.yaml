@@ -65,7 +65,7 @@ items:
     testes: true
     evidencia: tests/unit/test_ingest_observability.py
     versao: "0.3.16"
-    commit: null
+    commit: 0c91448
     ci: null
     motivo_bloqueio: null
     next_action: Expandir métricas Prometheus/OTel em ciclo futuro; manter logs de ingestão.
@@ -305,7 +305,7 @@ items:
     testes: true
     evidencia: contracts/sources/official-catalog.yaml
     versao: "0.3.16"
-    commit: null
+    commit: 0c91448
     ci: null
     motivo_bloqueio: API exige chave (401 sem credencial); scraping proibido.
     next_action: Aguardar credencial institucional; manter vazio e ingest bloqueado.
@@ -325,7 +325,7 @@ items:
     testes: true
     evidencia: tests/fixtures/official-snapshots/planalto-lc214.html
     versao: "0.3.16"
-    commit: null
+    commit: 0c91448
     ci: null
     motivo_bloqueio: null
     next_action: Adicionar CGIBS/RFB documentais quando URL única estável existir; manter NON_BINDING.
@@ -828,7 +828,7 @@ items:
     testes: true
     evidencia: tests/integration/test_dashboards.py
     versao: "0.3.16"
-    commit: null
+    commit: 0c91448
     ci: null
     motivo_bloqueio: null
     next_action: >
