@@ -6,11 +6,11 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA, MG, ES, GO e MS TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv /
-  state_mg_csv / state_es_csv / state_go_csv / state_ms_csv). MG/ES usam IBGE7
-  nativo. GO IPVA via CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026).
-  MS ICMS/IPVA via CKAN DataStore mensal (Tipo_Repasse). RJ IP-blocked.
-  Sem agregador privado.
+  PE, BA, MG, ES, GO, MS e RO TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv /
+  state_mg_csv / state_es_csv / state_go_csv / state_ms_csv / state_ro_csv).
+  MG/ES usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via CKAN
+  DataStore dump (CSV upload 500; schema sem ICMS 2026). MS ICMS/IPVA via CKAN
+  DataStore mensal (Tipo_Repasse). RJ IP-blocked. Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -219,9 +219,27 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: RO
     name: Rondônia
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.ro.gov.br/dataset/repasses-icms
+    official_url: https://dados.ro.gov.br/dataset/repasses-icms
+    endpoint: https://dados.ro.gov.br/dataset/cfff3fa2-6bb2-4519-bfaa-2f60126dd811/resource/28a6ff6c-59d4-409e-947d-a38b35bae75b/download/___
+    ipva_dataset_url: https://dados.ro.gov.br/dataset/repasses-ipva
+    ipva_endpoint: https://dados.ro.gov.br/dataset/ae2649de-b047-4555-9dfe-501b6d447fb8/resource/5deb9684-7411-4824-a904-a855ad68ab66/download/ipva-portal-2019-2022.csv
+    taxes: [ICMS, IPVA]
+    format: CSV
+    columns_icms: [MUNICÍPIO, MM/YYYY...]
+    columns_ipva: [Código, Município, jan/yy...]
+    ibge_field: name_only_icms_ibge6_ipva
+    layout_version_icms: state-ro-icms-v1
+    layout_version_ipva: state-ro-ipva-v1
+    connector: state_ro_csv
+    download_probe_2026_09_19: csv_bytes_ok_wide_monthly
+    reason: >
+      CSV SEFIN no portal dados.ro.gov.br (ICMS-2022 e IPVA-2019-2022) ativado
+      com connector state_ro_csv. ICMS wide MM/YYYY + join IBGE7 por nome+UF.
+      IPVA wide jan/yy + IBGE6→7. Fixture mínima. Sem crédito.
   - uf: RR
     name: Roraima
     status: DISCOVERED

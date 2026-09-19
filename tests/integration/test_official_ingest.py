@@ -39,7 +39,7 @@ def test_official_gold_empty_until_ingest(api_client) -> None:
 def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 10
+    assert siconfi.json()["silverCount"] == 12
     assert siconfi.json()["quarantinedCount"] == 1
     pib = api_client.post("/v1/data-sources/IBGE-SIDRA-PIB/ingest", headers=_admin())
     assert pib.status_code == 200
@@ -87,6 +87,12 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     ms_ipva = api_client.post("/v1/data-sources/ESTADO-MS-IPVA-QUOTA/ingest", headers=_admin())
     assert ms_ipva.status_code == 200
     assert ms_ipva.json()["silverCount"] == 2
+    ro_icms = api_client.post("/v1/data-sources/ESTADO-RO-ICMS-QUOTA/ingest", headers=_admin())
+    assert ro_icms.status_code == 200
+    assert ro_icms.json()["silverCount"] == 2
+    ro_ipva = api_client.post("/v1/data-sources/ESTADO-RO-IPVA-QUOTA/ingest", headers=_admin())
+    assert ro_ipva.status_code == 200
+    assert ro_ipva.json()["silverCount"] == 2
     rreo = api_client.post("/v1/data-sources/SICONFI-RREO/ingest", headers=_admin())
     assert rreo.status_code == 200
     assert rreo.json()["silverCount"] >= 1
@@ -126,6 +132,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "ESTADO-GO-IPVA-QUOTA",
         "ESTADO-MS-ICMS-QUOTA",
         "ESTADO-MS-IPVA-QUOTA",
+        "ESTADO-RO-ICMS-QUOTA",
+        "ESTADO-RO-IPVA-QUOTA",
         "SICONFI-RREO",
         "SICONFI-DCA",
         "SICONFI-RGF",
@@ -145,6 +153,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MS-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-RO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-RO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["SICONFI-RREO"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-DCA"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-RGF"]["valueKind"] == "FISCAL_STATEMENT_LINE"
@@ -182,6 +192,9 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-MS-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-RO-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-RO-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-RO-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["ANP-REVENDEDORES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ANP-REVENDEDORES"]["ingestAllowed"] is True
     assert by_id["ANEEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"

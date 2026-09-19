@@ -116,6 +116,20 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-RO-ICMS-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de ICMS estadual publicada (RO ativado via dados.ro.gov.br). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-RO-IPVA-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPVA estadual publicada (RO ativado via dados.ro.gov.br). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ANP-REVENDEDORES": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

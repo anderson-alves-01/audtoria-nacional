@@ -1030,6 +1030,84 @@ sources:
     notes: >
       Mesmo endpoint DataStore do ICMS MS. Homologação humana pendente.
 
+  - source_id: ESTADO-RO-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (RO)
+    maintainer: SEFIN-RO / dados.ro.gov.br
+    official_domain: dados.ro.gov.br
+    official_url: https://dados.ro.gov.br/dataset/repasses-icms
+    endpoint: https://dados.ro.gov.br/dataset/cfff3fa2-6bb2-4519-bfaa-2f60126dd811/resource/28a6ff6c-59d4-409e-947d-a38b35bae75b/download/___
+    documentation_url: https://www.sefin.ro.gov.br/conteudo.jsp?idConteudo=4118
+    dataset: ESTADO-RO-ICMS-2022
+    dictionary_url: https://dados.ro.gov.br/dataset/repasses-icms
+    purpose: Transferência estadual de ICMS — valores publicados por município
+    legal_basis: Dados abertos oficiais de Rondônia (quota-parte municipal ICMS)
+    license_terms: Creative Commons Attribution / termos do portal dados.ro.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ro_csv
+    layout_version: state-ro-icms-v1
+    periodicity: monthly
+    competence: "2022"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: RO
+      competence_year: "2022"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ro_icms_quota
+    formula: >
+      Valor mensal das colunas MM/YYYY do CSV SEFIN Repasses ICMS, competência
+      filtrada por ano, município via join IBGE7 por nome+UF. Sem ajuste.
+      Não constitui crédito.
+    methodology_version: official-state-ro-icms-v1
+    notes: >
+      CSV 2022 downloadável em 2026-09-19. Homologação humana pendente.
+
+  - source_id: ESTADO-RO-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (RO)
+    maintainer: SEFIN-RO / dados.ro.gov.br
+    official_domain: dados.ro.gov.br
+    official_url: https://dados.ro.gov.br/dataset/repasses-ipva
+    endpoint: https://dados.ro.gov.br/dataset/ae2649de-b047-4555-9dfe-501b6d447fb8/resource/5deb9684-7411-4824-a904-a855ad68ab66/download/ipva-portal-2019-2022.csv
+    documentation_url: https://www.sefin.ro.gov.br/conteudo.jsp?idConteudo=4117
+    dataset: ESTADO-RO-IPVA-2022
+    dictionary_url: https://dados.ro.gov.br/dataset/repasses-ipva
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Dados abertos oficiais de Rondônia (quota-parte municipal IPVA)
+    license_terms: Creative Commons Attribution / termos do portal dados.ro.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ro_csv
+    layout_version: state-ro-ipva-v1
+    periodicity: monthly
+    competence: "2022"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: RO
+      competence_year: "2022"
+      normalize: ibge6_to_ibge7
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ro_ipva_quota
+    formula: >
+      Valor mensal das colunas jan/yy do CSV SEFIN Repasses IPVA, competência
+      filtrada por ano, município via Código IBGE6 com dígito verificador IBGE7.
+      layout_version distinto evita colisão de checksum com ICMS. Não constitui crédito.
+    methodology_version: official-state-ro-ipva-v1
+    notes: >
+      CSV 2019-2022 downloadável em 2026-09-19. Homologação humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil

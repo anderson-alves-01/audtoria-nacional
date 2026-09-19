@@ -39,6 +39,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_mg_csv,
     parse_state_ms_csv,
     parse_state_pe_csv,
+    parse_state_ro_csv,
     parse_tesouro_monthly_csv,
     parse_tesouro_transfer_types,
     sha256_bytes,
@@ -89,6 +90,7 @@ PARSERS = {
     "state_es_csv": parse_state_es_csv,
     "state_go_csv": parse_state_go_csv,
     "state_ms_csv": parse_state_ms_csv,
+    "state_ro_csv": parse_state_ro_csv,
     "anp_revendedores_api": parse_anp_revendedores_api,
     "aneel_ckan_open": parse_aneel_ckan_open,
     "anatel_dados_gov": parse_anatel_dados_gov,
@@ -699,6 +701,17 @@ def _parse(
             fetched.body,
             tax=str(parameters.get("tax") or "ICMS"),
             uf=str(parameters.get("uf") or "MS"),
+            ibge_lookup=_ibge_lookup(session, context=context),
+        )
+    if connector == "state_ro_csv":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "ICMS"),
+            uf=str(parameters.get("uf") or "RO"),
+            competence_year=str(
+                parameters.get("competence_year") or catalog.get("competence") or "2022"
+            )[:4],
             ibge_lookup=_ibge_lookup(session, context=context),
         )
     if connector == "anp_revendedores_api":

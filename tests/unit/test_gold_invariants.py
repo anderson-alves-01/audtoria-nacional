@@ -14,6 +14,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_mg_csv,
     parse_state_ms_csv,
     parse_state_pe_csv,
+    parse_state_ro_csv,
     parse_tesouro_monthly_csv,
 )
 from sirta_api.domain.catalog import creates_tax_credit
@@ -258,6 +259,35 @@ def test_state_ms_csv_joins_name_uf_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-MS-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-MS-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_ro_csv_joins_name_and_ibge6_and_quarantines_territory() -> None:
+    icms_body = Path("tests/fixtures/official-snapshots/ro-icms-repasses-2022.csv").read_bytes()
+    lookup = {
+        ("PORTO VELHO", "RO"): "1100205",
+        ("JI-PARANA", "RO"): "1100122",
+    }
+    icms, quarantined_icms = parse_state_ro_csv(icms_body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"1100205", "1100122"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "RO" for row in icms)
+    assert all(row["competence"] == "2022-01" for row in icms)
+    porto = next(row for row in icms if row["ibgeCode"] == "1100205")
+    assert porto["value"] == 37300672.9
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva_body = Path("tests/fixtures/official-snapshots/ro-ipva-repasses-2022.csv").read_bytes()
+    ipva, quarantined_ipva = parse_state_ro_csv(ipva_body, tax="IPVA")
+    assert len(ipva) == 2
+    ji = next(row for row in ipva if row["ibgeCode"] == "1100122")
+    assert ji["value"] == 1723348.76
+    porto_ipva = next(row for row in ipva if row["ibgeCode"] == "1100205")
+    assert porto_ipva["value"] == 6079794.09
+    assert porto_ipva["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-RO-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-RO-IPVA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_aneel_indqual_aggregates_by_ibge7() -> None:

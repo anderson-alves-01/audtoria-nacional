@@ -1,4 +1,4 @@
-"""State ICMS/IPVA transfer catalog shell. No tax credit; PE/BA/MG/ES/GO ingest gated."""
+"""State ICMS/IPVA transfer catalog shell. No tax credit; PE/BA/MG/ES/GO/MS/RO ingest gated."""
 
 from __future__ import annotations
 
@@ -13,10 +13,10 @@ STATE_TRANSFERS_VERSION = "state-transfers-technical-v1"
 STATE_CATALOG_RELATIVE = Path("contracts/sources/state-transfers-catalog.yaml")
 
 DISCLAIMER = (
-    "Catálogo estadual ICMS/IPVA. PE, BA, MG, ES e GO ativados com fonte PUBLIC_OPEN "
-    "(MG/ES com IBGE7 nativo; GO IPVA via DataStore). "
-    "Demais UFs só avançam com fonte estruturada comprovada; portais HTML e "
-    "agregadores privados são recusados. Diferença gera ocorrência, nunca crédito."
+    "Catálogo estadual ICMS/IPVA. PE, BA, MG, ES, GO, MS e RO ativados com fonte "
+    "PUBLIC_OPEN (MG/ES IBGE7 nativo; RO IPVA IBGE6→7; GO/MS DataStore; RO CSV "
+    "SEFIN). Demais UFs só avançam com fonte estruturada comprovada; portais HTML "
+    "e agregadores privados são recusados. Diferença gera ocorrência, nunca crédito."
 )
 
 
@@ -84,5 +84,5 @@ def build_state_transfers_panel(*, page: int = 1, size: int = 30) -> dict:
 def reject_state_transfers_command() -> None:
     raise ConflictError(
         "Comando agregado de transferências estaduais desativado. Use ingestão "
-        "catalogada por fonte (PE/BA/MG/ES/GO) quando TECHNICALLY_APPROVED; sem crédito."
+        "catalogada por fonte (PE/BA/MG/ES/GO/MS/RO) quando TECHNICALLY_APPROVED; sem crédito."
     )

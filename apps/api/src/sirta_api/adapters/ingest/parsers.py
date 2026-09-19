@@ -222,8 +222,146 @@ def parse_brazilian_number(raw: object) -> float:
     text = str(raw or "").strip()
     if not text:
         raise ValueError("empty amount")
+    text = re.sub(r"^R\$\s*", "", text, flags=re.IGNORECASE).strip()
     normalized = text.replace(".", "").replace(",", ".")
     return float(normalized)
+
+
+def ibge7_from_municipality_ibge6(code: str) -> str:
+    """Derive IBGE7 check digit from the official 6-digit municipality stem."""
+    digits = str(code or "").strip()
+    if not re.fullmatch(r"\d{6}", digits):
+        return ""
+    weights = (1, 2, 1, 2, 1, 2)
+    total = 0
+    for digit, weight in zip(digits, weights, strict=True):
+        product = int(digit) * weight
+        total += product // 10 + product % 10
+    check = (10 - (total % 10)) % 10
+    return f"{digits}{check}"
+
+
+_RO_MONTH_ABBR = {
+    "JAN": "01",
+    "FEV": "02",
+    "MAR": "03",
+    "ABR": "04",
+    "MAI": "05",
+    "JUN": "06",
+    "JUL": "07",
+    "AGO": "08",
+    "SET": "09",
+    "OUT": "10",
+    "NOV": "11",
+    "DEZ": "12",
+}
+
+
+def _ro_month_competence(header: str, *, competence_year: str) -> str | None:
+    """Map RO wide headers (01/2022 or jan/22) to YYYY-MM when year matches."""
+    year_filter = str(competence_year or "").strip()[:4]
+    label = str(header or "").strip()
+    slash = re.fullmatch(r"(\d{2})/(\d{4})", label)
+    if slash:
+        month, year = slash.group(1), slash.group(2)
+        if year_filter and year != year_filter:
+            return None
+        if 1 <= int(month) <= 12:
+            return f"{year}-{month}"
+        return None
+    abbr = re.fullmatch(r"([A-Za-z]{3})/(\d{2})", label)
+    if abbr:
+        month = _RO_MONTH_ABBR.get(abbr.group(1).upper())
+        year = f"20{abbr.group(2)}"
+        if not month:
+            return None
+        if year_filter and year != year_filter:
+            return None
+        return f"{year}-{month}"
+    return None
+
+
+def parse_state_ro_csv(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "RO",
+    competence_year: str = "2022",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse RO SEFIN wide CSV (ICMS name-only or IPVA IBGE6); no credit."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state RO tax filter: {tax}")
+    year = str(competence_year or "2022").strip()[:4]
+    reader = csv.DictReader(io.StringIO(_decode_csv_bytes(body)), delimiter=";")
+    fieldnames = list(reader.fieldnames or [])
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    month_fields = [
+        (name, competence)
+        for name in fieldnames
+        if (competence := _ro_month_competence(name, competence_year=year))
+    ]
+    if not month_fields:
+        return [], [({"rowId": "ro-header"}, f"missing monthly columns for {year}")]
+
+    def _name_key(item: dict) -> str:
+        for key in item:
+            if "MUNICIP" in normalize_place(key):
+                return str(item.get(key) or "").strip()
+        return ""
+
+    def _code_key(item: dict) -> str:
+        for key in item:
+            if normalize_place(key) in {"CODIGO", "CODIGO IBGE", "COD"}:
+                return str(item.get(key) or "").strip()
+        return str(item.get("Código") or item.get("Codigo") or "").strip()
+
+    for index, item in enumerate(reader):
+        raw_name = _name_key(item)
+        place = normalize_place(raw_name)
+        if not place or place.startswith("TOTAL") or place.startswith("TOTAL LIQUIDO"):
+            continue
+        code6 = _code_key(item)
+        ibge = ibge7_from_municipality_ibge6(code6)
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            ibge = lookup.get((place, normalize_place(uf)), "")
+        for field_name, competence in month_fields:
+            amount_raw = item.get(field_name)
+            try:
+                value = parse_brazilian_number(amount_raw)
+            except (TypeError, ValueError):
+                quarantined.append(
+                    (
+                        {
+                            "rowId": f"ro-{tax_key.lower()}-{index}-{competence}",
+                            "territoryName": raw_name,
+                            "uf": uf,
+                            "value": amount_raw,
+                        },
+                        f"non numeric {tax_key} amount",
+                    )
+                )
+                continue
+            row = {
+                "rowId": f"ro-{tax_key.lower()}-{ibge or index}-{competence}"[:64],
+                "territoryName": raw_name,
+                "uf": uf,
+                "ibgeCode": ibge,
+                "competence": competence,
+                "transferName": tax_key,
+                "modality": modality,
+                "value": value,
+                "unit": "BRL",
+            }
+            if not IBGE_MUNICIPALITY.fullmatch(ibge):
+                quarantined.append((row, "missing IBGE municipality code"))
+                continue
+            silver.append(row)
+    return silver, quarantined
 
 
 def _decode_csv_bytes(body: bytes) -> str:

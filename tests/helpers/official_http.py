@@ -65,6 +65,15 @@ SNAPSHOT_URLS = {
         "https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026"
     ): "ms-repasses-municipios-202601.csv",
     (
+        "https://dados.ro.gov.br/dataset/cfff3fa2-6bb2-4519-bfaa-2f60126dd811/"
+        "resource/28a6ff6c-59d4-409e-947d-a38b35bae75b/download/___"
+    ): "ro-icms-repasses-2022.csv",
+    (
+        "https://dados.ro.gov.br/dataset/ae2649de-b047-4555-9dfe-501b6d447fb8/"
+        "resource/5deb9684-7411-4824-a904-a855ad68ab66/download/"
+        "ipva-portal-2019-2022.csv"
+    ): "ro-ipva-repasses-2022.csv",
+    (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
     (
