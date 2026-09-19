@@ -47,16 +47,26 @@ function Resolve-Bin {
 }
 
 function Test-DiskHeadroom {
-    param([string]$Path, [double]$MinFreeRatio = 0.15)
+    param(
+        [string]$Path,
+        [double]$MinFreeRatio = 0.15,
+        [double]$MinFreeBytes = 1GB
+    )
     $root = [System.IO.Path]::GetPathRoot((Resolve-Path $Path))
     $letter = $root.Substring(0, 1)
     $drive = Get-PSDrive -Name $letter
     $total = [double]$drive.Used + [double]$drive.Free
-    if ($total -le 0) { return }
-    $ratio = [double]$drive.Free / $total
-    if ($ratio -lt $MinFreeRatio) {
-        throw ("Espaço livre {0:P1} abaixo do mínimo {1:P0}." -f $ratio, $MinFreeRatio)
+    $free = [double]$drive.Free
+    if ($free -lt $MinFreeBytes) {
+        throw ("Espaço livre {0:N1} GB abaixo do mínimo operacional {1:N1} GB." -f ($free / 1GB), ($MinFreeBytes / 1GB))
     }
+    if ($total -le 0) { return $false }
+    $ratio = $free / $total
+    if ($ratio -lt $MinFreeRatio) {
+        Write-Log $LogPath ("DISK_LOW free={0:P1} min={1:P0} bytes={2}" -f $ratio, $MinFreeRatio, [int64]$free)
+        return $true
+    }
+    return $false
 }
 
 function Get-GitHead {
@@ -103,14 +113,20 @@ $StopPath = Join-Path $Runtime "STOP"
 $CompletePath = Join-Path $Runtime "COMPLETE"
 $MaxPath = Join-Path $Runtime "MAX_CYCLES_REACHED"
 
-$Agent = Resolve-Bin @("agent")
+$AgentCmd = Join-Path $env:LOCALAPPDATA "cursor-agent\agent.cmd"
+if (Test-Path $AgentCmd) {
+    $Agent = $AgentCmd
+}
+else {
+    $Agent = Resolve-Bin @("agent")
+}
 $Gh = Resolve-Bin @("gh", "gh.exe")
 if (-not $Gh) { $Gh = "C:\Program Files\GitHub CLI\gh.exe" }
 
 function Invoke-Preflight {
     if (-not $Agent) { throw "Cursor CLI 'agent' não encontrado. Instale com irm https://cursor.com/install?win32=true | iex" }
     & $Agent --version | Out-Host
-    $statusOut = & $Agent status 2>&1 | Out-String
+    $statusOut = & $Agent --trust status 2>&1 | Out-String
     Write-Host $statusOut
     if ($statusOut -match "Not logged in") {
         throw "Cursor CLI não autenticado. Execute 'agent login' e recarregue o orquestrador."
@@ -130,8 +146,8 @@ function Invoke-Preflight {
     if ($porcelain) {
         throw "Working tree suja. Commit ou preserve alterações humanas antes de orquestrar.`n$porcelain"
     }
-    Test-DiskHeadroom -Path $RepoRoot
-    Write-Log $LogPath "PREFLIGHT_OK head=$head branch=$branch agent=$Agent"
+    $script:DiskConstrained = Test-DiskHeadroom -Path $RepoRoot
+    Write-Log $LogPath "PREFLIGHT_OK head=$head branch=$branch agent=$Agent disk_constrained=$script:DiskConstrained"
 }
 
 function Test-Lock {
@@ -228,7 +244,10 @@ try {
             Write-Log $LogPath "STOP_FILE"
             break
         }
-        Test-DiskHeadroom -Path $RepoRoot
+        $script:DiskConstrained = Test-DiskHeadroom -Path $RepoRoot
+        if ($script:DiskConstrained) {
+            $hint = "$hint DISCO_BAIXO: não iniciar carga oficial volumosa; paginar; checkpoint; limpar caches; manter 15% livre."
+        }
         $headBefore = Get-GitHead
         $queueBefore = Get-QueueFingerprint
         $cycleDir = Join-Path $Runtime ("cycle-{0:D3}" -f $cycle)
