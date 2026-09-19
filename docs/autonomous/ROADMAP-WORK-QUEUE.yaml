@@ -352,7 +352,7 @@ items:
     evidencia: evidence/releases/0.3.28/
     versao: "0.3.28"
     commit: 85d90ed
-    ci: null
+    ci: "35449688226"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG e ES TECHNICALLY_APPROVED. RJ IP-blocked. GO download CSV 500
@@ -374,7 +374,7 @@ items:
     evidencia: evidence/releases/0.3.28/
     versao: "0.3.28"
     commit: 85d90ed
-    ci: null
+    ci: "35449688226"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG e ES ativados (state_pe_csv / state_ba_csv / state_mg_csv /
@@ -397,7 +397,7 @@ items:
     evidencia: evidence/releases/0.3.28/
     versao: "0.3.28"
     commit: 85d90ed
-    ci: null
+    ci: "35449688226"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG e ES ativados. Seguir outras UFs PUBLIC_OPEN; sem inventar valores.

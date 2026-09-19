@@ -5,4 +5,5 @@
 - Evidência: `evidence/releases/0.3.28/`
 - Resultado: ES TECHNICALLY_APPROVED com `state_es_csv`, IBGE7 nativo, lineage Gold
 - GO catalogado mas download CSV HTTP 500; PE/BA/MG intactos; RJ IP-blocked
+- CI: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35449688226
 - CYCLE_RESULT=PROGRESSED
