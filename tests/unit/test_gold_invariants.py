@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from sirta_api.adapters.ingest.parsers import (
+    parse_anp_revendedores_api,
     parse_ibge_sidra_series,
     parse_state_ba_csv,
     parse_state_es_csv,
@@ -252,3 +253,19 @@ def test_state_ms_csv_joins_name_uf_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-MS-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-MS-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_anp_revendedores_aggregates_and_drops_cnpj() -> None:
+    body = Path("tests/fixtures/official-snapshots/anp-revendedores-ms-page1.json").read_bytes()
+    lookup = {("CAMPO GRANDE", "MS"): "5002704"}
+    silver, quarantined = parse_anp_revendedores_api(body, uf="MS", ibge_lookup=lookup)
+    assert len(silver) == 1
+    assert silver[0]["ibgeCode"] == "5002704"
+    assert silver[0]["value"] == 2
+    assert silver[0]["unit"] == "ESTABLISHMENTS"
+    assert "cnpj" not in silver[0]
+    assert "razaoSocial" not in silver[0]
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "missing IBGE municipality code"
+    assert presentation_for("ANP-REVENDEDORES")["valueKind"] == "REFERENCE_QUANTITY"
+    assert presentation_for("ANP-REVENDEDORES")["createsTaxCredit"] is False

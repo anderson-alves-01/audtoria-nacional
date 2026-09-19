@@ -17,15 +17,15 @@
 | Item | Estado registrado |
 |---|---|
 | Versão da especificação | `0.3.0` |
-| Versão da implementação local | `0.3.30` |
-| Linha técnica em progresso | F0/S0-S4, G6–G8 locais, Alembic, F3, onda 1 PUBLIC_OPEN, lineage Gold, 15 dashboards, FPM/RREO/DCA/RGF, observabilidade, LC 214, Portal stub, diagnóstico, regras não vinculantes, calendário catalog-official-docs-v1, shells F5–F10, upload municipal, Cadastro 360, setoriais catalogados, backfill controlado FPM/RREO/DCA, RFB territorial sem carga nacional, PE+BA+MG+ES+MS ICMS/IPVA + GO IPVA TECHNICALLY_APPROVED (`state_pe_csv` / `state_ba_csv` / `state_mg_csv` / `state_es_csv` / `state_go_csv` / `state_ms_csv`) |
+| Versão da implementação local | `0.3.31` |
+| Linha técnica em progresso | F0/S0-S4, G6–G8 locais, Alembic, F3, onda 1 PUBLIC_OPEN, lineage Gold, 15 dashboards, FPM/RREO/DCA/RGF, observabilidade, LC 214, Portal stub, diagnóstico, regras não vinculantes, calendário catalog-official-docs-v1, shells F5–F10, upload municipal, Cadastro 360, setoriais catalogados (ANP ativado UF=MS), backfill controlado FPM/RREO/DCA, RFB territorial sem carga nacional, PE+BA+MG+ES+MS ICMS/IPVA + GO IPVA TECHNICALLY_APPROVED (`state_pe_csv` / `state_ba_csv` / `state_mg_csv` / `state_es_csv` / `state_go_csv` / `state_ms_csv` / `anp_revendedores_api`) |
 | Dívida Alembic `0004 -> 0005` | `RESOLVED` (`ALEMBIC_HYGIENE`) |
 | Próximo passo automático | Outra UF/setorial PUBLIC_OPEN com fixture; GO ICMS quando datastore publicar colunas; RJ IP-blocked. RFB sem carga nacional. Sem homologação humana agora. Gates G0/G1/G4/G5/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
 | Commit de referência local | `feat/official-public-ingest` |
 | Nuvem, produção e dados fiscais restritos | Não autorizados |
 | Estado composto | `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS` |
 
-A implementação `0.3.30` ativa ICMS/IPVA oficial de MS via dump CKAN DataStore mensal, além de PE, BA, MG, ES e GO IPVA. Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`. O Programa SIRTA 2026 **não** está concluído. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
+A implementação `0.3.31` ativa ANP revendedores (escopo UF) além de ICMS/IPVA de MS/PE/BA/MG/ES e GO IPVA. Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`. O Programa SIRTA 2026 **não** está concluído. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
 
 ### Estados compostos dos gates
 

@@ -6,22 +6,26 @@ from sirta_api.domain.sectoral_enrichment import (
 )
 
 
-def test_sectoral_panel_is_empty_and_non_credit() -> None:
+def test_sectoral_panel_partial_anp_activation() -> None:
     panel = build_sectoral_enrichment_panel()
     assert panel["createsTaxCredit"] is False
-    assert panel["ingestEnabled"] is False
+    assert panel["ingestEnabled"] is True
     assert panel["items"] == []
     assert panel["total"] == 0
     assert panel["sourceRole"] == "REFERENCE_ENRICHMENT"
+    assert panel["institutionalStatus"] == "PARTIAL_TECHNICAL_ACTIVATION"
     assert len(panel["sources"]) == 6
-    assert all(row["ingestAllowed"] is False for row in panel["sources"])
-    assert all(row["status"] == "DISCOVERED" for row in panel["sources"])
+    by_id = {row["sourceId"]: row for row in panel["sources"]}
+    assert by_id["ANP-REVENDEDORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ANP-REVENDEDORES"]["ingestAllowed"] is True
+    assert by_id["ANEEL-DADOS-ABERTOS"]["ingestAllowed"] is False
+    assert by_id["CNES-DATASUS"]["status"] == "DISCOVERED"
 
 
-def test_sectoral_connectors_are_blocked() -> None:
-    assert "anp_revendedores_api" in BLOCKED_SECTORAL_CONNECTORS
+def test_sectoral_connectors_remain_blocked_except_anp() -> None:
+    assert "anp_revendedores_api" not in BLOCKED_SECTORAL_CONNECTORS
     assert "cnes_datasus_open" in BLOCKED_SECTORAL_CONNECTORS
-    assert len(BLOCKED_SECTORAL_CONNECTORS) == 6
+    assert len(BLOCKED_SECTORAL_CONNECTORS) == 5
 
 
 def test_sectoral_command_is_rejected() -> None:

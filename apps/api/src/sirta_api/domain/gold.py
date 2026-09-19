@@ -116,6 +116,13 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ANP-REVENDEDORES": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Contagem de postos revendedores ANP por município (escopo UF). "
+            "Referência setorial; não constitui crédito tributário."
+        ),
+    },
     "SICONFI-RREO": {
         "valueKind": "FISCAL_STATEMENT_LINE",
         "label": "Linhas do RREO municipal. Não constituem crédito tributário.",

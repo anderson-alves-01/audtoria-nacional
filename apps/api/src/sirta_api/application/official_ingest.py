@@ -23,6 +23,7 @@ from sirta_api.adapters.ingest.parsers import (
     landing_dir,
     minimize_row,
     normalize_place,
+    parse_anp_revendedores_api,
     parse_ibge_sidra_series,
     parse_official_document,
     parse_siconfi_entes,
@@ -83,6 +84,7 @@ PARSERS = {
     "state_es_csv": parse_state_es_csv,
     "state_go_csv": parse_state_go_csv,
     "state_ms_csv": parse_state_ms_csv,
+    "anp_revendedores_api": parse_anp_revendedores_api,
 }
 
 
@@ -115,7 +117,6 @@ def ingest_official_source(
         "restricted_upload",
         "state_transfer_adapter",
         "portal_transparencia_api",
-        "anp_revendedores_api",
         "aneel_ckan_open",
         "epe_open_files",
         "anatel_dados_gov",
@@ -693,6 +694,16 @@ def _parse(
             fetched.body,
             tax=str(parameters.get("tax") or "ICMS"),
             uf=str(parameters.get("uf") or "MS"),
+            ibge_lookup=_ibge_lookup(session, context=context),
+        )
+    if connector == "anp_revendedores_api":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            uf=str(parameters.get("uf") or ""),
+            competence=str(
+                parameters.get("competence") or catalog.get("competence") or "as_published"
+            ),
             ibge_lookup=_ibge_lookup(session, context=context),
         )
     if connector == "siconfi_statement":

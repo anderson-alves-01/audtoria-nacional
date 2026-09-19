@@ -1,4 +1,4 @@
-"""Sectoral REFERENCE_ENRICHMENT empty shell. No tax credit; ingest not activated."""
+"""Sectoral REFERENCE_ENRICHMENT shell. ANP activated with UF scope; no tax credit."""
 
 from sirta_api.domain.errors import ConflictError
 
@@ -10,10 +10,11 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         "maintainer": "ANP",
         "connector": "anp_revendedores_api",
         "structuredOfficialSource": "rest_api_verified",
-        "status": "DISCOVERED",
-        "ingestAllowed": False,
+        "status": "TECHNICALLY_APPROVED",
+        "ingestAllowed": True,
         "personalDataRisk": "possible_establishment_cnpj_minimized",
-        "activationGate": "TECHNICALLY_APPROVED_WITH_FIXTURE",
+        "activationGate": "UF_SCOPED_FIXTURE",
+        "territorialScope": "MS",
     },
     {
         "sourceId": "ANEEL-DADOS-ABERTOS",
@@ -69,13 +70,12 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
 
 DISCLAIMER = (
     "Fontes setoriais oficiais catalogadas (ANP, ANEEL, EPE, Anatel, BCB, CNES). "
-    "Estado vazio; ingestAllowed=false; REFERENCE_ENRICHMENT apenas. "
-    "Nenhuma carga ativada nesta fatia. Não constitui crédito tributário."
+    "ANP ativada com escopo UF e fixture mínima; demais ingestAllowed=false. "
+    "REFERENCE_ENRICHMENT apenas. Não constitui crédito tributário."
 )
 
 BLOCKED_SECTORAL_CONNECTORS = frozenset(
     {
-        "anp_revendedores_api",
         "aneel_ckan_open",
         "epe_open_files",
         "anatel_dados_gov",
@@ -87,6 +87,8 @@ BLOCKED_SECTORAL_CONNECTORS = frozenset(
 
 def build_sectoral_enrichment_panel(*, page: int = 1, size: int = 20) -> dict:
     sources = [dict(row) for row in SECTORAL_SOURCES]
+    ingest_enabled = any(bool(row.get("ingestAllowed")) for row in sources)
+    any_approved = any(row.get("status") == "TECHNICALLY_APPROVED" for row in sources)
     return {
         "version": SECTORAL_ENRICHMENT_VERSION,
         "binding": False,
@@ -94,9 +96,9 @@ def build_sectoral_enrichment_panel(*, page: int = 1, size: int = 20) -> dict:
         "homologated": False,
         "commandsDisabled": True,
         "createsTaxCredit": False,
-        "ingestEnabled": False,
+        "ingestEnabled": ingest_enabled,
         "sourceRole": "REFERENCE_ENRICHMENT",
-        "institutionalStatus": "DISCOVERED",
+        "institutionalStatus": ("PARTIAL_TECHNICAL_ACTIVATION" if any_approved else "DISCOVERED"),
         "sources": sources,
         "items": [],
         "page": page,

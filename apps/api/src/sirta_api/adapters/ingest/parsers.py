@@ -386,6 +386,61 @@ def parse_state_es_csv(
     return silver, quarantined
 
 
+def parse_anp_revendedores_api(
+    body: bytes,
+    *,
+    uf: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    competence: str = "as_published",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse ANP revendedores JSON; aggregate by município+UF; drop CNPJ/PII."""
+    uf_key = normalize_place(uf)
+    if not uf_key or len(uf_key) != 2:
+        raise ValueError("ANP territorial scope requires a two-letter UF")
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return [], [({"rowId": "anp-document"}, "invalid JSON")]
+    if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
+        return [], [({"rowId": "anp-document"}, "unexpected ANP envelope")]
+    lookup = ibge_lookup or {}
+    counts: dict[tuple[str, str], dict[str, object]] = {}
+    for index, item in enumerate(payload.get("data") or []):
+        if not isinstance(item, dict):
+            continue
+        row_uf = normalize_place(str(item.get("uf") or ""))
+        if row_uf != uf_key:
+            continue
+        raw_name = str(item.get("municipio") or "").strip()
+        if not raw_name:
+            continue
+        key = (normalize_place(raw_name), row_uf)
+        bucket = counts.setdefault(
+            key,
+            {"territoryName": raw_name, "uf": row_uf, "count": 0, "index": index},
+        )
+        bucket["count"] = int(bucket["count"]) + 1
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    for (place, place_uf), bucket in sorted(counts.items(), key=lambda item: item[0]):
+        ibge = lookup.get((place, place_uf), "")
+        row = {
+            "rowId": f"anp-{place_uf.lower()}-{ibge or bucket['index']}-{competence}"[:64],
+            "territoryName": str(bucket["territoryName"]),
+            "uf": place_uf,
+            "ibgeCode": ibge,
+            "competence": competence,
+            "transferName": "ANP_REVENDEDORES",
+            "value": int(bucket["count"]),
+            "unit": "ESTABLISHMENTS",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def _ms_municipality_name(raw: str) -> str:
     text = str(raw or "").strip()
     if normalize_place(text).startswith("PREFEITURA MUNICIPAL DE "):

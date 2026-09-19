@@ -1,0 +1,47 @@
+{
+  "status": 200,
+  "title": "Dados Encontrados",
+  "succeeded": true,
+  "data": [
+    {
+      "codigoSIMP": "1064304",
+      "autorizacao": "PR/MS0226273",
+      "razaoSocial": "FIXTURE POSTO CAMPO GRANDE A LTDA",
+      "cnpj": "08924582000295",
+      "endereco": "AVENIDA EXEMPLO, 100",
+      "bairro": "CENTRO",
+      "cep": "79000000",
+      "uf": "MS",
+      "municipio": "CAMPO GRANDE",
+      "produtos": ["Gasolina C Comum"]
+    },
+    {
+      "codigoSIMP": "159898",
+      "autorizacao": "PR/MS0159850",
+      "razaoSocial": "FIXTURE POSTO CAMPO GRANDE B LTDA",
+      "cnpj": "04379626000101",
+      "endereco": "RUA EXEMPLO, 200",
+      "bairro": "JARDIM",
+      "cep": "79022000",
+      "uf": "MS",
+      "municipio": "CAMPO GRANDE",
+      "produtos": ["Etanol Hidratado"]
+    },
+    {
+      "codigoSIMP": "999001",
+      "autorizacao": "PR/MS0999001",
+      "razaoSocial": "FIXTURE POSTO SEM IBGE LTDA",
+      "cnpj": "11222333000144",
+      "endereco": "RODOVIA EXEMPLO, KM 1",
+      "bairro": "",
+      "cep": "79000001",
+      "uf": "MS",
+      "municipio": "TERRITORIO SEM IBGE MS",
+      "produtos": ["Diesel S10"]
+    }
+  ],
+  "searchPageFilter": {
+    "uf": "MS",
+    "numeropagina": 1
+  }
+}

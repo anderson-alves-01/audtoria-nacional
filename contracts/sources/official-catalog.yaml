@@ -1077,37 +1077,44 @@ sources:
     maintainer: Agência Nacional do Petróleo, Gás Natural e Biocombustíveis
     official_domain: revendedoresapi.anp.gov.br
     official_url: https://www.gov.br/anp/pt-br/centrais-de-conteudo/paineis-dinamicos-da-anp/paineis-dinamicos-do-abastecimento/painel-dinamico-de-relatorio-de-revenda
-    endpoint: https://revendedoresapi.anp.gov.br/v1/combustivel
+    endpoint: https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1
     documentation_url: https://revendedoresapi.anp.gov.br/swagger/index.html
     dataset: ANP-REVENDEDORES
     dictionary_url: https://www.gov.br/anp/pt-br/centrais-de-conteudo/paineis-dinamicos-da-anp/paineis-dinamicos-do-abastecimento/api-revendedores-manual-usuario.pdf
-    purpose: Referência cadastral de postos revendedores (UF/município) para enriquecimento setorial
+    purpose: Contagem municipal de postos revendedores (UF/município) para enriquecimento setorial
     legal_basis: API pública de revendedores ANP/SDL
     license_terms: termos de uso da ANP para dados abertos
     source_role: REFERENCE_ENRICHMENT
     access_classification: PUBLIC_OPEN
-    status: DISCOVERED
-    fixture_kind: NONE
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
     connector: anp_revendedores_api
     layout_version: anp-revendedores-v1
     periodicity: as_published
-    competence: unknown
-    granularity: establishment
+    competence: as_published
+    granularity: municipality
     parameters:
-      filters: [cnpj, uf, municipio]
-      pagination: numeropagina
+      uf: MS
+      numeropagina: 1
+      max_pages: 1
+      filters: [uf, municipio]
       scrape_forbidden: true
-      activation: blocked_until_technically_approved
+      minimize_cnpj: true
+      competence: as_published
     authentication: none
     rate_limit: not_published
     personal_data: possible_establishment_cnpj_minimized
-    retention: none_until_activation
-    indicator: none
-    formula: none
-    methodology_version: none
+    retention: bronze_immutable
+    indicator: anp_reseller_establishment_count
+    formula: >
+      Contagem de estabelecimentos publicados pela API ANP /v1/combustivel no
+      escopo UF da carga, agregada por município com join IBGE7 via SICONFI-ENTES
+      (nome+UF). CNPJ, razão social e endereço permanecem só no Bronze bruto.
+      Sem carga nacional. Não constitui crédito.
+    methodology_version: official-anp-revendedores-v1
     notes: >
-      Endpoint REST oficial verificado em 2026-09-19. Ingestão bloqueada até
-      TECHNICALLY_APPROVED com fixture mínima de teste. Não constitui crédito.
+      Endpoint REST oficial verificado. Ativação técnica com escopo UF=MS e
+      fixture mínima. Homologação humana pendente. Não constitui crédito.
 
   - source_id: ANEEL-DADOS-ABERTOS
     name: ANEEL — portal de dados abertos (CKAN/DataStore)

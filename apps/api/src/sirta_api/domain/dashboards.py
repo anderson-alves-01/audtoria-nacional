@@ -19,7 +19,7 @@ DASHBOARDS = (
         "id": "economia",
         "path": "/economia",
         "title": "Contexto econômico e potencial ISS",
-        "goldSourceIds": ("IBGE-SIDRA-PIB", "IBGE-SIDRA"),
+        "goldSourceIds": ("IBGE-SIDRA-PIB", "IBGE-SIDRA", "ANP-REVENDEDORES"),
         "emptyReason": "PIB e população não são potencial de ISS nem crédito constituído.",
         "commandsDisabled": True,
     },

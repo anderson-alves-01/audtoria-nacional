@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.30
+implementation_version: 0.3.31
 roadmap_version: "1.2"
-version: 0.3.30
+version: 0.3.31
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -51,6 +51,7 @@ completed:
     - state_es_icms_ipva_csv_activation
     - state_go_ipva_datastore_activation
     - state_ms_icms_ipva_datastore_activation
+    - anp_revendedores_uf_scoped_activation
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -59,6 +60,7 @@ pending:
     - state_other_uf_activation_followup
     - state_go_icms_when_columns_published
     - rfb_scoped_authorized_load
+    - sectoral_aneel_epe_anatel_bcb_cnes_activation
     - official_ibs_cbs_homologation_g8
     - remaining_roadmap_technical_items
     - pilot_g9
@@ -95,6 +97,7 @@ gates:
   f3_state_es_activation_local: GO
   f3_state_go_ipva_activation_local: GO
   f3_state_ms_activation_local: GO
+  f3_anp_revendedores_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -106,6 +109,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.30/
-next_action: Activate another PUBLIC_OPEN UF/sectoral with fixture, or GO ICMS when datastore publishes ICMS columns. RJ remains IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold remains pending and is not requested now.
+evidence: evidence/releases/0.3.31/
+next_action: Activate another PUBLIC_OPEN UF or remaining sectoral (ANEEL/EPE/Anatel/BCB/CNES) with fixture; GO ICMS when datastore publishes ICMS columns. RJ remains IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md
