@@ -298,9 +298,7 @@ def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
     ).read_bytes()
-    silver, quarantined = parse_epe_open_files(
-        body, uf="MS", competence_year="2024", max_rows=8
-    )
+    silver, quarantined = parse_epe_open_files(body, uf="MS", competence_year="2024", max_rows=8)
     assert len(silver) == 6
     assert len(quarantined) == 1
     assert quarantined[0][1] == "invalid consumer count"

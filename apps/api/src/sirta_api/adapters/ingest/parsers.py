@@ -478,11 +478,7 @@ def parse_epe_open_files(
     limit = int(max_rows or 0)
     if limit <= 0:
         raise ValueError("EPE max_rows must be a positive integer")
-    records = (
-        _iter_epe_xlsx_records(body)
-        if body[:2] == b"PK"
-        else _iter_epe_csv_records(body)
-    )
+    records = _iter_epe_xlsx_records(body) if body[:2] == b"PK" else _iter_epe_csv_records(body)
     silver: list[dict] = []
     quarantined: list[tuple[dict, str]] = []
     for index, rec in enumerate(records):
@@ -494,7 +490,9 @@ def parse_epe_open_files(
         raw_date = str(rec.get("Data") or "").strip()
         if not raw_date.startswith(year):
             continue
-        sector = str(rec.get("Setor Econômico - N1") or rec.get("Setor Economico - N1") or "").strip()
+        sector = str(
+            rec.get("Setor Econômico - N1") or rec.get("Setor Economico - N1") or ""
+        ).strip()
         competence = _epe_competence(raw_date)
         raw_consumers = rec.get("Consumidores")
         try:
