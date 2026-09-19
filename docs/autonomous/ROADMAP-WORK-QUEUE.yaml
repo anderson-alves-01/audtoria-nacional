@@ -440,7 +440,7 @@ items:
     evidencia: evidence/releases/0.3.31/
     versao: "0.3.31"
     commit: 32156ae
-    ci: null
+    ci: "35452312674"
     motivo_bloqueio: null
     next_action: >
       ANP TECHNICALLY_APPROVED com escopo UF=MS, fixture mínima e Gold
