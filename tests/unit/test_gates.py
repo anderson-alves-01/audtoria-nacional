@@ -23,5 +23,7 @@ def test_program_snapshot_does_not_fabricate_approval() -> None:
     assert by_id["G7"]["officialStatus"] == "OFFICIAL_BLOCKED"
     assert by_id["G8"]["homologated"] is False
     assert by_id["G8"]["binding"] is False
+    assert by_id["G8"]["operational"] is False
+    assert by_id["G8"]["officialStatus"] == "OFFICIAL_BLOCKED"
     assert by_id["G9"]["status"] == "BLOCKED"
     assert by_id["G10"]["status"] == "BLOCKED"

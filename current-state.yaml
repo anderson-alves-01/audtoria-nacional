@@ -44,5 +44,5 @@ gates:
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
 evidence: evidence/releases/0.3.13/
-next_action: Stop. Remaining roadmap items require a human gate. Report docs/delivery/TECHNICAL-COMPLETION-REPORT.md
-human_gates: docs/delivery/HUMAN-GATES.md
+next_action: Stop. Remaining roadmap items require a human gate. Reports docs/delivery/TECHNICAL_COMPLETION_REPORT.md and docs/delivery/HUMAN_DECISIONS_REQUIRED.md
+human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

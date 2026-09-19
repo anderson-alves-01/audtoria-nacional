@@ -1,0 +1,4 @@
+terraform fmt -check (local, dev, staging, prod, module): exit 0
+terraform init -backend=false -input=false: success, hashicorp/null v3.3.2 reused
+terraform validate: Success! The configuration is valid.
+terraform apply: not executed

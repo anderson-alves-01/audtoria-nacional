@@ -1,0 +1,7 @@
+ruff format --check: 108 files already formatted
+ruff check: All checks passed
+openapi_spec_validator: contracts/openapi/sirta-v1.yaml OK
+pytest tests -q: 99 passed, 1 warning in 29.11s
+  contract: tests/contract/test_openapi.py (2)
+  integration: Alembic, catalog, gates, source_ingest, regulatory, pipeline, transfers, tax credits, isolation
+  unit: authorization, catalog, gates, regulatory, terraform, flags

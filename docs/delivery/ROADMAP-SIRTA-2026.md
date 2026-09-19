@@ -17,15 +17,15 @@
 | Item | Estado registrado |
 |---|---|
 | Versão da especificação | `0.3.0` |
-| Versão da implementação local | `0.3.8` |
-| Linha técnica concluída | F0/S0-S4, G6–G8 locais, saneamento Alembic |
+| Versão da implementação local | `0.3.13` |
+| Linha técnica concluída | F0/S0-S4, G6–G8 locais, Alembic, F3.0/F3.1 sintético, checklists G0/G1 BLOCKED, Terraform docs |
 | Dívida Alembic `0004 -> 0005` | `RESOLVED` (`ALEMBIC_HYGIENE`) |
-| Próximo passo automático | Catálogo técnico de fontes (F3.0 sintético), sem ingestão real |
-| Commit de referência G8 | `e0ec753` |
-| Commit de gates humanos | `86022ad` |
+| Próximo passo automático | Nenhum. Restam apenas gates humanos. |
+| Commit de referência local | `57d4b12` (`feat/roadmap-technical-completion`) |
+| Commit de gates humanos em `main` | `86022ad` |
 | Nuvem, produção e dados fiscais reais | Não autorizados |
 
-A implementação `0.3.8` resolve a dívida Alembic. O recorte `0.3.7` permanece o último marco funcional local (G8 sintético). Nenhum desses marcos conclui o Programa SIRTA 2026 nem homologação institucional, tributária ou jurídica.
+A implementação `0.3.13` encerra as fatias técnicas locais desbloqueadas do ROADMAP 1.2 nesta branch. Nenhum desses marcos conclui o Programa SIRTA 2026 nem homologação institucional, tributária ou jurídica. Relatório: `docs/delivery/TECHNICAL_COMPLETION_REPORT.md`.
 
 ### Estados compostos dos gates
 
@@ -779,6 +779,6 @@ Nenhuma regra jurídica ou tributária será ativada apenas por inferência da I
 
 ## 16. Próxima ação executiva
 
-A dívida Alembic `BLOCK_NEXT_RELEASE` está resolvida em `0.3.8`. O trabalho técnico local autorizado continua pelo Registro Mestre de Fontes e contratos sintéticos da Fase 3, sem ingestão real, credencial, nuvem ou homologação oficial.
+Não há próximo item técnico automático na implementação local. A linha `0.3.8`–`0.3.13` em `feat/roadmap-technical-completion` está consolidada em `docs/delivery/TECHNICAL_COMPLETION_REPORT.md`.
 
-G0, G1, G4, G7 oficial, G8 oficial, G9 e G10 permanecem bloqueados.
+G0, G1, G4, G7 oficial, G8 oficial, G9 e G10 permanecem bloqueados. Decisões e evidências exigidas: `docs/delivery/HUMAN_DECISIONS_REQUIRED.md`.
