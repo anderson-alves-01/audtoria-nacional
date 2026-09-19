@@ -1,4 +1,4 @@
-﻿"""Record Anatel Meu Municipio UF-scoped activation.
+"""Record Anatel Meu Municipio UF-scoped activation.
 
 Revision ID: 0038_anatel_meu_municipio
 Revises: 0037_epe_dados_brutos_activation

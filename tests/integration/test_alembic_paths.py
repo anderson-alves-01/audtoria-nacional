@@ -1,4 +1,4 @@
-﻿import os
+import os
 from pathlib import Path
 
 from sqlalchemy import func, inspect, select, text

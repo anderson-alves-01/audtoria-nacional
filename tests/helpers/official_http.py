@@ -83,8 +83,7 @@ SNAPSHOT_URLS = {
         "Documents/Dados%20brutos.xlsx"
     ): "epe-anuario-dados-brutos-ms-2024.csv",
     (
-        "https://www.anatel.gov.br/dadosabertos/paineis_de_dados/meu_municipio/"
-        "meu_municipio.zip"
+        "https://www.anatel.gov.br/dadosabertos/paineis_de_dados/meu_municipio/meu_municipio.zip"
     ): "anatel-meu-municipio-acessos-ms-2025-11.csv",
 }
 
