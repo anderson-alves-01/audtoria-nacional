@@ -6,8 +6,10 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  Nenhuma fonte estadual foi ativada autonomamente. Portais HTML de transparência
-  não são API/arquivo estruturado. Agregadores privados foram recusados.
+  RJ tem CSV catalogado no CKAN (PROVENANCE_VERIFIED); demais UFs DISCOVERED.
+  Nenhuma UF ativada para ingest. Portais HTML sem arquivo/API estruturado não
+  bastam. Agregadores privados foram recusados. Download RJ bloqueado por filtro
+  de IP da SEFAZ neste runtime — schema pendente.
 states:
   - uf: AC
     name: Acre
@@ -101,9 +103,20 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: RJ
     name: Rio de Janeiro
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: ckan_csv_cataloged
+    dataset_url: https://dadosabertos.rj.gov.br/dataset/distribuicoes-constitucionais-muns-obrig
+    official_url: https://portal.fazenda.rj.gov.br/transparencia-fiscal/relatorios/transferencias-aos-municipios/
+    endpoint: https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2024/02/Relatorio-de-Repasses-aos-Municipios-2024.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    dictionary_url: none
+    download_probe_2026_09_19: sefaz_ip_filter_html_block
+    reason: >
+      CKAN estadual lista CSV anual de repasses (ICMS/IPVA/IPI). Schema de colunas
+      ainda não confirmado em bytes baixáveis neste runtime (bloqueio HTML por
+      catálogo de IP da SEFAZ-RJ). Agregadores privados recusados. Sem ativação
+      de ingest até schema verificado.
   - uf: RN
     name: Rio Grande do Norte
     status: DISCOVERED

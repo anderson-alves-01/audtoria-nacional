@@ -59,6 +59,11 @@ from sirta_api.domain.gold import (
     coverage_divergence,
     presentation_for,
 )
+from sirta_api.domain.rfb_cnpj import (
+    RFB_CONNECTOR,
+    assert_territorial_scope_ready,
+    build_rfb_readiness,
+)
 
 PARSERS = {
     "ibge_sidra_series": parse_ibge_sidra_series,
@@ -79,16 +84,22 @@ def ingest_official_source(
 ) -> dict:
     if context.role.value != "tech_admin":
         raise ForbiddenError("Only a technical administrator may run data loads")
+    connector = str(catalog.get("connector") or "")
+    endpoint = str(catalog.get("endpoint") or "")
+    if connector == RFB_CONNECTOR:
+        assert_territorial_scope_ready(catalog.get("parameters"))
     assert_ingest_allowed(
         source_role=source.source_role,
         access_classification=source.access_classification,
         status=source.status,
         fixture_kind=source.fixture_kind,
     )
-    connector = str(catalog.get("connector") or "")
-    endpoint = str(catalog.get("endpoint") or "")
+    if connector == RFB_CONNECTOR:
+        raise ForbiddenError(
+            "RFB CNPJ territorial connector is ready but national/runtime load "
+            "remains blocked until TECHNICALLY_APPROVED scoped publication"
+        )
     if connector in {
-        "rfb_cnpj_open",
         "restricted_upload",
         "state_transfer_adapter",
         "portal_transparencia_api",
@@ -855,7 +866,7 @@ def _fetch_pages(
 
 
 def _body(run: DataLoadRun, *, source: SourceRegistry, catalog: dict, replay: bool) -> dict:
-    return {
+    body = {
         "runId": str(run.id),
         "sourceId": source.source_id,
         "status": run.status,
@@ -873,3 +884,6 @@ def _body(run: DataLoadRun, *, source: SourceRegistry, catalog: dict, replay: bo
         "officialUrl": catalog.get("official_url") or source.official_url,
         "banner": OFFICIAL_BANNER,
     }
+    if str(catalog.get("connector") or "") == RFB_CONNECTOR:
+        body["rfbReadiness"] = build_rfb_readiness(catalog.get("parameters"))
+    return body

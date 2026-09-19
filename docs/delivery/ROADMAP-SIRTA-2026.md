@@ -17,15 +17,15 @@
 | Item | Estado registrado |
 |---|---|
 | Versão da especificação | `0.3.0` |
-| Versão da implementação local | `0.3.23` |
-| Linha técnica em progresso | F0/S0-S4, G6–G8 locais, Alembic, F3, onda 1 PUBLIC_OPEN, lineage Gold, 15 dashboards, FPM/RREO/DCA/RGF, observabilidade, LC 214, Portal stub, diagnóstico, regras não vinculantes, calendário catalog-official-docs-v1, shells F5–F10, upload municipal, Cadastro 360, setoriais catalogados e backfill controlado FPM/RREO/DCA |
+| Versão da implementação local | `0.3.24` |
+| Linha técnica em progresso | F0/S0-S4, G6–G8 locais, Alembic, F3, onda 1 PUBLIC_OPEN, lineage Gold, 15 dashboards, FPM/RREO/DCA/RGF, observabilidade, LC 214, Portal stub, diagnóstico, regras não vinculantes, calendário catalog-official-docs-v1, shells F5–F10, upload municipal, Cadastro 360, setoriais catalogados, backfill controlado FPM/RREO/DCA, RFB territorial sem carga nacional, shell estadual ICMS/IPVA com RJ PROVENANCE_VERIFIED |
 | Dívida Alembic `0004 -> 0005` | `RESOLVED` (`ALEMBIC_HYGIENE`) |
-| Próximo passo automático | Continuar itens técnicos implementáveis do ROADMAP (RFB territorial, fontes estaduais, ativação setorial com fixtures). Sem homologação humana agora. Gates G0/G1/G4/G5/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
+| Próximo passo automático | Ativar ICMS/IPVA só com schema CSV verificado (download RJ bloqueado por IP neste runtime). RFB sem carga nacional. Sem homologação humana agora. Gates G0/G1/G4/G5/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
 | Commit de referência local | `feat/official-public-ingest` |
 | Nuvem, produção e dados fiscais restritos | Não autorizados |
 | Estado composto | `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS` |
 
-A implementação `0.3.23` adiciona controles fail-closed de backfill (hard_cap, disco, checkpoint COMPLETE, FPM por competência). Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`. O Programa SIRTA 2026 **não** está concluído. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
+A implementação `0.3.24` adiciona conector RFB com escopo/retomada/EI e shell estadual ICMS/IPVA (RJ CSV catalogado). Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`. O Programa SIRTA 2026 **não** está concluído. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
 
 ### Estados compostos dos gates
 

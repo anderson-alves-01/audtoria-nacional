@@ -20,6 +20,7 @@ import { PilotReadinessPageComponent } from './pilot-readiness/pilot-readiness-p
 import { ProcuradoriaPageComponent } from './procuradoria/procuradoria-page.component';
 import { SectoralEnrichmentPageComponent } from './sectoral-enrichment/sectoral-enrichment-page.component';
 import { SourcesPageComponent } from './sources/sources-page.component';
+import { StateTransfersPageComponent } from './state-transfers/state-transfers-page.component';
 import { TransferReconciliationPageComponent } from './transfer-reconciliation/transfer-reconciliation-page.component';
 import { ValidationPageComponent } from './validation/validation-page.component';
 
@@ -43,6 +44,7 @@ export const routes: Routes = [
   { path: 'upload-municipal', component: MunicipalUploadsPageComponent },
   { path: 'cadastro-360', component: Cadastro360PageComponent },
   { path: 'setorial', component: SectoralEnrichmentPageComponent },
+  { path: 'transferencias-estaduais', component: StateTransfersPageComponent },
   { path: 'executivo', component: DashboardPageComponent, data: { dashboardId: 'executivo' } },
   { path: 'financeiro', component: DashboardPageComponent, data: { dashboardId: 'financeiro' } },
   { path: 'economia', component: DashboardPageComponent, data: { dashboardId: 'economia' } },

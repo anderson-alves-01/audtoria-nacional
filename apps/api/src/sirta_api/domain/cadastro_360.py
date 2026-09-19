@@ -1,6 +1,8 @@
 """Cadastro 360 technical empty shell. No real PII and no invented territory."""
 
+from sirta_api.adapters.ingest.catalog_loader import catalog_source
 from sirta_api.domain.errors import ConflictError
+from sirta_api.domain.rfb_cnpj import build_rfb_readiness
 
 CADASTRO_360_VERSION = "cadastro-360-technical-v1"
 
@@ -35,6 +37,8 @@ DISCLAIMER = (
 
 
 def build_cadastro_360_panel(*, page: int = 1, size: int = 20) -> dict:
+    rfb_catalog = catalog_source("RFB-DADOS-ABERTOS") or {}
+    rfb = build_rfb_readiness(rfb_catalog.get("parameters"))
     return {
         "version": CADASTRO_360_VERSION,
         "binding": False,
@@ -45,7 +49,9 @@ def build_cadastro_360_panel(*, page: int = 1, size: int = 20) -> dict:
         "piiPresent": False,
         "territoryInvented": False,
         "minimizationEnforced": True,
-        "rfbScopeReady": False,
+        "rfbScopeReady": bool(rfb.get("scopeReady")),
+        "rfbResumeCapable": bool(rfb.get("resumeCapable")),
+        "rfbEiPolicy": rfb.get("eiPolicy"),
         "municipalDataLinked": False,
         "g0Status": "BLOCKED",
         "institutionalStatus": "CREDENTIAL_REQUIRED",

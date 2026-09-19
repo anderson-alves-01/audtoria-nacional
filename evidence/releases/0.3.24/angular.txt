@@ -1,0 +1,1 @@
+﻿Angular targeted tests (state-transfers, app, health): TOTAL 6 SUCCESS

@@ -26,6 +26,7 @@ from sirta_api.entrypoints.pipeline import router as pipeline_router
 from sirta_api.entrypoints.procuradoria_panel import router as procuradoria_panel_router
 from sirta_api.entrypoints.regulatory import router as regulatory_router
 from sirta_api.entrypoints.sectoral_enrichment import router as sectoral_enrichment_router
+from sirta_api.entrypoints.state_transfers import router as state_transfers_router
 from sirta_api.entrypoints.tax_credits import router as tax_credit_router
 from sirta_api.entrypoints.transfer_reconciliation import (
     router as transfer_reconciliation_router,
@@ -37,7 +38,7 @@ def create_app() -> FastAPI:
     configure_logging()
     application = FastAPI(
         title="SIRTA Municipal API",
-        version="0.3.23",
+        version="0.3.24",
     )
     application.add_middleware(TraceMiddleware)
     application.add_middleware(
@@ -68,6 +69,7 @@ def create_app() -> FastAPI:
     application.include_router(municipal_uploads_router)
     application.include_router(cadastro_360_router)
     application.include_router(sectoral_enrichment_router)
+    application.include_router(state_transfers_router)
     application.include_router(catalog_router)
     application.include_router(dashboard_router)
     application.include_router(gates_router)

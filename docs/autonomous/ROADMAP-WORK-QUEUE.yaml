@@ -1,16 +1,15 @@
 schema_version: 1
-updated_at: "2026-09-19T09:45:00-03:00"
+updated_at: "2026-09-19T10:25:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.23"
+implementation_version: "0.3.24"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.23: backfill controlado FPM/RREO/DCA (hard_cap, disco, COMPLETE).
-  Ciclo CI: ruff format em config/backfill_controls/test_backfill_controls
-  após falha do job python na PR #2; sem nova funcionalidade neste ciclo.
+  Ciclo 0.3.24: RFB territorial (resume/manifesto/EI) sem carga nacional;
+  shell estadual ICMS/IPVA com RJ PROVENANCE_VERIFIED; download RJ IP-blocked.
 
 items:
   - id: F2-CI-CD
@@ -26,14 +25,14 @@ items:
     frontend: true
     pipeline: false
     testes: true
-    evidencia: evidence/releases/0.3.23/ruff-format-fix-tests.txt
-    versao: "0.3.23"
-    commit: 00dd268
-    ci: "35443104642"
+    evidencia: evidence/releases/0.3.24/
+    versao: "0.3.24"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      CI python/web/containers verdes após ruff format (run 35443104642).
-      Próximo ciclo: RFB territorial, estados ICMS/IPVA, ativação setorial.
+      Verificar CI após push 0.3.24. Próximo ciclo: schema estadual baixável
+      ou ativação setorial com fixture.
 
   - id: F2-TENANT-ISOLATION
     fase: F2
@@ -351,54 +350,61 @@ items:
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [contracts/sources/state-transfers-catalog.yaml]
     backend: true
-    frontend: false
+    frontend: true
     pipeline: false
-    testes: false
-    evidencia: contracts/sources/state-transfers-catalog.yaml
-    versao: "0.3.15"
-    commit: 1d7a601
-    ci: "35437663525"
+    testes: true
+    evidencia: evidence/releases/0.3.24/
+    versao: "0.3.24"
+    commit: null
+    ci: null
     motivo_bloqueio: null
-    next_action: Verificar tecnicamente cada UF; ativar só PUBLIC_OPEN estruturado comprovado.
+    next_action: >
+      RJ PROVENANCE_VERIFIED no catálogo e shell /v1/state-transfers.
+      Demais UFs DISCOVERED; ativar só com schema baixável.
 
   - id: F3-STATE-ICMS-ACTIVATION
     fase: F3.2
     dominio: D9
     descricao: Ativar quotas ICMS estaduais PUBLIC_OPEN verificadas
     dependencias: [F3-STATE-CATALOG]
-    estado_tecnico: PENDING
-    estado_institucional: DISCOVERED
+    estado_tecnico: IN_PROGRESS
+    estado_institucional: PROVENANCE_VERIFIED
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [ESTADO-ICMS-QUOTA]
     backend: true
     frontend: true
     pipeline: true
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: evidence/releases/0.3.24/
+    versao: "0.3.24"
     commit: null
     ci: null
-    motivo_bloqueio: null
-    next_action: Investigar APIs/arquivos oficiais por UF; sem agregadores privados.
+    motivo_bloqueio: >
+      RJ CSV catalogado no CKAN; download retornou HTML de filtro de IP SEFAZ
+      neste runtime; schema de colunas não confirmado em bytes.
+    next_action: >
+      Obter bytes CSV oficiais de rede autorizada; fixar layout; ativar só RJ
+      com fixture mínima de teste. Sem agregador privado.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2
     dominio: D9
     descricao: Ativar quotas IPVA estaduais PUBLIC_OPEN verificadas
     dependencias: [F3-STATE-CATALOG]
-    estado_tecnico: PENDING
-    estado_institucional: DISCOVERED
+    estado_tecnico: IN_PROGRESS
+    estado_institucional: PROVENANCE_VERIFIED
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [ESTADO-IPVA-QUOTA]
     backend: true
     frontend: true
     pipeline: true
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: evidence/releases/0.3.24/
+    versao: "0.3.24"
     commit: null
     ci: null
-    motivo_bloqueio: null
+    motivo_bloqueio: >
+      Mesmo CSV RJ de repasses inclui IPVA; schema pendente pelo bloqueio de IP.
     next_action: Idem ICMS; normalizar por código IBGE.
 
   - id: F3-RFB-CNPJ
@@ -406,20 +412,22 @@ items:
     dominio: D4
     descricao: Conector RFB CNPJ com minimização, streaming e escopo territorial
     dependencias: []
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: READY_FOR_TERRITORIAL_SCOPE
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [RFB-DADOS-ABERTOS]
     backend: true
     frontend: false
     pipeline: true
-    testes: false
-    evidencia: contracts/sources/official-catalog.yaml
-    versao: "0.3.15"
-    commit: 1d7a601
+    testes: true
+    evidencia: evidence/releases/0.3.24/
+    versao: "0.3.24"
+    commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Completar download retomável, manifesto, filtro territorial e política de EI; sem carga nacional.
+    next_action: >
+      Escopo, resume, manifesto e EI prontos. Manter ingestAllowed=false até
+      territorial_scope autorizado; sem carga nacional.
 
   - id: F3-SECTORAL-ANP
     fase: F3.2

@@ -618,7 +618,10 @@ sources:
     indicator: none
     formula: none
     methodology_version: none
-    notes: Catálogo dos 26 estados e DF em contracts/sources/state-transfers-catalog.yaml. Nenhuma fonte estadual PUBLIC_OPEN estruturada foi tecnicamente verificada nesta fatia. Sem agregador privado.
+    notes: >
+      Catálogo dos 26 estados e DF em state-transfers-catalog.yaml. RJ CSV de
+      repasses catalogado (PROVENANCE_VERIFIED) sem schema baixável neste runtime.
+      Nenhuma UF com ingest ativado. Sem agregador privado. Ver /v1/state-transfers.
 
   - source_id: ESTADO-IPVA-QUOTA
     name: Quota-parte de IPVA estadual
@@ -651,7 +654,9 @@ sources:
     indicator: none
     formula: none
     methodology_version: none
-    notes: Mesmo catálogo estadual. Nenhuma API/arquivo estruturado oficial de IPVA foi ativado autonomamente.
+    notes: >
+      Mesmo catálogo estadual. RJ inclui IPVA no CSV de repasses catalogado;
+      ativação pendente de schema verificado. Ver /v1/state-transfers.
 
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
@@ -677,7 +682,9 @@ sources:
     parameters:
       territorial_scope: none
       streaming: true
+      resume: true
       minimize_individual_entrepreneur: true
+      estabelecimento_files: Estabelecimentos0.zip-Estabelecimentos9.zip
       estimated_national_compressed_gb: 8
       estimated_national_uncompressed_gb: 40
     authentication: none
@@ -687,7 +694,11 @@ sources:
     indicator: none
     formula: none
     methodology_version: rfb-cnpj-minimization-v1
-    notes: Conector pronto. Sem carga nacional e sem amostra arbitrária até territorial_scope. Empresário individual permanece fora de Gold.
+    notes: >
+      Conector técnico com streaming, cursor de retomada, manifesto territorial e
+      política de exclusão de empresário individual. territorial_scope permanece
+      none; ingestAllowed=false; sem carga nacional e sem amostra arbitrária.
+      Empresário individual nunca entra em Gold.
 
   - source_id: ANP-REVENDEDORES
     name: ANP — API de revendedores de combustíveis e GLP

@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.23
+implementation_version: 0.3.24
 roadmap_version: "1.2"
-version: 0.3.23
+version: 0.3.24
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -43,13 +43,15 @@ completed:
     - cadastro_360_empty_technical_shell
     - sectoral_official_catalog_empty_shell
     - controlled_backfill_fpm_rreo_dca
+    - rfb_territorial_connector_without_national_load
+    - state_icms_ipva_rj_provenance_and_empty_shell
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
     - specialist_homologation_g4
     - official_tesouro_national_backfill
     - state_icms_ipva_structured_activation
-    - rfb_territorial_scope
+    - rfb_scoped_authorized_load
     - official_ibs_cbs_homologation_g8
     - remaining_roadmap_technical_items
     - pilot_g9
@@ -78,6 +80,8 @@ gates:
   f4_cadastro_360_shell_local: GO
   f3_sectoral_catalog_shell_local: GO
   f3_controlled_backfill_local: GO
+  f3_rfb_territorial_local: GO
+  f3_state_transfers_shell_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -89,6 +93,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.23/
-next_action: Continue remaining technically implementable ROADMAP items (RFB territorial, state sources, sectoral activation with fixtures). CI green after ruff-format fix (run 35443104642). Human validation of Gold remains pending and is not requested now.
+evidence: evidence/releases/0.3.24/
+next_action: Activate state ICMS/IPVA only after CSV schema bytes are verified (RJ download IP-blocked here). RFB remains READY_FOR_TERRITORIAL_SCOPE without national load. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

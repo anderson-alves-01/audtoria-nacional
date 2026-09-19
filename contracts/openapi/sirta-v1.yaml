@@ -3,7 +3,7 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.23
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.24
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
@@ -586,6 +586,31 @@ paths:
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
         '409': {description: Commands disabled; no sectoral ingest}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/state-transfers:
+    get:
+      operationId: getStateTransfers
+      description: >
+        State ICMS/IPVA catalog shell. RJ may be PROVENANCE_VERIFIED for CKAN CSV;
+        ingestEnabled=false; createsTaxCredit=false; no activated UF load.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty state-transfers shell with per-UF status}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandStateTransfers
+      description: Always rejected (409). No state ICMS/IPVA load without schema activation.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Commands disabled; no state transfer ingest}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/data-sources:
