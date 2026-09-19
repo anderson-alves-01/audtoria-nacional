@@ -180,7 +180,9 @@ def test_state_mg_csv_joins_native_ibge_and_quarantines_territory() -> None:
 
 
 def test_state_es_csv_joins_native_ibge_and_quarantines_territory() -> None:
-    body = Path("tests/fixtures/official-snapshots/es-transf-estado-municipios-2024.csv").read_bytes()
+    body = Path(
+        "tests/fixtures/official-snapshots/es-transf-estado-municipios-2024.csv"
+    ).read_bytes()
     icms, quarantined_icms = parse_state_es_csv(body, tax="ICMS")
     assert len(icms) == 2
     assert {row["ibgeCode"] for row in icms} == {"3200102", "3205309"}
