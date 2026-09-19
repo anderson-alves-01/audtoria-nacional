@@ -676,3 +676,224 @@ sources:
     methodology_version: rfb-cnpj-minimization-v1
     notes: Conector pronto. Sem carga nacional e sem amostra arbitrária até territorial_scope. Empresário individual permanece fora de Gold.
 
+  - source_id: ANP-REVENDEDORES
+    name: ANP — API de revendedores de combustíveis e GLP
+    maintainer: Agência Nacional do Petróleo, Gás Natural e Biocombustíveis
+    official_domain: revendedoresapi.anp.gov.br
+    official_url: https://www.gov.br/anp/pt-br/centrais-de-conteudo/paineis-dinamicos-da-anp/paineis-dinamicos-do-abastecimento/painel-dinamico-de-relatorio-de-revenda
+    endpoint: https://revendedoresapi.anp.gov.br/v1/combustivel
+    documentation_url: https://revendedoresapi.anp.gov.br/swagger/index.html
+    dataset: ANP-REVENDEDORES
+    dictionary_url: https://www.gov.br/anp/pt-br/centrais-de-conteudo/paineis-dinamicos-da-anp/paineis-dinamicos-do-abastecimento/api-revendedores-manual-usuario.pdf
+    purpose: Referência cadastral de postos revendedores (UF/município) para enriquecimento setorial
+    legal_basis: API pública de revendedores ANP/SDL
+    license_terms: termos de uso da ANP para dados abertos
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: DISCOVERED
+    fixture_kind: NONE
+    connector: anp_revendedores_api
+    layout_version: anp-revendedores-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: establishment
+    parameters:
+      filters: [cnpj, uf, municipio]
+      pagination: numeropagina
+      scrape_forbidden: true
+      activation: blocked_until_technically_approved
+    authentication: none
+    rate_limit: not_published
+    personal_data: possible_establishment_cnpj_minimized
+    retention: none_until_activation
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: >
+      Endpoint REST oficial verificado em 2026-09-19. Ingestão bloqueada até
+      TECHNICALLY_APPROVED com fixture mínima de teste. Não constitui crédito.
+
+  - source_id: ANEEL-DADOS-ABERTOS
+    name: ANEEL — portal de dados abertos (CKAN/DataStore)
+    maintainer: Agência Nacional de Energia Elétrica
+    official_domain: dadosabertos.aneel.gov.br
+    official_url: https://dadosabertos.aneel.gov.br/
+    endpoint: https://dadosabertos.aneel.gov.br/api/3/action/package_list
+    documentation_url: https://dadosabertos.aneel.gov.br/
+    dataset: ANEEL-CKAN
+    dictionary_url: https://dadosabertos.aneel.gov.br/
+    purpose: Empreendimentos e outorgas de geração como referência energética municipal
+    legal_basis: Portal de Dados Abertos da ANEEL (PDA 2025–2027)
+    license_terms: ODbL / termos do portal ANEEL
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: DISCOVERED
+    fixture_kind: NONE
+    connector: aneel_ckan_open
+    layout_version: aneel-ckan-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: undertaking
+    parameters:
+      api: ckan_action
+      example_resource_id: 3710b245-88f0-4aa6-8cfb-8b1426e9021d
+      scrape_forbidden: true
+      activation: blocked_until_technically_approved
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: none_until_activation
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: >
+      CKAN/DataStore oficial verificado. Dataset SIGA/outorgas disponível em CSV/JSON.
+      Sem ativação de carga nesta fatia. Não constitui crédito.
+
+  - source_id: EPE-DADOS-ABERTOS
+    name: EPE — dados abertos do Balanço Energético Nacional e Anuário
+    maintainer: Empresa de Pesquisa Energética
+    official_domain: epe.gov.br
+    official_url: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos/dados-abertos-do-balanco-energetico-nacional-ben
+    endpoint: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos
+    documentation_url: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos
+    dataset: EPE-BEN-ANUARIO
+    dictionary_url: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos/dados-do-anuario-estatistico-de-energia-eletrica
+    purpose: Séries energéticas oficiais para contexto setorial (não municipal granular)
+    legal_basis: Publicações de dados abertos da EPE
+    license_terms: termos do órgão mantenedor
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: DISCOVERED
+    fixture_kind: NONE
+    connector: epe_open_files
+    layout_version: epe-open-files-v1
+    periodicity: annual
+    competence: unknown
+    granularity: national_regional
+    parameters:
+      formats: [tabular_download]
+      scrape_forbidden: true
+      activation: blocked_until_stable_file_url
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: none_until_activation
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: >
+      Portal oficial com downloads tabulares (BEN/Anuário). URL de arquivo estável
+      por competência ainda não fixada no conector. Sem carga. Não constitui crédito.
+
+  - source_id: ANATEL-DADOS-ABERTOS
+    name: Anatel — infraestrutura e presença de telecomunicações (dados.gov.br)
+    maintainer: Agência Nacional de Telecomunicações
+    official_domain: dados.gov.br
+    official_url: https://www.gov.br/anatel/pt-br/dados/dados-abertos
+    endpoint: https://dados.gov.br/dados/conjuntos-dados/infraestrutura-backhaul-em-municpios
+    documentation_url: https://www.gov.br/anatel/pt-br/dados/dados-abertos
+    dataset: ANATEL-INFRA-MUNICIPIOS
+    dictionary_url: https://dados.gov.br/dados/conjuntos-dados/infraestrutura---presenca-da-telefonia-movel---rqual
+    purpose: Cobertura de telecom por município como referência setorial
+    legal_basis: Plano de Dados Abertos da Anatel / Portal Brasileiro de Dados Abertos
+    license_terms: Creative Commons Attribution / termos dados.gov.br
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: DISCOVERED
+    fixture_kind: NONE
+    connector: anatel_dados_gov
+    layout_version: anatel-dados-gov-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: municipality
+    parameters:
+      formats: [zip, odt]
+      scrape_forbidden: true
+      activation: blocked_until_structured_csv_verified
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: none_until_activation
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: >
+      Conjuntos oficiais em dados.gov.br (ZIP/ODT). Sem API REST estável verificada.
+      Ativar somente após CSV estruturado e normalização IBGE7. Não constitui crédito.
+
+  - source_id: BCB-SGS-OLINDA
+    name: Banco Central — SGS e OLINDA (séries e OData)
+    maintainer: Banco Central do Brasil
+    official_domain: bcb.gov.br
+    official_url: https://dadosabertos.bcb.gov.br/
+    endpoint: https://api.bcb.gov.br/dados/serie/bcdata.sgs.1/dados/ultimos/1?formato=json
+    documentation_url: https://olinda.bcb.gov.br/olinda/service/help
+    dataset: BCB-SGS-OLINDA
+    dictionary_url: https://www3.bcb.gov.br/sgspub/
+    purpose: Séries macroeconômicas oficiais para contexto; nunca crédito tributário
+    legal_basis: APIs públicas SGS e OLINDA do BCB
+    license_terms: termos de uso do Banco Central para dados abertos
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: DISCOVERED
+    fixture_kind: NONE
+    connector: bcb_sgs_olinda
+    layout_version: bcb-sgs-olinda-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: series
+    parameters:
+      sgs_base: https://api.bcb.gov.br/dados/serie/
+      olinda_base: https://olinda.bcb.gov.br/olinda/servico/
+      scrape_forbidden: true
+      activation: blocked_until_series_allowlist
+    authentication: none
+    rate_limit: http_429_possible
+    personal_data: false
+    retention: none_until_activation
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: >
+      SGS JSON e OLINDA OData oficiais verificados. Sem allowlist de séries nesta fatia.
+      Não cria crédito, cobrança ou indício fiscal automático.
+
+  - source_id: CNES-DATASUS
+    name: CNES/DATASUS — Cadastro Nacional de Estabelecimentos de Saúde
+    maintainer: Ministério da Saúde / DATASUS
+    official_domain: dadosabertos.saude.gov.br
+    official_url: https://dadosabertos.saude.gov.br/dataset/cnes-cadastro-nacional-de-estabelecimentos-de-saude
+    endpoint: https://dadosabertos.saude.gov.br/dataset/cnes-cadastro-nacional-de-estabelecimentos-de-saude
+    documentation_url: http://cnes.datasus.gov.br/pages/downloads/arquivosBaseDados.jsp
+    dataset: CNES-ESTABELECIMENTOS
+    dictionary_url: https://dados.gov.br/dados/conjuntos-dados/cnes-cadastro-nacional-de-estabelecimentos-de-saude
+    purpose: Estabelecimentos de saúde por município com minimização de dados pessoais
+    legal_basis: Dados abertos do SUS / CNES
+    license_terms: Creative Commons Attribution / termos do órgão
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: DISCOVERED
+    fixture_kind: NONE
+    connector: cnes_datasus_open
+    layout_version: cnes-estabelecimentos-v1
+    periodicity: monthly
+    competence: unknown
+    granularity: establishment
+    parameters:
+      formats: [csv, json, xml, zip]
+      scrape_forbidden: true
+      minimize_personal_data: true
+      territorial_scope: none
+      activation: blocked_until_territorial_scope
+    authentication: none
+    rate_limit: not_published
+    personal_data: possible_professional_contact_minimized
+    retention: discard_out_of_scope
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: >
+      Portal oficial e bases por competência verificados. Sem carga nacional.
+      Exige territorial_scope e minimização antes de qualquer Bronze. Não constitui crédito.
+

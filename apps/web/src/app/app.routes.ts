@@ -18,6 +18,7 @@ import { OpsGovernancePageComponent } from './ops-governance/ops-governance-page
 import { PaymentsPageComponent } from './payments/payments-page.component';
 import { PilotReadinessPageComponent } from './pilot-readiness/pilot-readiness-page.component';
 import { ProcuradoriaPageComponent } from './procuradoria/procuradoria-page.component';
+import { SectoralEnrichmentPageComponent } from './sectoral-enrichment/sectoral-enrichment-page.component';
 import { SourcesPageComponent } from './sources/sources-page.component';
 import { TransferReconciliationPageComponent } from './transfer-reconciliation/transfer-reconciliation-page.component';
 import { ValidationPageComponent } from './validation/validation-page.component';
@@ -41,6 +42,7 @@ export const routes: Routes = [
   { path: 'operacao-governanca', component: OpsGovernancePageComponent },
   { path: 'upload-municipal', component: MunicipalUploadsPageComponent },
   { path: 'cadastro-360', component: Cadastro360PageComponent },
+  { path: 'setorial', component: SectoralEnrichmentPageComponent },
   { path: 'executivo', component: DashboardPageComponent, data: { dashboardId: 'executivo' } },
   { path: 'financeiro', component: DashboardPageComponent, data: { dashboardId: 'financeiro' } },
   { path: 'economia', component: DashboardPageComponent, data: { dashboardId: 'economia' } },

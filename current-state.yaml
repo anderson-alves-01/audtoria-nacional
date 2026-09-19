@@ -1,58 +1,59 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.21
+implementation_version: 0.3.22
 roadmap_version: "1.2"
-version: 0.3.21
+version: 0.3.22
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 completed:
-  - alembic_hygiene
-  - source_master_registry_synthetic
-  - program_gates_snapshot
-  - terraform_docs_no_apply
-  - catalog_driven_synthetic_ingest_ibge
-  - tesouro_stub_and_blocked_gate_checklists
-  - terraform_modules_documentation_only
-  - official_public_ingest_wave_1_ibge_siconfi_tesouro_dictionary
-  - gold_lineage_per_row
-  - tesouro_fpm_monthly_csv_connector
-  - siconfi_rreo_dca_partitioned_connector
-  - fifteen_official_dashboards_empty_when_unauthored
-  - ingest_structured_observability
-  - regulatory_lc214_document_ingest
-  - portal_transparencia_credential_catalog_stub
-  - diagnosis_empty_technical_shell
-  - audit_rules_non_binding_catalog
-  - ibs_cbs_calendar_preserved_documents
-  - siconfi_rgf_connector
-  - local_security_hardening_mfa_dlp
-  - local_postgres_backup_restore_dry_run
-  - findings_empty_technical_shell
-  - audit_cases_empty_technical_shell
-  - human_validation_workflow_empty_shell
-  - notifications_empty_technical_shell
-  - collection_panel_empty_official_shell
-  - payments_panel_empty_official_shell
-  - active_debt_panel_empty_official_shell
-  - procuradoria_panel_empty_official_shell
-  - transfer_reconciliation_empty_technical_shell
-  - pilot_readiness_technical_checklist
-  - ops_governance_local_runbooks_shell
-  - municipal_restricted_upload_empty_shell
-  - cadastro_360_empty_technical_shell
+    - alembic_hygiene
+    - source_master_registry_synthetic
+    - program_gates_snapshot
+    - terraform_docs_no_apply
+    - catalog_driven_synthetic_ingest_ibge
+    - tesouro_stub_and_blocked_gate_checklists
+    - terraform_modules_documentation_only
+    - official_public_ingest_wave_1_ibge_siconfi_tesouro_dictionary
+    - gold_lineage_per_row
+    - tesouro_fpm_monthly_csv_connector
+    - siconfi_rreo_dca_partitioned_connector
+    - fifteen_official_dashboards_empty_when_unauthored
+    - ingest_structured_observability
+    - regulatory_lc214_document_ingest
+    - portal_transparencia_credential_catalog_stub
+    - diagnosis_empty_technical_shell
+    - audit_rules_non_binding_catalog
+    - ibs_cbs_calendar_preserved_documents
+    - siconfi_rgf_connector
+    - local_security_hardening_mfa_dlp
+    - local_postgres_backup_restore_dry_run
+    - findings_empty_technical_shell
+    - audit_cases_empty_technical_shell
+    - human_validation_workflow_empty_shell
+    - notifications_empty_technical_shell
+    - collection_panel_empty_official_shell
+    - payments_panel_empty_official_shell
+    - active_debt_panel_empty_official_shell
+    - procuradoria_panel_empty_official_shell
+    - transfer_reconciliation_empty_technical_shell
+    - pilot_readiness_technical_checklist
+    - ops_governance_local_runbooks_shell
+    - municipal_restricted_upload_empty_shell
+    - cadastro_360_empty_technical_shell
+    - sectoral_official_catalog_empty_shell
 pending:
-  - municipal_g0_authorization
-  - diagnosis_g1
-  - specialist_homologation_g4
-  - official_tesouro_national_backfill
-  - state_icms_ipva_structured_activation
-  - rfb_territorial_scope
-  - official_ibs_cbs_homologation_g8
-  - remaining_roadmap_technical_items
-  - pilot_g9
-  - production_g10
-  - human_validation_of_official_gold
+    - municipal_g0_authorization
+    - diagnosis_g1
+    - specialist_homologation_g4
+    - official_tesouro_national_backfill
+    - state_icms_ipva_structured_activation
+    - rfb_territorial_scope
+    - official_ibs_cbs_homologation_g8
+    - remaining_roadmap_technical_items
+    - pilot_g9
+    - production_g10
+    - human_validation_of_official_gold
 gates:
   g6_finance_local: GO
   g7_transfers_local: GO
@@ -74,6 +75,7 @@ gates:
   f10_ops_governance_local: GO
   f3_municipal_upload_shell_local: GO
   f4_cadastro_360_shell_local: GO
+  f3_sectoral_catalog_shell_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -85,6 +87,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.21/
-next_action: Continue remaining technically implementable ROADMAP items (backfills, state sources, RFB territorial, sectoral catalogs). Human validation of Gold remains pending and is not requested now.
+evidence: evidence/releases/0.3.22/
+next_action: Continue remaining technically implementable ROADMAP items (backfills, state sources, RFB territorial, sectoral activation with fixtures). Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

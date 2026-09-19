@@ -1,0 +1,5 @@
+pytest tests/unit/test_sectoral_enrichment.py tests/unit/test_health.py tests/unit/test_catalog.py tests/integration/test_sectoral_enrichment.py -q
+12 passed
+
+ng test --include sectoral-enrichment + app.component + health-page
+6 SUCCESS

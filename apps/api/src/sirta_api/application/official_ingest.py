@@ -82,6 +82,12 @@ def ingest_official_source(
         "restricted_upload",
         "state_transfer_adapter",
         "portal_transparencia_api",
+        "anp_revendedores_api",
+        "aneel_ckan_open",
+        "epe_open_files",
+        "anatel_dados_gov",
+        "bcb_sgs_olinda",
+        "cnes_datasus_open",
     }:
         raise ForbiddenError("Official connector is waiting territorial scope or credentials")
     if connector in {"", "none"} or endpoint in {"", "none"}:
