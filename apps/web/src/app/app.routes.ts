@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { ActiveDebtPageComponent } from './active-debt/active-debt-page.component';
 import { AuditCasesPageComponent } from './audit-cases/audit-cases-page.component';
 import { AuditRulesPageComponent } from './audit-rules/audit-rules-page.component';
 import { CalendarPageComponent } from './calendar/calendar-page.component';
@@ -11,6 +12,8 @@ import { GatesPageComponent } from './gates/gates-page.component';
 import { HealthPageComponent } from './health/health-page.component';
 import { HumanValidationPageComponent } from './human-validation/human-validation-page.component';
 import { NotificationsPageComponent } from './notifications/notifications-page.component';
+import { PaymentsPageComponent } from './payments/payments-page.component';
+import { ProcuradoriaPageComponent } from './procuradoria/procuradoria-page.component';
 import { SourcesPageComponent } from './sources/sources-page.component';
 import { ValidationPageComponent } from './validation/validation-page.component';
 
@@ -20,6 +23,9 @@ export const routes: Routes = [
   { path: 'validacao-humana', component: HumanValidationPageComponent },
   { path: 'notificacoes', component: NotificationsPageComponent },
   { path: 'cobranca', component: CollectionPageComponent },
+  { path: 'pagamentos', component: PaymentsPageComponent },
+  { path: 'divida-ativa', component: ActiveDebtPageComponent },
+  { path: 'procuradoria', component: ProcuradoriaPageComponent },
   { path: 'funil', component: FunnelPageComponent },
   { path: 'calendario', component: CalendarPageComponent },
   { path: 'diagnostico', component: DiagnosisPageComponent },
@@ -32,8 +38,6 @@ export const routes: Routes = [
   { path: 'economia', component: DashboardPageComponent, data: { dashboardId: 'economia' } },
   { path: 'operacao', component: DashboardPageComponent, data: { dashboardId: 'operacao' } },
   { path: 'achados', component: FindingsPageComponent },
-  { path: 'pagamentos', component: DashboardPageComponent, data: { dashboardId: 'pagamentos' } },
-  { path: 'divida-ativa', component: DashboardPageComponent, data: { dashboardId: 'divida-ativa' } },
   { path: 'transferencias', component: DashboardPageComponent, data: { dashboardId: 'transferencias' } },
   { path: 'ibs-cbs', component: DashboardPageComponent, data: { dashboardId: 'ibs-cbs' } },
   { path: 'qualidade', component: DashboardPageComponent, data: { dashboardId: 'qualidade' } },

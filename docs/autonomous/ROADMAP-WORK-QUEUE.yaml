@@ -1,8 +1,8 @@
 schema_version: 1
-updated_at: "2026-09-19T08:50:00-03:00"
+updated_at: "2026-09-19T09:00:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.18"
+implementation_version: "0.3.19"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
@@ -683,60 +683,66 @@ items:
     dominio: D7
     descricao: Pagamentos e parcelamentos
     dependencias: [F5-COLLECTION]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: CREDENTIAL_REQUIRED
     dados_necessarios: RESTRICTED
     fontes_oficiais: []
     backend: true
     frontend: true
     pipeline: false
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: evidence/releases/0.3.19/
+    versao: "0.3.19"
     commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: APIs e /pagamentos vazios; sem recuperação inventada.
+    next_action: >
+      Manter /v1/payments vazio, recoveryInvented=false, POST → 409.
+      Sem recuperação inventada. G0/G5 BLOCKED; G6 oficial BLOCKED.
 
   - id: F6-ACTIVE-DEBT
     fase: F6
     dominio: D8
     descricao: Dívida ativa
     dependencias: [F6-PAYMENTS]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: CREDENTIAL_REQUIRED
     dados_necessarios: RESTRICTED
     fontes_oficiais: []
     backend: true
     frontend: true
     pipeline: false
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: evidence/releases/0.3.19/
+    versao: "0.3.19"
     commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Conector e /divida-ativa vazios; inscrição desativada.
+    next_action: >
+      Manter /v1/active-debt vazio, inscriptionEnabled=false, POST → 409.
+      Sem inscrição real. G0/G5 BLOCKED.
 
   - id: F6-PROCURADORIA
     fase: F6
     dominio: D8
     descricao: Módulo Procuradoria
     dependencias: [F6-ACTIVE-DEBT]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
     dados_necessarios: RESTRICTED
     fontes_oficiais: []
     backend: true
     frontend: true
     pipeline: false
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: evidence/releases/0.3.19/
+    versao: "0.3.19"
     commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Workflow vazio; sem alteração jurídica automática.
+    next_action: >
+      Manter /v1/procuradoria vazio, altersLegalStatus=false, POST → 409.
+      Sem alteração jurídica automática. G0/G5 BLOCKED.
 
   - id: F7-TRANSFER-RECONCILIATION
     fase: F7

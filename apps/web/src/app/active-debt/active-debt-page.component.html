@@ -1,0 +1,23 @@
+<section aria-labelledby="active-debt-title">
+  <h1 id="active-debt-title">Dívida ativa (painel oficial)</h1>
+  <p>
+    Painel oficial vazio. Inscrição desativada até Procuradoria, DPA e gates
+    G0/G5/G6.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando painel de dívida ativa…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. Credencial: {{ credentialStatus }}.
+      G0: {{ g0Status }}. Inscrição desativada. Sem certidão gerada.
+    </p>
+  }
+  @if (state === 'ok') {
+    <p role="status">Fila de dívida ativa carregada.</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

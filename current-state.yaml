@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.18
+implementation_version: 0.3.19
 roadmap_version: "1.2"
-version: 0.3.18
+version: 0.3.19
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -33,6 +33,9 @@ completed:
   - human_validation_workflow_empty_shell
   - notifications_empty_technical_shell
   - collection_panel_empty_official_shell
+  - payments_panel_empty_official_shell
+  - active_debt_panel_empty_official_shell
+  - procuradoria_panel_empty_official_shell
 pending:
   - municipal_g0_authorization
   - diagnosis_g1
@@ -60,6 +63,7 @@ gates:
   f5_findings_cases_local: GO
   f5_human_validation_workflow_local: GO
   f5_notifications_collection_local: GO
+  f6_payments_active_debt_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -71,6 +75,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.18/
-next_action: Continue remaining technically implementable ROADMAP items (F6 payments/active-debt empty shells, backfills, state sources, RFB territorial). Do not treat wave 1 as programme completion. Human validation of Gold remains pending and is not requested now.
+evidence: evidence/releases/0.3.19/
+next_action: Continue remaining technically implementable ROADMAP items (backfills, state sources, RFB territorial, F7 reconciliation shell, F9/F10 technical readiness). Do not treat wave 1 as programme completion. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

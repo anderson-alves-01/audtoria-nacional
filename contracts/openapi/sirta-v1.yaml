@@ -3,7 +3,7 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.18
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.19
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
@@ -389,6 +389,77 @@ paths:
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
         '200': {description: Empty collection panel; G0/G4/G5 BLOCKED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/payments:
+    get:
+      operationId: getPaymentsPanel
+      description: >
+        Official empty payments and installments panel. recoveryInvented=false;
+        commands disabled until municipal credential and G0/G5/G6.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty payments panel; CREDENTIAL_REQUIRED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandPaymentsPanel
+      description: Always rejected (409). No payment, installment or invented recovery.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Commands disabled; no payment recorded}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/active-debt:
+    get:
+      operationId: getActiveDebtPanel
+      description: >
+        Official empty active-debt panel. inscriptionEnabled=false;
+        no legal inscription until municipal authorization and G0/G5/G6.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty active-debt panel; inscription disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: inscribeActiveDebt
+      description: Always rejected (409). Technical shell never inscribes active debt.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Inscription disabled; no certidão}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/procuradoria:
+    get:
+      operationId: getProcuradoriaPanel
+      description: >
+        Official empty Procuradoria workflow. altersLegalStatus=false;
+        no automatic legal status change.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty Procuradoria workflow; legal commands disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandProcuradoria
+      description: Always rejected (409). No automatic legal forwarding or status change.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Legal commands disabled}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/data-sources:

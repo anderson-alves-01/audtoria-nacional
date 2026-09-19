@@ -1,0 +1,23 @@
+<section aria-labelledby="procuradoria-title">
+  <h1 id="procuradoria-title">Procuradoria (workflow oficial)</h1>
+  <p>
+    Workflow oficial vazio. Sem alteração jurídica automática. Comandos
+    desativados até autorização municipal e gates G0/G5/G6.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando workflow da Procuradoria…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. G6: {{ g6Status }}. Comandos jurídicos desativados.
+      Sem encaminhamento automático.
+    </p>
+  }
+  @if (state === 'ok') {
+    <p role="status">Fila da Procuradoria carregada.</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>
