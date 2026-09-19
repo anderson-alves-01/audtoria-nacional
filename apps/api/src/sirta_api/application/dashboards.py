@@ -15,10 +15,7 @@ def list_dashboards(session: Session, *, context: AccessContext) -> dict:
         "homologationStatus": HOMOLOGATION_PENDING,
         "createsTaxCredit": False,
         "commandsDisabled": True,
-        "items": [
-            _view(item, gold_items=gold["items"])
-            for item in DASHBOARDS
-        ],
+        "items": [_view(item, gold_items=gold["items"]) for item in DASHBOARDS],
     }
 
 

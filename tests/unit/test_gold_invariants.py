@@ -58,11 +58,8 @@ def test_sidra_6575_stays_quarantined_without_interpolation() -> None:
     silver, quarantined = parse_ibge_sidra_series(body)
     assert all(row["variableId"] != "6575" for row in silver)
     assert any("..." in str(row[0].get("value")) for row in quarantined)
-    assert all(
-        row[1] == "missing value"
-        for row in quarantined
-        if row[0].get("variableId") == "6575"
-    )
+    quarantined_6575 = [row for row in quarantined if row[0].get("variableId") == "6575"]
+    assert all(reason == "missing value" for _row, reason in quarantined_6575)
 
 
 def test_coverage_divergence_explains_5571_versus_5570() -> None:

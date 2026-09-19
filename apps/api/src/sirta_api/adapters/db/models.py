@@ -345,9 +345,7 @@ class GoldOfficialLine(Base):
 
 class IngestCheckpoint(Base):
     __tablename__ = "ingest_checkpoints"
-    __table_args__ = (
-        UniqueConstraint("tenant_id", "territory_id", "source_id", "partition_key"),
-    )
+    __table_args__ = (UniqueConstraint("tenant_id", "territory_id", "source_id", "partition_key"),)
 
     id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
     tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
