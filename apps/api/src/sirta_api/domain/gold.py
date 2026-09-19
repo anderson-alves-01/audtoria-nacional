@@ -137,6 +137,13 @@ PRESENTATION = {
             "Contexto setorial; não constitui crédito tributário."
         ),
     },
+    "EPE-DADOS-ABERTOS": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Contagem de consumidores do Anuário EPE (Dados brutos) por UF/competência. "
+            "Referência setorial; não constitui crédito tributário."
+        ),
+    },
     "SICONFI-RREO": {
         "valueKind": "FISCAL_STATEMENT_LINE",
         "label": "Linhas do RREO municipal. Não constituem crédito tributário.",

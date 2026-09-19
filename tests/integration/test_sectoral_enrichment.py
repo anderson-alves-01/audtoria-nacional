@@ -27,7 +27,7 @@ def _admin() -> dict[str, str]:
     )
 
 
-def test_sectoral_enrichment_endpoint_partial_anp_aneel_bcb(api_client) -> None:
+def test_sectoral_enrichment_endpoint_partial_anp_aneel_bcb_epe(api_client) -> None:
     response = api_client.get("/v1/sectoral-enrichment", headers=_analyst())
     assert response.status_code == 200
     body = response.json()
@@ -45,7 +45,8 @@ def test_sectoral_enrichment_endpoint_partial_anp_aneel_bcb(api_client) -> None:
     assert by_id["ANEEL-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["BCB-SGS-OLINDA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["BCB-SGS-OLINDA"]["ingestAllowed"] is True
-    assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is False
+    assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
 
 
 def test_sectoral_enrichment_command_is_rejected(api_client) -> None:
@@ -68,7 +69,7 @@ def test_tech_admin_cannot_read_sectoral_enrichment(api_client) -> None:
     assert response.status_code == 403
 
 
-def test_anp_aneel_bcb_listed_and_other_sectorals_blocked(api_client) -> None:
+def test_anp_aneel_bcb_epe_listed_and_other_sectorals_blocked(api_client) -> None:
     listing = api_client.get("/v1/data-sources", headers=_analyst())
     by_id = {item["sourceId"]: item for item in listing.json()["items"]}
     assert by_id["ANP-REVENDEDORES"]["status"] == "TECHNICALLY_APPROVED"
@@ -79,14 +80,16 @@ def test_anp_aneel_bcb_listed_and_other_sectorals_blocked(api_client) -> None:
     assert by_id["BCB-SGS-OLINDA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["BCB-SGS-OLINDA"]["ingestAllowed"] is True
     assert by_id["BCB-SGS-OLINDA"]["createsTaxCredit"] is False
+    assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
+    assert by_id["EPE-DADOS-ABERTOS"]["createsTaxCredit"] is False
     for source_id in (
-        "EPE-DADOS-ABERTOS",
         "ANATEL-DADOS-ABERTOS",
         "CNES-DATASUS",
     ):
         assert by_id[source_id]["status"] == "DISCOVERED"
         assert by_id[source_id]["ingestAllowed"] is False
-    blocked = api_client.post("/v1/data-sources/EPE-DADOS-ABERTOS/ingest", headers=_admin())
+    blocked = api_client.post("/v1/data-sources/ANATEL-DADOS-ABERTOS/ingest", headers=_admin())
     assert blocked.status_code == 403
 
 
@@ -163,6 +166,31 @@ def test_bcb_ingest_publishes_gold_without_credit(api_client) -> None:
     assert lines.status_code == 200
     assert any(item["value"] == 13.75 for item in lines.json()["items"])
     assert any(item["value"] == -0.32 for item in lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_epe_ingest_publishes_gold_without_credit(api_client) -> None:
+    epe = api_client.post("/v1/data-sources/EPE-DADOS-ABERTOS/ingest", headers=_admin())
+    assert epe.status_code == 200
+    assert epe.json()["silverCount"] == 6
+    assert epe.json()["quarantinedCount"] == 1
+    assert epe.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["EPE-DADOS-ABERTOS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["EPE-DADOS-ABERTOS"]["createsTaxCredit"] is False
+    assert by_id["EPE-DADOS-ABERTOS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=EPE-DADOS-ABERTOS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(item["value"] == 38741 for item in lines.json()["items"])
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]

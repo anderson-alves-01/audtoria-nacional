@@ -4,6 +4,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_aneel_ckan_open,
     parse_anp_revendedores_api,
     parse_bcb_sgs_olinda,
+    parse_epe_open_files,
     parse_ibge_sidra_series,
     parse_state_ba_csv,
     parse_state_es_csv,
@@ -291,6 +292,26 @@ def test_bcb_sgs_allowlist_parses_points() -> None:
     assert silver[0]["uf"] == "BR"
     assert presentation_for("BCB-SGS-OLINDA")["valueKind"] == "REFERENCE_QUANTITY"
     assert presentation_for("BCB-SGS-OLINDA")["createsTaxCredit"] is False
+
+
+def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
+    ).read_bytes()
+    silver, quarantined = parse_epe_open_files(
+        body, uf="MS", competence_year="2024", max_rows=8
+    )
+    assert len(silver) == 6
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "invalid consumer count"
+    assert silver[0]["uf"] == "MS"
+    assert silver[0]["competence"] == "2024-01"
+    assert silver[0]["value"] == 38741
+    assert silver[0]["unit"] == "CONSUMERS"
+    assert silver[0]["transferName"] == "Residencial"
+    assert all(row["uf"] == "MS" for row in silver)
+    assert presentation_for("EPE-DADOS-ABERTOS")["valueKind"] == "REFERENCE_QUANTITY"
+    assert presentation_for("EPE-DADOS-ABERTOS")["createsTaxCredit"] is False
 
 
 def test_anp_revendedores_aggregates_and_drops_cnpj() -> None:

@@ -461,6 +461,159 @@ def parse_bcb_sgs_olinda(
     return silver, quarantined
 
 
+def parse_epe_open_files(
+    body: bytes,
+    *,
+    uf: str,
+    competence_year: str | int = "2024",
+    max_rows: int = 8,
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse EPE Anuário Dados brutos (CSV fixture or XLSX); UF + year scope; no tax credit."""
+    uf_key = normalize_place(uf)
+    if not uf_key or len(uf_key) != 2:
+        raise ValueError("EPE territorial scope requires a two-letter UF")
+    year = str(competence_year or "").strip()
+    if not re.fullmatch(r"\d{4}", year):
+        raise ValueError("EPE competence_year must be a four-digit year")
+    limit = int(max_rows or 0)
+    if limit <= 0:
+        raise ValueError("EPE max_rows must be a positive integer")
+    records = (
+        _iter_epe_xlsx_records(body)
+        if body[:2] == b"PK"
+        else _iter_epe_csv_records(body)
+    )
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    for index, rec in enumerate(records):
+        if len(silver) >= limit:
+            break
+        row_uf = normalize_place(str(rec.get("UF") or ""))
+        if row_uf != uf_key:
+            continue
+        raw_date = str(rec.get("Data") or "").strip()
+        if not raw_date.startswith(year):
+            continue
+        sector = str(rec.get("Setor Econômico - N1") or rec.get("Setor Economico - N1") or "").strip()
+        competence = _epe_competence(raw_date)
+        raw_consumers = rec.get("Consumidores")
+        try:
+            consumers = float(str(raw_consumers).replace(",", "."))
+            if consumers != int(consumers):
+                raise ValueError("non-integer consumers")
+            consumers_i = int(consumers)
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"epe-consumers-{index}",
+                        "territoryName": row_uf,
+                        "uf": row_uf,
+                        "competence": competence or raw_date or "unknown",
+                        "value": raw_consumers,
+                    },
+                    "invalid consumer count",
+                )
+            )
+            continue
+        if not competence:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"epe-date-{index}",
+                        "territoryName": row_uf,
+                        "uf": row_uf,
+                        "value": consumers_i,
+                    },
+                    "missing competence date",
+                )
+            )
+            continue
+        label = sector or "EPE_CONSUMERS"
+        silver.append(
+            {
+                "rowId": f"epe-{row_uf}-{competence}-{label}"[:64],
+                "territoryName": row_uf,
+                "uf": row_uf,
+                "ibgeCode": "",
+                "competence": competence,
+                "transferName": label,
+                "value": consumers_i,
+                "unit": "CONSUMERS",
+            }
+        )
+    return silver, quarantined
+
+
+def _epe_competence(raw_date: str) -> str:
+    digits = re.sub(r"\D", "", raw_date or "")
+    if len(digits) >= 6:
+        return f"{digits[:4]}-{digits[4:6]}"
+    if len(digits) == 4:
+        return digits
+    return ""
+
+
+def _iter_epe_csv_records(body: bytes):
+    text = _decode_csv_bytes(body)
+    reader = csv.DictReader(io.StringIO(text))
+    for row in reader:
+        if isinstance(row, dict):
+            yield {str(k): (v if v is not None else "") for k, v in row.items()}
+
+
+def _iter_epe_xlsx_records(body: bytes):
+    """Minimal XLSX reader (sharedStrings + first sheet) without third-party deps."""
+    import zipfile
+    from xml.etree import ElementTree as ET
+
+    ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    with zipfile.ZipFile(io.BytesIO(body)) as archive:
+        shared: list[str] = []
+        if "xl/sharedStrings.xml" in archive.namelist():
+            root = ET.fromstring(archive.read("xl/sharedStrings.xml"))
+            for item in root.findall("m:si", ns):
+                texts = [
+                    node.text or ""
+                    for node in item.iter(
+                        "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t"
+                    )
+                ]
+                shared.append("".join(texts))
+        sheet_name = "xl/worksheets/sheet1.xml"
+        if sheet_name not in archive.namelist():
+            return
+        xml = archive.read(sheet_name)
+    header: list[str] | None = None
+    for row_xml in re.findall(rb"<row[^>]*>.*?</row>", xml, flags=re.S):
+        cells: dict[int, str] = {}
+        for match in re.finditer(
+            rb'<c r="([A-Z]+)(\d+)"([^>]*)>(?:<v>(.*?)</v>)?',
+            row_xml,
+        ):
+            col = match.group(1).decode("ascii")
+            attrs = match.group(3).decode("ascii")
+            raw = match.group(4).decode("utf-8") if match.group(4) is not None else ""
+            if 't="s"' in attrs and raw.isdigit():
+                value = shared[int(raw)] if int(raw) < len(shared) else raw
+            else:
+                value = raw
+            index = 0
+            for char in col:
+                index = index * 26 + (ord(char) - 64)
+            cells[index - 1] = value
+        if not cells:
+            continue
+        width = max(cells) + 1
+        values = [cells.get(i, "") for i in range(width)]
+        if header is None:
+            header = [str(item) for item in values]
+            continue
+        if len(values) < len(header):
+            values = values + [""] * (len(header) - len(values))
+        yield dict(zip(header, values))
+
+
 def parse_aneel_ckan_open(
     body: bytes,
     *,

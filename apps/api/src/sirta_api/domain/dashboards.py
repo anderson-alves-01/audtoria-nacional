@@ -25,6 +25,7 @@ DASHBOARDS = (
             "ANP-REVENDEDORES",
             "ANEEL-DADOS-ABERTOS",
             "BCB-SGS-OLINDA",
+            "EPE-DADOS-ABERTOS",
         ),
         "emptyReason": "PIB e população não são potencial de ISS nem crédito constituído.",
         "commandsDisabled": True,

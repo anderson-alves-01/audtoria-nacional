@@ -11,7 +11,7 @@ describe('SectoralEnrichmentPageComponent', () => {
     }).compileComponents();
   });
 
-  it('renders sectoral shell with ANP, ANEEL and BCB partial activation without tax credit', () => {
+  it('renders sectoral shell with ANP, ANEEL, BCB and EPE partial activation without tax credit', () => {
     const fixture = TestBed.createComponent(SectoralEnrichmentPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
@@ -42,9 +42,16 @@ describe('SectoralEnrichmentPageComponent', () => {
           ingestAllowed: true,
           structuredOfficialSource: 'sgs_json_allowlist',
         },
+        {
+          sourceId: 'EPE-DADOS-ABERTOS',
+          maintainer: 'EPE',
+          status: 'TECHNICALLY_APPROVED',
+          ingestAllowed: true,
+          structuredOfficialSource: 'anuario_dados_brutos_xlsx',
+        },
       ],
       items: [],
-      disclaimer: 'ANP, ANEEL e BCB ativadas; demais bloqueadas.',
+      disclaimer: 'ANP, ANEEL, BCB e EPE ativadas; Anatel/CNES bloqueadas.',
     });
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent as string;
@@ -54,6 +61,7 @@ describe('SectoralEnrichmentPageComponent', () => {
     expect(text).toContain('ANP-REVENDEDORES');
     expect(text).toContain('ANEEL-DADOS-ABERTOS');
     expect(text).toContain('BCB-SGS-OLINDA');
+    expect(text).toContain('EPE-DADOS-ABERTOS');
     expect(text).toContain('TECHNICALLY_APPROVED');
     http.verify();
   });

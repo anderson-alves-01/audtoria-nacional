@@ -1160,40 +1160,47 @@ sources:
       fixture mínima (limit=8). Homologação humana pendente. Não constitui crédito.
 
   - source_id: EPE-DADOS-ABERTOS
-    name: EPE — dados abertos do Balanço Energético Nacional e Anuário
+    name: EPE — Anuário Estatístico de Energia Elétrica (Dados brutos)
     maintainer: Empresa de Pesquisa Energética
     official_domain: epe.gov.br
-    official_url: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos/dados-abertos-do-balanco-energetico-nacional-ben
-    endpoint: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos
-    documentation_url: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos
-    dataset: EPE-BEN-ANUARIO
+    official_url: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos/dados-do-anuario-estatistico-de-energia-eletrica
+    endpoint: https://www.epe.gov.br/sites-pt/publicacoes-dados-abertos/dados-abertos/Documents/Dados%20brutos.xlsx
+    documentation_url: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos/dados-do-anuario-estatistico-de-energia-eletrica
+    dataset: EPE-ANUARIO-DADOS-BRUTOS
     dictionary_url: https://www.epe.gov.br/pt/publicacoes-dados-abertos/dados-abertos/dados-do-anuario-estatistico-de-energia-eletrica
-    purpose: Séries energéticas oficiais para contexto setorial (não municipal granular)
-    legal_basis: Publicações de dados abertos da EPE
+    purpose: Contagem de consumidores de energia elétrica por UF/setor como referência setorial
+    legal_basis: Publicações de dados abertos da EPE (Anuário Estatístico)
     license_terms: termos do órgão mantenedor
     source_role: REFERENCE_ENRICHMENT
     access_classification: PUBLIC_OPEN
-    status: DISCOVERED
-    fixture_kind: NONE
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
     connector: epe_open_files
-    layout_version: epe-open-files-v1
-    periodicity: annual
-    competence: unknown
-    granularity: national_regional
+    layout_version: epe-anuario-dados-brutos-v1
+    periodicity: monthly
+    competence: "2024"
+    granularity: uf_sector
     parameters:
-      formats: [tabular_download]
+      uf: MS
+      competence_year: "2024"
+      max_rows: 8
+      metric: Consumidores
       scrape_forbidden: true
-      activation: blocked_until_stable_file_url
+      formats: [xlsx, csv]
     authentication: none
     rate_limit: not_published
     personal_data: false
-    retention: none_until_activation
-    indicator: none
-    formula: none
-    methodology_version: none
+    retention: bronze_immutable
+    indicator: epe_anuario_consumer_count
+    formula: >
+      Contagem de consumidores publicada na planilha oficial Dados brutos do
+      Anuário EPE, filtrada por UF da carga e competence_year, limitada a
+      max_rows. Sem carga nacional irrestrita. Não constitui crédito.
+    methodology_version: official-epe-anuario-dados-brutos-v1
     notes: >
-      Portal oficial com downloads tabulares (BEN/Anuário). URL de arquivo estável
-      por competência ainda não fixada no conector. Sem carga. Não constitui crédito.
+      URL estável do XLSX oficial verificada. Ativação técnica com escopo UF=MS,
+      competence_year=2024 e fixture CSV mínima. Homologação humana pendente.
+      Não constitui crédito.
 
   - source_id: ANATEL-DADOS-ABERTOS
     name: Anatel — infraestrutura e presença de telecomunicações (dados.gov.br)

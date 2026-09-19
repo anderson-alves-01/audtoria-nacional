@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.33
+implementation_version: 0.3.34
 roadmap_version: "1.2"
-version: 0.3.33
+version: 0.3.34
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -54,6 +54,7 @@ completed:
     - anp_revendedores_uf_scoped_activation
     - aneel_indqual_municipio_uf_scoped_activation
     - sectoral_bcb_sgs_allowlist_activation
+    - sectoral_epe_anuario_dados_brutos_uf_scoped_activation
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -62,7 +63,7 @@ pending:
     - state_other_uf_activation_followup
     - state_go_icms_when_columns_published
     - rfb_scoped_authorized_load
-    - sectoral_epe_anatel_cnes_activation
+    - sectoral_anatel_cnes_activation
     - official_ibs_cbs_homologation_g8
     - remaining_roadmap_technical_items
     - pilot_g9
@@ -102,6 +103,7 @@ gates:
   f3_anp_revendedores_local: GO
   f3_aneel_indqual_local: GO
   f3_bcb_sgs_local: GO
+  f3_epe_dados_brutos_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -113,6 +115,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.33/
-next_action: Activate remaining PUBLIC_OPEN sectoral (EPE/Anatel/CNES) with fixture, or another UF; GO ICMS when datastore publishes ICMS columns. RJ remains IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold remains pending and is not requested now.
+evidence: evidence/releases/0.3.34/
+next_action: Activate Anatel (structured CSV+IBGE7) or CNES with territorial_scope fixture; or another UF PUBLIC_OPEN. GO ICMS when datastore publishes ICMS columns. RJ remains IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

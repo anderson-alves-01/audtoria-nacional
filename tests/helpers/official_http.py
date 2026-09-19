@@ -78,6 +78,10 @@ SNAPSHOT_URLS = {
     (
         "https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados/ultimos/3?formato=json"
     ): "bcb-sgs-433-ultimos3.json",
+    (
+        "https://www.epe.gov.br/sites-pt/publicacoes-dados-abertos/dados-abertos/"
+        "Documents/Dados%20brutos.xlsx"
+    ): "epe-anuario-dados-brutos-ms-2024.csv",
 }
 
 

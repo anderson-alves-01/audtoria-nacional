@@ -6,7 +6,7 @@ from sirta_api.domain.sectoral_enrichment import (
 )
 
 
-def test_sectoral_panel_partial_anp_aneel_bcb_activation() -> None:
+def test_sectoral_panel_partial_anp_aneel_bcb_epe_activation() -> None:
     panel = build_sectoral_enrichment_panel()
     assert panel["createsTaxCredit"] is False
     assert panel["ingestEnabled"] is True
@@ -22,15 +22,19 @@ def test_sectoral_panel_partial_anp_aneel_bcb_activation() -> None:
     assert by_id["ANEEL-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["BCB-SGS-OLINDA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["BCB-SGS-OLINDA"]["ingestAllowed"] is True
+    assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["CNES-DATASUS"]["status"] == "DISCOVERED"
 
 
-def test_sectoral_connectors_remain_blocked_except_anp_aneel_bcb() -> None:
+def test_sectoral_connectors_remain_blocked_except_anp_aneel_bcb_epe() -> None:
     assert "anp_revendedores_api" not in BLOCKED_SECTORAL_CONNECTORS
     assert "aneel_ckan_open" not in BLOCKED_SECTORAL_CONNECTORS
     assert "bcb_sgs_olinda" not in BLOCKED_SECTORAL_CONNECTORS
+    assert "epe_open_files" not in BLOCKED_SECTORAL_CONNECTORS
     assert "cnes_datasus_open" in BLOCKED_SECTORAL_CONNECTORS
-    assert len(BLOCKED_SECTORAL_CONNECTORS) == 3
+    assert "anatel_dados_gov" in BLOCKED_SECTORAL_CONNECTORS
+    assert len(BLOCKED_SECTORAL_CONNECTORS) == 2
 
 
 def test_sectoral_command_is_rejected() -> None:

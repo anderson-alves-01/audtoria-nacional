@@ -1,15 +1,16 @@
 schema_version: 1
-updated_at: "2026-09-19T13:15:00-03:00"
+updated_at: "2026-09-19T14:50:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.33"
+implementation_version: "0.3.34"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.33: BCB SGS allowlist 432+433 ativado (bcb_sgs_olinda); ANEEL/ANP e
-  UFs PE/BA/MG/ES/GO/MS intactos; RJ IP-blocked; RFB territorial sem carga nacional.
+  Ciclo 0.3.34: EPE Anuário Dados brutos UF=MS ativado (epe_open_files); BCB/ANEEL/ANP
+  e UFs PE/BA/MG/ES/GO/MS intactos; Anatel/CNES DISCOVERED; RJ IP-blocked;
+  RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -459,15 +460,15 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.32/
-    versao: "0.3.32"
-    commit: 4423a8d
-    ci: "35453341480"
+    evidencia: evidence/releases/0.3.34/
+    versao: "0.3.34"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      ANEEL IndQual Município TECHNICALLY_APPROVED com escopo UF=MS, fixture
-      mínima e Gold REFERENCE_QUANTITY (IBGE7 nativo). EPE permanece DISCOVERED
-      aguardando URL de arquivo estável. Sem crédito.
+      ANEEL IndQual e EPE Anuário Dados brutos TECHNICALLY_APPROVED com escopo
+      UF=MS (EPE competence_year=2024, max_rows=8). Gold REFERENCE_QUANTITY.
+      Sem crédito.
 
   - id: F3-SECTORAL-ANATEL
     fase: F3.2
