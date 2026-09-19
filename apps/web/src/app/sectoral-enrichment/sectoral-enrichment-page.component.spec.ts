@@ -11,7 +11,7 @@ describe('SectoralEnrichmentPageComponent', () => {
     }).compileComponents();
   });
 
-  it('renders sectoral shell with ANP partial activation without tax credit', () => {
+  it('renders sectoral shell with ANP and ANEEL partial activation without tax credit', () => {
     const fixture = TestBed.createComponent(SectoralEnrichmentPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
@@ -28,9 +28,16 @@ describe('SectoralEnrichmentPageComponent', () => {
           ingestAllowed: true,
           structuredOfficialSource: 'rest_api_verified',
         },
+        {
+          sourceId: 'ANEEL-DADOS-ABERTOS',
+          maintainer: 'ANEEL',
+          status: 'TECHNICALLY_APPROVED',
+          ingestAllowed: true,
+          structuredOfficialSource: 'ckan_datastore_indqual_municipio',
+        },
       ],
       items: [],
-      disclaimer: 'ANP ativada com escopo UF; demais bloqueadas.',
+      disclaimer: 'ANP e ANEEL ativadas com escopo UF; demais bloqueadas.',
     });
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent as string;
@@ -38,6 +45,7 @@ describe('SectoralEnrichmentPageComponent', () => {
     expect(text).toContain('Ingestão habilitada: sim');
     expect(text).toContain('Cria crédito: não');
     expect(text).toContain('ANP-REVENDEDORES');
+    expect(text).toContain('ANEEL-DADOS-ABERTOS');
     expect(text).toContain('TECHNICALLY_APPROVED');
     http.verify();
   });

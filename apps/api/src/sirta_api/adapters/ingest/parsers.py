@@ -386,6 +386,73 @@ def parse_state_es_csv(
     return silver, quarantined
 
 
+def parse_aneel_ckan_open(
+    body: bytes,
+    *,
+    uf: str,
+    competence: str = "as_published",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse ANEEL CKAN datastore IndQual Município; aggregate by IBGE7; UF scope."""
+    uf_key = normalize_place(uf)
+    if not uf_key or len(uf_key) != 2:
+        raise ValueError("ANEEL territorial scope requires a two-letter UF")
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return [], [({"rowId": "aneel-document"}, "invalid JSON")]
+    if not isinstance(payload, dict) or not payload.get("success"):
+        return [], [({"rowId": "aneel-document"}, "unexpected CKAN envelope")]
+    result = payload.get("result")
+    if not isinstance(result, dict) or not isinstance(result.get("records"), list):
+        return [], [({"rowId": "aneel-document"}, "unexpected CKAN result")]
+    counts: dict[str, dict[str, object]] = {}
+    quarantined: list[tuple[dict, str]] = []
+    for index, item in enumerate(result.get("records") or []):
+        if not isinstance(item, dict):
+            continue
+        row_uf = normalize_place(str(item.get("SigUF") or ""))
+        if row_uf != uf_key:
+            continue
+        ibge = str(item.get("CodMunicipio") or "").strip()
+        raw_name = str(item.get("NomMunicipio") or "").strip()
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"aneel-indqual-{index}",
+                        "territoryName": raw_name,
+                        "uf": row_uf,
+                        "ibgeCode": ibge,
+                        "value": item.get("IdeConjUnidConsumidoras"),
+                    },
+                    "invalid IBGE municipality code",
+                )
+            )
+            continue
+        bucket = counts.setdefault(
+            ibge,
+            {"territoryName": raw_name or ibge, "uf": row_uf, "count": 0},
+        )
+        bucket["count"] = int(bucket["count"]) + 1
+        if raw_name and not bucket["territoryName"]:
+            bucket["territoryName"] = raw_name
+    silver: list[dict] = []
+    for ibge, bucket in sorted(counts.items(), key=lambda item: item[0]):
+        silver.append(
+            {
+                "rowId": f"aneel-indqual-{ibge}-{competence}"[:64],
+                "territoryName": str(bucket["territoryName"]),
+                "uf": str(bucket["uf"]),
+                "ibgeCode": ibge,
+                "competence": competence,
+                "transferName": "ANEEL_INDQUAL_MUNICIPIO",
+                "value": int(bucket["count"]),
+                "unit": "CONSUMER_UNIT_SETS",
+            }
+        )
+    return silver, quarantined
+
+
 def parse_anp_revendedores_api(
     body: bytes,
     *,

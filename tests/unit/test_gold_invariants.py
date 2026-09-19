@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from sirta_api.adapters.ingest.parsers import (
+    parse_aneel_ckan_open,
     parse_anp_revendedores_api,
     parse_ibge_sidra_series,
     parse_state_ba_csv,
@@ -253,6 +254,22 @@ def test_state_ms_csv_joins_name_uf_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-MS-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-MS-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_aneel_indqual_aggregates_by_ibge7() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/aneel-indqual-municipio-ms-limit8.json"
+    ).read_bytes()
+    silver, quarantined = parse_aneel_ckan_open(body, uf="MS")
+    assert len(silver) == 6
+    by_ibge = {row["ibgeCode"]: row for row in silver}
+    assert by_ibge["5004700"]["value"] == 2
+    assert by_ibge["5004700"]["unit"] == "CONSUMER_UNIT_SETS"
+    assert by_ibge["5005806"]["value"] == 1
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "invalid IBGE municipality code"
+    assert presentation_for("ANEEL-DADOS-ABERTOS")["valueKind"] == "REFERENCE_QUANTITY"
+    assert presentation_for("ANEEL-DADOS-ABERTOS")["createsTaxCredit"] is False
 
 
 def test_anp_revendedores_aggregates_and_drops_cnpj() -> None:

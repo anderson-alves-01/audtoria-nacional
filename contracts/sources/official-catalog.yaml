@@ -1117,41 +1117,47 @@ sources:
       fixture mínima. Homologação humana pendente. Não constitui crédito.
 
   - source_id: ANEEL-DADOS-ABERTOS
-    name: ANEEL — portal de dados abertos (CKAN/DataStore)
+    name: ANEEL — IndQual Município (conjuntos de unidades consumidoras)
     maintainer: Agência Nacional de Energia Elétrica
     official_domain: dadosabertos.aneel.gov.br
-    official_url: https://dadosabertos.aneel.gov.br/
-    endpoint: https://dadosabertos.aneel.gov.br/api/3/action/package_list
-    documentation_url: https://dadosabertos.aneel.gov.br/
-    dataset: ANEEL-CKAN
-    dictionary_url: https://dadosabertos.aneel.gov.br/
-    purpose: Empreendimentos e outorgas de geração como referência energética municipal
+    official_url: https://dadosabertos.aneel.gov.br/dataset/indqual-municipio
+    endpoint: https://dadosabertos.aneel.gov.br/api/3/action/datastore_search?resource_id=3f841488-80a8-42f2-a6ca-e0c593b228de&filters=%7B%22SigUF%22%3A%22MS%22%7D&limit=8
+    documentation_url: https://dadosabertos.aneel.gov.br/dataset/indqual-municipio
+    dataset: ANEEL-INDQUAL-MUNICIPIO
+    dictionary_url: https://dadosabertos.aneel.gov.br/dataset/indqual-municipio
+    purpose: Contagem municipal de conjuntos de unidades consumidoras (IndQual) como referência energética
     legal_basis: Portal de Dados Abertos da ANEEL (PDA 2025–2027)
     license_terms: ODbL / termos do portal ANEEL
     source_role: REFERENCE_ENRICHMENT
     access_classification: PUBLIC_OPEN
-    status: DISCOVERED
-    fixture_kind: NONE
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
     connector: aneel_ckan_open
-    layout_version: aneel-ckan-v1
+    layout_version: aneel-indqual-municipio-v1
     periodicity: as_published
-    competence: unknown
-    granularity: undertaking
+    competence: as_published
+    granularity: municipality
     parameters:
-      api: ckan_action
-      example_resource_id: 3710b245-88f0-4aa6-8cfb-8b1426e9021d
+      api: ckan_datastore_search
+      resource_id: 3f841488-80a8-42f2-a6ca-e0c593b228de
+      uf: MS
+      limit: 8
+      filters: [SigUF]
       scrape_forbidden: true
-      activation: blocked_until_technically_approved
+      competence: as_published
     authentication: none
     rate_limit: not_published
     personal_data: false
-    retention: none_until_activation
-    indicator: none
-    formula: none
-    methodology_version: none
+    retention: bronze_immutable
+    indicator: aneel_indqual_consumer_unit_set_count
+    formula: >
+      Contagem de registros IndQual Município publicados no DataStore ANEEL
+      (resource 3f841488-80a8-42f2-a6ca-e0c593b228de), filtrados por SigUF da carga
+      e agregados por CodMunicipio (IBGE7 nativo). Sem carga nacional. Não constitui crédito.
+    methodology_version: official-aneel-indqual-municipio-v1
     notes: >
-      CKAN/DataStore oficial verificado. Dataset SIGA/outorgas disponível em CSV/JSON.
-      Sem ativação de carga nesta fatia. Não constitui crédito.
+      CKAN DataStore oficial verificado. Ativação técnica com escopo UF=MS e
+      fixture mínima (limit=8). Homologação humana pendente. Não constitui crédito.
 
   - source_id: EPE-DADOS-ABERTOS
     name: EPE — dados abertos do Balanço Energético Nacional e Anuário

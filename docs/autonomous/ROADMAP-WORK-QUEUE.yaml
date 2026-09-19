@@ -1,15 +1,15 @@
 schema_version: 1
-updated_at: "2026-09-19T12:35:00-03:00"
+updated_at: "2026-09-19T13:15:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.31"
+implementation_version: "0.3.32"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.31: ANP-REVENDEDORES ativado com escopo UF=MS (anp_revendedores_api);
-  PE/BA/MG/ES/GO/MS intactos; RJ IP-blocked; RFB territorial sem carga nacional.
+  Ciclo 0.3.32: ANEEL IndQual Município ativado com escopo UF=MS (aneel_ckan_open);
+  ANP/PE/BA/MG/ES/GO/MS intactos; RJ IP-blocked; RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -443,7 +443,7 @@ items:
     ci: "35452312674"
     motivo_bloqueio: null
     next_action: >
-      ANP TECHNICALLY_APPROVED com escopo UF=MS, fixture mínima e Gold
+      ANP e ANEEL TECHNICALLY_APPROVED com escopo UF=MS, fixture mínima e Gold
       REFERENCE_QUANTITY. Demais setoriais permanecem DISCOVERED. Sem crédito.
 
   - id: F3-SECTORAL-ANEEL-EPE
@@ -452,21 +452,22 @@ items:
     descricao: Investigar dados abertos oficiais ANEEL/EPE
     dependencias: [F3-SOURCE-CATALOG]
     estado_tecnico: TECH_COMPLETE
-    estado_institucional: DISCOVERED
+    estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [ANEEL-DADOS-ABERTOS, EPE-DADOS-ABERTOS]
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.22/
-    versao: "0.3.22"
-    commit: c046301
+    evidencia: evidence/releases/0.3.32/
+    versao: "0.3.32"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
-      ANEEL CKAN e EPE portal catalogados; EPE aguarda URL de arquivo estável.
-      Sem carga ativada.
+      ANEEL IndQual Município TECHNICALLY_APPROVED com escopo UF=MS, fixture
+      mínima e Gold REFERENCE_QUANTITY (IBGE7 nativo). EPE permanece DISCOVERED
+      aguardando URL de arquivo estável. Sem crédito.
 
   - id: F3-SECTORAL-ANATEL
     fase: F3.2

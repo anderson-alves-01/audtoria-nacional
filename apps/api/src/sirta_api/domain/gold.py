@@ -123,6 +123,13 @@ PRESENTATION = {
             "Referência setorial; não constitui crédito tributário."
         ),
     },
+    "ANEEL-DADOS-ABERTOS": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Contagem IndQual de conjuntos de unidades consumidoras por município "
+            "(escopo UF). Referência setorial; não constitui crédito tributário."
+        ),
+    },
     "SICONFI-RREO": {
         "valueKind": "FISCAL_STATEMENT_LINE",
         "label": "Linhas do RREO municipal. Não constituem crédito tributário.",

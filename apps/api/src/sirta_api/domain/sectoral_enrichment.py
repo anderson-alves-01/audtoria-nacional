@@ -1,4 +1,4 @@
-"""Sectoral REFERENCE_ENRICHMENT shell. ANP activated with UF scope; no tax credit."""
+"""Sectoral REFERENCE_ENRICHMENT shell. ANP+ANEEL activated with UF scope; no tax credit."""
 
 from sirta_api.domain.errors import ConflictError
 
@@ -20,11 +20,12 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         "sourceId": "ANEEL-DADOS-ABERTOS",
         "maintainer": "ANEEL",
         "connector": "aneel_ckan_open",
-        "structuredOfficialSource": "ckan_api_verified",
-        "status": "DISCOVERED",
-        "ingestAllowed": False,
+        "structuredOfficialSource": "ckan_datastore_indqual_municipio",
+        "status": "TECHNICALLY_APPROVED",
+        "ingestAllowed": True,
         "personalDataRisk": "none",
-        "activationGate": "TECHNICALLY_APPROVED_WITH_FIXTURE",
+        "activationGate": "UF_SCOPED_FIXTURE",
+        "territorialScope": "MS",
     },
     {
         "sourceId": "EPE-DADOS-ABERTOS",
@@ -70,13 +71,12 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
 
 DISCLAIMER = (
     "Fontes setoriais oficiais catalogadas (ANP, ANEEL, EPE, Anatel, BCB, CNES). "
-    "ANP ativada com escopo UF e fixture mínima; demais ingestAllowed=false. "
+    "ANP e ANEEL ativadas com escopo UF e fixture mínima; demais ingestAllowed=false. "
     "REFERENCE_ENRICHMENT apenas. Não constitui crédito tributário."
 )
 
 BLOCKED_SECTORAL_CONNECTORS = frozenset(
     {
-        "aneel_ckan_open",
         "epe_open_files",
         "anatel_dados_gov",
         "bcb_sgs_olinda",

@@ -67,6 +67,11 @@ SNAPSHOT_URLS = {
     (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
+    (
+        "https://dadosabertos.aneel.gov.br/api/3/action/datastore_search?"
+        "resource_id=3f841488-80a8-42f2-a6ca-e0c593b228de&"
+        "filters=%7B%22SigUF%22%3A%22MS%22%7D&limit=8"
+    ): "aneel-indqual-municipio-ms-limit8.json",
 }
 
 
