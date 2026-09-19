@@ -447,6 +447,148 @@ def parse_state_ce_xls(
     return silver, quarantined
 
 
+_RS_MONTH_NAMES = {
+    "01": "JANEIRO",
+    "02": "FEVEREIRO",
+    "03": "MARCO",
+    "04": "ABRIL",
+    "05": "MAIO",
+    "06": "JUNHO",
+    "07": "JULHO",
+    "08": "AGOSTO",
+    "09": "SETEMBRO",
+    "10": "OUTUBRO",
+    "11": "NOVEMBRO",
+    "12": "DEZEMBRO",
+}
+
+
+def parse_state_rs_xls(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "RS",
+    competence: str = "2025-01",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse SEFAZ-RS MontaArquivo monthly XLS; ICMS TOTAL month REPASSE / IPVA Total Mês."""
+    try:
+        import xlrd
+        from xlrd.biffh import XLRDError
+    except ImportError as exc:  # pragma: no cover - dependency declared in pyproject
+        raise RuntimeError("xlrd is required for state_rs_xls") from exc
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state RS tax filter: {tax}")
+    competence_key = str(competence or "2025-01").strip()[:7]
+    if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
+        raise ValueError(f"invalid RS competence: {competence}")
+    year, month = competence_key.split("-")
+    month_name = _RS_MONTH_NAMES[month]
+    try:
+        book = xlrd.open_workbook(file_contents=body)
+    except (XLRDError, OSError, ValueError) as exc:
+        return [], [({"rowId": "rs-header"}, f"invalid XLS: {exc}")]
+    sheet = None
+    for index in range(book.nsheets):
+        candidate = book.sheet_by_index(index)
+        if candidate.nrows > 0 and candidate.ncols > 0:
+            sheet = candidate
+            break
+    if sheet is None:
+        return [], [({"rowId": "rs-header"}, "empty workbook")]
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+
+    if tax_key == "ICMS":
+        header_row = None
+        for row_index in range(min(sheet.nrows, 10)):
+            first = normalize_place(str(sheet.cell_value(row_index, 0) or ""))
+            if first.startswith("MUNICIP"):
+                header_row = row_index
+                break
+        if header_row is None:
+            return [], [({"rowId": "rs-header"}, "missing MUNICIPIO header")]
+        amount_col = None
+        for col in range(sheet.ncols):
+            label = normalize_place(str(sheet.cell_value(header_row, col) or ""))
+            if label.startswith("TOTAL") and month_name in label and year in label:
+                amount_col = col
+                break
+        if amount_col is None:
+            return [], [
+                (
+                    {"rowId": "rs-header"},
+                    f"missing TOTAL {month_name}/{year} REPASSE column",
+                )
+            ]
+        data_start = header_row + 2
+    else:
+        header_row = 0
+        amount_col = None
+        for col in range(sheet.ncols):
+            label = normalize_place(str(sheet.cell_value(header_row, col) or ""))
+            if label in {"TOTAL MES", "TOTAL DO MES"} or label.startswith("TOTAL MES"):
+                amount_col = col
+                break
+        if amount_col is None:
+            return [], [({"rowId": "rs-header"}, "missing Total Mês column")]
+        data_start = header_row + 1
+
+    for index in range(data_start, sheet.nrows):
+        raw_name = str(sheet.cell_value(index, 0) or "").strip()
+        if not raw_name:
+            continue
+        place = normalize_place(raw_name)
+        if (
+            place in {"TOTAL", "TOTAIS"}
+            or place.startswith("TOTAL")
+            or place.startswith("SAC ")
+            or place.startswith("OUVIDORIA")
+            or set(place) <= {"-", " "}
+            or "DEBITO" in place
+        ):
+            continue
+        amount_raw = sheet.cell_value(index, amount_col) if amount_col < sheet.ncols else None
+        try:
+            if isinstance(amount_raw, (int, float)) and not isinstance(amount_raw, bool):
+                value = float(amount_raw)
+            else:
+                value = parse_brazilian_number(amount_raw)
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"rs-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((place, normalize_place(uf)), "")
+        row = {
+            "rowId": f"rs-{tax_key.lower()}-{ibge or index}-{competence_key}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence_key,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def parse_state_ac_csv(
     body: bytes,
     *,

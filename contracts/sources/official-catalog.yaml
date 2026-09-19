@@ -1226,6 +1226,86 @@ sources:
     notes: >
       Mesmo XLS jan/2025 do ICMS. Homologação humana pendente.
 
+  - source_id: ESTADO-RS-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (RS)
+    maintainer: SEFAZ-RS
+    official_domain: sefaz.rs.gov.br
+    official_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_repasses_mun_icms_2025
+    endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_icms_rep_202501
+    documentation_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    dataset: ESTADO-RS-ICMS-2025-01
+    dictionary_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    purpose: Transferência estadual de ICMS — valores publicados por município
+    legal_basis: Publicação SEFAZ-RS de repasses mensais aos municípios (MontaArquivo)
+    license_terms: publicação oficial SEFAZ-RS
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_rs_xls
+    layout_version: state-rs-icms-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: RS
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_rs_icms_quota
+    formula: >
+      Valor da coluna TOTAL MÊS/ANO REPASSE do XLS mensal SEFAZ-RS MontaArquivo,
+      competência parametrizada, município via join IBGE7 por nome+UF. Sem
+      ajuste. Não constitui crédito.
+    methodology_version: official-state-rs-icms-v1
+    notes: >
+      MontaArquivo l_icms_rep_202501 downloadável em 2026-09-19. Homologação
+      humana pendente.
+
+  - source_id: ESTADO-RS-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (RS)
+    maintainer: SEFAZ-RS
+    official_domain: sefaz.rs.gov.br
+    official_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_repasses_mun_ipva_2025
+    endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_ipva_rep_202501
+    documentation_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    dataset: ESTADO-RS-IPVA-2025-01
+    dictionary_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Publicação SEFAZ-RS de repasses mensais aos municípios (MontaArquivo)
+    license_terms: publicação oficial SEFAZ-RS
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_rs_xls
+    layout_version: state-rs-ipva-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: RS
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_rs_ipva_quota
+    formula: >
+      Valor da coluna Total Mês do XLS mensal SEFAZ-RS MontaArquivo, competência
+      parametrizada, município via join IBGE7 por nome+UF. layout_version
+      distinto evita colisão de checksum com ICMS. Não constitui crédito.
+    methodology_version: official-state-rs-ipva-v1
+    notes: >
+      MontaArquivo l_ipva_rep_202501 downloadável em 2026-09-19. Homologação
+      humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil

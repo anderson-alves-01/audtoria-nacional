@@ -3,7 +3,7 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.39
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.40
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.

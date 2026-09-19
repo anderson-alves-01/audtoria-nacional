@@ -83,6 +83,12 @@ SNAPSHOT_URLS = {
         "1.Portaria-jan-25-ANEXO-UNICO.xls"
     ): "ce-repasses-2025-01.xls",
     (
+        "https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_icms_rep_202501"
+    ): "rs-icms-repasses-2025-01.xls",
+    (
+        "https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_ipva_rep_202501"
+    ): "rs-ipva-repasses-2025-01.xls",
+    (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
     (

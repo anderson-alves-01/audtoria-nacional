@@ -6,14 +6,15 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA, MG, ES, GO, MS, RO, AC e CE TECHNICALLY_APPROVED (state_pe_csv /
+  PE, BA, MG, ES, GO, MS, RO, AC, CE e RS TECHNICALLY_APPROVED (state_pe_csv /
   state_ba_csv / state_mg_csv / state_es_csv / state_go_csv / state_ms_csv /
-  state_ro_csv / state_ac_csv / state_ce_xls). MG/ES/AC usam IBGE7 nativo.
+  state_ro_csv / state_ac_csv / state_ce_xls / state_rs_xls). MG/ES/AC usam IBGE7 nativo.
   RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via CKAN DataStore dump (CSV
   upload 500; schema sem ICMS 2026). MS ICMS/IPVA via CKAN DataStore mensal
   (Tipo_Repasse). AC ICMS anual SEPLAG ativado; IPVA mensal só via
   Transparência POST+CSRF (não ativado). CE ICMS/IPVA via XLS mensal SEFAZ
-  (Portaria). RJ IP-blocked. SC/PR PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML).
+  (Portaria). RS ICMS/IPVA via MontaArquivo XLS mensal SEFAZ (TOTAL mês /
+  Total Mês). RJ IP-blocked. SC/PR PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML).
   Sem agregador privado.
 states:
   - uf: AC
@@ -260,9 +261,27 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: RS
     name: Rio Grande do Sul
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_montaarquivo_xls
+    dataset_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    official_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_icms_rep_202501
+    ipva_endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_ipva_rep_202501
+    taxes: [ICMS, IPVA]
+    format: XLS
+    columns_icms: [MUNICIPIO, weekly REPASSE/RETENÇÃO/LÍQUIDO, TOTAL month REPASSE]
+    columns_ipva: [NOME DO MUNICÍPIO, daily amounts, Total Mês, Total Ano]
+    ibge_field: name_only
+    layout_version_icms: state-rs-icms-v1
+    layout_version_ipva: state-rs-ipva-v1
+    connector: state_rs_xls
+    download_probe_2026_09_19: montaarquivo_xls_200_total_mes
+    reason: >
+      XLS mensal SEFAZ-RS via MontaArquivo (l_icms_rep_YYYYMM / l_ipva_rep_YYYYMM)
+      ativado com connector state_rs_xls (xlrd). ICMS usa coluna TOTAL
+      MÊS/ANO REPASSE; IPVA usa Total Mês. Join IBGE7 por nome+UF. Competência
+      2025-01. Fixture mínima. Sem crédito.
   - uf: RO
     name: Rondônia
     status: TECHNICALLY_APPROVED

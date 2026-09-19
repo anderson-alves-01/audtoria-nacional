@@ -1,4 +1,4 @@
-"""State ICMS/IPVA catalog shell. No tax credit; PE/BA/MG/ES/GO/MS/RO/AC/CE gated."""
+"""State ICMS/IPVA catalog shell. No tax credit; PE/BA/MG/ES/GO/MS/RO/AC/CE/RS gated."""
 
 from __future__ import annotations
 
@@ -13,10 +13,10 @@ STATE_TRANSFERS_VERSION = "state-transfers-technical-v1"
 STATE_CATALOG_RELATIVE = Path("contracts/sources/state-transfers-catalog.yaml")
 
 DISCLAIMER = (
-    "Catálogo estadual ICMS/IPVA. PE, BA, MG, ES, GO, MS, RO, AC e CE ativados com fonte "
+    "Catálogo estadual ICMS/IPVA. PE, BA, MG, ES, GO, MS, RO, AC, CE e RS ativados com fonte "
     "PUBLIC_OPEN (MG/ES/AC IBGE7 nativo; RO IPVA IBGE6→7; GO/MS DataStore; RO/AC CSV; "
-    "CE XLS SEFAZ). Demais UFs só avançam com fonte estruturada comprovada; portais HTML "
-    "e agregadores privados são recusados. Diferença gera ocorrência, nunca crédito."
+    "CE/RS XLS SEFAZ MontaArquivo). Demais UFs só avançam com fonte estruturada comprovada; "
+    "portais HTML e agregadores privados são recusados. Diferença gera ocorrência, nunca crédito."
 )
 
 

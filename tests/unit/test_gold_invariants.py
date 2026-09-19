@@ -17,6 +17,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_ms_csv,
     parse_state_pe_csv,
     parse_state_ro_csv,
+    parse_state_rs_xls,
     parse_tesouro_monthly_csv,
 )
 from sirta_api.domain.catalog import creates_tax_credit
@@ -334,6 +335,37 @@ def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-CE-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-CE-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_rs_xls_joins_name_and_quarantines_territory() -> None:
+    icms_body = Path(
+        "tests/fixtures/official-snapshots/rs-icms-repasses-2025-01.xls"
+    ).read_bytes()
+    ipva_body = Path(
+        "tests/fixtures/official-snapshots/rs-ipva-repasses-2025-01.xls"
+    ).read_bytes()
+    lookup = {
+        ("ACEGUA", "RS"): "4300034",
+        ("PORTO ALEGRE", "RS"): "4314902",
+    }
+    icms, quarantined_icms = parse_state_rs_xls(icms_body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"4300034", "4314902"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "RS" for row in icms)
+    assert all(row["competence"] == "2025-01" for row in icms)
+    acegua = next(row for row in icms if row["ibgeCode"] == "4300034")
+    assert acegua["value"] == 1146019.89
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_rs_xls(ipva_body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    porto = next(row for row in ipva if row["ibgeCode"] == "4314902")
+    assert porto["value"] == 8000000.0
+    assert porto["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-RS-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-RS-IPVA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_aneel_indqual_aggregates_by_ibge7() -> None:
