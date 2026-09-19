@@ -54,9 +54,7 @@ def build_state_transfers_panel(*, page: int = 1, size: int = 30) -> dict:
             }
         )
     verified = [
-        row
-        for row in states
-        if row["status"] in {"PROVENANCE_VERIFIED", "TECHNICALLY_APPROVED"}
+        row for row in states if row["status"] in {"PROVENANCE_VERIFIED", "TECHNICALLY_APPROVED"}
     ]
     ingest_enabled = any(row["ingestAllowed"] for row in states)
     return {
