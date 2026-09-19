@@ -426,7 +426,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.22/
     versao: "0.3.22"
-    commit: null
+    commit: c046301
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -448,7 +448,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.22/
     versao: "0.3.22"
-    commit: null
+    commit: c046301
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -470,7 +470,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.22/
     versao: "0.3.22"
-    commit: null
+    commit: c046301
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -491,7 +491,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.22/
     versao: "0.3.22"
-    commit: null
+    commit: c046301
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -512,7 +512,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.22/
     versao: "0.3.22"
-    commit: null
+    commit: c046301
     ci: null
     motivo_bloqueio: null
     next_action: >

@@ -3,6 +3,7 @@
 Data: 2026-09-19  
 Branch: `feat/official-public-ingest`  
 PR: #2  
+Commits: `c046301`  
 Estado: `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS`
 
 ## Seleção
