@@ -1,0 +1,9 @@
+﻿# 0.3.18 tests
+
+## Python (targeted)
+pytest tests/unit/test_findings.py tests/unit/test_audit_cases.py tests/unit/test_human_validation.py tests/unit/test_health.py tests/integration/test_findings.py tests/integration/test_audit_cases.py tests/integration/test_human_validation.py tests/integration/test_alembic_paths.py -q
+Result: 17 passed
+
+## Angular (targeted)
+npx ng test --no-watch --browsers=ChromeHeadless --include=src/app/findings/**/*.spec.ts --include=src/app/audit-cases/**/*.spec.ts --include=src/app/human-validation/**/*.spec.ts --include=src/app/app.component.spec.ts --include=src/app/health/**/*.spec.ts
+Result: 7 SUCCESS

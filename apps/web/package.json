@@ -1,6 +1,6 @@
 {
   "name": "sirta-web",
-  "version": "0.3.17",
+  "version": "0.3.18",
   "private": true,
   "engines": {
     "node": ">=20.19.0 <21",

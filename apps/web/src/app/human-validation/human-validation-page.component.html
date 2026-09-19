@@ -1,0 +1,29 @@
+<section aria-labelledby="human-validation-title">
+  <h1 id="human-validation-title">Validação humana (workflow técnico)</h1>
+  <p>
+    Shell F5 vazio. Distinto da validação de crédito e da homologação
+    institucional de Gold. Sem crédito público.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando workflow técnico…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. G4: {{ g4Status }}. G5: {{ g5Status }}.
+      Comandos desativados. Sem crédito público.
+    </p>
+    <p>Estados de referência (documentais):</p>
+    <ul>
+      @for (item of referenceStates; track item) {
+        <li>{{ item }}</li>
+      }
+    </ul>
+  }
+  @if (state === 'ok') {
+    <p role="status">Fila de validação carregada.</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

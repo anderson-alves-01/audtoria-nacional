@@ -3,7 +3,7 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.17
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.18
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
@@ -296,6 +296,99 @@ paths:
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
         '200': {description: Non-binding rule placeholders; commandsDisabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/findings:
+    get:
+      operationId: listFindings
+      description: >
+        Technical audit findings shell. Empty items; commandsDisabled=true;
+        createsTaxCredit=false; legalCommandsEnabled=false. G5 BLOCKED.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty findings page; no tax credit}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/cases:
+    get:
+      operationId: listAuditCases
+      description: >
+        Technical audit cases shell (D5). Distinct from collection-cases.
+        Empty items; create disabled until G4/G5.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty audit cases page; commandsDisabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: createAuditCase
+      description: >
+        Always rejected (409). Technical shell does not persist cases or create credits.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Commands disabled; no persistence}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/human-validation:
+    get:
+      operationId: getHumanValidationWorkflow
+      description: >
+        Human validation workflow shell (F5). Reference states only; queue empty;
+        publishesPublicCredit=false. Not Gold homologation; not credit validation.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty workflow; commandsDisabled; G4/G5 BLOCKED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/notifications:
+    get:
+      operationId: listNotifications
+      description: >
+        Administrative notifications shell. Empty items; sendEnabled=false;
+        real delivery disabled until human approval.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty notifications page; send disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: sendNotification
+      description: >
+        Always rejected (409). Technical shell never sends or persists notifications.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Send disabled; no delivery}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/collection:
+    get:
+      operationId: getCollectionPanel
+      description: >
+        Official empty administrative collection panel. commandsDisabled=true;
+        synthetic start remains API-test only via tax-credit collection-cases.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty collection panel; G0/G4/G5 BLOCKED}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/data-sources:
