@@ -1,0 +1,9 @@
+docker compose config --quiet
+exit_code=0
+
+docker compose up -d postgres
+exit_code=0
+
+docker compose run --rm migrate
+exit_code=0
+note: alembic upgrade head && python -m sirta_api.adapters.db.seed against local postgres; no volumes deleted

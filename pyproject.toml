@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sirta"
-version = "0.3.7"
-description = "SIRTA Municipal local implementation (G8 IBS/CBS synthetic calendar)"
+version = "0.3.13"
+description = "SIRTA Municipal local implementation (Terraform documentation modules, no apply)"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "All Rights Reserved" }

@@ -1,21 +1,19 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.7
-version: 0.3.7
-status: LOCAL_EXECUTABLE_COMPLETE_HUMAN_GATES_BLOCKED
-current_phase: HUMAN_GATES
-release_stage: G8_IBS_CBS_LOCAL
-baseline:
-  inspired_by: cfq-censo-platform
-  architecture: bronze-silver-gold
-  deployment_region: southamerica-east1
+implementation_version: 0.3.13
+roadmap_version: "1.2"
+version: 0.3.13
+status: TERRAFORM_MODULES_DOCS
+current_phase: TERRAFORM_MODULES_DOCS
+release_stage: TERRAFORM_MODULES_DOCS
 completed:
-  - tax_credit_validation
-  - administrative_collection
-  - first_iss_pipeline
-  - installment_and_active_debt
-  - transfer_occurrences
-  - ibs_cbs_calendar_local
+  - alembic_hygiene
+  - source_master_registry_synthetic
+  - program_gates_snapshot
+  - terraform_docs_no_apply
+  - catalog_driven_synthetic_ingest_ibge
+  - tesouro_stub_and_blocked_gate_checklists
+  - terraform_modules_documentation_only
 pending:
   - municipal_g0_authorization
   - diagnosis_g1
@@ -28,6 +26,13 @@ gates:
   g6_finance_local: GO
   g7_transfers_local: GO
   g8_calendar_local: GO
+  alembic_hygiene: GO
+  f3_source_catalog_local: GO
+  f3_source_ingest_local: GO
+  tesouro_stub_gates_local: GO
+  program_gates_local: GO
+  terraform_docs_no_apply: GO
+  terraform_modules_docs: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -37,6 +42,7 @@ gates:
   g10_production: NO-GO
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
-evidence: evidence/releases/0.3.7/
-next_action: Stop. Local synthetic roadmap slices are done. Resume only after a listed human gate is authorized.
-human_gates: docs/delivery/HUMAN-GATES.md
+block_next_release: RESOLVED
+evidence: evidence/releases/0.3.13/
+next_action: Stop. Remaining roadmap items require a human gate. Reports docs/delivery/TECHNICAL_COMPLETION_REPORT.md and docs/delivery/HUMAN_DECISIONS_REQUIRED.md
+human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

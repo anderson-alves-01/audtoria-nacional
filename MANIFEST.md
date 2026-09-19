@@ -1,4 +1,4 @@
-# Conteúdo do kit e da implementação 0.3.7
+# Conteúdo do kit e da implementação 0.3.13
 
 - `README.md`: visão e execução local.
 - `AGENTS.md`: constituição operacional dos agentes.
@@ -7,12 +7,14 @@
 - `.cursor/rules/` e `.cursor/skills/`: governança Cursor.
 - `config/skills-policy.yaml`: política de skills.
 - `prompts/`: auditoria, feature, dados, segurança, release e handoff. Prompt 01 não está autorizado após a Sprint 2.
-- `docs/delivery/HUMAN-GATES.md`: G0/G1/G4/G7 oficial/G8 oficial/G9/G10 bloqueados.
+- `docs/delivery/HUMAN-GATES.md` e `docs/delivery/HUMAN_DECISIONS_REQUIRED.md`: G0/G1/G4/G7 oficial/G8 oficial/G9/G10 bloqueados.
+- `docs/delivery/TECHNICAL_COMPLETION_REPORT.md`: consolidação técnica local 0.3.13.
 - `docs/delivery/ROADMAP.md`: legado.
 - `docs/plans/2026-09-18-F0-foundation.md`: plano F0 executado.
 - `docs/plans/2026-09-18-g8-ibs-cbs-calendar.md`: plano G8 local.
 - `docs/releases/RELEASE-v0.3.0.md`: especificação (imutável nesta entrega).
-- `docs/releases/RELEASE-v0.3.7.md`: implementação G8 calendário sintético.
+- `docs/releases/RELEASE-v0.3.8.md`: higiene Alembic e seed idempotente.
+- `evidence/releases/0.3.8/`: evidências da correção de migration.
 - `docs/releases/RELEASE-v0.3.1.md`: implementação F0.
 - `docs/releases/RELEASE-v0.3.2.md`: implementação Sprint 2.
 - `contracts/openapi/sirta-v1.yaml`: **única OpenAPI ativa**.
@@ -23,4 +25,4 @@
 - `evidence/releases/0.3.1/`: evidências F0.
 - `evidence/releases/0.3.7/`: evidências G8 local.
 - `backlog/SIRTA-v0.3.yaml`: backlog com critérios e fixtures.
-- `infra/terraform/environments/*`: vazios; não aplicar.
+- `infra/terraform/modules/documentation_stack` e `infra/terraform/environments/*`: documentation-only; não aplicar.

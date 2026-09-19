@@ -1,0 +1,2 @@
+npm test: 15 SUCCESS (ChromeHeadless)
+npm run build: success, dist/sirta-web

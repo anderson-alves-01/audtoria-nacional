@@ -4,11 +4,67 @@
 
 **SIRTA - Sistema Integrado de Recuperação Tributária e Auditoria**  
 **Lema:** “Auditar. Acompanhar. Recuperar.”  
-**Versão do roadmap:** 1.0  
+**Versão do roadmap:** 1.2  
 **Data-base:** setembro de 2026  
+**Revisão 1.2:** reconciliação do estado executável 0.3.7, gates locais/oficiais e dívida Alembic  
+**Revisão 1.1:** plano explícito de fontes públicas e ingestão do datalake  
 **Horizonte:** implantação inicial de 6 a 8 meses e evolução contínua
 
-**Estado local (2026-09-18):** fatias sintéticas G2/G3/G5–G8 executáveis até implementação 0.3.7. Gates humanos G0, G1, G4, G7 oficial, G8 oficial, G9 e G10 estão **BLOQUEADOS** — ver `docs/delivery/HUMAN-GATES.md`.
+---
+
+## Estado de execução em 18 de setembro de 2026
+
+| Item | Estado registrado |
+|---|---|
+| Versão da especificação | `0.3.0` |
+| Versão da implementação local | `0.3.13` |
+| Linha técnica concluída | F0/S0-S4, G6–G8 locais, Alembic, F3.0/F3.1 sintético, checklists G0/G1 BLOCKED, Terraform docs |
+| Dívida Alembic `0004 -> 0005` | `RESOLVED` (`ALEMBIC_HYGIENE`) |
+| Próximo passo automático | Nenhum. Restam apenas gates humanos. |
+| Commit de referência local | `57d4b12` (`feat/roadmap-technical-completion`) |
+| Commit de gates humanos em `main` | `86022ad` |
+| Nuvem, produção e dados fiscais reais | Não autorizados |
+
+A implementação `0.3.13` encerra as fatias técnicas locais desbloqueadas do ROADMAP 1.2 nesta branch. Nenhum desses marcos conclui o Programa SIRTA 2026 nem homologação institucional, tributária ou jurídica. Relatório: `docs/delivery/TECHNICAL_COMPLETION_REPORT.md`.
+
+### Estados compostos dos gates
+
+| Gate | Componente técnico/local | Componente institucional/oficial | Estado consolidado |
+|---|---|---|---|
+| F0/S0-S4 | Implementado e testado localmente | Não depende de homologação tributária | `LOCAL_GO` |
+| G0 - programa municipal | Não substitui decisão administrativa | Município piloto, patrocinador e governança ausentes | `BLOCKED` |
+| G1 - diagnóstico | Estrutura técnica disponível | Diagnóstico municipal não realizado/homologado | `BLOCKED` |
+| G4 - ISS | Componentes genéricos disponíveis | Regras e amostras não homologadas por especialista | `BLOCKED` |
+| G6 - financeiro | Fluxo financeiro local verde | Uso oficial depende dos gates anteriores | `LOCAL_GO/OFFICIAL_BLOCKED` |
+| G7 - transferências | Ocorrências locais não criam crédito | Conectores e reconciliação com Tesouro/fontes estaduais não homologados | `LOCAL_GO/OFFICIAL_BLOCKED` |
+| G8 - IBS/CBS | Calendário sintético, não vinculante e não operacional | Fontes, regras e datas não homologadas oficialmente | `LOCAL_GO/OFFICIAL_BLOCKED` |
+| G9 - piloto | Não iniciado | Município e usuários do piloto ausentes | `BLOCKED` |
+| G10 - produção | Não iniciado | Segurança, operação e aceite institucional ausentes | `BLOCKED` |
+
+Os estados `LOCAL_GO` não autorizam carga real, decisão administrativa, cálculo vinculante, cobrança, publicação oficial ou promoção a produção.
+
+### Evidência do G8 local
+
+- `GET /v1/regulatory/ibs-cbs` expõe catálogo versionado com `binding=false`, `operational=false` e `homologated=false`;
+- itens permanecem em `NON_BINDING`;
+- simulações, leiautes e mapas de impacto não se tornam regras operacionais;
+- a interface `/calendario` informa explicitamente a natureza não vinculante;
+- execução informada: 75 testes Python, 12 testes Angular e CI verde nos jobs `python`, `web` e `containers`;
+- execução de referência: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367451209.
+
+O registro dos gates humanos está associado ao commit `86022ad` e à execução https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35367701439.
+
+### Dívida técnica Alembic
+
+A falha `0004 -> 0005` (`users_tenant_id_fkey` após `drop_all` com `alembic_version` preservado) foi reproduzida em `sirta_migtest` e corrigida na implementação `0.3.8`:
+
+1. migrations de schema separadas do seed sintético;
+2. `seed_synthetic` idempotente (`python -m sirta_api.adapters.db.seed`);
+3. pytest não executa `drop_all` no banco compartilhado;
+4. comprovados `base -> head`, `0004 -> head` válido e `0004 -> head` após drop de domínio;
+5. evidência em `evidence/releases/0.3.8/`.
+
+Estado da ocorrência: `RESOLVED`. O G8 local permanece `LOCAL_GO`; a homologação oficial permanece `OFFICIAL_BLOCKED`.
 
 ---
 
@@ -86,6 +142,19 @@ Indicadores devem informar fonte, competência, atualização, fórmula, exclus�
 
 Acesso condicionado a usuário, órgão, território, finalidade, classificação e vigência. Dados reais são proibidos em desenvolvimento e testes.
 
+### 3.6 Fonte pública não constitui crédito
+
+Dados públicos oficiais podem apoiar diagnóstico, contextualização econômica, enriquecimento cadastral, comparação, cálculo de indicadores e conciliação de transferências. Eles não criam, constituem, validam ou tornam exigível um crédito tributário por si mesmos.
+
+Todo conjunto de dados deverá ser classificado no catálogo segundo seu papel:
+
+- `PRIMARY_FISCAL`: registro fiscal mantido pela autoridade competente;
+- `OFFICIAL_TRANSFER`: repasse, coeficiente ou demonstrativo publicado por órgão oficial;
+- `REFERENCE_ENRICHMENT`: informação pública usada somente para contexto ou cruzamento;
+- `REGULATORY`: norma, leiaute, calendário ou orientação institucional.
+
+Somente registros `PRIMARY_FISCAL`, submetidos às validações administrativa e jurídica aplicáveis, poderão integrar a memória de um crédito. Diferenças encontradas em fontes públicas gerarão indícios ou ocorrências para análise, nunca cobrança automática.
+
 ---
 
 ## 4. Escopo de receitas
@@ -136,6 +205,8 @@ Fontes públicas e restritas, responsável, base legal, finalidade, autorizaçã
 ### D3 - Plataforma de dados
 
 Landing, Bronze, Silver, Gold, qualidade, quarentena, idempotência, reconciliação, histórico e rollback lógico.
+
+Nenhuma fonte poderá alimentar diretamente Silver, Gold, regra de auditoria ou indicador. Toda ingestão começará pelo catálogo, passará por Landing/Bronze imutável e conservará origem, versão, competência, checksum, finalidade e linhagem.
 
 ### D4 - Cadastro 360
 
@@ -247,6 +318,8 @@ O denominador exclui, conforme política versionada e homologada, créditos susp
 
 ## 8. Roadmap de implantação - 6 a 8 meses
 
+> **Nota de nomenclatura:** `F0_FOUNDATION` foi fechado inicialmente na implementação 0.3.1 e a linha local evoluiu até 0.3.7. Esse estágio técnico não equivale ao Gate G0 do programa municipal. O Gate G0 continua dependente de patrocinador, município piloto e governança formal.
+
 ## Fase 0 - Mobilização e governança
 
 **Prazo:** semanas 1-2  
@@ -311,9 +384,75 @@ Gate G2: build reproduzível, scans aprovados e isolamento municipal comprovado.
 **Prazo:** semanas 6-12  
 **Objetivo:** receber e publicar dados confiáveis.
 
+### F3.0 - Inventário, classificação e autorização das fontes
+
+Antes de desenvolver conectores, criar o Registro Mestre de Fontes. Cada fonte deverá possuir:
+
+- identificador, nome, órgão mantenedor e URL ou URI oficial;
+- papel da fonte (`PRIMARY_FISCAL`, `OFFICIAL_TRANSFER`, `REFERENCE_ENRICHMENT` ou `REGULATORY`);
+- classificação de acesso (`PUBLIC_OPEN`, `PUBLIC_CONTROLLED`, `RESTRICTED` ou `CONFIDENTIAL`);
+- finalidade, base legal, responsável institucional e aprovador;
+- licença ou termos de uso, formato, leiaute, versão e dicionário de dados;
+- abrangência territorial, granularidade, competência e periodicidade;
+- método de obtenção, autenticação, limites de uso e contato do mantenedor;
+- dados pessoais existentes, retenção, minimização e regras de publicação;
+- camada de destino, contrato de qualidade, reconciliação e política de descarte;
+- datas de homologação, última consulta, próxima revisão e eventual descontinuação.
+
+Estados permitidos: `DISCOVERED`, `UNDER_REVIEW`, `APPROVED`, `ACTIVE`, `SUSPENDED` e `RETIRED`. Somente fontes `APPROVED` ou `ACTIVE` poderão ser ingeridas fora de fixtures sintéticas.
+
+### F3.1 - Framework de ingestão reproduzível
+
+Implementar primeiro com fixtures sintéticas:
+
+- conectores por API, arquivo, upload controlado e banco autorizado;
+- manifesto, checksum e preservação do conteúdo bruto;
+- paginação, limites, retentativas e retomada;
+- idempotência por tenant, fonte, competência, checksum e versão do leiaute;
+- detecção de mudança de esquema;
+- quarentena e aprovação para publicação;
+- métricas, logs sem dados sensíveis, linhagem e rollback lógico.
+
+APIs e arquivos oficiais são preferidos. Coleta automatizada de páginas somente será admitida quando não houver canal estruturado, os termos permitirem, houver aprovação registrada e o conector preservar evidência da origem e da data de consulta.
+
+### F3.2 - Primeira onda de fontes públicas
+
+Após autorização da fase, implementar e homologar nesta ordem:
+
+1. IBGE/SIDRA para PIB de serviços, população e indicadores econômicos territoriais;
+2. Tesouro Nacional/SICONFI/FINBRA para demonstrativos fiscais e finanças municipais;
+3. Tesouro Transparente e Portal da Transparência para transferências federais;
+4. Receita Federal para dados abertos de CNPJ, estabelecimentos e CNAE, com minimização e controles de privacidade;
+5. portais oficiais estaduais para quota-parte de ICMS/IPVA e demais repasses disponíveis;
+6. Planalto, Receita Federal, CGIBS e legislação oficial local para catálogo regulatório versionado;
+7. fontes setoriais oficiais, quando necessárias ao caso de uso: ANP, ANEEL/EPE, Anatel, Banco Central e CNES/DATASUS.
+
+O conector de uma fonte poderá ser catalogado em v0.5 e ativado somente na release funcional correspondente. Fontes de transferências serão catalogadas na Fase 3, mas sua conciliação operacional continuará pertencendo à Fase 7/v0.9.
+
+### F3.3 - Fontes municipais e restritas
+
+Arrecadação, cadastro mobiliário, dívida ativa, pagamentos, parcelamentos, notas fiscais e processos administrativos exigirão Gate G0, diagnóstico G1, autorização do controlador, finalidade registrada, canal seguro e homologação de amostra. Nenhum dado fiscal real será usado em desenvolvimento ou teste automatizado.
+
+### F3.4 - Matriz inicial do datalake
+
+| Grupo | Fontes oficiais iniciais | Uso permitido | Papel | Camada inicial | Release-alvo |
+|---|---|---|---|---|---|
+| Catálogo nacional | Catálogo Nacional de Dados e dados.gov.br | Descoberta e metadados | `REFERENCE_ENRICHMENT` | Catálogo | v0.5 |
+| Indicadores territoriais | IBGE/SIDRA | PIB de serviços, população e contexto econômico | `REFERENCE_ENRICHMENT` | Landing/Bronze | v0.5 |
+| Finanças municipais | Tesouro Nacional, SICONFI e FINBRA | Demonstrativos, comparação e reconciliação agregada | `REFERENCE_ENRICHMENT` | Landing/Bronze | v0.5 |
+| Transferências federais | Tesouro Transparente e Portal da Transparência | Previsto versus transferido e ocorrências | `OFFICIAL_TRANSFER` | Landing/Bronze | catálogo v0.5; uso v0.9 |
+| Transferências estaduais | Fazendas, tesouros e portais estaduais oficiais | Quotas-partes de ICMS/IPVA e outros repasses | `OFFICIAL_TRANSFER` | Landing/Bronze | catálogo v0.5; uso v0.9 |
+| Estabelecimentos | Receita Federal - dados abertos de CNPJ/CNAE | Enriquecimento e conferência cadastral | `REFERENCE_ENRICHMENT` | Landing/Bronze | v0.6 |
+| Regulação | Planalto, Receita Federal, CGIBS e legislação oficial local | Normas, vigência, leiautes e calendário | `REGULATORY` | Repositório documental/catálogo | v0.5-v0.9 |
+| Setores econômicos | ANP, ANEEL/EPE, Anatel, Banco Central e CNES/DATASUS | Referência para combustíveis, energia, telecom, bancos e saúde | `REFERENCE_ENRICHMENT` | Landing/Bronze | por caso de uso, a partir de v0.6 |
+| Fiscal municipal | Sistemas de ISS, dívida ativa, cadastro e pagamentos | Constituição, validação e acompanhamento do crédito | `PRIMARY_FISCAL` | Landing/Bronze restrita | após G0/G1 e autorização |
+
+Esta matriz é um plano inicial, não uma autorização de acesso. Durante F3.0, cada entrada será desdobrada em datasets específicos e submetida a validação técnica, jurídica, de privacidade e de titularidade.
+
 Entregas:
 
-- catálogo e solicitações de acesso;
+- registro mestre, catálogo e solicitações de acesso;
+- inventário versionado de datasets públicos, controlados e restritos;
 - manifesto de carga;
 - conectores de arquivos e bancos;
 - Bronze/Silver/Gold;
@@ -324,7 +463,7 @@ Entregas:
 - rollback lógico;
 - monitoramento de jobs.
 
-Gate G3: reexecução sem duplicidade, lote inválido não publicado e totais reconciliados.
+Gate G3: 100% das fontes ativadas registradas e aprovadas; reexecução sem duplicidade; conteúdo bruto preservado com checksum; mudança de esquema detectada; lote inválido não publicado; dados pessoais minimizados; totais reconciliados; linhagem demonstrável da fonte ao indicador; e nenhuma fonte pública usada isoladamente para constituir crédito ou iniciar cobrança.
 
 ## Fase 4 - MVP de auditoria e potencial do ISS
 
@@ -503,20 +642,32 @@ Para municípios sem infraestrutura, utilizar modelo SaaS governamental multi-te
 
 ---
 
-## 11. Releases sugeridas
+## 11. Releases e marcos
 
-| Release | Conteúdo |
-|---|---|
-| v0.3 | Produto SIRTA, domínio, governança e diagnóstico |
-| v0.4 | Fundação segura, identidade, tenant e auditoria |
-| v0.5 | Catálogo, Bronze/Silver/Gold e qualidade |
-| v0.6 | MVP ISS, regras e painel de potencial |
-| v0.7 | Casos e cobrança administrativa |
-| v0.8 | Parcelamentos, pagamentos e dívida ativa |
-| v0.9 | Transferências e prontidão IBS/CBS |
-| v1.0 | Piloto municipal homologado |
-| v1.1 | Implantação municipal ampliada |
-| v2.0 | Plataforma regional/nacional |
+As versões de implementação e os marcos do produto são trilhas relacionadas, mas não equivalentes. Uma implementação local pode comprovar comportamento técnico sem concluir o gate institucional correspondente.
+
+### 11.1 Versões executadas
+
+| Versão | Conteúdo | Estado |
+|---|---|---|
+| Especificação `0.3.0` | Produto SIRTA, domínio, governança, contratos e roadmap | Mantida |
+| Implementação `0.3.1` | F0/Sprints 0 e 1, fundação segura, identidade, tenant e auditoria | `LOCAL_GO` |
+| Implementações `0.3.2-0.3.7` | Evolução local S0-S4, G6 financeiro, G7 ocorrências e G8 calendário sintético | `LOCAL_GO` nos recortes informados |
+| Próxima versão | Saneamento Alembic `0.3.8` concluído; catálogo técnico de fontes sintéticas em seguida | `LOCAL_GO` na higiene; F3 oficial `BLOCKED` |
+
+### 11.2 Marcos futuros do produto
+
+| Marco sugerido | Conteúdo | Dependência |
+|---|---|---|
+| v0.4 | Marco de fundação segura, já absorvido pela linha de implementação 0.3.x | Evidência local preservada |
+| v0.5 | Registro de fontes públicas/restritas, catálogo, conectores públicos prioritários, Bronze/Silver/Gold e qualidade | G0/G1 e autorização explícita da Fase 3 |
+| v0.6 | MVP ISS, regras e painel de potencial | G4 homologado |
+| v0.7 | Casos e cobrança administrativa | Créditos validados e fluxo autorizado |
+| v0.8 | Parcelamentos, pagamentos e dívida ativa | Regras municipais e integrações homologadas |
+| v0.9 | Transferências e prontidão IBS/CBS oficiais | G7/G8 oficiais homologados |
+| v1.0 | Piloto municipal homologado | G9 |
+| v1.1 | Implantação municipal ampliada | Aceite do piloto |
+| v2.0 | Plataforma regional/nacional | G10 e governança interfederativa |
 
 ---
 
@@ -554,12 +705,18 @@ Para municípios pequenos, as funções técnicas podem ser providas centralment
 | Falha de integração | Contratos e observabilidade por fronteira |
 | Promessa comercial excessiva | Metas somente após diagnóstico |
 | Mistura de transferências e créditos | Módulos e conceitos separados |
+| Fonte pública tratada como prova de débito | Papel da fonte, validação humana e proibição de cobrança automática |
+| Mudança ou indisponibilidade de fonte externa | Contrato versionado, detecção de schema drift, cache bruto e suspensão controlada |
+| Coleta pública sem base ou termos compatíveis | Catálogo, revisão de finalidade/licença e preferência por API ou arquivo oficial |
+| Migration dependente de seed mutável | Separar schema e seed, tornar carga idempotente e testar todos os caminhos de upgrade |
+| Confusão entre gate local e homologação oficial | Estado composto `LOCAL_GO/OFFICIAL_BLOCKED` e evidência separada por fronteira |
 
 ---
 
 ## 14. Critérios de sucesso do programa
 
 - 100% das bases selecionadas inventariadas;
+- 100% das fontes ingeridas com órgão, finalidade, base legal, versão, competência e linhagem registradas;
 - cargas rastreáveis e reconciliadas;
 - ausência de cobrança sem validação registrada;
 - redução de tempo entre identificação e providência;
@@ -574,20 +731,54 @@ Para municípios pequenos, as funções técnicas podem ser providas centralment
 
 ---
 
-## 15. Fontes institucionais para implementação
+## 15. Fontes institucionais e política de ingestão
 
-- Emenda Constitucional nº 132/2023 e legislação complementar aplicável: https://www.planalto.gov.br/
+### 15.1 Diretórios e fontes transversais
+
+- Catálogo Nacional de Dados: https://www.gov.br/governodigital/pt-br/infraestrutura-nacional-de-dados/catalogo-nacional-de-dados
+- Portal Brasileiro de Dados Abertos: https://dados.gov.br/
+- IBGE/SIDRA: https://sidra.ibge.gov.br/
+- SICONFI/Tesouro Nacional: https://siconfi.tesouro.gov.br/
+- Tesouro Transparente - transferências a estados e municípios: https://www.tesourotransparente.gov.br/temas/estados-e-municipios/transferencias-a-estados-e-municipios
+- Portal da Transparência da União: https://portaldatransparencia.gov.br/
+- Receita Federal: https://www.gov.br/receitafederal/
+
+### 15.2 Fontes regulatórias
+
+- Constituição, Emenda Constitucional nº 132/2023 e legislação complementar aplicável: https://www.planalto.gov.br/
 - Comitê Gestor do IBS e documentação técnica: https://www.cgibs.gov.br/
 - Receita Federal e cronogramas CBS/IBS: https://www.gov.br/receitafederal/
-- Tesouro Transparente - transferências a estados e municípios: https://www.tesourotransparente.gov.br/temas/estados-e-municipios/transferencias-a-estados-e-municipios
-- Fontes estaduais oficiais para quota-parte de ICMS e IPVA.
-- Legislação tributária e administrativa específica de cada município.
+- legislação tributária e administrativa publicada oficialmente por estado e município.
 
-As fontes devem ser registradas no catálogo com versão, data de consulta, competência, responsável e finalidade. Nenhuma regra jurídica ou tributária será ativada apenas por inferência da IA.
+### 15.3 Fontes setoriais de enriquecimento
+
+- ANP para combustíveis;
+- ANEEL e EPE para energia elétrica;
+- Anatel para telecomunicações;
+- Banco Central para instituições financeiras;
+- CNES/DATASUS para estabelecimentos de saúde.
+
+Fontes setoriais são referências de contexto e cruzamento. Elas não demonstram inadimplência nem substituem cadastro, lançamento, processo ou memória de cálculo da autoridade tributária competente.
+
+### 15.4 Regras obrigatórias de consumo
+
+1. Registrar a fonte antes da primeira coleta.
+2. Utilizar endpoint, API, arquivo ou publicação do domínio oficial do órgão mantenedor.
+3. Preservar na Landing/Bronze o conteúdo recebido, checksum, URL lógica, data/hora, competência e versão do leiaute.
+4. Não promover dados para Silver/Gold sem contrato, qualidade e reconciliação aprovados.
+5. Não combinar datasets para finalidade incompatível com a registrada.
+6. Não publicar CPF, CNPJ completo de empresário individual ou outro dado pessoal sem avaliação de necessidade e base legal.
+7. Suspender automaticamente o conector diante de mudança incompatível de esquema, licença, domínio ou integridade.
+8. Registrar indisponibilidade, correção, reprocessamento e substituição de versão.
+9. Exigir homologação humana para qualquer regra jurídica, tributária, cálculo de potencial ou indicador de recuperação.
+10. Manter dados públicos, dados restritos e evidências fiscais separados por classificação e política de acesso.
+
+Nenhuma regra jurídica ou tributária será ativada apenas por inferência da IA. Nenhuma lista pública será apresentada como relação de devedores sem fonte fiscal competente, processo aplicável e validação institucional.
 
 ---
 
 ## 16. Próxima ação executiva
 
-Iniciar a Fase 0 com escolha do município piloto, criação do grupo gestor e autorização do diagnóstico. Em paralelo, iniciar a release v0.3 com o domínio SIRTA, modelo de estados, matriz de competências, contratos iniciais e checklist de diagnóstico.
+Não há próximo item técnico automático na implementação local. A linha `0.3.8`–`0.3.13` em `feat/roadmap-technical-completion` está consolidada em `docs/delivery/TECHNICAL_COMPLETION_REPORT.md`.
 
+G0, G1, G4, G7 oficial, G8 oficial, G9 e G10 permanecem bloqueados. Decisões e evidências exigidas: `docs/delivery/HUMAN_DECISIONS_REQUIRED.md`.

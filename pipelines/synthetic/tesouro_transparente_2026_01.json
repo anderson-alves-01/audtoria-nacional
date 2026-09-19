@@ -1,0 +1,34 @@
+{
+  "sourceId": "TESOURO-TRANSPARENTE",
+  "layoutVersion": "tesouro-transparente-synthetic-v1",
+  "competence": "2026-01",
+  "purpose": "transfer-context",
+  "officialUrl": "https://www.tesourotransparente.gov.br/",
+  "note": "Synthetic transfer indicators. Not an official Tesouro extract and not a tax credit.",
+  "rows": [
+    {
+      "rowId": "tesouro-fpm",
+      "territoryCode": "3304557",
+      "indicator": "fpm_received",
+      "value": 100.5,
+      "unit": "BRL",
+      "competence": "2026-01"
+    },
+    {
+      "rowId": "tesouro-icms",
+      "territoryCode": "3300100",
+      "indicator": "icms_quota",
+      "value": 50.25,
+      "unit": "BRL",
+      "competence": "2026-01"
+    },
+    {
+      "rowId": "tesouro-bad",
+      "territoryCode": "",
+      "indicator": "fpm_received",
+      "value": -1,
+      "unit": "BRL",
+      "competence": ""
+    }
+  ]
+}

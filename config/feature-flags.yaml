@@ -1,0 +1,5 @@
+official_tesouro_connectors: false
+official_ibs_cbs_rules: false
+real_data_ingestion: false
+production_deploy: false
+cloud_apply: false

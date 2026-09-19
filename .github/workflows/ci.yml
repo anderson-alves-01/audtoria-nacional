@@ -46,6 +46,8 @@ jobs:
         run: detect-secrets scan --baseline .secrets.baseline --exclude-files 'package-lock.json|.*\.lock'
       - name: Migrate
         run: alembic upgrade head
+      - name: Seed synthetic
+        run: python -m sirta_api.adapters.db.seed
       - name: Tests
         run: python -m pytest tests -q
 

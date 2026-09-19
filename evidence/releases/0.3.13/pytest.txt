@@ -1,0 +1,5 @@
+99 passed, 1 warning in 20.56s
+terraform fmt -check: exit 0
+terraform -chdir=infra/terraform/environments/local init -backend=false: success (null 3.3.2)
+terraform validate: Success! The configuration is valid.
+No terraform apply.

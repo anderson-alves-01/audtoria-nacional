@@ -1,0 +1,34 @@
+{
+  "sourceId": "IBGE-SIDRA",
+  "layoutVersion": "ibge-sidra-synthetic-v1",
+  "competence": "2026-01",
+  "purpose": "territorial-context",
+  "officialUrl": "https://sidra.ibge.gov.br/",
+  "note": "Synthetic territorial indicators. Not a full SIDRA extract.",
+  "rows": [
+    {
+      "rowId": "ibge-alpha",
+      "territoryCode": "3304557",
+      "indicator": "population",
+      "value": 1000,
+      "unit": "inhabitants",
+      "competence": "2026-01"
+    },
+    {
+      "rowId": "ibge-beta",
+      "territoryCode": "3300100",
+      "indicator": "services_share",
+      "value": 42.5,
+      "unit": "percent",
+      "competence": "2026-01"
+    },
+    {
+      "rowId": "ibge-bad",
+      "territoryCode": "",
+      "indicator": "population",
+      "value": -1,
+      "unit": "inhabitants",
+      "competence": ""
+    }
+  ]
+}

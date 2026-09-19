@@ -1,0 +1,9 @@
+isolated_db=sirta_migtest
+after_0004_tenant_present=True
+after_drop_all_tenants_table=False
+after_drop_all_alembic_version=True
+alembic_version_after_drop_all=0004_s2_validation
+0004_to_0005=FAILED
+IntegrityError
+insert or update on table "users" violates foreign key constraint "users_tenant_id_fkey"
+DETAIL:  Key (tenant_id)=(11111111-1111-4111-8111-111111111111) is not present in table "tenants".

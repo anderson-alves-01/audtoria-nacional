@@ -254,3 +254,42 @@ class RegulatoryItem(Base):
     status: Mapped[str] = mapped_column(String(32), nullable=False)
     binding: Mapped[bool] = mapped_column(nullable=False, default=False)
     notes: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+class SourceRegistry(Base):
+    __tablename__ = "source_registry"
+    __table_args__ = (UniqueConstraint("tenant_id", "territory_id", "source_id"),)
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    name: Mapped[str] = mapped_column(String(256), nullable=False)
+    maintainer: Mapped[str] = mapped_column(String(128), nullable=False)
+    official_url: Mapped[str] = mapped_column(String(512), nullable=False)
+    source_role: Mapped[str] = mapped_column(String(32), nullable=False)
+    access_classification: Mapped[str] = mapped_column(String(32), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    purpose: Mapped[str] = mapped_column(String(256), nullable=False)
+    legal_basis: Mapped[str] = mapped_column(String(256), nullable=False)
+    license_terms: Mapped[str] = mapped_column(String(256), nullable=False)
+    layout_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    fixture_kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    notes: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+class GoldEnrichment(Base):
+    __tablename__ = "gold_enrichments"
+    __table_args__ = (UniqueConstraint("run_id", "source_id"),)
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    run_id: Mapped[UUID] = mapped_column(ForeignKey("data_load_runs.id"), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_role: Mapped[str] = mapped_column(String(32), nullable=False)
+    published: Mapped[bool] = mapped_column(nullable=False, default=True)
+    indicator_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    silver_row_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    methodology_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
