@@ -2,7 +2,10 @@
 
 ## Verdict
 
-PASS for targeted unit/integration/Angular coverage of F4-DIAGNOSIS, F4-AUDIT-RULES, F8-IBS-CBS, F3-SICONFI-RGF, F2-SECURITY-HARDENING and F2-BACKUP-RESTORE.
+PASS for targeted unit/integration/Angular coverage of F4-DIAGNOSIS, F4-AUDIT-RULES,
+F8-IBS-CBS, F3-SICONFI-OTHER-STATEMENTS (RGF), F2-SECURITY-HARDENING and F2-BACKUP-RESTORE.
+
+CI fix: ruff format on dashboard/regulatory tests that failed on PR #2 python job.
 
 ## Notes
 
