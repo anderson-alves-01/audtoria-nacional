@@ -6,9 +6,10 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA e MG TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv / state_mg_csv).
-  MG usa CSV.gz Frictionless com IBGE nativo. RJ IP-blocked. Sem agregador
-  privado. IPVA zero em PE é valor oficial publicado.
+  PE, BA, MG e ES TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv /
+  state_mg_csv / state_es_csv). MG/ES usam IBGE7 nativo. RJ IP-blocked.
+  GO CSV download retornou 500 neste runtime. Sem agregador privado.
+  IPVA zero em PE é valor oficial publicado.
 states:
   - uf: AC
     name: Acre
@@ -62,14 +63,34 @@ states:
     reason: DF não reparte ICMS/IPVA com municípios da mesma forma; sem dataset municipal aplicável verificado.
   - uf: ES
     name: Espírito Santo
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    official_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    endpoint: https://dados.es.gov.br/dataset/d85497f8-3dc4-4104-8e18-f242ae82b6ee/resource/f76f120c-ee95-440c-a77a-2fdace48b1bc/download/transfestadomunicipios-2024.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    columns: [Id, CodMunicipio, NomeMunicipio, IndiceImposto, Icms, IcmsLei2508, IcmsTotal, Ipi, Ipva, IndiceFundo, FundoReducaoDesigualdades, CotaParteCide, CompensacaoFinanceira, Ano, Mes]
+    ibge_field: CodMunicipio
+    layout_version_icms: state-es-icms-v1
+    layout_version_ipva: state-es-ipva-v1
+    connector: state_es_csv
+    download_probe_2026_09_19: csv_bytes_ok_ibge7_native
+    reason: >
+      CSV anual TransfEstadoMunicipios-2024 ativado com connector state_es_csv
+      (`;`, UTF-8, número BR). ICMS via IcmsTotal; IPVA via Ipva. IBGE7 nativo
+      em CodMunicipio. Fixture mínima. Sem crédito.
   - uf: GO
     name: Goiás
     status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    structured_official_source: ckan_cataloged_download_failed
+    dataset_url: https://dadosabertos.go.gov.br/dataset/repasses
+    official_url: https://dadosabertos.go.gov.br/dataset/repasses
+    reason: >
+      Dataset Repasses catalogado (CSV mensal/ZIP). Download do recurso CSV
+      retornou HTTP 500 neste runtime (2026-09-19); sem fixture até probe OK.
+      Sem agregador privado.
   - uf: MA
     name: Maranhão
     status: DISCOVERED

@@ -28,6 +28,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_siconfi_entes,
     parse_siconfi_statement,
     parse_state_ba_csv,
+    parse_state_es_csv,
     parse_state_mg_csv,
     parse_state_pe_csv,
     parse_tesouro_monthly_csv,
@@ -77,6 +78,7 @@ PARSERS = {
     "state_pe_csv": parse_state_pe_csv,
     "state_ba_csv": parse_state_ba_csv,
     "state_mg_csv": parse_state_mg_csv,
+    "state_es_csv": parse_state_es_csv,
 }
 
 
@@ -662,6 +664,16 @@ def _parse(
             )[:4],
             municipio_dim=municipio_body,
             tempo_dim=tempo_body,
+        )
+    if connector == "state_es_csv":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "ICMS"),
+            uf=str(parameters.get("uf") or "ES"),
+            competence_year=str(
+                parameters.get("competence_year") or catalog.get("competence") or "2024"
+            )[:4],
         )
     if connector == "siconfi_statement":
         return parser(fetched.body, dataset=str(catalog.get("dataset") or "RREO"))

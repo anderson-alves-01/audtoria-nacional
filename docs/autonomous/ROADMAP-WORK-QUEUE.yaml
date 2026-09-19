@@ -1,16 +1,15 @@
 schema_version: 1
-updated_at: "2026-09-19T11:30:00-03:00"
+updated_at: "2026-09-19T12:00:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.27"
+implementation_version: "0.3.28"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.27: MG ICMS/IPVA ativado (state_mg_csv, CSV.gz Frictionless, dims,
-  IBGE7 nativo); PE/BA intactos; RJ IP-blocked; RFB territorial sem carga
-  nacional.
+  Ciclo 0.3.28: ES ICMS/IPVA ativado (state_es_csv, IBGE7 nativo); PE/BA/MG
+  intactos; GO download 500; RJ IP-blocked; RFB territorial sem carga nacional.
 
 items:
   - id: F2-CI-CD
@@ -350,14 +349,14 @@ items:
     frontend: true
     pipeline: false
     testes: true
-    evidencia: evidence/releases/0.3.27/
-    versao: "0.3.27"
-    commit: ffca85a
-    ci: "35448857627"
+    evidencia: evidence/releases/0.3.28/
+    versao: "0.3.28"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA e MG TECHNICALLY_APPROVED. RJ IP-blocked. Próxima UF: GO/ES quando
-      schema CSV for verificável; sem agregador privado.
+      PE, BA, MG e ES TECHNICALLY_APPROVED. RJ IP-blocked. GO download CSV 500
+      neste runtime; retry no próximo ciclo. Sem agregador privado.
 
   - id: F3-STATE-ICMS-ACTIVATION
     fase: F3.2
@@ -372,14 +371,15 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.27/
-    versao: "0.3.27"
-    commit: ffca85a
-    ci: "35448857627"
+    evidencia: evidence/releases/0.3.28/
+    versao: "0.3.28"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA e MG ativados (state_pe_csv / state_ba_csv / state_mg_csv). Expandir
-      GO/ES quando schema ok; RJ permanece IP-blocked. Sem agregador privado.
+      PE, BA, MG e ES ativados (state_pe_csv / state_ba_csv / state_mg_csv /
+      state_es_csv). Retry GO quando download OK; RJ permanece IP-blocked.
+      Sem agregador privado.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2
@@ -394,14 +394,14 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.27/
-    versao: "0.3.27"
-    commit: ffca85a
-    ci: "35448857627"
+    evidencia: evidence/releases/0.3.28/
+    versao: "0.3.28"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA e MG ativados. Seguir outras UFs PUBLIC_OPEN; sem inventar valores.
-      MG usa IBGE7 nativo; PE/BA normalizam por nome+UF.
+      PE, BA, MG e ES ativados. Seguir outras UFs PUBLIC_OPEN; sem inventar valores.
+      MG/ES usam IBGE7 nativo; PE/BA normalizam por nome+UF.
 
   - id: F3-RFB-CNPJ
     fase: F3.2

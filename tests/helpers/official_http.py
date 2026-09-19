@@ -53,6 +53,11 @@ SNAPSHOT_URLS = {
         "https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/"
         "resource/a3a38dfc-2724-4276-9e0f-0b98d4138f09/download/dm_tempo_mensal.csv.gz"
     ): "mg-dm-tempo-mensal.csv",
+    (
+        "https://dados.es.gov.br/dataset/d85497f8-3dc4-4104-8e18-f242ae82b6ee/"
+        "resource/f76f120c-ee95-440c-a77a-2fdace48b1bc/download/"
+        "transfestadomunicipios-2024.csv"
+    ): "es-transf-estado-municipios-2024.csv",
 }
 
 

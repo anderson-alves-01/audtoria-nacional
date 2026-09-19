@@ -3,6 +3,7 @@ from pathlib import Path
 from sirta_api.adapters.ingest.parsers import (
     parse_ibge_sidra_series,
     parse_state_ba_csv,
+    parse_state_es_csv,
     parse_state_mg_csv,
     parse_state_pe_csv,
     parse_tesouro_monthly_csv,
@@ -176,3 +177,25 @@ def test_state_mg_csv_joins_native_ibge_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-MG-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-MG-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_es_csv_joins_native_ibge_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/es-transf-estado-municipios-2024.csv").read_bytes()
+    icms, quarantined_icms = parse_state_es_csv(body, tax="ICMS")
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"3200102", "3205309"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "ES" for row in icms)
+    assert all(row["competence"] == "2024-01" for row in icms)
+    afonso = next(row for row in icms if row["ibgeCode"] == "3200102")
+    assert afonso["value"] == 3268119.24
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_es_csv(body, tax="IPVA")
+    assert len(ipva) == 2
+    vitoria = next(row for row in ipva if row["ibgeCode"] == "3205309")
+    assert vitoria["value"] == 4816186.84
+    assert vitoria["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-ES-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-ES-IPVA-QUOTA")["createsTaxCredit"] is False

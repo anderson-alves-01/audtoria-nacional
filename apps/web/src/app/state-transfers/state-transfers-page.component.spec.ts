@@ -11,7 +11,7 @@ describe('StateTransfersPageComponent', () => {
     });
   });
 
-  it('renders PE and BA activated without inventing credit', () => {
+  it('renders PE/BA/MG/ES activated without inventing credit', () => {
     const fixture = TestBed.createComponent(StateTransfersPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
@@ -20,7 +20,7 @@ describe('StateTransfersPageComponent', () => {
       ingestEnabled: true,
       createsTaxCredit: false,
       institutionalStatus: 'TECHNICALLY_APPROVED',
-      verifiedCount: 4,
+      verifiedCount: 5,
       states: [
         {
           uf: 'PE',
@@ -32,6 +32,13 @@ describe('StateTransfersPageComponent', () => {
         {
           uf: 'BA',
           name: 'Bahia',
+          status: 'TECHNICALLY_APPROVED',
+          structuredOfficialSource: 'ckan_csv_downloadable',
+          ingestAllowed: true,
+        },
+        {
+          uf: 'ES',
+          name: 'Espírito Santo',
           status: 'TECHNICALLY_APPROVED',
           structuredOfficialSource: 'ckan_csv_downloadable',
           ingestAllowed: true,
@@ -52,6 +59,7 @@ describe('StateTransfersPageComponent', () => {
     expect(text).toContain('Transferências estaduais ICMS/IPVA');
     expect(text).toContain('PE');
     expect(text).toContain('BA');
+    expect(text).toContain('ES');
     expect(text).toContain('TECHNICALLY_APPROVED');
     expect(text).toContain('ingestAllowed=true');
     expect(text).toContain('Ingestão habilitada: sim');

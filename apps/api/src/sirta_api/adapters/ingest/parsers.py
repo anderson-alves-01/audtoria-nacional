@@ -325,6 +325,67 @@ def parse_state_mg_csv(
     return silver, quarantined
 
 
+def parse_state_es_csv(
+    body: bytes,
+    *,
+    tax: str,
+    uf: str = "ES",
+    competence_year: str = "2024",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse ES TransfEstadoMunicipios CSV; native IBGE7 in CodMunicipio; no credit."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state ES tax filter: {tax}")
+    amount_field = "IcmsTotal" if tax_key == "ICMS" else "Ipva"
+    year = str(competence_year or "2024").strip()[:4]
+    reader = csv.DictReader(io.StringIO(_decode_csv_bytes(body)), delimiter=";")
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for index, item in enumerate(reader):
+        row_year = str(item.get("Ano") or "").strip()
+        if row_year and row_year != year:
+            continue
+        month = str(item.get("Mes") or "").strip().zfill(2)
+        if not month.isdigit() or not (1 <= int(month) <= 12):
+            continue
+        competence = f"{year}-{month}"
+        ibge = str(item.get("CodMunicipio") or "").strip()
+        raw_name = str(item.get("NomeMunicipio") or "").strip()
+        amount_raw = item.get(amount_field)
+        try:
+            value = parse_brazilian_number(amount_raw)
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"es-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        row = {
+            "rowId": f"es-{tax_key.lower()}-{ibge or index}-{competence}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def parse_state_pe_csv(
     body: bytes,
     *,
