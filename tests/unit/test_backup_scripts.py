@@ -62,13 +62,14 @@ def test_restore_script_dry_run_reports_checksum(tmp_path: Path) -> None:
             "--input",
             str(dump),
         ]
-        expected = expected.lower()
     completed = subprocess.run(cmd, capture_output=True, text=True, check=False)
     assert completed.returncode == 0, completed.stderr or completed.stdout
     combined = (completed.stdout or "") + (completed.stderr or "")
     assert "pg_restore" in combined
     assert "DRY-RUN" in combined
-    assert expected in combined.upper()
+    # Scripts may print lower (sha256sum) or upper (Get-FileHash).
+    assert expected.upper() in combined.upper()
+    assert "sha256=" in combined.lower()
 
 
 def test_tool_call_audit_prefix() -> None:
