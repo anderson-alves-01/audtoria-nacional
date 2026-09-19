@@ -55,20 +55,20 @@ items:
     dominio: D1
     descricao: Observabilidade de API, jobs e ingestão (métricas, logs, traces)
     dependencias: [F2-CI-CD]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: LOCAL_GO
     dados_necessarios: none
     fontes_oficiais: []
     backend: true
     frontend: false
     pipeline: true
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: tests/unit/test_ingest_observability.py
+    versao: "0.3.16"
     commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Instrumentar ingestão oficial e jobs com run_id, volumes e falhas.
+    next_action: Expandir métricas Prometheus/OTel em ciclo futuro; manter logs de ingestão.
 
   - id: F2-BACKUP-RESTORE
     fase: F10
@@ -295,40 +295,40 @@ items:
     dominio: D9
     descricao: Portal da Transparência da União para transferências quando API estruturada existir
     dependencias: [F3-TESOURO-DICTIONARY]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: CREDENTIAL_REQUIRED
     dados_necessarios: PUBLIC_CONTROLLED
     fontes_oficiais: [portaldatransparencia.gov.br]
     backend: true
     frontend: false
     pipeline: true
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: contracts/sources/official-catalog.yaml
+    versao: "0.3.16"
     commit: null
     ci: null
-    motivo_bloqueio: null
-    next_action: Documentar 401/credencial; não scrapar; manter vazio se não houver PUBLIC_OPEN.
+    motivo_bloqueio: API exige chave (401 sem credencial); scraping proibido.
+    next_action: Aguardar credencial institucional; manter vazio e ingest bloqueado.
 
   - id: F3-REGULATORY-BEYOND-EC132
     fase: F3.2
     dominio: D10
     descricao: Catálogo documental LC 214, normas CGIBS, RFB e demais oficiais além da EC 132
     dependencias: []
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: NON_BINDING
     dados_necessarios: PUBLIC_OPEN
-    fontes_oficiais: [PLANALTO-LEGISLACAO]
+    fontes_oficiais: [PLANALTO-LEGISLACAO, PLANALTO-LC-214]
     backend: true
     frontend: true
     pipeline: true
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: tests/fixtures/official-snapshots/planalto-lc214.html
+    versao: "0.3.16"
     commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Obter HTML/PDF oficiais com checksum; binding=false operational=false homologated=false.
+    next_action: Adicionar CGIBS/RFB documentais quando URL única estável existir; manter NON_BINDING.
 
   - id: F3-STATE-CATALOG
     fase: F3.2
@@ -758,17 +758,20 @@ items:
     estado_tecnico: PENDING
     estado_institucional: NON_BINDING
     dados_necessarios: PUBLIC_OPEN
-    fontes_oficiais: [PLANALTO-LEGISLACAO]
+    fontes_oficiais: [PLANALTO-LEGISLACAO, PLANALTO-LC-214]
     backend: true
     frontend: true
     pipeline: true
     testes: true
     evidencia: tests/integration/test_regulatory.py
-    versao: "0.3.15"
-    commit: 1d7a601
+    versao: "0.3.16"
+    commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Substituir dependência de catálogo sintético por documento oficial; manter NON_BINDING.
+    next_action: >
+      Dashboard ibs-cbs já aceita Gold de EC132+LC214. Próximo: apontar
+      catalogVersion do calendário para documentos oficiais preservados,
+      mantendo binding=false operacional=false.
 
   - id: F9-PILOT-TECHNICAL
     fase: F9
@@ -815,7 +818,7 @@ items:
     dominio: D11
     descricao: Quinze dashboards com backend real, vazios oficiais e testes
     dependencias: [F3-GOLD-LINEAGE]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: []
@@ -824,15 +827,13 @@ items:
     pipeline: false
     testes: true
     evidencia: tests/integration/test_dashboards.py
-    versao: "0.3.15"
-    commit: 1d7a601
-    ci: "35437663525"
+    versao: "0.3.16"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      Completar cada rota (executivo financeiro economia operacao achados cobranca
-      pagamentos divida-ativa transferencias ibs-cbs qualidade auditoria gates
-      publico prontidao) com loading/erro/vazio, fonte, competência, fórmula,
-      qualidade, lineage e homologação pendente.
+      Rotas dedicadas cobranca/gates ainda usam componentes próprios além do
+      /v1/dashboards/{id}; manter emptySources/lineage nas 13 rotas compartilhadas.
 
   - id: DOC-HOMOLOGATION-PACKAGE
     fase: F10
