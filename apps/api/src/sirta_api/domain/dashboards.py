@@ -79,7 +79,8 @@ DASHBOARDS = (
         ),
         "emptyReason": (
             "Somente valores oficiais publicados. Dicionário FPM não é valor transferido. "
-            "Conciliação previsto/realizado em /v1/transfer-reconciliation (ocorrência, não crédito)."
+            "Conciliação previsto/realizado em /v1/transfer-reconciliation "
+            "(ocorrência, não crédito)."
         ),
         "commandsDisabled": True,
     },

@@ -19,6 +19,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('header')?.textContent).toContain('0.3.20');
+    expect(compiled.querySelector('header')?.textContent).toContain('0.3.21');
   });
 });

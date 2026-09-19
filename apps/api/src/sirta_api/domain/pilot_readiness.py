@@ -64,9 +64,7 @@ DISCLAIMER = (
 def build_pilot_readiness_snapshot() -> dict:
     checklist = [dict(row) for row in PILOT_TECHNICAL_CHECKLIST]
     technical_met = all(row["met"] for row in checklist if row["category"] == "technical")
-    institutional_met = all(
-        row["met"] for row in checklist if row["category"] == "institutional"
-    )
+    institutional_met = all(row["met"] for row in checklist if row["category"] == "institutional")
     return {
         "version": PILOT_READINESS_VERSION,
         "binding": False,

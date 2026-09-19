@@ -16,5 +16,7 @@ def test_pilot_readiness_technical_ready_g9_blocked() -> None:
     assert snap["g9Status"] == "BLOCKED"
     assert snap["g10Status"] == "BLOCKED"
     assert snap["items"] == []
-    assert any(row["id"] == "pilot_municipality" and row["met"] is False for row in snap["checklist"])
+    assert any(
+        row["id"] == "pilot_municipality" and row["met"] is False for row in snap["checklist"]
+    )
     assert any(row["id"] == "ci_reproducible" and row["met"] is True for row in snap["checklist"])

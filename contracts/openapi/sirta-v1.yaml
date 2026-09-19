@@ -3,7 +3,7 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.20
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.21
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
@@ -511,6 +511,56 @@ paths:
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
         '200': {description: Local runbooks listed; G10 BLOCKED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/municipal-uploads:
+    get:
+      operationId: getMunicipalUploads
+      description: >
+        Controlled municipal restricted upload shell. Schemas and quarantine slots
+        listed; uploadEnabled=false; no municipal samples until DPA and G0.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty upload slots; CREDENTIAL_REQUIRED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandMunicipalUploads
+      description: Always rejected (409). No municipal file accepted without DPA/G0.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Upload disabled; no sample accepted}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/cadastro-360:
+    get:
+      operationId: getCadastro360
+      description: >
+        Cadastro 360 technical empty shell. No real PII, no invented territory,
+        minimization enforced. CREDENTIAL_REQUIRED until territorial scope and G0.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty subjects; piiPresent=false}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandCadastro360
+      description: Always rejected (409). No subject enrichment without authorization.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Commands disabled; no PII enrichment}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/data-sources:

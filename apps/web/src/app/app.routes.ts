@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ActiveDebtPageComponent } from './active-debt/active-debt-page.component';
 import { AuditCasesPageComponent } from './audit-cases/audit-cases-page.component';
 import { AuditRulesPageComponent } from './audit-rules/audit-rules-page.component';
+import { Cadastro360PageComponent } from './cadastro-360/cadastro-360-page.component';
 import { CalendarPageComponent } from './calendar/calendar-page.component';
 import { CollectionPageComponent } from './collection/collection-page.component';
 import { DashboardPageComponent } from './dashboard/dashboard-page.component';
@@ -11,6 +12,7 @@ import { FunnelPageComponent } from './funnel/funnel-page.component';
 import { GatesPageComponent } from './gates/gates-page.component';
 import { HealthPageComponent } from './health/health-page.component';
 import { HumanValidationPageComponent } from './human-validation/human-validation-page.component';
+import { MunicipalUploadsPageComponent } from './municipal-uploads/municipal-uploads-page.component';
 import { NotificationsPageComponent } from './notifications/notifications-page.component';
 import { OpsGovernancePageComponent } from './ops-governance/ops-governance-page.component';
 import { PaymentsPageComponent } from './payments/payments-page.component';
@@ -37,6 +39,8 @@ export const routes: Routes = [
   { path: 'fontes', component: SourcesPageComponent },
   { path: 'gates', component: GatesPageComponent },
   { path: 'operacao-governanca', component: OpsGovernancePageComponent },
+  { path: 'upload-municipal', component: MunicipalUploadsPageComponent },
+  { path: 'cadastro-360', component: Cadastro360PageComponent },
   { path: 'executivo', component: DashboardPageComponent, data: { dashboardId: 'executivo' } },
   { path: 'financeiro', component: DashboardPageComponent, data: { dashboardId: 'financeiro' } },
   { path: 'economia', component: DashboardPageComponent, data: { dashboardId: 'economia' } },

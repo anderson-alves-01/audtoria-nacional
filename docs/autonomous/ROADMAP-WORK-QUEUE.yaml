@@ -1,8 +1,8 @@
 schema_version: 1
-updated_at: "2026-09-19T12:30:00-03:00"
+updated_at: "2026-09-19T12:45:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.20"
+implementation_version: "0.3.21"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
@@ -515,20 +515,22 @@ items:
     dominio: D2
     descricao: Conectores ISS IPTU ITBI DA pagamentos parcelamentos processos
     dependencias: []
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: CREDENTIAL_REQUIRED
     dados_necessarios: RESTRICTED
     fontes_oficiais: []
     backend: true
     frontend: true
     pipeline: true
-    testes: false
-    evidencia: contracts/sources/official-catalog.yaml
-    versao: "0.3.15"
-    commit: 1d7a601
+    testes: true
+    evidencia: evidence/releases/0.3.21/
+    versao: "0.3.21"
+    commit: null
     ci: null
-    motivo_bloqueio: null
-    next_action: Completar upload controlado, schemas, quarentena, tenant e telas vazias; sem amostra.
+    motivo_bloqueio: DPA e G0 ausentes; uploadEnabled=false.
+    next_action: >
+      Manter /v1/municipal-uploads vazio, uploadEnabled=false, POST → 409.
+      Sem amostra municipal. G0 BLOCKED.
 
   - id: F4-DIAGNOSIS
     fase: F4
@@ -555,20 +557,22 @@ items:
     dominio: D4
     descricao: Cadastro 360 técnico sem PII real
     dependencias: [F3-RFB-CNPJ, F3-MUNICIPAL-RESTRICTED]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: CREDENTIAL_REQUIRED
     dados_necessarios: RESTRICTED
     fontes_oficiais: []
     backend: true
     frontend: true
     pipeline: false
-    testes: false
-    evidencia: null
-    versao: "0.3.15"
+    testes: true
+    evidencia: evidence/releases/0.3.21/
+    versao: "0.3.21"
     commit: null
     ci: null
-    motivo_bloqueio: null
-    next_action: Modelo, API e tela vazia; minimização; sem território inventado.
+    motivo_bloqueio: Escopo territorial RFB e DPA ausentes; piiPresent=false.
+    next_action: >
+      Manter /v1/cadastro-360 vazio, piiPresent=false, territoryInvented=false,
+      POST → 409. Sem território inventado. G0 BLOCKED.
 
   - id: F4-AUDIT-RULES
     fase: F4
