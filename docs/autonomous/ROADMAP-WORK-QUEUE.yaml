@@ -27,7 +27,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
-    commit: null
+    commit: 9938773
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -355,7 +355,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
-    commit: null
+    commit: 9938773
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -377,7 +377,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
-    commit: null
+    commit: 9938773
     ci: null
     motivo_bloqueio: >
       RJ CSV catalogado no CKAN; download retornou HTML de filtro de IP SEFAZ
@@ -401,7 +401,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
-    commit: null
+    commit: 9938773
     ci: null
     motivo_bloqueio: >
       Mesmo CSV RJ de repasses inclui IPVA; schema pendente pelo bloqueio de IP.
@@ -422,7 +422,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.24/
     versao: "0.3.24"
-    commit: null
+    commit: 9938773
     ci: null
     motivo_bloqueio: null
     next_action: >
