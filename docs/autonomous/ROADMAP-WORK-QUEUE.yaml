@@ -351,7 +351,7 @@ items:
     evidencia: evidence/releases/0.3.30/
     versao: "0.3.30"
     commit: 2c1df5b
-    ci: null
+    ci: "35451439251"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO e MS TECHNICALLY_APPROVED (GO só IPVA via DataStore;
@@ -374,7 +374,7 @@ items:
     evidencia: evidence/releases/0.3.30/
     versao: "0.3.30"
     commit: 2c1df5b
-    ci: null
+    ci: "35451439251"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES e MS ICMS/IPVA + GO IPVA ativados. GO ICMS não publicado no
@@ -396,7 +396,7 @@ items:
     evidencia: evidence/releases/0.3.30/
     versao: "0.3.30"
     commit: 2c1df5b
-    ci: null
+    ci: "35451439251"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO e MS IPVA ativados. Seguir outras UFs PUBLIC_OPEN; sem
