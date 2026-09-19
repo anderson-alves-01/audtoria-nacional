@@ -3,6 +3,7 @@ from pathlib import Path
 from sirta_api.adapters.ingest.parsers import (
     parse_aneel_ckan_open,
     parse_anp_revendedores_api,
+    parse_bcb_sgs_olinda,
     parse_ibge_sidra_series,
     parse_state_ba_csv,
     parse_state_es_csv,
@@ -270,6 +271,26 @@ def test_aneel_indqual_aggregates_by_ibge7() -> None:
     assert quarantined[0][1] == "invalid IBGE municipality code"
     assert presentation_for("ANEEL-DADOS-ABERTOS")["valueKind"] == "REFERENCE_QUANTITY"
     assert presentation_for("ANEEL-DADOS-ABERTOS")["createsTaxCredit"] is False
+
+
+def test_bcb_sgs_allowlist_parses_points() -> None:
+    body = Path("tests/fixtures/official-snapshots/bcb-sgs-432-ultimos3.json").read_bytes()
+    silver, quarantined = parse_bcb_sgs_olinda(
+        body,
+        series_id=432,
+        series_label="SELIC_META",
+        unit="PERCENT_PER_YEAR",
+        allowlist=[432, 433],
+    )
+    assert len(silver) == 3
+    assert quarantined == []
+    assert silver[0]["transferName"] == "SELIC_META"
+    assert silver[0]["value"] == 13.75
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["seriesId"] == "432"
+    assert silver[0]["uf"] == "BR"
+    assert presentation_for("BCB-SGS-OLINDA")["valueKind"] == "REFERENCE_QUANTITY"
+    assert presentation_for("BCB-SGS-OLINDA")["createsTaxCredit"] is False
 
 
 def test_anp_revendedores_aggregates_and_drops_cnpj() -> None:

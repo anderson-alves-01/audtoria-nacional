@@ -72,6 +72,12 @@ SNAPSHOT_URLS = {
         "resource_id=3f841488-80a8-42f2-a6ca-e0c593b228de&"
         "filters=%7B%22SigUF%22%3A%22MS%22%7D&limit=8"
     ): "aneel-indqual-municipio-ms-limit8.json",
+    (
+        "https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/3?formato=json"
+    ): "bcb-sgs-432-ultimos3.json",
+    (
+        "https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados/ultimos/3?formato=json"
+    ): "bcb-sgs-433-ultimos3.json",
 }
 
 

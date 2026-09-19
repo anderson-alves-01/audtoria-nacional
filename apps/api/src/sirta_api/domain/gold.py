@@ -130,6 +130,13 @@ PRESENTATION = {
             "(escopo UF). Referência setorial; não constitui crédito tributário."
         ),
     },
+    "BCB-SGS-OLINDA": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Séries macroeconômicas SGS do Banco Central (allowlist). "
+            "Contexto setorial; não constitui crédito tributário."
+        ),
+    },
     "SICONFI-RREO": {
         "valueKind": "FISCAL_STATEMENT_LINE",
         "label": "Linhas do RREO municipal. Não constituem crédito tributário.",

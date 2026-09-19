@@ -11,7 +11,7 @@ describe('SectoralEnrichmentPageComponent', () => {
     }).compileComponents();
   });
 
-  it('renders sectoral shell with ANP and ANEEL partial activation without tax credit', () => {
+  it('renders sectoral shell with ANP, ANEEL and BCB partial activation without tax credit', () => {
     const fixture = TestBed.createComponent(SectoralEnrichmentPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
@@ -35,9 +35,16 @@ describe('SectoralEnrichmentPageComponent', () => {
           ingestAllowed: true,
           structuredOfficialSource: 'ckan_datastore_indqual_municipio',
         },
+        {
+          sourceId: 'BCB-SGS-OLINDA',
+          maintainer: 'Banco Central',
+          status: 'TECHNICALLY_APPROVED',
+          ingestAllowed: true,
+          structuredOfficialSource: 'sgs_json_allowlist',
+        },
       ],
       items: [],
-      disclaimer: 'ANP e ANEEL ativadas com escopo UF; demais bloqueadas.',
+      disclaimer: 'ANP, ANEEL e BCB ativadas; demais bloqueadas.',
     });
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent as string;
@@ -46,6 +53,7 @@ describe('SectoralEnrichmentPageComponent', () => {
     expect(text).toContain('Cria crédito: não');
     expect(text).toContain('ANP-REVENDEDORES');
     expect(text).toContain('ANEEL-DADOS-ABERTOS');
+    expect(text).toContain('BCB-SGS-OLINDA');
     expect(text).toContain('TECHNICALLY_APPROVED');
     http.verify();
   });

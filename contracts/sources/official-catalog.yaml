@@ -1232,41 +1232,51 @@ sources:
       Ativar somente após CSV estruturado e normalização IBGE7. Não constitui crédito.
 
   - source_id: BCB-SGS-OLINDA
-    name: Banco Central — SGS e OLINDA (séries e OData)
+    name: Banco Central — SGS Meta Selic (432) e IPCA (433)
     maintainer: Banco Central do Brasil
     official_domain: bcb.gov.br
-    official_url: https://dadosabertos.bcb.gov.br/
-    endpoint: https://api.bcb.gov.br/dados/serie/bcdata.sgs.1/dados/ultimos/1?formato=json
-    documentation_url: https://olinda.bcb.gov.br/olinda/service/help
+    official_url: https://dadosabertos.bcb.gov.br/pt_BR/dataset/432-taxa-de-juros---meta-selic-definida-pelo-copom
+    endpoint: https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/3?formato=json
+    documentation_url: https://dadosabertos.bcb.gov.br/
     dataset: BCB-SGS-OLINDA
     dictionary_url: https://www3.bcb.gov.br/sgspub/
-    purpose: Séries macroeconômicas oficiais para contexto; nunca crédito tributário
-    legal_basis: APIs públicas SGS e OLINDA do BCB
+    purpose: Séries macroeconômicas oficiais allowlist para contexto; nunca crédito tributário
+    legal_basis: APIs públicas SGS do BCB
     license_terms: termos de uso do Banco Central para dados abertos
     source_role: REFERENCE_ENRICHMENT
     access_classification: PUBLIC_OPEN
-    status: DISCOVERED
-    fixture_kind: NONE
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
     connector: bcb_sgs_olinda
-    layout_version: bcb-sgs-olinda-v1
+    layout_version: bcb-sgs-allowlist-v1
     periodicity: as_published
-    competence: unknown
+    competence: as_published
     granularity: series
     parameters:
-      sgs_base: https://api.bcb.gov.br/dados/serie/
-      olinda_base: https://olinda.bcb.gov.br/olinda/servico/
+      series_id: 432
+      series_allowlist: [432, 433]
+      ultimos: 3
       scrape_forbidden: true
-      activation: blocked_until_series_allowlist
+      series_meta:
+        "432":
+          label: SELIC_META
+          unit: PERCENT_PER_YEAR
+        "433":
+          label: IPCA_MONTHLY_VAR
+          unit: PERCENT_MONTHLY_VAR
     authentication: none
     rate_limit: http_429_possible
     personal_data: false
-    retention: none_until_activation
-    indicator: none
-    formula: none
-    methodology_version: none
+    retention: bronze_immutable
+    indicator: bcb_sgs_allowlisted_series
+    formula: >
+      Pontos publicados pela API SGS do BCB apenas para séries na allowlist
+      (432 Meta Selic % a.a.; 433 IPCA variação % mensal), limitados a ultimos=N.
+      Sem séries fora da allowlist. Não constitui crédito.
+    methodology_version: official-bcb-sgs-allowlist-v1
     notes: >
-      SGS JSON e OLINDA OData oficiais verificados. Sem allowlist de séries nesta fatia.
-      Não cria crédito, cobrança ou indício fiscal automático.
+      SGS JSON oficial verificado. Ativação técnica com allowlist 432+433 e
+      fixture mínima (ultimos=3). Homologação humana pendente. Não constitui crédito.
 
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — Cadastro Nacional de Estabelecimentos de Saúde

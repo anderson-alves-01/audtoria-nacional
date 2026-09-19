@@ -25,6 +25,7 @@ from sirta_api.adapters.ingest.parsers import (
     normalize_place,
     parse_aneel_ckan_open,
     parse_anp_revendedores_api,
+    parse_bcb_sgs_olinda,
     parse_ibge_sidra_series,
     parse_official_document,
     parse_siconfi_entes,
@@ -87,6 +88,7 @@ PARSERS = {
     "state_ms_csv": parse_state_ms_csv,
     "anp_revendedores_api": parse_anp_revendedores_api,
     "aneel_ckan_open": parse_aneel_ckan_open,
+    "bcb_sgs_olinda": parse_bcb_sgs_olinda,
 }
 
 
@@ -121,7 +123,6 @@ def ingest_official_source(
         "portal_transparencia_api",
         "epe_open_files",
         "anatel_dados_gov",
-        "bcb_sgs_olinda",
         "cnes_datasus_open",
     }:
         raise ForbiddenError("Official connector is waiting territorial scope or credentials")
@@ -716,9 +717,62 @@ def _parse(
                 parameters.get("competence") or catalog.get("competence") or "as_published"
             ),
         )
+    if connector == "bcb_sgs_olinda":
+        return _parse_bcb_sgs_allowlist(
+            fetched,
+            catalog=catalog,
+            http_client=http_client,
+            parser=parser,
+        )
     if connector == "siconfi_statement":
         return parser(fetched.body, dataset=str(catalog.get("dataset") or "RREO"))
     return parser(fetched.body)
+
+
+def _parse_bcb_sgs_allowlist(
+    fetched: OfficialHttpResponse,
+    *,
+    catalog: dict,
+    http_client: OfficialHttpClient | None,
+    parser,
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    parameters = catalog.get("parameters") or {}
+    allowlist = [int(item) for item in (parameters.get("series_allowlist") or [])]
+    if not allowlist:
+        raise ConflictError("BCB SGS connector requires series_allowlist")
+    series_meta = parameters.get("series_meta") or {}
+    ultimos = int(parameters.get("ultimos") or 3)
+    primary_id = int(parameters.get("series_id") or allowlist[0])
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    timeout = get_settings().official_http_timeout_seconds
+    for series_id in allowlist:
+        meta = series_meta.get(str(series_id)) or series_meta.get(series_id) or {}
+        label = str(meta.get("label") or f"SGS_{series_id}")
+        unit = str(meta.get("unit") or "INDEX_POINTS")
+        if series_id == primary_id:
+            body = fetched.body
+        else:
+            if http_client is None:
+                raise ConflictError("BCB allowlist secondary series require HTTP client")
+            url = (
+                "https://api.bcb.gov.br/dados/serie/"
+                f"bcdata.sgs.{series_id}/dados/ultimos/{ultimos}?formato=json"
+            )
+            secondary = http_client.fetch(url, timeout=timeout)
+            if secondary.status_code >= 400 or not secondary.body:
+                raise ConflictError(f"BCB SGS series {series_id} download failed")
+            body = secondary.body
+        part_silver, part_quarantined = parser(
+            body,
+            series_id=series_id,
+            series_label=label,
+            unit=unit,
+            allowlist=allowlist,
+        )
+        silver.extend(part_silver)
+        quarantined.extend(part_quarantined)
+    return silver, quarantined
 
 
 def _fetch_mg_dims(

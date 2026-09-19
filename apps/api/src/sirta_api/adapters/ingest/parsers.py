@@ -386,6 +386,81 @@ def parse_state_es_csv(
     return silver, quarantined
 
 
+def parse_bcb_sgs_olinda(
+    body: bytes,
+    *,
+    series_id: int,
+    series_label: str,
+    unit: str,
+    allowlist: list[int] | tuple[int, ...] | None = None,
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse BCB SGS JSON points for one allowlisted series; never tax credit."""
+    allowed = {int(item) for item in (allowlist or ())}
+    if not allowed:
+        raise ValueError("BCB SGS requires a non-empty series_allowlist")
+    if int(series_id) not in allowed:
+        raise ValueError(f"BCB series {series_id} is outside the configured allowlist")
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return [], [({"rowId": "bcb-document"}, "invalid JSON")]
+    if not isinstance(payload, list):
+        return [], [({"rowId": "bcb-document"}, "unexpected SGS envelope")]
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    label = str(series_label or f"SGS_{series_id}").strip() or f"SGS_{series_id}"
+    unit_name = str(unit or "INDEX_POINTS").strip() or "INDEX_POINTS"
+    for index, item in enumerate(payload):
+        if not isinstance(item, dict):
+            continue
+        raw_date = str(item.get("data") or "").strip()
+        raw_value = item.get("valor")
+        try:
+            value = float(str(raw_value).replace(",", "."))
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"bcb-sgs-{series_id}-{index}",
+                        "territoryName": "Brasil",
+                        "uf": "BR",
+                        "competence": raw_date or "unknown",
+                        "value": raw_value,
+                    },
+                    "invalid numeric value",
+                )
+            )
+            continue
+        if not raw_date:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"bcb-sgs-{series_id}-{index}",
+                        "territoryName": "Brasil",
+                        "uf": "BR",
+                        "value": value,
+                    },
+                    "missing series date",
+                )
+            )
+            continue
+        competence = raw_date.replace("/", "")[:8] or raw_date
+        silver.append(
+            {
+                "rowId": f"bcb-sgs-{series_id}-{competence}"[:64],
+                "territoryName": "Brasil",
+                "uf": "BR",
+                "ibgeCode": "",
+                "competence": raw_date,
+                "transferName": label,
+                "value": value,
+                "unit": unit_name,
+                "seriesId": str(series_id),
+            }
+        )
+    return silver, quarantined
+
+
 def parse_aneel_ckan_open(
     body: bytes,
     *,

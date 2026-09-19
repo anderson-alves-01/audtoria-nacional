@@ -24,6 +24,7 @@ DASHBOARDS = (
             "IBGE-SIDRA",
             "ANP-REVENDEDORES",
             "ANEEL-DADOS-ABERTOS",
+            "BCB-SGS-OLINDA",
         ),
         "emptyReason": "PIB e população não são potencial de ISS nem crédito constituído.",
         "commandsDisabled": True,

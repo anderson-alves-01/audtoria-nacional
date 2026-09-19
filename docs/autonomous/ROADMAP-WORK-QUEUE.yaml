@@ -2,14 +2,14 @@ schema_version: 1
 updated_at: "2026-09-19T13:15:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.32"
+implementation_version: "0.3.33"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.32: ANEEL IndQual Município ativado com escopo UF=MS (aneel_ckan_open);
-  ANP/PE/BA/MG/ES/GO/MS intactos; RJ IP-blocked; RFB territorial sem carga nacional.
+  Ciclo 0.3.33: BCB SGS allowlist 432+433 ativado (bcb_sgs_olinda); ANEEL/ANP e
+  UFs PE/BA/MG/ES/GO/MS intactos; RJ IP-blocked; RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -496,20 +496,21 @@ items:
     descricao: Investigar dados abertos oficiais do Banco Central
     dependencias: [F3-SOURCE-CATALOG]
     estado_tecnico: TECH_COMPLETE
-    estado_institucional: DISCOVERED
+    estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [BCB-SGS-OLINDA]
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.22/
-    versao: "0.3.22"
-    commit: c046301
+    evidencia: evidence/releases/0.3.33/
+    versao: "0.3.33"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
-      SGS/OLINDA catalogados; ativar só com allowlist de séries. Sem crédito.
+      SGS 432 (Meta Selic) e 433 (IPCA) TECHNICALLY_APPROVED com fixture mínima
+      e Gold REFERENCE_QUANTITY. OLINDA OData permanece DISCOVERED. Sem crédito.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
