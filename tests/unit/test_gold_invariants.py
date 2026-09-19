@@ -338,12 +338,8 @@ def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:
 
 
 def test_state_rs_xls_joins_name_and_quarantines_territory() -> None:
-    icms_body = Path(
-        "tests/fixtures/official-snapshots/rs-icms-repasses-2025-01.xls"
-    ).read_bytes()
-    ipva_body = Path(
-        "tests/fixtures/official-snapshots/rs-ipva-repasses-2025-01.xls"
-    ).read_bytes()
+    icms_body = Path("tests/fixtures/official-snapshots/rs-icms-repasses-2025-01.xls").read_bytes()
+    ipva_body = Path("tests/fixtures/official-snapshots/rs-ipva-repasses-2025-01.xls").read_bytes()
     lookup = {
         ("ACEGUA", "RS"): "4300034",
         ("PORTO ALEGRE", "RS"): "4314902",
