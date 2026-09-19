@@ -61,3 +61,12 @@ def test_synthetic_fixture_is_denied_without_test_flag() -> None:
         fixture_kind="SYNTHETIC",
         allow_synthetic_loads=True,
     )
+    assert (
+        ingest_allowed(
+            source_role="REFERENCE_ENRICHMENT",
+            access_classification="PUBLIC_OPEN",
+            status="READY_FOR_TERRITORIAL_SCOPE",
+            fixture_kind="OFFICIAL",
+        )
+        is False
+    )

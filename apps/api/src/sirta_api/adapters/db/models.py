@@ -322,3 +322,39 @@ class GoldOfficial(Base):
     lineage: Mapped[dict] = mapped_column(JSONB, nullable=False)
     published: Mapped[bool] = mapped_column(nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class GoldOfficialLine(Base):
+    __tablename__ = "gold_official_lines"
+    __table_args__ = (UniqueConstraint("gold_id", "silver_row_id"),)
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    gold_id: Mapped[UUID] = mapped_column(ForeignKey("gold_officials.id"), nullable=False)
+    run_id: Mapped[UUID] = mapped_column(ForeignKey("data_load_runs.id"), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    silver_row_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    bronze_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    checksum_sha256: Mapped[str] = mapped_column(String(64), nullable=False)
+    landing_manifest_path: Mapped[str] = mapped_column(String(512), nullable=False)
+    official_url: Mapped[str] = mapped_column(String(512), nullable=False)
+    ibge_code: Mapped[str | None] = mapped_column(String(7), nullable=True)
+    value: Mapped[float | None] = mapped_column(Numeric(24, 4), nullable=True)
+    unit: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
+
+
+class IngestCheckpoint(Base):
+    __tablename__ = "ingest_checkpoints"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "territory_id", "source_id", "partition_key"),
+    )
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    partition_key: Mapped[str] = mapped_column(String(128), nullable=False)
+    cursor: Mapped[str] = mapped_column(String(128), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    metrics: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

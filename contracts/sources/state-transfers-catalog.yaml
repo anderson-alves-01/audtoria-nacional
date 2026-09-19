@@ -1,0 +1,146 @@
+contract_version: state-transfers-catalog-v1
+verified_at: "2026-09-19"
+technical_reference_territory: none
+pilot_state_approved: false
+adapter: state_transfer_adapter
+normalize: ibge7
+taxes: [ICMS, IPVA]
+notes: >
+  Nenhuma fonte estadual foi ativada autonomamente. Portais HTML de transparência
+  não são API/arquivo estruturado. Agregadores privados foram recusados.
+states:
+  - uf: AC
+    name: Acre
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Portal de transparência estadual sem contrato de arquivo/API estruturado comprovado nesta fatia.
+  - uf: AL
+    name: Alagoas
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: AP
+    name: Amapá
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: AM
+    name: Amazonas
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: BA
+    name: Bahia
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: CE
+    name: Ceará
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: DF
+    name: Distrito Federal
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: DF não reparte ICMS/IPVA com municípios da mesma forma; sem dataset municipal aplicável verificado.
+  - uf: ES
+    name: Espírito Santo
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: GO
+    name: Goiás
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: MA
+    name: Maranhão
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado. Não é território piloto aprovado.
+  - uf: MT
+    name: Mato Grosso
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: MS
+    name: Mato Grosso do Sul
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: MG
+    name: Minas Gerais
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: PA
+    name: Pará
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: PB
+    name: Paraíba
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: PR
+    name: Paraná
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: PE
+    name: Pernambuco
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: PI
+    name: Piauí
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: RJ
+    name: Rio de Janeiro
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: RN
+    name: Rio Grande do Norte
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: RS
+    name: Rio Grande do Sul
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: RO
+    name: Rondônia
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: RR
+    name: Roraima
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: SC
+    name: Santa Catarina
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: SP
+    name: São Paulo
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado nesta fatia.
+  - uf: SE
+    name: Sergipe
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: TO
+    name: Tocantins
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.

@@ -3,8 +3,9 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.14
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.15
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
+    Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
     Sensitive operations require OIDC plus tenant, territory and purpose context.
 servers:
@@ -324,6 +325,49 @@ paths:
         '200': {description: Official Gold items or empty sources with reason}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/indicators/official-gold/lines:
+    get:
+      operationId: getOfficialGoldLines
+      description: >
+        Per-row Gold lineage to Silver, Bronze checksum, landing manifest and official URL.
+        Incomplete lineage is rejected.
+      parameters:
+        - name: sourceId
+          in: query
+          schema: {type: string}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Gold lines with complete lineage}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/dashboards:
+    get:
+      operationId: listDashboards
+      description: Fifteen official dashboards. Empty modules stay empty. No synthetic fill. Commands disabled.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Dashboard catalog with official Gold subsets}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/dashboards/{dashboardId}:
+    get:
+      operationId: getDashboard
+      description: One official dashboard. ROI is never calculated without eligible received values.
+      parameters:
+        - name: dashboardId
+          in: path
+          required: true
+          schema: {type: string}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Dashboard view}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {$ref: '#/components/responses/NotFound'}
   /v1/program-gates:
     get:
       operationId: listProgramGates

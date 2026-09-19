@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import csv
 import hashlib
+import io
 import json
 import re
+import unicodedata
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -173,6 +176,10 @@ def parse_official_document(
             "competence": "as_published",
             "value": 1,
             "unit": "document",
+            "binding": False,
+            "operational": False,
+            "homologated": False,
+            "status": "NON_BINDING",
         }
     ]
     return silver, []
@@ -202,3 +209,109 @@ def write_landing(*, directory: Path, body: bytes, manifest: dict) -> None:
 
 def minimize_row(row: dict) -> dict:
     return {key: value for key, value in row.items() if key.lower() not in PERSONAL_KEYS}
+
+
+def normalize_place(value: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", value or "")
+    ascii_only = "".join(char for char in decomposed if not unicodedata.combining(char))
+    return re.sub(r"\s+", " ", ascii_only).strip().upper()
+
+
+def parse_tesouro_monthly_csv(
+    body: bytes, *, ibge_lookup: dict[tuple[str, str], str] | None = None
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    text = body.decode("latin-1")
+    reader = csv.DictReader(io.StringIO(text), delimiter=";")
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    for index, item in enumerate(reader):
+        name = str(item.get("Município") or item.get("Municipio") or "").strip()
+        uf = str(item.get("UF") or "").strip()
+        year = str(item.get("ANO") or "").strip()
+        month = str(item.get("Mês") or item.get("Mes") or "").zfill(2)
+        item_name = str(
+            item.get("Item transferência") or item.get("Item transferencia") or ""
+        ).strip()
+        destination = str(item.get("Transferência") or item.get("Transferencia") or "").strip()
+        if item_name != "FPM" and destination != "FPM":
+            continue
+        amounts = []
+        for key in item:
+            if "Dec" in key or "dec" in key:
+                try:
+                    amounts.append(float(str(item[key]).replace(",", ".")))
+                except ValueError:
+                    amounts.append(None)
+        if not amounts or any(value is None for value in amounts):
+            quarantined.append(
+                (
+                    {"rowId": f"fpm-{index}", "territoryName": name, "uf": uf},
+                    "non numeric FPM amount",
+                )
+            )
+            continue
+        total = float(sum(value for value in amounts if value is not None))
+        ibge = lookup.get((normalize_place(name), normalize_place(uf)), "")
+        if item_name == "FPM" and destination == "FPM":
+            modality = "FPM_RECEIVED"
+        else:
+            modality = f"FPM_TO_{destination}"
+        row = {
+            "rowId": f"fpm-{ibge or index}-{year}-{month}-{modality}"[:64],
+            "territoryName": name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": f"{year}-{month}"[:7],
+            "transferName": "FPM",
+            "modality": modality,
+            "itemName": item_name,
+            "destination": destination,
+            "value": total,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
+def parse_siconfi_statement(
+    body: bytes, *, dataset: str = "RREO"
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return [], [({"rowId": "document"}, "invalid JSON")]
+    items = payload.get("items") if isinstance(payload, dict) else None
+    if not isinstance(items, list):
+        return [], [({"rowId": "document"}, "unexpected SICONFI envelope")]
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    for index, item in enumerate(items):
+        ibge = str(item.get("cod_ibge") or "").strip()
+        competence = str(item.get("exercicio") or "").strip()
+        account = str(item.get("cod_conta") or item.get("conta") or "").strip()
+        raw = item.get("valor")
+        row = {
+            "rowId": f"{ibge}-{competence}-{account}-{index}"[:64],
+            "ibgeCode": ibge,
+            "competence": competence,
+            "account": account,
+            "annex": item.get("anexo"),
+            "column": item.get("coluna"),
+            "dataset": dataset,
+            "value": raw,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "invalid IBGE municipality code"))
+            continue
+        try:
+            value = float(raw)
+        except (TypeError, ValueError):
+            quarantined.append((row, "non numeric statement value"))
+            continue
+        silver.append({**row, "value": value})
+    return silver, quarantined

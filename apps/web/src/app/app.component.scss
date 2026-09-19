@@ -23,7 +23,12 @@ header {
   color: #fff;
 }
 
+header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+}
+
 header nav a {
   color: #fff;
-  margin-right: 1rem;
 }

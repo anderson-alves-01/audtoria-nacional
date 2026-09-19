@@ -5,18 +5,28 @@ from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from sirta_api.adapters.db.models import DataLoadRow, DataLoadRun, GoldOfficial, SourceRegistry
+from sirta_api.adapters.db.models import (
+    DataLoadRow,
+    DataLoadRun,
+    GoldOfficial,
+    GoldOfficialLine,
+    IngestCheckpoint,
+    SourceRegistry,
+)
 from sirta_api.adapters.ingest.catalog_loader import catalog_source, load_official_catalog
 from sirta_api.adapters.ingest.http_client import OfficialHttpClient, OfficialHttpResponse
 from sirta_api.adapters.ingest.parsers import (
     landing_dir,
     minimize_row,
+    normalize_place,
     parse_ibge_sidra_series,
     parse_official_document,
     parse_siconfi_entes,
+    parse_siconfi_statement,
+    parse_tesouro_monthly_csv,
     parse_tesouro_transfer_types,
     sha256_bytes,
     write_landing,
@@ -30,11 +40,18 @@ from sirta_api.domain.catalog import (
     assert_ingest_allowed,
 )
 from sirta_api.domain.errors import ConflictError, ForbiddenError
+from sirta_api.domain.gold import (
+    assert_gold_lineage_complete,
+    coverage_divergence,
+    presentation_for,
+)
 
 PARSERS = {
     "ibge_sidra_series": parse_ibge_sidra_series,
     "siconfi_entes": parse_siconfi_entes,
     "tesouro_transfer_types": parse_tesouro_transfer_types,
+    "tesouro_monthly_csv": parse_tesouro_monthly_csv,
+    "siconfi_statement": parse_siconfi_statement,
 }
 
 
@@ -56,11 +73,22 @@ def ingest_official_source(
     )
     connector = str(catalog.get("connector") or "")
     endpoint = str(catalog.get("endpoint") or "")
+    if connector in {"rfb_cnpj_open", "restricted_upload", "state_transfer_adapter"}:
+        raise ForbiddenError("Official connector is waiting territorial scope or credentials")
     if connector in {"", "none"} or endpoint in {"", "none"}:
         raise ForbiddenError("Official connector is not activated for this source")
     timeout = get_settings().official_http_timeout_seconds
     try:
-        fetched = _fetch_pages(http_client, endpoint=endpoint, connector=connector, timeout=timeout)
+        fetched = _fetch_source(
+            http_client,
+            catalog=catalog,
+            connector=connector,
+            endpoint=endpoint,
+            timeout=timeout,
+            session=session,
+            context=context,
+            source_id=source.source_id,
+        )
     except Exception as exc:
         source.status = "UNAVAILABLE"
         session.flush()
@@ -109,7 +137,9 @@ def ingest_official_source(
     if existing is not None:
         return _body(existing, source=source, catalog=catalog, replay=True)
     extracted_at = datetime.now(UTC)
-    silver, quarantined = _parse(connector, fetched)
+    silver, quarantined = _parse(
+        connector, fetched, session=session, context=context, catalog=catalog
+    )
     if connector == "siconfi_entes":
         silver = [minimize_row(row) for row in silver]
         for row, _reason in quarantined:
@@ -212,8 +242,15 @@ def ingest_official_source(
             )
         )
     numeric_values = [
-        float(row["value"]) for row in silver if isinstance(row.get("value"), (int, float))
+        float(row["value"])
+        for row in silver
+        if isinstance(row.get("value"), (int, float))
+        and presentation_for(source.source_id)["valueKind"]
+        in {"REFERENCE_QUANTITY", "TRANSFER_AMOUNT_AS_PUBLISHED"}
+        and str(row.get("variableId") or "") != "6575"
+        and row.get("modality") in {None, "FPM_RECEIVED"}
     ]
+    presentation = presentation_for(source.source_id)
     gold = GoldOfficial(
         tenant_id=context.tenant_id,
         territory_id=context.territory_id,
@@ -237,13 +274,46 @@ def ingest_official_source(
         lineage={
             "bronzeSha256": digest,
             "landingPath": str(directory),
+            "landingManifestPath": str(directory / "manifest.json"),
             "endpoint": endpoint,
             "httpStatus": fetched.status_code,
+            "valueKind": presentation["valueKind"],
+            "presentation": presentation["label"],
+            "createsTaxCredit": False,
         },
         published=bool(silver),
         created_at=extracted_at,
     )
     session.add(gold)
+    session.flush()
+    for row in silver:
+        line = {
+            "silverRowId": str(row["rowId"])[:64],
+            "bronzeSha256": digest,
+            "checksumSha256": digest,
+            "landingManifestPath": str(directory / "manifest.json"),
+            "officialUrl": str(catalog.get("official_url") or source.official_url),
+            "ibgeCode": row.get("ibgeCode"),
+            "value": row.get("value"),
+            "unit": row.get("unit"),
+        }
+        assert_gold_lineage_complete(line)
+        session.add(
+            GoldOfficialLine(
+                gold_id=gold.id,
+                run_id=run.id,
+                source_id=source.source_id,
+                silver_row_id=line["silverRowId"],
+                bronze_sha256=digest,
+                checksum_sha256=digest,
+                landing_manifest_path=line["landingManifestPath"],
+                official_url=line["officialUrl"],
+                ibge_code=str(row.get("ibgeCode") or "")[:7] or None,
+                value=float(row["value"]) if isinstance(row.get("value"), (int, float)) else None,
+                unit=str(row.get("unit") or "")[:32] or None,
+                payload=minimize_row(row),
+            )
+        )
     if silver:
         source.status = "ACTIVE"
     record_audit(
@@ -327,7 +397,16 @@ def list_official_gold(session: Session, *, context: AccessContext) -> dict:
     ).all()
     items = []
     published_ids = {row.source_id for row in rows}
+    line_counts = {
+        gold_id: count
+        for gold_id, count in session.execute(
+            select(GoldOfficialLine.gold_id, func.count(GoldOfficialLine.id)).group_by(
+                GoldOfficialLine.gold_id
+            )
+        )
+    }
     for row in rows:
+        presentation = presentation_for(row.source_id)
         items.append(
             {
                 "sourceId": row.source_id,
@@ -346,8 +425,15 @@ def list_official_gold(session: Session, *, context: AccessContext) -> dict:
                 "quarantinedCount": row.quarantined_count,
                 "numericTotal": float(row.numeric_total) if row.numeric_total is not None else None,
                 "createsTaxCredit": False,
+                "valueKind": presentation["valueKind"],
+                "presentation": presentation["label"],
+                "financial": presentation["financial"],
+                "lineageLineCount": int(line_counts.get(row.id) or 0),
             }
         )
+    divergence = coverage_divergence(items)
+    if divergence is not None:
+        items.append(divergence)
     empty = []
     for source in catalog["sources"]:
         source_id = source["source_id"]
@@ -371,8 +457,54 @@ def list_official_gold(session: Session, *, context: AccessContext) -> dict:
     }
 
 
+def list_official_gold_lines(
+    session: Session, *, context: AccessContext, source_id: str | None = None
+) -> dict:
+    context.ensure_fiscal_read()
+    query = (
+        select(GoldOfficialLine)
+        .join(GoldOfficial, GoldOfficialLine.gold_id == GoldOfficial.id)
+        .where(
+            GoldOfficial.tenant_id == context.tenant_id,
+            GoldOfficial.territory_id == context.territory_id,
+            GoldOfficial.published.is_(True),
+        )
+    )
+    if source_id:
+        query = query.where(GoldOfficialLine.source_id == source_id)
+    rows = session.scalars(
+        query.order_by(GoldOfficialLine.source_id, GoldOfficialLine.silver_row_id)
+    ).all()
+    items = []
+    for row in rows:
+        line = {
+            "sourceId": row.source_id,
+            "silverRowId": row.silver_row_id,
+            "bronzeSha256": row.bronze_sha256,
+            "checksumSha256": row.checksum_sha256,
+            "landingManifestPath": row.landing_manifest_path,
+            "officialUrl": row.official_url,
+            "ibgeCode": row.ibge_code,
+            "value": float(row.value) if row.value is not None else None,
+            "unit": row.unit,
+        }
+        assert_gold_lineage_complete(line)
+        items.append({**line, "payload": row.payload})
+    return {
+        "banner": OFFICIAL_BANNER,
+        "homologationStatus": HOMOLOGATION_PENDING,
+        "createsTaxCredit": False,
+        "items": items,
+    }
+
+
 def _parse(
-    connector: str, fetched: OfficialHttpResponse
+    connector: str,
+    fetched: OfficialHttpResponse,
+    *,
+    session: Session,
+    context: AccessContext,
+    catalog: dict,
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
     if connector == "official_document":
         return parse_official_document(
@@ -381,7 +513,174 @@ def _parse(
     parser = PARSERS.get(connector)
     if parser is None:
         raise ConflictError("Official connector is not implemented")
+    if connector == "tesouro_monthly_csv":
+        return parser(fetched.body, ibge_lookup=_ibge_lookup(session, context=context))
+    if connector == "siconfi_statement":
+        return parser(fetched.body, dataset=str(catalog.get("dataset") or "RREO"))
     return parser(fetched.body)
+
+
+def _ibge_lookup(session: Session, *, context: AccessContext) -> dict[tuple[str, str], str]:
+    lookup: dict[tuple[str, str], str] = {}
+    rows = session.scalars(
+        select(DataLoadRow)
+        .join(DataLoadRun, DataLoadRow.run_id == DataLoadRun.id)
+        .where(
+            DataLoadRun.tenant_id == context.tenant_id,
+            DataLoadRun.territory_id == context.territory_id,
+            DataLoadRun.source_id == "SICONFI-ENTES",
+            DataLoadRow.layer == "silver",
+        )
+    )
+    for row in rows:
+        payload = row.payload or {}
+        code = str(payload.get("ibgeCode") or "")
+        if not code:
+            continue
+        name = str(
+            payload.get("territoryName") or payload.get("ente") or payload.get("placeName") or ""
+        )
+        uf = str(payload.get("uf") or "")
+        lookup[(normalize_place(name), normalize_place(uf))] = code
+    return lookup
+
+
+def _fetch_source(
+    client: OfficialHttpClient,
+    *,
+    catalog: dict,
+    connector: str,
+    endpoint: str,
+    timeout: float,
+    session: Session,
+    context: AccessContext,
+    source_id: str,
+) -> OfficialHttpResponse:
+    if connector == "official_document":
+        return _fetch_document(client, catalog=catalog, timeout=timeout)
+    if connector == "siconfi_statement":
+        return _fetch_siconfi_statement(
+            client,
+            catalog=catalog,
+            timeout=timeout,
+            session=session,
+            context=context,
+            source_id=source_id,
+        )
+    return _fetch_pages(client, endpoint=endpoint, connector=connector, timeout=timeout)
+
+
+def _fetch_document(
+    client: OfficialHttpClient, *, catalog: dict, timeout: float
+) -> OfficialHttpResponse:
+    urls = [str(catalog.get("endpoint") or "")]
+    urls.extend(str(url) for url in catalog.get("alternate_endpoints") or [])
+    last_error: Exception | None = None
+    last_response: OfficialHttpResponse | None = None
+    for url in urls:
+        if not url:
+            continue
+        try:
+            response = client.fetch(url, timeout=timeout)
+        except Exception as exc:  # noqa: BLE001 - document fetch tries alternate official URLs
+            last_error = exc
+            continue
+        last_response = response
+        if response.status_code < 400 and response.body:
+            return response
+    if last_response is not None:
+        return last_response
+    if last_error is not None:
+        raise last_error
+    raise ConflictError("Official document endpoint is missing")
+
+
+def _fetch_siconfi_statement(
+    client: OfficialHttpClient,
+    *,
+    catalog: dict,
+    timeout: float,
+    session: Session,
+    context: AccessContext,
+    source_id: str,
+) -> OfficialHttpResponse:
+    parameters = catalog.get("parameters") or {}
+    max_entes = int(parameters.get("max_entes_per_run") or 1)
+    query = dict(parameters.get("query") or {})
+    partition_key = str(catalog.get("competence") or "current")
+    checkpoint = session.scalar(
+        select(IngestCheckpoint).where(
+            IngestCheckpoint.tenant_id == context.tenant_id,
+            IngestCheckpoint.territory_id == context.territory_id,
+            IngestCheckpoint.source_id == source_id,
+            IngestCheckpoint.partition_key == partition_key,
+        )
+    )
+    if checkpoint is not None and str(checkpoint.cursor).isdigit():
+        skip = int(checkpoint.cursor)
+    else:
+        skip = 0
+    lookup = _ibge_lookup(session, context=context)
+    codes = sorted({code for code in lookup.values() if code})
+    if not codes:
+        default_ente = str(query.get("id_ente") or "3304557")
+        codes = [default_ente]
+    selected = codes[skip : skip + max_entes]
+    if not selected:
+        selected = codes[:max_entes]
+        skip = 0
+    items: list[dict] = []
+    base = str(catalog.get("endpoint") or "")
+    last = client.fetch(base, timeout=timeout)
+    for code in selected:
+        params = {**query, "id_ente": code}
+        suffix = "&".join(
+            f"{key}={value}" for key, value in params.items() if value not in (None, "")
+        )
+        url = f"{base}?{suffix}" if suffix else base
+        last = client.fetch(url, timeout=timeout)
+        if last.status_code >= 400:
+            continue
+        try:
+            payload = json.loads(last.body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            continue
+        page_items = payload.get("items") if isinstance(payload, dict) else payload
+        if isinstance(page_items, list):
+            items.extend(item for item in page_items if isinstance(item, dict))
+    next_offset = skip + len(selected)
+    metrics = {
+        "offset": next_offset,
+        "lastEnte": selected[-1] if selected else None,
+        "entesThisRun": len(selected),
+        "itemCount": len(items),
+    }
+    if checkpoint is None:
+        session.add(
+            IngestCheckpoint(
+                tenant_id=context.tenant_id,
+                territory_id=context.territory_id,
+                source_id=source_id,
+                partition_key=partition_key,
+                cursor=str(next_offset),
+                status="IN_PROGRESS",
+                metrics=metrics,
+                updated_at=datetime.now(UTC),
+            )
+        )
+    else:
+        checkpoint.cursor = str(next_offset)
+        checkpoint.metrics = metrics
+        checkpoint.updated_at = datetime.now(UTC)
+    merged = json.dumps({"items": items}, ensure_ascii=False).encode("utf-8")
+    return OfficialHttpResponse(
+        url=last.url,
+        status_code=last.status_code if items or last.status_code < 400 else last.status_code,
+        body=merged if items else last.body,
+        etag=last.etag,
+        last_modified=last.last_modified,
+        content_type="application/json",
+    )
 
 
 def _fetch_pages(

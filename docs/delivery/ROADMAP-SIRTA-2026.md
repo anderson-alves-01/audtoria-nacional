@@ -12,19 +12,20 @@
 
 ---
 
-## Estado de execução em 18 de setembro de 2026
+## Estado de execução em 19 de setembro de 2026
 
 | Item | Estado registrado |
 |---|---|
 | Versão da especificação | `0.3.0` |
-| Versão da implementação local | `0.3.14` |
-| Linha técnica concluída | F0/S0-S4, G6–G8 locais, Alembic, F3.0/F3.1, ingestão PUBLIC_OPEN IBGE/SICONFI/Tesouro, Terraform docs |
+| Versão da implementação local | `0.3.15` |
+| Linha técnica em progresso | F0/S0-S4, G6–G8 locais, Alembic, F3, onda 1 PUBLIC_OPEN, lineage Gold, 15 dashboards, conectores FPM/RREO/DCA |
 | Dívida Alembic `0004 -> 0005` | `RESOLVED` (`ALEMBIC_HYGIENE`) |
-| Próximo passo automático | Homologação humana do Gold oficial. Gates G0/G1/G4/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
+| Próximo passo automático | Continuar itens técnicos implementáveis do ROADMAP. Sem homologação humana agora. Gates G0/G1/G4/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
 | Commit de referência local | `feat/official-public-ingest` |
 | Nuvem, produção e dados fiscais restritos | Não autorizados |
+| Estado composto | `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS` |
 
-A implementação `0.3.14` ativa pipelines de fontes `PUBLIC_OPEN` com Gold `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`. Nenhum desses marcos conclui o Programa SIRTA 2026 nem homologação institucional, tributária ou jurídica. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
+A implementação `0.3.15` corrige a declaração prematura de conclusão. Pipelines `PUBLIC_OPEN` da onda 1 existem com Gold `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`, mas o Programa SIRTA 2026 **não** está concluído. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
 
 ### Estados compostos dos gates
 

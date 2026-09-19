@@ -1,11 +1,11 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.14
+implementation_version: 0.3.15
 roadmap_version: "1.2"
-version: 0.3.14
-status: REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION
-current_phase: REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION
-release_stage: REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION
+version: 0.3.15
+status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
+current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
+release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 completed:
   - alembic_hygiene
   - source_master_registry_synthetic
@@ -14,13 +14,20 @@ completed:
   - catalog_driven_synthetic_ingest_ibge
   - tesouro_stub_and_blocked_gate_checklists
   - terraform_modules_documentation_only
-  - official_public_ingest_ibge_siconfi_tesouro
+  - official_public_ingest_wave_1_ibge_siconfi_tesouro_dictionary
+  - gold_lineage_per_row
+  - tesouro_fpm_monthly_csv_connector
+  - siconfi_rreo_dca_partitioned_connector
+  - fifteen_official_dashboards_empty_when_unauthored
 pending:
   - municipal_g0_authorization
   - diagnosis_g1
   - specialist_homologation_g4
-  - official_tesouro_connectors_g7
+  - official_tesouro_national_backfill
+  - state_icms_ipva_structured_activation
+  - rfb_territorial_scope
   - official_ibs_cbs_homologation_g8
+  - remaining_roadmap_technical_items
   - pilot_g9
   - production_g10
   - human_validation_of_official_gold
@@ -46,6 +53,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.14/
-next_action: Human validation of official Gold. Restricted/municipal PII and G0/G1/G4/G7-official/G8-official remain blocked.
+evidence: evidence/releases/0.3.15/
+next_action: Continue remaining technically implementable ROADMAP items. Do not treat wave 1 as programme completion. Human validation of Gold remains pending and is not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

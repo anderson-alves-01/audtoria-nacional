@@ -19,6 +19,9 @@ interface OfficialGoldItem {
   officialUrl: string;
   quarantinedCount: number;
   numericTotal: number | null;
+  valueKind?: string;
+  presentation?: string;
+  financial?: boolean;
 }
 
 @Component({

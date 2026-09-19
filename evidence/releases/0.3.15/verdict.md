@@ -1,0 +1,7 @@
+# 0.3.15 — onda 1 corrigida, roadmap em progresso
+
+Estado: `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS`
+
+Não usar `TECHNICAL_ROADMAP_COMPLETE_REAL_DATA_AWAITING_HUMAN_VALIDATION`.
+
+Ver `docs/delivery/RELEASE_NOTES_0.3.15.md` e `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.

@@ -14,6 +14,7 @@ STATUSES = frozenset(
         "UNAVAILABLE",
         "RETIRED",
         "OFFICIAL_BLOCKED",
+        "READY_FOR_TERRITORIAL_SCOPE",
         *LEGACY_STATUSES,
     }
 )

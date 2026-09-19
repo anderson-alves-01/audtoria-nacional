@@ -21,6 +21,15 @@ SNAPSHOT_URLS = {
     (
         "https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm"
     ): "planalto-ec132.html",
+    "https://legis.senado.leg.br/norma/36873557": "planalto-ec132.html",
+    (
+        "https://www.tesourotransparente.gov.br/ckan/dataset/"
+        "af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/"
+        "17336152-2728-4368-9ba2-c3f7821e4acf/download/"
+        "transferenciamensalmunicipios202609.csv"
+    ): "tesouro-fpm-202608.csv",
+    "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo": "siconfi-rreo.json",
+    "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca": "siconfi-dca.json",
 }
 
 
@@ -29,7 +38,12 @@ def snapshot_http_client() -> SnapshotHttpClient:
     for url, filename in SNAPSHOT_URLS.items():
         path = SNAPSHOT_DIR / filename
         body = path.read_bytes()
-        content_type = "text/html" if filename.endswith(".html") else "application/json"
+        if filename.endswith(".html"):
+            content_type = "text/html"
+        elif filename.endswith(".csv"):
+            content_type = "text/csv"
+        else:
+            content_type = "application/json"
         payloads[url] = OfficialHttpResponse(
             url=url,
             status_code=200,

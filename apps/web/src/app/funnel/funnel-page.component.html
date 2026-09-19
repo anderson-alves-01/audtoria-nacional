@@ -16,11 +16,15 @@
       @for (item of items; track item.sourceId + item.indicator) {
         <li class="assessed">
           <strong>{{ item.indicator }}</strong> — {{ item.sourceId }}
+          <span>{{ item.presentation || 'Dado oficial de referência. Não é crédito tributário.' }}</span>
           <span>Órgão {{ item.maintainer }} · dataset {{ item.dataset }} · competência {{ item.competence }}</span>
           <span>Extração {{ item.lastExtractedAt }} · cobertura {{ item.coverageCount }} · qualidade {{ item.qualityLevel }}</span>
-          <span>Homologação {{ item.homologationStatus }} · quarentena {{ item.quarantinedCount }}</span>
+          <span>Homologação {{ item.homologationStatus }} · quarentena {{ item.quarantinedCount }} · tipo {{ item.valueKind }}</span>
           <span>Fórmula: {{ item.formula }} Metodologia {{ item.methodologyVersion }}.</span>
           <span>Fonte {{ item.officialUrl }}</span>
+          @if (item.financial && item.numericTotal !== null) {
+            <span>Total publicado {{ item.numericTotal }}. Ocorrência para análise, não crédito nem cobrança.</span>
+          }
         </li>
       }
     </ul>

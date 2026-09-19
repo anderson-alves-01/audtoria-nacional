@@ -33,3 +33,4 @@ def test_tesouro_dictionary_includes_fpm() -> None:
     names = {row["transferName"] for row in silver}
     assert "FPM" in names
     assert len(silver) == 18
+    assert all(row["unit"] == "tipo" for row in silver)

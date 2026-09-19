@@ -19,8 +19,8 @@ describe('HealthPageComponent', () => {
     http.expectOne('/health').flush({
       status: 'ok',
       specVersion: '0.3.0',
-      implementationVersion: '0.3.14',
-      releaseStage: 'REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION',
+      implementationVersion: '0.3.15',
+      releaseStage: 'OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS',
     });
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Spec 0.3.0');

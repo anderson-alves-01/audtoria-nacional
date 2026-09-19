@@ -135,38 +135,44 @@ sources:
     indicator: tesouro_constitutional_transfer_types
     formula: Lista publicada em /custom/transferencias. FPM corresponde ao codigo 3. Não interpreta valor recebido pelo município.
     methodology_version: official-tesouro-transfer-types-v1
-    notes: Dicionário oficial. Valores de FPM por município permanecem não ativados até endpoint de valores ser parametrizado sem scraping.
+    notes: Dicionário oficial. Valores municipais de FPM estão em TESOURO-FPM-VALORES. Este dicionário não é valor transferido.
 
   - source_id: TESOURO-FPM-VALORES
-    name: Tesouro Nacional — valores de FPM por município
+    name: Tesouro Nacional — valores mensais de FPM por município (CKAN)
     maintainer: Tesouro Nacional
-    official_domain: apiapex.tesouro.gov.br
-    official_url: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/
-    endpoint: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/
-    documentation_url: https://www.tesourotransparente.gov.br/
-    dataset: TESOURO-FPM-VALORES
-    dictionary_url: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/transferencias
-    purpose: Valores de FPM publicados pelo Tesouro
-    legal_basis: API pública Aria
-    license_terms: termos de uso do Tesouro Transparente / API Aria
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-constitucionais-para-municipios
+    dataset: TESOURO-FPM-MENSAL
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    purpose: Valores de FPM publicados pelo Tesouro no CSV mensal oficial
+    legal_basis: Dataset CKAN Transferências Constitucionais para Municípios (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
     source_role: OFFICIAL_TRANSFER
     access_classification: PUBLIC_OPEN
-    status: UNAVAILABLE
+    status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
-    connector: none
-    layout_version: none
+    connector: tesouro_monthly_csv
+    layout_version: tesouro-ckan-transferencia-mensal-v1
     periodicity: monthly
-    competence: unknown
+    competence: "2026-08"
     granularity: municipality
-    parameters: {}
+    parameters:
+      package_id: af4e7c47-2132-4d9a-bd7c-34e28a210b03
+      resource_id: 17336152-2728-4368-9ba2-c3f7821e4acf
+      file_name: Transferencia_Mensal_Municipios_202609.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
     authentication: none
     rate_limit: not_published
     personal_data: false
     retention: bronze_immutable
     indicator: tesouro_fpm_received
-    formula: Não ativado. Endpoint de valores municipais não foi parametrizado de forma comprovável nesta fatia.
-    methodology_version: none
-    notes: Dicionário FPM (codigo 3) está ativo em TESOURO-TRANSPARENTE. Valores municipais aguardam contrato de consulta documentado.
+    formula: Soma dos três decêndios das linhas em que Item transferência=FPM e Transferência=FPM. Join do município+UF ao código IBGE do SICONFI/entes. Linhas FPM destinadas a FUNDEB são retenção publicada, não crédito.
+    methodology_version: official-tesouro-fpm-mensal-v1
+    notes: Arquivo 202609 contém competência de mês 08/2026 conforme publicado. Sem código IBGE no CSV. Previsto versus realizado somente quando ambos existirem.
 
   - source_id: SICONFI-RREO
     name: SICONFI — RREO municipal
@@ -174,43 +180,85 @@ sources:
     official_domain: apidatalake.tesouro.gov.br
     official_url: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo
     endpoint: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo
-    documentation_url: https://apidatalake.tesouro.gov.br/docs/
+    documentation_url: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo
     dataset: SICONFI-RREO
     dictionary_url: https://siconfi.tesouro.gov.br/
-    purpose: Demonstrativos fiscais municipais
-    legal_basis: API pública SICONFI
+    purpose: Demonstrativo RREO municipal publicado
+    legal_basis: API pública SICONFI/Tesouro Nacional
     license_terms: termos de uso da API Data Lake do Tesouro Nacional
     source_role: REFERENCE_ENRICHMENT
     access_classification: PUBLIC_OPEN
-    status: PROVENANCE_VERIFIED
+    status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
-    connector: none
+    connector: siconfi_statement
     layout_version: siconfi-rreo-v1
     periodicity: bimestral
     competence: "2025"
     granularity: municipality
     parameters:
       resource: rreo
+      max_entes_per_run: 1
+      query:
+        an_exercicio: "2025"
+        nr_periodo: "6"
+        co_tipo_demonstrativo: RREO
     authentication: none
     rate_limit: not_published
     personal_data: false
     retention: bronze_immutable
     indicator: siconfi_rreo
-    formula: Não ativado autonomamente. Carga nacional exige avaliação de volume e paginação completa.
-    methodology_version: none
-    notes: Endpoint respondeu 200 para um ente de teste. Ativação nacional adiada por volume.
+    formula: Linhas do RREO publicadas por ente, exercício e período. Carga particionada com checkpoint. Não constitui crédito tributário.
+    methodology_version: official-siconfi-rreo-v1
+    notes: Backfill nacional limitado por max_entes_per_run. SICONFI-ENTES permanece cadastro, não substitui o RREO.
+
+  - source_id: SICONFI-DCA
+    name: SICONFI — DCA/FINBRA municipal
+    maintainer: Tesouro Nacional
+    official_domain: apidatalake.tesouro.gov.br
+    official_url: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca
+    endpoint: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca
+    documentation_url: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca
+    dataset: SICONFI-DCA
+    dictionary_url: https://siconfi.tesouro.gov.br/
+    purpose: Demonstrativo DCA/FINBRA municipal publicado
+    legal_basis: API pública SICONFI/Tesouro Nacional
+    license_terms: termos de uso da API Data Lake do Tesouro Nacional
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: siconfi_statement
+    layout_version: siconfi-dca-v1
+    periodicity: annual
+    competence: "2024"
+    granularity: municipality
+    parameters:
+      resource: dca
+      max_entes_per_run: 1
+      query:
+        an_exercicio: "2024"
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: siconfi_dca
+    formula: Linhas do DCA publicadas por ente e exercício. Carga particionada com checkpoint.
+    methodology_version: official-siconfi-dca-v1
+    notes: Volume nacional controlado por max_entes_per_run. Sem interpolação.
 
   - source_id: PLANALTO-LEGISLACAO
-    name: Planalto — Emenda Constitucional 132/2023
-    maintainer: Presidência da República
+    name: Planalto / Senado — Emenda Constitucional 132/2023
+    maintainer: Presidência da República / Senado Federal
     official_domain: www.planalto.gov.br
     official_url: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
     endpoint: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
+    alternate_endpoints:
+      - https://legis.senado.leg.br/norma/36873557
     documentation_url: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
     dataset: PLANALTO-EC-132
     dictionary_url: https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm
     purpose: Preservar documento regulatório oficial, vigência e checksum
-    legal_basis: Publicação oficial no portal do Planalto
+    legal_basis: Publicação oficial no portal do Planalto, com espelho no Legis Senado
     license_terms: publicação oficial da União
     source_role: REGULATORY
     access_classification: PUBLIC_OPEN
@@ -223,14 +271,15 @@ sources:
     granularity: document
     parameters:
       document: emc132.htm
+      senado_norma: "36873557"
     authentication: none
     rate_limit: not_published
     personal_data: false
     retention: bronze_immutable
     indicator: regulatory_document_ec132
-    formula: Documento HTML oficial preservado. Não ativa regra IBS/CBS operacional.
+    formula: Documento HTML oficial preservado. binding=false, operational=false, homologated=false, estado NON_BINDING.
     methodology_version: official-planalto-ec132-v1
-    notes: Recuperação do documento por URL catalogada. Sem scraping de busca. binding=false.
+    notes: Planalto pode desconectar; o conector tenta o Legis Senado. Retry com backoff. Nenhuma regra extraída torna-se vinculante.
 
   - source_id: MUNICIPAL-ISS-RESTRICTED
     name: Arrecadação ISS municipal (restrita)
@@ -261,30 +310,187 @@ sources:
     indicator: none
     formula: none
     methodology_version: none
-    notes: Sem inferência. Sem carga. Interface de catálogo apenas.
+    notes: Sem inferência. Sem carga. Interface de catálogo e upload controlado apenas. CREDENTIAL_REQUIRED.
+
+  - source_id: MUNICIPAL-IPTU-RESTRICTED
+    name: IPTU municipal (restrito)
+    maintainer: Município (não nomeado)
+    official_domain: none
+    official_url: official://blocked-municipal-iptu
+    endpoint: none
+    documentation_url: none
+    dataset: MUNICIPAL-IPTU
+    dictionary_url: none
+    purpose: Crédito IPTU — bloqueado até DPA e G0
+    legal_basis: Exige autorização do controlador municipal
+    license_terms: não aplicável até DPA
+    source_role: PRIMARY_FISCAL
+    access_classification: RESTRICTED
+    status: CREDENTIAL_REQUIRED
+    fixture_kind: NONE
+    connector: restricted_upload
+    layout_version: municipal-iptu-v1
+    periodicity: annual
+    competence: unknown
+    granularity: taxpayer
+    parameters: {}
+    authentication: credential_required
+    rate_limit: none
+    personal_data: true
+    retention: blocked
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: Conector pronto. Sem arquivo municipal. Sem crédito.
+
+  - source_id: MUNICIPAL-ITBI-RESTRICTED
+    name: ITBI municipal (restrito)
+    maintainer: Município (não nomeado)
+    official_domain: none
+    official_url: official://blocked-municipal-itbi
+    endpoint: none
+    documentation_url: none
+    dataset: MUNICIPAL-ITBI
+    dictionary_url: none
+    purpose: Crédito ITBI — bloqueado até DPA e G0
+    legal_basis: Exige autorização do controlador municipal
+    license_terms: não aplicável até DPA
+    source_role: PRIMARY_FISCAL
+    access_classification: RESTRICTED
+    status: CREDENTIAL_REQUIRED
+    fixture_kind: NONE
+    connector: restricted_upload
+    layout_version: municipal-itbi-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: taxpayer
+    parameters: {}
+    authentication: credential_required
+    rate_limit: none
+    personal_data: true
+    retention: blocked
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: Conector pronto. Sem arquivo municipal. Sem crédito.
+
+  - source_id: MUNICIPAL-DIVIDA-ATIVA
+    name: Dívida ativa municipal (restrita)
+    maintainer: Município (não nomeado)
+    official_domain: none
+    official_url: official://blocked-municipal-da
+    endpoint: none
+    documentation_url: none
+    dataset: MUNICIPAL-DA
+    dictionary_url: none
+    purpose: Inscrição em dívida ativa — bloqueado até Procuradoria e G0
+    legal_basis: Exige autorização do controlador municipal
+    license_terms: não aplicável até DPA
+    source_role: PRIMARY_FISCAL
+    access_classification: RESTRICTED
+    status: CREDENTIAL_REQUIRED
+    fixture_kind: NONE
+    connector: restricted_upload
+    layout_version: municipal-da-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: taxpayer
+    parameters: {}
+    authentication: credential_required
+    rate_limit: none
+    personal_data: true
+    retention: blocked
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: Conector pronto. Sem inscrição real. Comandos jurídicos desativados.
+
+  - source_id: MUNICIPAL-PAGAMENTOS
+    name: Pagamentos e parcelamentos municipais (restritos)
+    maintainer: Município (não nomeado)
+    official_domain: none
+    official_url: official://blocked-municipal-payments
+    endpoint: none
+    documentation_url: none
+    dataset: MUNICIPAL-PAYMENTS
+    dictionary_url: none
+    purpose: Baixa e parcelamento — bloqueado até DPA
+    legal_basis: Exige autorização do controlador municipal
+    license_terms: não aplicável até DPA
+    source_role: PRIMARY_FISCAL
+    access_classification: RESTRICTED
+    status: CREDENTIAL_REQUIRED
+    fixture_kind: NONE
+    connector: restricted_upload
+    layout_version: municipal-payments-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: taxpayer
+    parameters: {}
+    authentication: credential_required
+    rate_limit: none
+    personal_data: true
+    retention: blocked
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: Conector pronto. Sem pagamentos reais. Sem cálculo de recuperação.
+
+  - source_id: MUNICIPAL-PROCESSOS
+    name: Processos administrativos municipais (restritos)
+    maintainer: Município (não nomeado)
+    official_domain: none
+    official_url: official://blocked-municipal-cases
+    endpoint: none
+    documentation_url: none
+    dataset: MUNICIPAL-CASES
+    dictionary_url: none
+    purpose: Casos e achados — bloqueado até DPA
+    legal_basis: Exige autorização do controlador municipal
+    license_terms: não aplicável até DPA
+    source_role: PRIMARY_FISCAL
+    access_classification: RESTRICTED
+    status: CREDENTIAL_REQUIRED
+    fixture_kind: NONE
+    connector: restricted_upload
+    layout_version: municipal-cases-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: case
+    parameters: {}
+    authentication: credential_required
+    rate_limit: none
+    personal_data: true
+    retention: blocked
+    indicator: none
+    formula: none
+    methodology_version: none
+    notes: Conector pronto. Sem processo real. Módulo vazio funcional.
 
   - source_id: ESTADO-ICMS-QUOTA
     name: Quota-parte de ICMS estadual
-    maintainer: Estado piloto (não selecionado)
+    maintainer: Estados e Distrito Federal (catálogo genérico)
     official_domain: unknown
-    official_url: official://state-icms-not-selected
+    official_url: official://state-icms-catalog
     endpoint: none
     documentation_url: none
     dataset: ESTADO-ICMS-QUOTA
     dictionary_url: none
-    purpose: Transferência estadual prevista no roadmap
-    legal_basis: Constituição e legislação estadual aplicável após escolha do estado
-    license_terms: não aplicável até identificação do dataset oficial
+    purpose: Transferência estadual de ICMS — adaptador genérico
+    legal_basis: Constituição e legislação estadual após identificação da fonte PUBLIC_OPEN
+    license_terms: não aplicável até dataset oficial verificado
     source_role: OFFICIAL_TRANSFER
     access_classification: PUBLIC_OPEN
     status: DISCOVERED
     fixture_kind: NONE
-    connector: none
-    layout_version: none
+    connector: state_transfer_adapter
+    layout_version: state-icms-v1
     periodicity: monthly
     competence: unknown
     granularity: municipality
-    parameters: {}
+    parameters:
+      tax: ICMS
+      normalize: ibge7
     authentication: unknown
     rate_limit: unknown
     personal_data: false
@@ -292,35 +498,74 @@ sources:
     indicator: none
     formula: none
     methodology_version: none
-    notes: Estado piloto não selecionado. Dataset oficial estadual não catalogado.
+    notes: Catálogo dos 26 estados e DF em contracts/sources/state-transfers-catalog.yaml. Nenhuma fonte estadual PUBLIC_OPEN estruturada foi tecnicamente verificada nesta fatia. Sem agregador privado.
 
-  - source_id: RFB-DADOS-ABERTOS
-    name: Receita Federal — dados abertos
-    maintainer: Receita Federal do Brasil
-    official_domain: dadosabertos.rfb.gov.br
-    official_url: https://dadosabertos.rfb.gov.br/
+  - source_id: ESTADO-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual
+    maintainer: Estados e Distrito Federal (catálogo genérico)
+    official_domain: unknown
+    official_url: official://state-ipva-catalog
     endpoint: none
-    documentation_url: https://dadosabertos.rfb.gov.br/
-    dataset: RFB-OPEN-DATA
+    documentation_url: none
+    dataset: ESTADO-IPVA-QUOTA
     dictionary_url: none
-    purpose: Contexto cadastral público com minimização
-    legal_basis: Dados abertos da RFB quando publicados
-    license_terms: termos do órgão mantenedor
-    source_role: REFERENCE_ENRICHMENT
+    purpose: Transferência estadual de IPVA — adaptador genérico
+    legal_basis: Constituição e legislação estadual após identificação da fonte PUBLIC_OPEN
+    license_terms: não aplicável até dataset oficial verificado
+    source_role: OFFICIAL_TRANSFER
     access_classification: PUBLIC_OPEN
     status: DISCOVERED
     fixture_kind: NONE
-    connector: none
-    layout_version: none
-    periodicity: as_published
+    connector: state_transfer_adapter
+    layout_version: state-ipva-v1
+    periodicity: monthly
     competence: unknown
-    granularity: unknown
-    parameters: {}
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      normalize: ibge7
     authentication: unknown
     rate_limit: unknown
-    personal_data: possible_individual_entrepreneur
-    retention: blocked_until_minimization_design
+    personal_data: false
+    retention: none
     indicator: none
     formula: none
     methodology_version: none
-    notes: Carga nacional de grande volume não autorizada nesta fatia. Evitar exposição de empresário individual.
+    notes: Mesmo catálogo estadual. Nenhuma API/arquivo estruturado oficial de IPVA foi ativado autonomamente.
+
+  - source_id: RFB-DADOS-ABERTOS
+    name: Receita Federal — dados abertos de CNPJ
+    maintainer: Receita Federal do Brasil
+    official_domain: dadosabertos.rfb.gov.br
+    official_url: https://dadosabertos.rfb.gov.br/CNPJ/
+    endpoint: https://dadosabertos.rfb.gov.br/CNPJ/
+    documentation_url: https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/dados-abertos/receitafederal
+    dataset: RFB-CNPJ
+    dictionary_url: https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/dados-abertos/receitafederal
+    purpose: Estabelecimentos e CNAE com minimização e filtro territorial
+    legal_basis: Dados abertos da RFB
+    license_terms: termos do órgão mantenedor
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: READY_FOR_TERRITORIAL_SCOPE
+    fixture_kind: OFFICIAL
+    connector: rfb_cnpj_open
+    layout_version: rfb-cnpj-zip-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: establishment
+    parameters:
+      territorial_scope: none
+      streaming: true
+      minimize_individual_entrepreneur: true
+      estimated_national_compressed_gb: 8
+      estimated_national_uncompressed_gb: 40
+    authentication: none
+    rate_limit: not_published
+    personal_data: possible_individual_entrepreneur
+    retention: discard_out_of_scope
+    indicator: none
+    formula: none
+    methodology_version: rfb-cnpj-minimization-v1
+    notes: Conector pronto. Sem carga nacional e sem amostra arbitrária até territorial_scope. Empresário individual permanece fora de Gold.
+
