@@ -85,6 +85,9 @@ SNAPSHOT_URLS = {
     (
         "https://www.anatel.gov.br/dadosabertos/paineis_de_dados/meu_municipio/meu_municipio.zip"
     ): "anatel-meu-municipio-acessos-ms-2025-11.csv",
+    (
+        "https://apidadosabertos.saude.gov.br/cnes/estabelecimentos?codigo_uf=50&limit=8"
+    ): "cnes-estabelecimentos-ms-limit8.json",
 }
 
 

@@ -151,6 +151,13 @@ PRESENTATION = {
             "Referência setorial; não constitui crédito tributário."
         ),
     },
+    "CNES-DATASUS": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Contagem de estabelecimentos CNES/DATASUS por município (escopo UF). "
+            "Referência setorial; não constitui crédito tributário."
+        ),
+    },
     "SICONFI-RREO": {
         "valueKind": "FISCAL_STATEMENT_LINE",
         "label": "Linhas do RREO municipal. Não constituem crédito tributário.",

@@ -1,15 +1,15 @@
 schema_version: 1
-updated_at: "2026-09-19T15:30:00-03:00"
+updated_at: "2026-09-19T16:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.35"
+implementation_version: "0.3.36"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.35: Anatel Meu Município UF=MS ativado (anatel_dados_gov, IBGE7);
-  EPE/BCB/ANEEL/ANP e UFs PE/BA/MG/ES/GO/MS intactos; CNES DISCOVERED;
+  Ciclo 0.3.36: CNES DEMAS UF=MS ativado (cnes_datasus_open, codigo_uf=50);
+  Anatel/EPE/BCB/ANEEL/ANP e UFs PE/BA/MG/ES/GO/MS intactos;
   RJ IP-blocked; RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -521,21 +521,22 @@ items:
     descricao: Investigar CNES/DATASUS oficial
     dependencias: [F3-SOURCE-CATALOG]
     estado_tecnico: TECH_COMPLETE
-    estado_institucional: DISCOVERED
+    estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
     fontes_oficiais: [CNES-DATASUS]
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.22/
-    versao: "0.3.22"
-    commit: c046301
+    evidencia: evidence/releases/0.3.36/
+    versao: "0.3.36"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Portal e bases por competência catalogados; exige territorial_scope e
-      minimização antes de qualquer Bronze.
+      API DEMAS TECHNICALLY_APPROVED com escopo UF=MS (codigo_uf=50),
+      limit=8, IBGE7 derivado e max_rows=8. Gold REFERENCE_QUANTITY.
+      PII (CNPJ/e-mail/telefone) não sobe a Silver. Sem crédito.
 
   - id: F3-MUNICIPAL-RESTRICTED
     fase: F3.3

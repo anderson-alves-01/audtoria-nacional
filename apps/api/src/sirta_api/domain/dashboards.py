@@ -27,6 +27,7 @@ DASHBOARDS = (
             "BCB-SGS-OLINDA",
             "EPE-DADOS-ABERTOS",
             "ANATEL-DADOS-ABERTOS",
+            "CNES-DATASUS",
         ),
         "emptyReason": "PIB e população não são potencial de ISS nem crédito constituído.",
         "commandsDisabled": True,

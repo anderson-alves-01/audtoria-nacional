@@ -1,4 +1,4 @@
-"""Sectoral REFERENCE_ENRICHMENT shell. ANP+ANEEL+BCB+EPE+Anatel activated; no tax credit."""
+"""Sectoral REFERENCE_ENRICHMENT shell. ANP+ANEEL+BCB+EPE+Anatel+CNES activated; no tax credit."""
 
 from sirta_api.domain.errors import ConflictError
 
@@ -64,26 +64,22 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         "sourceId": "CNES-DATASUS",
         "maintainer": "Ministério da Saúde / DATASUS",
         "connector": "cnes_datasus_open",
-        "structuredOfficialSource": "open_data_portal_and_competence_files",
-        "status": "DISCOVERED",
-        "ingestAllowed": False,
+        "structuredOfficialSource": "demas_api_codigo_uf",
+        "status": "TECHNICALLY_APPROVED",
+        "ingestAllowed": True,
         "personalDataRisk": "possible_professional_contact_minimized",
-        "activationGate": "TERRITORIAL_SCOPE",
+        "activationGate": "UF_SCOPED_FIXTURE",
+        "territorialScope": "MS",
     },
 )
 
 DISCLAIMER = (
     "Fontes setoriais oficiais catalogadas (ANP, ANEEL, EPE, Anatel, BCB, CNES). "
-    "ANP, ANEEL, EPE e Anatel ativadas com escopo UF; BCB com allowlist SGS 432/433; "
-    "CNES ingestAllowed=false. REFERENCE_ENRICHMENT apenas. "
-    "Não constitui crédito tributário."
+    "ANP, ANEEL, EPE, Anatel e CNES ativadas com escopo UF; BCB com allowlist SGS 432/433. "
+    "REFERENCE_ENRICHMENT apenas. Não constitui crédito tributário."
 )
 
-BLOCKED_SECTORAL_CONNECTORS = frozenset(
-    {
-        "cnes_datasus_open",
-    }
-)
+BLOCKED_SECTORAL_CONNECTORS = frozenset()
 
 
 def build_sectoral_enrichment_panel(*, page: int = 1, size: int = 20) -> dict:

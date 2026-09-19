@@ -27,7 +27,7 @@ def _admin() -> dict[str, str]:
     )
 
 
-def test_sectoral_enrichment_endpoint_partial_anp_aneel_bcb_epe_anatel(api_client) -> None:
+def test_sectoral_enrichment_endpoint_partial_anp_aneel_bcb_epe_anatel_cnes(api_client) -> None:
     response = api_client.get("/v1/sectoral-enrichment", headers=_analyst())
     assert response.status_code == 200
     body = response.json()
@@ -49,6 +49,8 @@ def test_sectoral_enrichment_endpoint_partial_anp_aneel_bcb_epe_anatel(api_clien
     assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["ANATEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ANATEL-DADOS-ABERTOS"]["ingestAllowed"] is True
+    assert by_id["CNES-DATASUS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["CNES-DATASUS"]["ingestAllowed"] is True
 
 
 def test_sectoral_enrichment_command_is_rejected(api_client) -> None:
@@ -71,7 +73,7 @@ def test_tech_admin_cannot_read_sectoral_enrichment(api_client) -> None:
     assert response.status_code == 403
 
 
-def test_anp_aneel_bcb_epe_anatel_listed_and_cnes_blocked(api_client) -> None:
+def test_anp_aneel_bcb_epe_anatel_cnes_listed_and_ingestible(api_client) -> None:
     listing = api_client.get("/v1/data-sources", headers=_analyst())
     by_id = {item["sourceId"]: item for item in listing.json()["items"]}
     assert by_id["ANP-REVENDEDORES"]["status"] == "TECHNICALLY_APPROVED"
@@ -88,10 +90,9 @@ def test_anp_aneel_bcb_epe_anatel_listed_and_cnes_blocked(api_client) -> None:
     assert by_id["ANATEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ANATEL-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["ANATEL-DADOS-ABERTOS"]["createsTaxCredit"] is False
-    assert by_id["CNES-DATASUS"]["status"] == "DISCOVERED"
-    assert by_id["CNES-DATASUS"]["ingestAllowed"] is False
-    blocked = api_client.post("/v1/data-sources/CNES-DATASUS/ingest", headers=_admin())
-    assert blocked.status_code == 403
+    assert by_id["CNES-DATASUS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["CNES-DATASUS"]["ingestAllowed"] is True
+    assert by_id["CNES-DATASUS"]["createsTaxCredit"] is False
 
 
 def test_anp_ingest_publishes_gold_without_credit_or_cnpj(api_client) -> None:
@@ -220,5 +221,36 @@ def test_anatel_ingest_publishes_gold_without_credit(api_client) -> None:
     assert any(item["ibgeCode"] == "5005251" for item in lines.json()["items"])
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_cnes_ingest_publishes_gold_without_credit_or_pii(api_client) -> None:
+    cnes = api_client.post("/v1/data-sources/CNES-DATASUS/ingest", headers=_admin())
+    assert cnes.status_code == 200
+    assert cnes.json()["silverCount"] == 5
+    assert cnes.json()["quarantinedCount"] == 1
+    assert cnes.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["CNES-DATASUS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["CNES-DATASUS"]["createsTaxCredit"] is False
+    assert by_id["CNES-DATASUS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=CNES-DATASUS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(
+        item["value"] == 3 and item["ibgeCode"] == "5002704" for item in lines.json()["items"]
+    )
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+    assert all(
+        "cnpj" not in str(item).lower() and "email" not in str(item).lower()
         for item in lines.json()["items"]
     )

@@ -1,0 +1,2 @@
+﻿npm test -- --watch=false --browsers=ChromeHeadless
+TOTAL: 44 SUCCESS

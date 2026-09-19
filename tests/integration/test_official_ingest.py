@@ -192,6 +192,8 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["ANATEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ANATEL-DADOS-ABERTOS"]["ingestAllowed"] is True
+    assert by_id["CNES-DATASUS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["CNES-DATASUS"]["ingestAllowed"] is True
     assert by_id["RFB-DADOS-ABERTOS"]["status"] == "READY_FOR_TERRITORIAL_SCOPE"
     assert by_id["RFB-DADOS-ABERTOS"]["ingestAllowed"] is False
     assert by_id["MUNICIPAL-IPTU-RESTRICTED"]["status"] == "CREDENTIAL_REQUIRED"

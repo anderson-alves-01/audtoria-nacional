@@ -11,7 +11,7 @@ describe('SectoralEnrichmentPageComponent', () => {
     }).compileComponents();
   });
 
-  it('renders sectoral shell with ANP, ANEEL, BCB, EPE and Anatel partial activation without tax credit', () => {
+  it('renders sectoral shell with ANP, ANEEL, BCB, EPE, Anatel and CNES partial activation without tax credit', () => {
     const fixture = TestBed.createComponent(SectoralEnrichmentPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
@@ -56,9 +56,16 @@ describe('SectoralEnrichmentPageComponent', () => {
           ingestAllowed: true,
           structuredOfficialSource: 'meu_municipio_zip_csv_ibge7',
         },
+        {
+          sourceId: 'CNES-DATASUS',
+          maintainer: 'Ministério da Saúde / DATASUS',
+          status: 'TECHNICALLY_APPROVED',
+          ingestAllowed: true,
+          structuredOfficialSource: 'demas_api_codigo_uf',
+        },
       ],
       items: [],
-      disclaimer: 'ANP, ANEEL, BCB, EPE e Anatel ativadas; CNES bloqueada.',
+      disclaimer: 'ANP, ANEEL, BCB, EPE, Anatel e CNES ativadas.',
     });
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent as string;
@@ -70,6 +77,7 @@ describe('SectoralEnrichmentPageComponent', () => {
     expect(text).toContain('BCB-SGS-OLINDA');
     expect(text).toContain('EPE-DADOS-ABERTOS');
     expect(text).toContain('ANATEL-DADOS-ABERTOS');
+    expect(text).toContain('CNES-DATASUS');
     expect(text).toContain('TECHNICALLY_APPROVED');
     http.verify();
   });

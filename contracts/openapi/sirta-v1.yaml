@@ -3,7 +3,7 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.35
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.36
     serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
     Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
@@ -568,7 +568,8 @@ paths:
       operationId: getSectoralEnrichment
       description: >
         Sectoral REFERENCE_ENRICHMENT empty shell for ANP, ANEEL, EPE, Anatel,
-        BCB and CNES. Cataloged endpoints only; ingestEnabled=false; no tax credit.
+        BCB and CNES. Cataloged endpoints; partial UF-scoped ingest when
+        TECHNICALLY_APPROVED; no tax credit.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}

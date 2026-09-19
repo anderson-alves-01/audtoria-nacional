@@ -461,6 +461,97 @@ def parse_bcb_sgs_olinda(
     return silver, quarantined
 
 
+def ibge7_from_municipio6(codigo_municipio: str | int) -> str | None:
+    """Derive IBGE7 municipality code from CNES/DATASUS 6-digit municipio + check digit."""
+    digits = str(codigo_municipio or "").strip()
+    if not re.fullmatch(r"\d{6}", digits):
+        return None
+    weights = (1, 2, 1, 2, 1, 2)
+    total = 0
+    for index, weight in enumerate(weights):
+        product = int(digits[index]) * weight
+        total += product if product < 10 else product // 10 + product % 10
+    check = (10 - (total % 10)) % 10
+    return f"{digits}{check}"
+
+
+def parse_cnes_datasus_open(
+    body: bytes,
+    *,
+    uf: str,
+    codigo_uf: str | int,
+    competence: str = "as_published",
+    max_rows: int = 8,
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse DEMAS CNES estabelecimentos JSON; UF scope; aggregate counts; drop PII."""
+    uf_key = normalize_place(uf)
+    if not uf_key or len(uf_key) != 2:
+        raise ValueError("CNES territorial scope requires a two-letter UF")
+    uf_code = str(codigo_uf or "").strip()
+    if not re.fullmatch(r"\d{1,2}", uf_code):
+        raise ValueError("CNES codigo_uf must be the numeric IBGE UF code")
+    uf_code_norm = str(int(uf_code))
+    limit = int(max_rows or 0)
+    if limit <= 0:
+        raise ValueError("CNES max_rows must be a positive integer")
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return [], [({"rowId": "cnes-document"}, "invalid JSON")]
+    if not isinstance(payload, dict) or not isinstance(payload.get("estabelecimentos"), list):
+        return [], [({"rowId": "cnes-document"}, "unexpected CNES envelope")]
+    counts: dict[str, dict[str, object]] = {}
+    quarantined: list[tuple[dict, str]] = []
+    for index, item in enumerate(payload.get("estabelecimentos") or []):
+        if not isinstance(item, dict):
+            continue
+        try:
+            row_uf_norm = str(int(str(item.get("codigo_uf") or "").strip()))
+        except ValueError:
+            continue
+        if row_uf_norm != uf_code_norm:
+            continue
+        raw_municipio = item.get("codigo_municipio")
+        ibge = ibge7_from_municipio6(raw_municipio)
+        if ibge is None:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"cnes-estab-{index}",
+                        "territoryName": str(raw_municipio or ""),
+                        "uf": uf_key,
+                        "ibgeCode": str(raw_municipio or ""),
+                        "competence": competence,
+                        "value": 1,
+                    },
+                    "invalid IBGE municipality code",
+                )
+            )
+            continue
+        bucket = counts.setdefault(
+            ibge,
+            {"territoryName": ibge, "uf": uf_key, "count": 0},
+        )
+        bucket["count"] = int(bucket["count"]) + 1
+    silver: list[dict] = []
+    for ibge, bucket in sorted(counts.items(), key=lambda item: item[0]):
+        if len(silver) >= limit:
+            break
+        silver.append(
+            {
+                "rowId": f"cnes-estab-{ibge}-{competence}"[:64],
+                "territoryName": str(bucket["territoryName"]),
+                "uf": str(bucket["uf"]),
+                "ibgeCode": ibge,
+                "competence": competence,
+                "transferName": "CNES_ESTABELECIMENTOS",
+                "value": int(bucket["count"]),
+                "unit": "ESTABLISHMENTS",
+            }
+        )
+    return silver, quarantined
+
+
 def parse_anatel_dados_gov(
     body: bytes,
     *,

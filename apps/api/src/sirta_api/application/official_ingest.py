@@ -27,6 +27,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_aneel_ckan_open,
     parse_anp_revendedores_api,
     parse_bcb_sgs_olinda,
+    parse_cnes_datasus_open,
     parse_epe_open_files,
     parse_ibge_sidra_series,
     parse_official_document,
@@ -93,6 +94,7 @@ PARSERS = {
     "anatel_dados_gov": parse_anatel_dados_gov,
     "bcb_sgs_olinda": parse_bcb_sgs_olinda,
     "epe_open_files": parse_epe_open_files,
+    "cnes_datasus_open": parse_cnes_datasus_open,
 }
 
 
@@ -125,7 +127,6 @@ def ingest_official_source(
         "restricted_upload",
         "state_transfer_adapter",
         "portal_transparencia_api",
-        "cnes_datasus_open",
     }:
         raise ForbiddenError("Official connector is waiting territorial scope or credentials")
     if connector in {"", "none"} or endpoint in {"", "none"}:
@@ -742,6 +743,17 @@ def _parse(
             competence_year=str(parameters.get("competence_year") or "2025"),
             competence_month=str(parameters.get("competence_month") or "11"),
             service=str(parameters.get("service") or "Banda Larga Fixa"),
+            max_rows=int(parameters.get("max_rows") or 8),
+        )
+    if connector == "cnes_datasus_open":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            uf=str(parameters.get("uf") or ""),
+            codigo_uf=str(parameters.get("codigo_uf") or ""),
+            competence=str(
+                parameters.get("competence") or catalog.get("competence") or "as_published"
+            ),
             max_rows=int(parameters.get("max_rows") or 8),
         )
     if connector == "siconfi_statement":

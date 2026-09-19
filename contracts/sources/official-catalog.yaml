@@ -1296,40 +1296,49 @@ sources:
       fixture mínima (ultimos=3). Homologação humana pendente. Não constitui crédito.
 
   - source_id: CNES-DATASUS
-    name: CNES/DATASUS — Cadastro Nacional de Estabelecimentos de Saúde
+    name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)
     maintainer: Ministério da Saúde / DATASUS
-    official_domain: dadosabertos.saude.gov.br
+    official_domain: apidadosabertos.saude.gov.br
     official_url: https://dadosabertos.saude.gov.br/dataset/cnes-cadastro-nacional-de-estabelecimentos-de-saude
-    endpoint: https://dadosabertos.saude.gov.br/dataset/cnes-cadastro-nacional-de-estabelecimentos-de-saude
-    documentation_url: http://cnes.datasus.gov.br/pages/downloads/arquivosBaseDados.jsp
+    endpoint: https://apidadosabertos.saude.gov.br/cnes/estabelecimentos?codigo_uf=50&limit=8
+    documentation_url: https://apidadosabertos.saude.gov.br/v1/
     dataset: CNES-ESTABELECIMENTOS
     dictionary_url: https://dados.gov.br/dados/conjuntos-dados/cnes-cadastro-nacional-de-estabelecimentos-de-saude
-    purpose: Estabelecimentos de saúde por município com minimização de dados pessoais
-    legal_basis: Dados abertos do SUS / CNES
+    purpose: Contagem de estabelecimentos de saúde por município como referência setorial
+    legal_basis: API pública DEMAS / Dados Abertos do SUS / CNES
     license_terms: Creative Commons Attribution / termos do órgão
     source_role: REFERENCE_ENRICHMENT
     access_classification: PUBLIC_OPEN
-    status: DISCOVERED
-    fixture_kind: NONE
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
     connector: cnes_datasus_open
-    layout_version: cnes-estabelecimentos-v1
-    periodicity: monthly
-    competence: unknown
-    granularity: establishment
+    layout_version: cnes-estabelecimentos-demas-v1
+    periodicity: as_published
+    competence: as_published
+    granularity: municipality
     parameters:
-      formats: [csv, json, xml, zip]
+      uf: MS
+      codigo_uf: 50
+      max_rows: 8
+      limit: 8
+      formats: [json]
       scrape_forbidden: true
       minimize_personal_data: true
-      territorial_scope: none
-      activation: blocked_until_territorial_scope
+      aggregate_only: true
     authentication: none
     rate_limit: not_published
     personal_data: possible_professional_contact_minimized
-    retention: discard_out_of_scope
-    indicator: none
-    formula: none
-    methodology_version: none
+    retention: bronze_immutable
+    indicator: cnes_estabelecimentos_por_municipio
+    formula: >
+      Contagem de estabelecimentos publicados pela API DEMAS
+      /cnes/estabelecimentos filtrada por codigo_uf, agregada por município
+      (codigo_municipio 6 dígitos convertido a IBGE7), limitada a max_rows
+      municípios. CNPJ, e-mail, telefone e endereço não sobem a Silver/Gold.
+      Sem carga nacional. Não constitui crédito.
+    methodology_version: official-cnes-demas-uf-v1
     notes: >
-      Portal oficial e bases por competência verificados. Sem carga nacional.
-      Exige territorial_scope e minimização antes de qualquer Bronze. Não constitui crédito.
+      API DEMAS apidadosabertos.saude.gov.br verificada com filtro codigo_uf
+      (uf alfabético não filtra). Ativação técnica UF=MS, limit=8 e fixture
+      JSON mínima. Homologação humana pendente. Não constitui crédito.
 

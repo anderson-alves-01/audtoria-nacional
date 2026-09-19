@@ -5,6 +5,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_aneel_ckan_open,
     parse_anp_revendedores_api,
     parse_bcb_sgs_olinda,
+    parse_cnes_datasus_open,
     parse_epe_open_files,
     parse_ibge_sidra_series,
     parse_state_ba_csv,
@@ -338,6 +339,32 @@ def test_anatel_meu_municipio_parses_uf_ibge7_scoped_acessos() -> None:
     assert all(len(row["ibgeCode"]) == 7 for row in silver)
     assert presentation_for("ANATEL-DADOS-ABERTOS")["valueKind"] == "REFERENCE_QUANTITY"
     assert presentation_for("ANATEL-DADOS-ABERTOS")["createsTaxCredit"] is False
+
+
+def test_cnes_demas_parses_uf_scoped_establishment_counts() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/cnes-estabelecimentos-ms-limit8.json"
+    ).read_bytes()
+    silver, quarantined = parse_cnes_datasus_open(
+        body,
+        uf="MS",
+        codigo_uf=50,
+        competence="as_published",
+        max_rows=8,
+    )
+    assert len(silver) == 5
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "invalid IBGE municipality code"
+    assert silver[0]["uf"] == "MS"
+    assert silver[0]["ibgeCode"] == "5000807"
+    assert silver[0]["value"] == 1
+    assert any(row["ibgeCode"] == "5002704" and row["value"] == 3 for row in silver)
+    assert all(row["uf"] == "MS" for row in silver)
+    assert all(len(row["ibgeCode"]) == 7 for row in silver)
+    assert all(row["unit"] == "ESTABLISHMENTS" for row in silver)
+    assert all(row["transferName"] == "CNES_ESTABELECIMENTOS" for row in silver)
+    assert presentation_for("CNES-DATASUS")["valueKind"] == "REFERENCE_QUANTITY"
+    assert presentation_for("CNES-DATASUS")["createsTaxCredit"] is False
 
 
 def test_anp_revendedores_aggregates_and_drops_cnpj() -> None:
