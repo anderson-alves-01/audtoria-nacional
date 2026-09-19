@@ -123,5 +123,5 @@ gates:
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
 evidence: evidence/releases/0.3.38/
-next_action: Another UF PUBLIC_OPEN (PR/SP/CE candidates). SC is arrecadação not quota. GO ICMS when datastore publishes ICMS columns. RJ remains IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Sectoral set intact. Human validation of Gold remains pending and is not requested now.
+next_action: Prefer SP/CE or other UF with downloadable CSV/API. PR/SC PROVENANCE_ONLY (HTML / SEF≤2017). AC IPVA via Transparência POST+CSRF is optional follow-up. GO ICMS when datastore publishes ICMS columns. RJ IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

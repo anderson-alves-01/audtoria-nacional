@@ -11,8 +11,9 @@ notes: >
   state_ac_csv). MG/ES/AC usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7.
   GO IPVA via CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS
   ICMS/IPVA via CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG
-  (IPVA não publicado). RJ IP-blocked. SC CSV é arrecadação, não quota-parte.
-  Sem agregador privado.
+  ativado; IPVA mensal só via Transparência POST+CSRF (não ativado). RJ
+  IP-blocked. SC/PR PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML). Sem agregador
+  privado.
 states:
   - uf: AC
     name: Acre
@@ -32,8 +33,9 @@ states:
     reason: >
       CSV anual SEPLAG Repasse Constitucional de ICMS ativado com connector
       state_ac_csv (`;`, latin-1, número BR). IBGE7 nativo em Cod IBGE;
-      competência anual filtrada (2021). IPVA não publicado no portal.
-      Fixture mínima. Sem crédito.
+      competência anual filtrada (2021). IPVA mensal existe em
+      transparencia.ac.gov.br/conteudo/repasse-aos-municipios/dados-exportacao
+      (POST+CSRF); não ativado nesta fatia. Fixture mínima. Sem crédito.
   - uf: AL
     name: Alagoas
     status: DISCOVERED
@@ -180,9 +182,19 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: PR
     name: Paraná
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: html_report_only
+    dataset_url: https://www.transparencia.pr.gov.br/pte/assunto/4/100?origem=4
+    official_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
+    endpoint: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/relatorio/rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL
+    taxes: [ICMS, IPVA]
+    format: HTML
+    ibge_field: name_only
+    download_probe_2026_09_19: html_200_no_csv_api
+    reason: >
+      SEFA/Transparência publica repasse ICMS/IPVA em relatório HTML GET
+      (nome+código interno, sem IBGE). dados.pr.gov.br sem CKAN/API de
+      quota-parte. Sem ativação até CSV/API estruturado estável.
   - uf: PE
     name: Pernambuco
     status: TECHNICALLY_APPROVED
@@ -264,18 +276,21 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: SC
     name: Santa Catarina
-    status: DISCOVERED
-    structured_official_source: ckan_csv_arrecadacao_not_quota
-    dataset_url: https://dados.sc.gov.br/dataset/arrecadacao-municipios
-    official_url: https://dados.sc.gov.br/dataset/arrecadacao-municipios
-    endpoint: https://dados.sc.gov.br/dataset/0eaade9e-98b9-4887-865d-096ccf142f1b/resource/eec848ff-67db-4a8d-9bc6-101e8573c1e2/download/icms_ipva.csv
-    taxes: [ICMS, IPVA, ITCMD]
+    status: PROVENANCE_VERIFIED
+    structured_official_source: sef_csv_frozen_2017_plus_arrecadacao
+    dataset_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    official_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    endpoint: https://www.sef.sc.gov.br/api/download?id=5728&nomeArquivo=Anual_2017.csv&mime=application/vnd.ms-excel
+    arrecadacao_endpoint: https://dados.sc.gov.br/dataset/0eaade9e-98b9-4887-865d-096ccf142f1b/resource/eec848ff-67db-4a8d-9bc6-101e8573c1e2/download/icms_ipva.csv
+    taxes: [ICMS, IPVA, IPI]
     format: CSV
-    download_probe_2026_09_19: csv_bytes_ok_arrecadacao_vl_pgto
+    ibge_field: name_and_sef_code
+    download_probe_2026_09_19: sef_csv_200_max_2017_arrecadacao_not_quota
     reason: >
-      CSV oficial icms_ipva.csv é arrecadação por município (VL_PGTO / classes
-      contábeis), não demonstrativo de quota-parte constitucional de repasse.
-      Sem ativação como OFFICIAL_TRANSFER até fonte de repasse estruturada.
+      SEF publica CSV de repasse via /api/download, porém congelado em ≤2017
+      (código SEF, sem IBGE). CKAN icms_ipva.csv é arrecadação (VL_PGTO), não
+      quota-parte. Repasse corrente aponta portal BB fora de *.sc.gov.br.
+      Sem ativação até série recente estruturada com IBGE.
   - uf: SP
     name: São Paulo
     status: DISCOVERED
