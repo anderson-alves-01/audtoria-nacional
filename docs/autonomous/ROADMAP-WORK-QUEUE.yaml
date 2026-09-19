@@ -353,7 +353,7 @@ items:
     evidencia: evidence/releases/0.3.27/
     versao: "0.3.27"
     commit: ffca85a
-    ci: null
+    ci: "35448857627"
     motivo_bloqueio: null
     next_action: >
       PE, BA e MG TECHNICALLY_APPROVED. RJ IP-blocked. Próxima UF: GO/ES quando
@@ -375,7 +375,7 @@ items:
     evidencia: evidence/releases/0.3.27/
     versao: "0.3.27"
     commit: ffca85a
-    ci: null
+    ci: "35448857627"
     motivo_bloqueio: null
     next_action: >
       PE, BA e MG ativados (state_pe_csv / state_ba_csv / state_mg_csv). Expandir
@@ -397,7 +397,7 @@ items:
     evidencia: evidence/releases/0.3.27/
     versao: "0.3.27"
     commit: ffca85a
-    ci: null
+    ci: "35448857627"
     motivo_bloqueio: null
     next_action: >
       PE, BA e MG ativados. Seguir outras UFs PUBLIC_OPEN; sem inventar valores.
