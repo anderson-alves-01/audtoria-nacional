@@ -439,7 +439,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.31/
     versao: "0.3.31"
-    commit: null
+    commit: 32156ae
     ci: null
     motivo_bloqueio: null
     next_action: >
