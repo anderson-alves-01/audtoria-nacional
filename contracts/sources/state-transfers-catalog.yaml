@@ -6,8 +6,8 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE e BA TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv, fixture, IBGE7).
-  MG datapackage ainda sem ingest (gzip 403). RJ IP-blocked. Sem agregador
+  PE, BA e MG TECHNICALLY_APPROVED (state_pe_csv / state_ba_csv / state_mg_csv).
+  MG usa CSV.gz Frictionless com IBGE nativo. RJ IP-blocked. Sem agregador
   privado. IPVA zero em PE é valor oficial publicado.
 states:
   - uf: AC
@@ -87,18 +87,23 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: MG
     name: Minas Gerais
-    status: PROVENANCE_VERIFIED
-    structured_official_source: ckan_frictionless_schema
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_frictionless_csv_gz
     dataset_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
     official_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
-    endpoint: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/ebed720b-5c5e-4e38-878b-be800c6e9967/download/ft_repasse_mun.csv.gz
     taxes: [ICMS, IPVA, IPI]
     format: CSV.gz
     ibge_field: cd_municipio_ibge
-    download_probe_2026_09_19: ckan_ok_gzip_download_403
+    layout_version_icms: state-mg-icms-v1
+    layout_version_ipva: state-mg-ipva-v1
+    connector: state_mg_csv
+    download_probe_2026_09_19: csv_gz_bytes_ok_join_dims
     reason: >
-      CKAN + datapackage com IBGE nativo (vr_icms/vr_ipva). Download gzip
-      retornou 403 neste runtime. Ativar quando bytes forem obtíveis.
+      Frictionless ft_repasse_mun.csv.gz + dm_municipio + dm_tempo_mensal.
+      IBGE7 nativo; territórios sem IBGE7 em quarentena. Fixture mínima.
+      Gzip 200 OK neste runtime. Sem crédito.
   - uf: PA
     name: Pará
     status: DISCOVERED

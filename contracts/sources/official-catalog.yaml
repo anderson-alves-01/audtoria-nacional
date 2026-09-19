@@ -623,7 +623,7 @@ sources:
       SICONFI-ENTES. Sem ajuste; zero é valor publicado. Não constitui crédito.
     methodology_version: official-state-pe-icms-v1
     notes: >
-      Primeira UF ativada. BA ativada em ESTADO-BA-*. MG/RJ permanecem sem ingest.
+      Primeira UF ativada. BA e MG ativadas. RJ permanece IP-blocked.
       Ver /v1/state-transfers.
 
   - source_id: ESTADO-IPVA-QUOTA
@@ -702,7 +702,7 @@ sources:
       Sem ajuste. Não constitui crédito.
     methodology_version: official-state-ba-icms-v1
     notes: >
-      Cabeçalho multi-coluna oficial. MG/RJ sem ingest. Ver /v1/state-transfers.
+      Cabeçalho multi-coluna oficial. MG ativado; RJ sem ingest. Ver /v1/state-transfers.
 
   - source_id: ESTADO-BA-IPVA-QUOTA
     name: Quota-parte de IPVA estadual (BA)
@@ -742,6 +742,88 @@ sources:
     notes: >
       Mesmo endpoint CSV do ICMS BA; layout_version distinto evita colisão de
       checksum. Homologação humana pendente.
+
+  - source_id: ESTADO-MG-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (MG)
+    maintainer: Governo de Minas Gerais / dados.mg.gov.br
+    official_domain: dados.mg.gov.br
+    official_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/ebed720b-5c5e-4e38-878b-be800c6e9967/download/ft_repasse_mun.csv.gz
+    documentation_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    dataset: ESTADO-MG-ICMS-2024
+    dictionary_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    purpose: Transferência estadual de ICMS — valores publicados por município
+    legal_basis: Dados abertos oficiais de Minas Gerais (quota-parte municipal)
+    license_terms: CC-BY-4.0 / termos do portal dados.mg.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_mg_csv
+    layout_version: state-mg-icms-v1
+    periodicity: monthly
+    competence: "2024"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: MG
+      competence_year: "2024"
+      normalize: ibge7_native
+      municipio_endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/bf4671ef-1131-497f-9580-e720bb8ad585/download/dm_municipio.csv.gz
+      tempo_endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/a3a38dfc-2724-4276-9e0f-0b98d4138f09/download/dm_tempo_mensal.csv.gz
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_mg_icms_quota
+    formula: >
+      Valor vr_icms do fato ft_repasse_mun (CSV.gz Frictionless), competência
+      mensal via dm_tempo_mensal, município com cd_municipio_ibge nativo de
+      7 dígitos em dm_municipio. Territórios sem IBGE7 vão para quarentena.
+      Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-mg-icms-v1
+    notes: >
+      Gzip downloadável em 2026-09-19. PE/BA intactos. RJ IP-blocked. Sem crédito.
+
+  - source_id: ESTADO-MG-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (MG)
+    maintainer: Governo de Minas Gerais / dados.mg.gov.br
+    official_domain: dados.mg.gov.br
+    official_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/ebed720b-5c5e-4e38-878b-be800c6e9967/download/ft_repasse_mun.csv.gz
+    documentation_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    dataset: ESTADO-MG-IPVA-2024
+    dictionary_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Dados abertos oficiais de Minas Gerais (quota-parte municipal)
+    license_terms: CC-BY-4.0 / termos do portal dados.mg.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_mg_csv
+    layout_version: state-mg-ipva-v1
+    periodicity: monthly
+    competence: "2024"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: MG
+      competence_year: "2024"
+      normalize: ibge7_native
+      municipio_endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/bf4671ef-1131-497f-9580-e720bb8ad585/download/dm_municipio.csv.gz
+      tempo_endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/a3a38dfc-2724-4276-9e0f-0b98d4138f09/download/dm_tempo_mensal.csv.gz
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_mg_ipva_quota
+    formula: >
+      Valor vr_ipva do mesmo fato ft_repasse_mun. IBGE7 nativo. layout_version
+      distinto evita colisão de checksum com ICMS. Não constitui crédito.
+    methodology_version: official-state-mg-ipva-v1
+    notes: >
+      Mesmo endpoint gzip do ICMS MG. Homologação humana pendente.
 
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ

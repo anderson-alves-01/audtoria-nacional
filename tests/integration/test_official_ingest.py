@@ -66,6 +66,12 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     ba_ipva = api_client.post("/v1/data-sources/ESTADO-BA-IPVA-QUOTA/ingest", headers=_admin())
     assert ba_ipva.status_code == 200
     assert ba_ipva.json()["silverCount"] == 2
+    mg_icms = api_client.post("/v1/data-sources/ESTADO-MG-ICMS-QUOTA/ingest", headers=_admin())
+    assert mg_icms.status_code == 200
+    assert mg_icms.json()["silverCount"] == 2
+    mg_ipva = api_client.post("/v1/data-sources/ESTADO-MG-IPVA-QUOTA/ingest", headers=_admin())
+    assert mg_ipva.status_code == 200
+    assert mg_ipva.json()["silverCount"] == 2
     rreo = api_client.post("/v1/data-sources/SICONFI-RREO/ingest", headers=_admin())
     assert rreo.status_code == 200
     assert rreo.json()["silverCount"] >= 1
@@ -98,6 +104,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "ESTADO-IPVA-QUOTA",
         "ESTADO-BA-ICMS-QUOTA",
         "ESTADO-BA-IPVA-QUOTA",
+        "ESTADO-MG-ICMS-QUOTA",
+        "ESTADO-MG-IPVA-QUOTA",
         "SICONFI-RREO",
         "SICONFI-DCA",
         "SICONFI-RGF",
@@ -110,6 +118,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["ESTADO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-BA-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-BA-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-MG-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-MG-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["SICONFI-RREO"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-DCA"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-RGF"]["valueKind"] == "FISCAL_STATEMENT_LINE"
@@ -136,6 +146,9 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["ESTADO-BA-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-BA-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-BA-ICMS-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-MG-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-MG-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-MG-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["RFB-DADOS-ABERTOS"]["status"] == "READY_FOR_TERRITORIAL_SCOPE"
     assert by_id["RFB-DADOS-ABERTOS"]["ingestAllowed"] is False
     assert by_id["MUNICIPAL-IPTU-RESTRICTED"]["status"] == "CREDENTIAL_REQUIRED"

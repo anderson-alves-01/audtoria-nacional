@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import gzip
 import hashlib
 import io
 import json
@@ -223,6 +224,105 @@ def parse_brazilian_number(raw: object) -> float:
         raise ValueError("empty amount")
     normalized = text.replace(".", "").replace(",", ".")
     return float(normalized)
+
+
+def _decode_csv_bytes(body: bytes) -> str:
+    payload = body
+    if len(payload) >= 2 and payload[0] == 0x1F and payload[1] == 0x8B:
+        payload = gzip.decompress(payload)
+    try:
+        return payload.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return payload.decode("latin-1")
+
+
+def parse_state_mg_csv(
+    body: bytes,
+    *,
+    tax: str,
+    municipio_dim: bytes | None = None,
+    tempo_dim: bytes | None = None,
+    uf: str = "MG",
+    competence_year: str = "2024",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse MG frictionless fact CSV.gz with municipio/tempo dims; native IBGE7."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state MG tax filter: {tax}")
+    amount_field = "vr_icms" if tax_key == "ICMS" else "vr_ipva"
+    year = str(competence_year or "2024").strip()[:4]
+    municipio_by_id: dict[str, dict[str, str]] = {}
+    if municipio_dim:
+        mun_reader = csv.DictReader(io.StringIO(_decode_csv_bytes(municipio_dim)), delimiter=";")
+        for item in mun_reader:
+            municipio_by_id[str(item.get("id_municipio") or "").strip()] = {
+                "ibge": str(item.get("cd_municipio_ibge") or "").strip(),
+                "nome": str(item.get("nome") or "").strip(),
+            }
+    tempo_by_id: dict[str, dict[str, str]] = {}
+    if tempo_dim:
+        tempo_reader = csv.DictReader(io.StringIO(_decode_csv_bytes(tempo_dim)), delimiter=";")
+        for item in tempo_reader:
+            tempo_by_id[str(item.get("id_tempo") or "").strip()] = {
+                "ano": str(item.get("ano") or "").strip(),
+                "mes": str(item.get("mes") or "").strip().zfill(2),
+                "anomes_iso": str(item.get("anomes_iso") or "").strip(),
+            }
+    fact_reader = csv.DictReader(io.StringIO(_decode_csv_bytes(body)), delimiter=";")
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for index, item in enumerate(fact_reader):
+        mun_id = str(item.get("id_municipio") or "").strip()
+        tempo_id = str(item.get("id_tempo") or "").strip()
+        part_year = str(item.get("ano_particao") or "").strip()
+        tempo = tempo_by_id.get(tempo_id, {})
+        if tempo.get("ano"):
+            if tempo["ano"] != year:
+                continue
+            month = tempo.get("mes") or "00"
+            if not month.isdigit() or not (1 <= int(month) <= 12):
+                continue
+            competence = f"{tempo['ano']}-{month}"
+        elif part_year == year:
+            competence = year
+        else:
+            continue
+        mun = municipio_by_id.get(mun_id, {})
+        ibge = mun.get("ibge") or ""
+        raw_name = mun.get("nome") or ""
+        amount_raw = item.get(amount_field)
+        try:
+            value = float(str(amount_raw).strip().replace(",", "."))
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"mg-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        row = {
+            "rowId": f"mg-{tax_key.lower()}-{ibge or mun_id}-{competence}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
 
 
 def parse_state_pe_csv(

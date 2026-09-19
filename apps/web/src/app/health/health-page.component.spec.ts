@@ -19,7 +19,7 @@ describe('HealthPageComponent', () => {
     http.expectOne('/health').flush({
       status: 'ok',
       specVersion: '0.3.0',
-      implementationVersion: '0.3.26',
+      implementationVersion: '0.3.27',
       releaseStage: 'OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS',
     });
     fixture.detectChanges();

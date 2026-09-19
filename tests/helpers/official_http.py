@@ -41,6 +41,18 @@ SNAPSHOT_URLS = {
         "https://dados.ba.gov.br/dataset/2ac6387d-80ee-4855-aaba-d6820a5f8a71/"
         "resource/76430704-b1a2-484f-87dc-c86248f4f288/download/2024.csv"
     ): "ba-repasses-municipios-2024.csv",
+    (
+        "https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/"
+        "resource/ebed720b-5c5e-4e38-878b-be800c6e9967/download/ft_repasse_mun.csv.gz"
+    ): "mg-ft-repasse-mun.csv",
+    (
+        "https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/"
+        "resource/bf4671ef-1131-497f-9580-e720bb8ad585/download/dm_municipio.csv.gz"
+    ): "mg-dm-municipio.csv",
+    (
+        "https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/"
+        "resource/a3a38dfc-2724-4276-9e0f-0b98d4138f09/download/dm_tempo_mensal.csv.gz"
+    ): "mg-dm-tempo-mensal.csv",
 }
 
 

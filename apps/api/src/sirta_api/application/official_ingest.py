@@ -28,6 +28,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_siconfi_entes,
     parse_siconfi_statement,
     parse_state_ba_csv,
+    parse_state_mg_csv,
     parse_state_pe_csv,
     parse_tesouro_monthly_csv,
     parse_tesouro_transfer_types,
@@ -75,6 +76,7 @@ PARSERS = {
     "siconfi_statement": parse_siconfi_statement,
     "state_pe_csv": parse_state_pe_csv,
     "state_ba_csv": parse_state_ba_csv,
+    "state_mg_csv": parse_state_mg_csv,
 }
 
 
@@ -221,7 +223,12 @@ def ingest_official_source(
         return body
     extracted_at = datetime.now(UTC)
     silver, quarantined = _parse(
-        connector, fetched, session=session, context=context, catalog=catalog
+        connector,
+        fetched,
+        session=session,
+        context=context,
+        catalog=catalog,
+        http_client=http_client,
     )
     if connector == "siconfi_entes":
         silver = [minimize_row(row) for row in silver]
@@ -611,6 +618,7 @@ def _parse(
     session: Session,
     context: AccessContext,
     catalog: dict,
+    http_client: OfficialHttpClient | None = None,
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
     if connector == "official_document":
         return parse_official_document(
@@ -638,9 +646,46 @@ def _parse(
             competence=str(parameters.get("competence") or catalog.get("competence") or "2024"),
             ibge_lookup=_ibge_lookup(session, context=context),
         )
+    if connector == "state_mg_csv":
+        parameters = catalog.get("parameters") or {}
+        municipio_body, tempo_body = _fetch_mg_dims(
+            client=http_client,
+            catalog=catalog,
+            timeout=get_settings().official_http_timeout_seconds,
+        )
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "ICMS"),
+            uf=str(parameters.get("uf") or "MG"),
+            competence_year=str(
+                parameters.get("competence_year") or catalog.get("competence") or "2024"
+            )[:4],
+            municipio_dim=municipio_body,
+            tempo_dim=tempo_body,
+        )
     if connector == "siconfi_statement":
         return parser(fetched.body, dataset=str(catalog.get("dataset") or "RREO"))
     return parser(fetched.body)
+
+
+def _fetch_mg_dims(
+    *,
+    client: OfficialHttpClient | None,
+    catalog: dict,
+    timeout: float,
+) -> tuple[bytes, bytes]:
+    parameters = catalog.get("parameters") or {}
+    municipio_url = str(parameters.get("municipio_endpoint") or "")
+    tempo_url = str(parameters.get("tempo_endpoint") or "")
+    if client is None or not municipio_url or not tempo_url:
+        raise ConflictError("MG state connector requires municipio and tempo dimension endpoints")
+    municipio = client.fetch(municipio_url, timeout=timeout)
+    tempo = client.fetch(tempo_url, timeout=timeout)
+    if municipio.status_code >= 400 or not municipio.body:
+        raise ConflictError("MG municipio dimension download failed")
+    if tempo.status_code >= 400 or not tempo.body:
+        raise ConflictError("MG tempo dimension download failed")
+    return municipio.body, tempo.body
 
 
 def _ibge_lookup(session: Session, *, context: AccessContext) -> dict[tuple[str, str], str]:

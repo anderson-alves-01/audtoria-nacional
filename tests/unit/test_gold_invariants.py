@@ -3,6 +3,7 @@ from pathlib import Path
 from sirta_api.adapters.ingest.parsers import (
     parse_ibge_sidra_series,
     parse_state_ba_csv,
+    parse_state_mg_csv,
     parse_state_pe_csv,
     parse_tesouro_monthly_csv,
 )
@@ -147,3 +148,31 @@ def test_state_ba_csv_parses_multi_header_and_joins_ibge() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-BA-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-BA-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_mg_csv_joins_native_ibge_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/mg-ft-repasse-mun.csv").read_bytes()
+    municipio = Path("tests/fixtures/official-snapshots/mg-dm-municipio.csv").read_bytes()
+    tempo = Path("tests/fixtures/official-snapshots/mg-dm-tempo-mensal.csv").read_bytes()
+    icms, quarantined_icms = parse_state_mg_csv(
+        body, tax="ICMS", municipio_dim=municipio, tempo_dim=tempo
+    )
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"3100104", "3106200"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "MG" for row in icms)
+    assert all(row["competence"] == "2024-01" for row in icms)
+    abadia = next(row for row in icms if row["ibgeCode"] == "3100104")
+    assert abadia["value"] == 817661.12
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_mg_csv(
+        body, tax="IPVA", municipio_dim=municipio, tempo_dim=tempo
+    )
+    assert len(ipva) == 2
+    bh = next(row for row in ipva if row["ibgeCode"] == "3106200")
+    assert bh["value"] == 817489013.21
+    assert bh["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-MG-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-MG-IPVA-QUOTA")["createsTaxCredit"] is False
