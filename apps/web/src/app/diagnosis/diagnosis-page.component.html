@@ -1,0 +1,31 @@
+<section aria-labelledby="diagnosis-title">
+  <h1 id="diagnosis-title">Diagnóstico municipal técnico</h1>
+  <p>
+    Capacidade técnica vazia. Sem meta de recuperação, sem amostra municipal real
+    e sem aprovação automática do Gate G1.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando diagnóstico técnico…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status">Nenhum item de checklist técnico disponível.</p>
+  }
+  @if (state === 'ok') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. G1: {{ g1Status }}. Meta de recuperação: ausente.
+      Comandos desativados.
+    </p>
+    <ul>
+      @for (item of checklist; track item.id) {
+        <li class="estimate">
+          <strong>{{ item.label }}</strong>
+          <span> — {{ item.met ? 'atendido' : 'pendente' }}</span>
+        </li>
+      }
+    </ul>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

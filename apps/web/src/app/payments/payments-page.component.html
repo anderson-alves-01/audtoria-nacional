@@ -1,0 +1,23 @@
+<section aria-labelledby="payments-title">
+  <h1 id="payments-title">Pagamentos e parcelamentos (painel oficial)</h1>
+  <p>
+    Painel oficial vazio. Sem recuperação inventada. Comandos desativados até
+    credencial municipal e gates G0/G5/G6.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando painel de pagamentos…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. Credencial: {{ credentialStatus }}.
+      G6: {{ g6Status }}. Comandos desativados. Sem baixa ou adesão.
+    </p>
+  }
+  @if (state === 'ok') {
+    <p role="status">Lista de pagamentos carregada.</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

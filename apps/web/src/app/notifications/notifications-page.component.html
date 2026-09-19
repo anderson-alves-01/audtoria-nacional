@@ -1,0 +1,28 @@
+<section aria-labelledby="notifications-title">
+  <h1 id="notifications-title">Notificações administrativas técnicas</h1>
+  <p>
+    Shell F5 vazio. Envio real desativado até aprovação humana. Sem crédito
+    tributário e sem comunicação ao contribuinte.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando notificações técnicas…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ catalogVersion }}. G5: {{ g5Status }}. Envio desativado.
+    </p>
+    <button type="button" (click)="attemptSend()">
+      Tentar enviar (desativado)
+    </button>
+    @if (sendMessage) {
+      <p role="status">{{ sendMessage }}</p>
+    }
+  }
+  @if (state === 'ok') {
+    <p role="status">Lista de notificações carregada.</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

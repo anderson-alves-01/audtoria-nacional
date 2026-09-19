@@ -3,7 +3,8 @@ from dataclasses import dataclass
 from sirta_api.domain.errors import ConflictError
 
 STATUS_NON_BINDING = "NON_BINDING"
-CATALOG_VERSION = "catalog-synthetic-v1"
+CATALOG_VERSION = "catalog-official-docs-v1"
+PRESERVED_DOC_SOURCE_IDS = ("PLANALTO-LEGISLACAO", "PLANALTO-LC-214")
 
 
 @dataclass(frozen=True)
@@ -20,13 +21,24 @@ class RegulatoryCatalogItem:
 SYNTHETIC_CATALOG: tuple[RegulatoryCatalogItem, ...] = (
     RegulatoryCatalogItem(
         code="EC-132-2023",
-        title="EC 132/2023 — marco constitucional (catálogo sintético)",
-        source="https://www.planalto.gov.br/",
+        title="EC 132/2023 — marco constitucional (documento oficial preservável)",
+        source="https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc/emc132.htm",
         kind="NORM",
         affected_system="iss-cadastro",
         notes=(
-            "Placeholder de catálogo. Datas, alíquotas e obrigações oficiais "
-            "exigem homologação municipal e jurídica."
+            "Aponta para PLANALTO-LEGISLACAO quando Gold preservado existir. "
+            "Datas, alíquotas e obrigações oficiais exigem homologação. binding=false."
+        ),
+    ),
+    RegulatoryCatalogItem(
+        code="LC-214-2025",
+        title="LC 214/2025 — IBS/CBS (documento oficial preservável)",
+        source="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm",
+        kind="NORM",
+        affected_system="regulatory-monitor",
+        notes=(
+            "Aponta para PLANALTO-LC-214 quando Gold preservado existir. "
+            "Nenhuma regra, alíquota ou prazo é inferido. binding=false."
         ),
     ),
     RegulatoryCatalogItem(

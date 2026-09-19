@@ -1,0 +1,87 @@
+{
+  "help": "https://dadosabertos.aneel.gov.br/api/3/action/help_show?name=datastore_search",
+  "success": true,
+  "result": {
+    "filters": {"SigUF": "MS"},
+    "include_next_page": false,
+    "include_total": true,
+    "limit": 8,
+    "records_format": "objects",
+    "resource_id": "3f841488-80a8-42f2-a6ca-e0c593b228de",
+    "records": [
+      {
+        "_id": 86,
+        "DatGeracaoConjuntoDados": "2026-09-09",
+        "IdeConjUnidConsumidoras": "77",
+        "CodMunicipio": "5004700",
+        "NomMunicipio": "Ivinhema",
+        "SigUF": "MS"
+      },
+      {
+        "_id": 101,
+        "DatGeracaoConjuntoDados": "2026-09-09",
+        "IdeConjUnidConsumidoras": "89",
+        "CodMunicipio": "5005806",
+        "NomMunicipio": "Nioaque",
+        "SigUF": "MS"
+      },
+      {
+        "_id": 140,
+        "DatGeracaoConjuntoDados": "2026-09-09",
+        "IdeConjUnidConsumidoras": "133",
+        "CodMunicipio": "5007208",
+        "NomMunicipio": "Rio Brilhante",
+        "SigUF": "MS"
+      },
+      {
+        "_id": 151,
+        "DatGeracaoConjuntoDados": "2026-09-09",
+        "IdeConjUnidConsumidoras": "146",
+        "CodMunicipio": "5004700",
+        "NomMunicipio": "Ivinhema",
+        "SigUF": "MS"
+      },
+      {
+        "_id": 152,
+        "DatGeracaoConjuntoDados": "2026-09-09",
+        "IdeConjUnidConsumidoras": "146",
+        "CodMunicipio": "5006259",
+        "NomMunicipio": "Novo Horizonte do Sul",
+        "SigUF": "MS"
+      },
+      {
+        "_id": 153,
+        "DatGeracaoConjuntoDados": "2026-09-09",
+        "IdeConjUnidConsumidoras": "147",
+        "CodMunicipio": "5005608",
+        "NomMunicipio": "Miranda",
+        "SigUF": "MS"
+      },
+      {
+        "_id": 162,
+        "DatGeracaoConjuntoDados": "2026-09-09",
+        "IdeConjUnidConsumidoras": "158",
+        "CodMunicipio": "5003454",
+        "NomMunicipio": "Deodápolis",
+        "SigUF": "MS"
+      },
+      {
+        "_id": 999,
+        "DatGeracaoConjuntoDados": "2026-09-09",
+        "IdeConjUnidConsumidoras": "999",
+        "CodMunicipio": "INVALID",
+        "NomMunicipio": "Município Quarentena",
+        "SigUF": "MS"
+      }
+    ],
+    "fields": [
+      {"id": "_id", "type": "int"},
+      {"id": "DatGeracaoConjuntoDados", "type": "text"},
+      {"id": "IdeConjUnidConsumidoras", "type": "text"},
+      {"id": "CodMunicipio", "type": "text"},
+      {"id": "NomMunicipio", "type": "text"},
+      {"id": "SigUF", "type": "text"}
+    ],
+    "total": 678
+  }
+}

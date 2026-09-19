@@ -3,8 +3,9 @@ info:
   title: SIRTA Municipal API
   version: 0.3.0
   description: >
-    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.7
-    implements local slices through G8 synthetic IBS/CBS calendar on the 0.3.0 specification.
+    Active OpenAPI source of truth for SIRTA. implementation_version 0.3.40
+    serves official PUBLIC_OPEN Gold pending human validation on the 0.3.0 specification.
+    Roadmap stage OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS.
     ISR and transfer writes remain specified and are not served until later local slices.
     Sensitive operations require OIDC plus tenant, territory and purpose context.
 servers:
@@ -245,7 +246,7 @@ paths:
   /v1/indicators/source-enrichment:
     get:
       operationId: getSourceEnrichment
-      description: Published synthetic enrichment counts. Public sources never create tax credits.
+      description: Published official Gold enrichment. Public sources never create tax credits.
       parameters:
         - name: sourceId
           in: query
@@ -261,19 +262,362 @@ paths:
     get:
       operationId: getIbsCbsCalendar
       description: >
-        Synthetic IBS/CBS regulatory calendar. Items are NON_BINDING.
-        Official dates and layouts require homologation before operational use.
+        Non-binding IBS/CBS regulatory calendar (catalog-official-docs-v1).
+        Links preservedDocuments to Gold PLANALTO-LEGISLACAO and PLANALTO-LC-214
+        when published. Items remain NON_BINDING; operational=false; homologated=false.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
-        '200': {description: Non-binding catalog; operational=false}
+        '200': {description: Non-binding catalog; preservedDocuments; operational=false}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/diagnosis:
+    get:
+      operationId: getMunicipalDiagnosis
+      description: >
+        Technical municipal diagnosis shell. Checklist unmet; recoveryMeta=null;
+        no recovery target. G1 remains BLOCKED. commandsDisabled=true.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty technical diagnosis; recoveryMeta=null}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/audit-rules:
+    get:
+      operationId: listAuditRules
+      description: >
+        Non-binding audit rule catalog. binding=false; createsTaxCredit=false;
+        taxPotentialAsCredit=false. G4 homologation absent.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Non-binding rule placeholders; commandsDisabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/findings:
+    get:
+      operationId: listFindings
+      description: >
+        Technical audit findings shell. Empty items; commandsDisabled=true;
+        createsTaxCredit=false; legalCommandsEnabled=false. G5 BLOCKED.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty findings page; no tax credit}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/cases:
+    get:
+      operationId: listAuditCases
+      description: >
+        Technical audit cases shell (D5). Distinct from collection-cases.
+        Empty items; create disabled until G4/G5.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty audit cases page; commandsDisabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: createAuditCase
+      description: >
+        Always rejected (409). Technical shell does not persist cases or create credits.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Commands disabled; no persistence}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/human-validation:
+    get:
+      operationId: getHumanValidationWorkflow
+      description: >
+        Human validation workflow shell (F5). Reference states only; queue empty;
+        publishesPublicCredit=false. Not Gold homologation; not credit validation.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty workflow; commandsDisabled; G4/G5 BLOCKED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/notifications:
+    get:
+      operationId: listNotifications
+      description: >
+        Administrative notifications shell. Empty items; sendEnabled=false;
+        real delivery disabled until human approval.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty notifications page; send disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: sendNotification
+      description: >
+        Always rejected (409). Technical shell never sends or persists notifications.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Send disabled; no delivery}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/collection:
+    get:
+      operationId: getCollectionPanel
+      description: >
+        Official empty administrative collection panel. commandsDisabled=true;
+        synthetic start remains API-test only via tax-credit collection-cases.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty collection panel; G0/G4/G5 BLOCKED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/payments:
+    get:
+      operationId: getPaymentsPanel
+      description: >
+        Official empty payments and installments panel. recoveryInvented=false;
+        commands disabled until municipal credential and G0/G5/G6.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty payments panel; CREDENTIAL_REQUIRED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandPaymentsPanel
+      description: Always rejected (409). No payment, installment or invented recovery.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Commands disabled; no payment recorded}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/active-debt:
+    get:
+      operationId: getActiveDebtPanel
+      description: >
+        Official empty active-debt panel. inscriptionEnabled=false;
+        no legal inscription until municipal authorization and G0/G5/G6.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty active-debt panel; inscription disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: inscribeActiveDebt
+      description: Always rejected (409). Technical shell never inscribes active debt.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Inscription disabled; no certidão}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/procuradoria:
+    get:
+      operationId: getProcuradoriaPanel
+      description: >
+        Official empty Procuradoria workflow. altersLegalStatus=false;
+        no automatic legal status change.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Empty Procuradoria workflow; legal commands disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandProcuradoria
+      description: Always rejected (409). No automatic legal forwarding or status change.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Legal commands disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/transfer-reconciliation:
+    get:
+      operationId: getTransferReconciliation
+      description: >
+        Empty transfer reconciliation shell. Compares expected versus received only
+        when both exist. Differences are occurrences, never tax credits. G7 official blocked.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty reconciliation panel; createsTaxCredit=false}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandTransferReconciliation
+      description: Always rejected (409). No automatic reconciliation or credit creation.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Reconciliation commands disabled}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/pilot-readiness:
+    get:
+      operationId: getPilotReadiness
+      description: >
+        Technical pilot readiness checklist. Technical items may be met; G9 remains
+        BLOCKED without municipality, users and institutional acceptances.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Technical checklist; institutionalReady=false; G9 BLOCKED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/ops-governance:
+    get:
+      operationId: getOpsGovernance
+      description: >
+        Local ops and governance readiness with runbook inventory. canDeploy=false;
+        terraformApplyAuthorized=false; G10 BLOCKED. No fabricated human approval.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Local runbooks listed; G10 BLOCKED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/municipal-uploads:
+    get:
+      operationId: getMunicipalUploads
+      description: >
+        Controlled municipal restricted upload shell. Schemas and quarantine slots
+        listed; uploadEnabled=false; no municipal samples until DPA and G0.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty upload slots; CREDENTIAL_REQUIRED}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandMunicipalUploads
+      description: Always rejected (409). No municipal file accepted without DPA/G0.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Upload disabled; no sample accepted}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/cadastro-360:
+    get:
+      operationId: getCadastro360
+      description: >
+        Cadastro 360 technical empty shell. No real PII, no invented territory,
+        minimization enforced. CREDENTIAL_REQUIRED until territorial scope and G0.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty subjects; piiPresent=false}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandCadastro360
+      description: Always rejected (409). No subject enrichment without authorization.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Commands disabled; no PII enrichment}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/sectoral-enrichment:
+    get:
+      operationId: getSectoralEnrichment
+      description: >
+        Sectoral REFERENCE_ENRICHMENT empty shell for ANP, ANEEL, EPE, Anatel,
+        BCB and CNES. Cataloged endpoints; partial UF-scoped ingest when
+        TECHNICALLY_APPROVED; no tax credit.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty sectoral shell; DISCOVERED sources listed}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandSectoralEnrichment
+      description: Always rejected (409). No sectoral load without technical activation.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Commands disabled; no sectoral ingest}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/state-transfers:
+    get:
+      operationId: getStateTransfers
+      description: >
+        State ICMS/IPVA catalog. PE may be TECHNICALLY_APPROVED with ingestAllowed;
+        createsTaxCredit=false; commandsDisabled; BA/MG/RJ without activated load.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {$ref: '#/components/parameters/Page'}
+        - {$ref: '#/components/parameters/PageSize'}
+      responses:
+        '200': {description: Empty state-transfers shell with per-UF status}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+    post:
+      operationId: commandStateTransfers
+      description: Always rejected (409). No state ICMS/IPVA load without schema activation.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '409': {description: Commands disabled; no state transfer ingest}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/data-sources:
     get:
       operationId: listDataSources
-      description: Synthetic master source registry. Public sources never create tax credits.
+      description: Official master source registry. Public sources never create tax credits.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
@@ -284,7 +628,7 @@ paths:
   /v1/data-sources/{sourceId}/dry-run:
     post:
       operationId: dryRunDataSource
-      description: Synthetic dry-run. Never downloads a full base or creates a tax credit.
+      description: Dry-run of a cataloged source. Official sources report the planned official URL.
       parameters:
         - name: sourceId
           in: path
@@ -293,14 +637,14 @@ paths:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
-        '200': {description: Dry-run accepted for synthetic fixtures}
+        '200': {description: Dry-run accepted for an allowed catalog source}
         '403': {$ref: '#/components/responses/Forbidden'}
   /v1/data-sources/{sourceId}/ingest:
     post:
       operationId: ingestCatalogSource
       description: >
-        Catalog-driven synthetic ingest. Preserves landing checksum, quarantines invalid rows
-        and never creates a tax credit or downloads a full official base.
+        Catalog-driven official ingest for PUBLIC_OPEN sources. Preserves landing checksum,
+        quarantines invalid rows and never creates a tax credit. Synthetic fixtures are test-only.
       parameters:
         - name: sourceId
           in: path
@@ -311,6 +655,62 @@ paths:
       responses:
         '200': {description: Ingest accepted or replayed; taxCreditCreated=false}
         '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/indicators/official-gold:
+    get:
+      operationId: getOfficialGold
+      description: >
+        Official Gold indicators derived from Silver. Homologation remains
+        REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION. Empty sources are listed, never simulated.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Official Gold items or empty sources with reason}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/indicators/official-gold/lines:
+    get:
+      operationId: getOfficialGoldLines
+      description: >
+        Per-row Gold lineage to Silver, Bronze checksum, landing manifest and official URL.
+        Incomplete lineage is rejected.
+      parameters:
+        - name: sourceId
+          in: query
+          schema: {type: string}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Gold lines with complete lineage}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/dashboards:
+    get:
+      operationId: listDashboards
+      description: Fifteen official dashboards. Empty modules stay empty. No synthetic fill. Commands disabled.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Dashboard catalog with official Gold subsets}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/dashboards/{dashboardId}:
+    get:
+      operationId: getDashboard
+      description: One official dashboard. ROI is never calculated without eligible received values.
+      parameters:
+        - name: dashboardId
+          in: path
+          required: true
+          schema: {type: string}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      responses:
+        '200': {description: Dashboard view}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {$ref: '#/components/responses/NotFound'}
   /v1/program-gates:
     get:
       operationId: listProgramGates

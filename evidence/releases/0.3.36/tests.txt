@@ -1,0 +1,7 @@
+﻿python -m pytest tests/unit/test_sectoral_enrichment.py tests/unit/test_gold_invariants.py tests/unit/test_health.py tests/integration/test_sectoral_enrichment.py tests/integration/test_official_ingest.py -q
+36 passed
+
+python -m pytest tests/integration/test_alembic_paths.py -q
+5 passed
+
+ruff check: All checks passed!

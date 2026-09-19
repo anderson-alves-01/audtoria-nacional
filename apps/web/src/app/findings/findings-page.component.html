@@ -1,0 +1,23 @@
+<section aria-labelledby="findings-title">
+  <h1 id="findings-title">Achados de auditoria técnicos</h1>
+  <p>
+    Capacidade técnica vazia. Sem crédito tributário, sem cobrança e sem
+    comandos jurídicos ativos.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando achados técnicos…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ catalogVersion }}. G5: {{ g5Status }}. Total: {{ total }}.
+      Comandos desativados. Não constitui crédito.
+    </p>
+  }
+  @if (state === 'ok') {
+    <p role="status">Lista de achados carregada.</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

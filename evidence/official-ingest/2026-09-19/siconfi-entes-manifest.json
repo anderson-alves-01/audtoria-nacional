@@ -1,0 +1,20 @@
+{
+  "bytes": 866510,
+  "competence": "2026",
+  "contentType": "application/json",
+  "coverage": "municipality",
+  "dataset": "SICONFI-ENTES",
+  "etag": "\"qkg3o0ouzkXwiOmuYTPZe2lYNq3uiH2LEd7pIG3ZEODqMi0gwfDiJLEI+f5Ubg++2iSBB3iuv6qVwAXFjPluuA==\"",
+  "extractedAtUtc": "2026-09-19T02:39:51.231454+00:00",
+  "httpStatus": 200,
+  "lastModified": null,
+  "layoutVersion": "siconfi-entes-v1",
+  "logicalUrl": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes",
+  "officialUrl": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes",
+  "quarantinedCount": 0,
+  "receivedCount": 5570,
+  "resolvedUrl": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes",
+  "sha256": "0fe90b47e501929e32925f988d2622270d516fe5073e2f7d80042831ff7f2cc2",
+  "silverCount": 5570,
+  "sourceId": "SICONFI-ENTES"
+}

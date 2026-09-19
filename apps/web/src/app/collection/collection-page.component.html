@@ -1,30 +1,23 @@
 <section aria-labelledby="collection-title">
-  <h1 id="collection-title">Cobrança administrativa sintética</h1>
+  <h1 id="collection-title">Cobrança administrativa (painel oficial)</h1>
   <p>
-    Nenhuma cobrança avança sem validação. A autorização ocorre na API.
-    Créditos suspensos, extintos ou bloqueados permanecem inalterados.
+    Painel oficial vazio. Comandos desativados até validação humana e gates
+    G0/G4/G5. Fluxo sintético permanece somente em testes de API.
   </p>
-  @if (state === 'idle') {
-    <p role="status">Informe um crédito VALIDATED e ENFORCEABLE.</p>
-  }
-  <form (ngSubmit)="submit()">
-    <label for="credit-id">Identificador do crédito</label>
-    <input id="credit-id" name="creditId" [(ngModel)]="creditId" autocomplete="off" />
-    <label for="territory-id">Território</label>
-    <input id="territory-id" name="territoryId" [(ngModel)]="territoryId" autocomplete="off" />
-    <label for="purpose-id">Finalidade</label>
-    <input id="purpose-id" name="purposeId" [(ngModel)]="purposeId" autocomplete="off" />
-    <label for="access-token">Token OIDC local</label>
-    <input id="access-token" name="accessToken" [(ngModel)]="accessToken" type="password" autocomplete="off" />
-    <button type="submit">Iniciar cobrança administrativa</button>
-  </form>
   @if (state === 'loading') {
-    <p role="status">Enviando comando…</p>
+    <p role="status">Carregando painel de cobrança…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. G0: {{ g0Status }}. G4: {{ g4Status }}.
+      G5: {{ g5Status }}. Comandos desativados. Sem cobrança iniciada.
+    </p>
   }
   @if (state === 'ok') {
-    <p role="status" class="status-administrative">Cobrança em {{ collectionStatus }}.</p>
+    <p role="status">Fila de cobrança carregada.</p>
   }
-  @if (state === 'forbidden' || state === 'error') {
+  @if (state === 'error') {
     <p role="alert">{{ errorMessage }}</p>
   }
 </section>

@@ -11,24 +11,44 @@ describe('CollectionPageComponent', () => {
     }).compileComponents();
   });
 
-  it('keeps an idle instruction before submit', () => {
+  it('renders empty official collection panel with commands disabled', () => {
     const fixture = TestBed.createComponent(CollectionPageComponent);
+    const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('VALIDATED e ENFORCEABLE');
+    http.expectOne('/v1/collection').flush({
+      version: 'collection-panel-technical-v1',
+      commandsDisabled: true,
+      sendEnabled: false,
+      createsTaxCredit: false,
+      g0Status: 'BLOCKED',
+      g4Status: 'BLOCKED',
+      g5Status: 'BLOCKED',
+      items: [],
+      queue: [],
+      disclaimer: 'Painel de cobrança administrativa oficial vazio.',
+    });
+    fixture.detectChanges();
+    const text = fixture.nativeElement.textContent as string;
+    expect(text).toContain('Cobrança administrativa (painel oficial)');
+    expect(text).toContain('G0: BLOCKED');
+    expect(text).toContain('G5: BLOCKED');
+    expect(text).toContain('Comandos desativados');
+    expect(text).toContain('Sem cobrança iniciada');
+    http.verify();
   });
 
-  it('shows a blocked-credit message on conflict', () => {
+  it('shows error when collection panel API fails', () => {
     const fixture = TestBed.createComponent(CollectionPageComponent);
-    const page = fixture.componentInstance;
     const http = TestBed.inject(HttpTestingController);
-    page.creditId = '11111111-1111-4111-8111-111111111051';
-    page.submit();
-    http.expectOne('/v1/tax-credits/11111111-1111-4111-8111-111111111051/collection-cases').flush(
-      { title: 'Conflict' },
-      { status: 409, statusText: 'Conflict' },
+    fixture.detectChanges();
+    http.expectOne('/v1/collection').flush(
+      { title: 'Error' },
+      { status: 500, statusText: 'Server Error' },
     );
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('O crédito não foi alterado');
+    expect(fixture.nativeElement.textContent).toContain(
+      'Não foi possível carregar o painel de cobrança',
+    );
     http.verify();
   });
 });

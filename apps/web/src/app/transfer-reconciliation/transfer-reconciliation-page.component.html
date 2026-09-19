@@ -1,0 +1,23 @@
+<section aria-labelledby="transfer-reconciliation-title">
+  <h1 id="transfer-reconciliation-title">Conciliação de transferências</h1>
+  <p>
+    Painel técnico vazio. Previsto versus realizado somente quando ambos existirem.
+    Diferença é ocorrência, nunca crédito tributário.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando conciliação de transferências…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. G7: {{ g7Status }}. Comandos desativados.
+      Sem crédito automático.
+    </p>
+  }
+  @if (state === 'ok') {
+    <p role="status">Diferenças de transferência carregadas (ocorrências).</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

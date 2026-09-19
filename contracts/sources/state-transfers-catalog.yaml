@@ -1,0 +1,346 @@
+contract_version: state-transfers-catalog-v1
+verified_at: "2026-09-19"
+technical_reference_territory: none
+pilot_state_approved: false
+adapter: state_transfer_adapter
+normalize: ibge7
+taxes: [ICMS, IPVA]
+notes: >
+  PE, BA, MG, ES, GO, MS, RO, AC, CE e RS TECHNICALLY_APPROVED (state_pe_csv /
+  state_ba_csv / state_mg_csv / state_es_csv / state_go_csv / state_ms_csv /
+  state_ro_csv / state_ac_csv / state_ce_xls / state_rs_xls). MG/ES/AC usam IBGE7 nativo.
+  RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via CKAN DataStore dump (CSV
+  upload 500; schema sem ICMS 2026). MS ICMS/IPVA via CKAN DataStore mensal
+  (Tipo_Repasse). AC ICMS anual SEPLAG ativado; IPVA mensal só via
+  Transparência POST+CSRF (não ativado). CE ICMS/IPVA via XLS mensal SEFAZ
+  (Portaria). RS ICMS/IPVA via MontaArquivo XLS mensal SEFAZ (TOTAL mês /
+  Total Mês). RJ IP-blocked. SC/PR PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML).
+  Sem agregador privado.
+states:
+  - uf: AC
+    name: Acre
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.ac.gov.br/dataset/repasse-constitucional-de-icms-para-os-municipios
+    official_url: https://dados.ac.gov.br/dataset/repasse-constitucional-de-icms-para-os-municipios
+    endpoint: https://dados.ac.gov.br/dataset/e9f7ca08-2c55-45d5-a948-ef25a1acb296/resource/d0deaa76-c075-4b0d-8cf3-468c5fcb1267/download/repasse-constitucional-de-icms-para-os-municipios.csv
+    taxes: [ICMS]
+    format: CSV
+    columns: [municipio, Cod IBGE, 2018, 2019, 2020, 2021]
+    ibge_field: Cod IBGE
+    layout_version_icms: state-ac-icms-v1
+    connector: state_ac_csv
+    download_probe_2026_09_19: csv_bytes_ok_ibge7_native_annual
+    reason: >
+      CSV anual SEPLAG Repasse Constitucional de ICMS ativado com connector
+      state_ac_csv (`;`, latin-1, número BR). IBGE7 nativo em Cod IBGE;
+      competência anual filtrada (2021). IPVA mensal existe em
+      transparencia.ac.gov.br/conteudo/repasse-aos-municipios/dados-exportacao
+      (POST+CSRF); não ativado nesta fatia. Fixture mínima. Sem crédito.
+  - uf: AL
+    name: Alagoas
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: AP
+    name: Amapá
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: AM
+    name: Amazonas
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: BA
+    name: Bahia
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
+    official_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
+    endpoint: https://dados.ba.gov.br/dataset/2ac6387d-80ee-4855-aaba-d6820a5f8a71/resource/76430704-b1a2-484f-87dc-c86248f4f288/download/2024.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    columns_layout: multi_header_semicolon_latin1
+    ibge_field: name_only
+    layout_version_icms: state-ba-icms-v1
+    layout_version_ipva: state-ba-ipva-v1
+    connector: state_ba_csv
+    download_probe_2026_09_19: csv_bytes_ok_multi_header
+    reason: >
+      CSV anual ativado com connector state_ba_csv (`;`, latin-1, número BR).
+      Colunas posicionais ICMS=4 e IPVA=13 após cabeçalho multi-coluna.
+      Fixture mínima + join IBGE7 por nome+UF. Sem crédito.
+  - uf: CE
+    name: Ceará
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_xls_downloadable
+    dataset_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    official_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    endpoint: https://www.ce.gov.br/sefaz/wp-content/uploads/sites/46/2020/08/1.Portaria-jan-25-ANEXO-UNICO.xls
+    taxes: [ICMS, IPVA, IPI]
+    format: XLS
+    columns: [Município, ICMS Total, ICMS Líquido, ICMS FUNDEB, IPVA Total, IPVA Líquido, IPVA FUNDEB, IPI Total, IPI Líquido, IPI FUNDEB]
+    ibge_field: name_only
+    layout_version_icms: state-ce-icms-v1
+    layout_version_ipva: state-ce-ipva-v1
+    connector: state_ce_xls
+    download_probe_2026_09_19: xls_bytes_ok_name_uf_join
+    reason: >
+      XLS mensal SEFAZ Portaria de distribuição ICMS/IPVA/IPI ativado com
+      connector state_ce_xls (xlrd). Coluna Total (quota constitucional) por
+      município; join IBGE7 por nome+UF via SICONFI-ENTES. Competência
+      2025-01. Fixture mínima. Sem crédito.
+  - uf: DF
+    name: Distrito Federal
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: DF não reparte ICMS/IPVA com municípios da mesma forma; sem dataset municipal aplicável verificado.
+  - uf: ES
+    name: Espírito Santo
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    official_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    endpoint: https://dados.es.gov.br/dataset/d85497f8-3dc4-4104-8e18-f242ae82b6ee/resource/f76f120c-ee95-440c-a77a-2fdace48b1bc/download/transfestadomunicipios-2024.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    columns: [Id, CodMunicipio, NomeMunicipio, IndiceImposto, Icms, IcmsLei2508, IcmsTotal, Ipi, Ipva, IndiceFundo, FundoReducaoDesigualdades, CotaParteCide, CompensacaoFinanceira, Ano, Mes]
+    ibge_field: CodMunicipio
+    layout_version_icms: state-es-icms-v1
+    layout_version_ipva: state-es-ipva-v1
+    connector: state_es_csv
+    download_probe_2026_09_19: csv_bytes_ok_ibge7_native
+    reason: >
+      CSV anual TransfEstadoMunicipios-2024 ativado com connector state_es_csv
+      (`;`, UTF-8, número BR). ICMS via IcmsTotal; IPVA via Ipva. IBGE7 nativo
+      em CodMunicipio. Fixture mínima. Sem crédito.
+  - uf: GO
+    name: Goiás
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_datastore_dump
+    dataset_url: https://dadosabertos.go.gov.br/dataset/repasses
+    official_url: https://dadosabertos.go.gov.br/dataset/repasses
+    endpoint: https://dadosabertos.go.gov.br/datastore/dump/343d1fb0-a182-4005-9203-dce168d2ad60
+    taxes: [IPVA]
+    format: CSV
+    columns: [VALR_IPVA, VALOR_TOTAL, VALR_IPVA_FUNDEB, DATA_COMPLETA_CREDITO, NUMR_ANO_MES, DATA_COMPLETA_REPASSE, DESC_MUN]
+    ibge_field: name_only
+    layout_version_ipva: state-go-ipva-v1
+    connector: state_go_csv
+    download_probe_2026_09_19: datastore_dump_ok_csv_download_500
+    reason: >
+      CSV upload retorna HTTP 500; dump oficial CKAN DataStore 200 OK com
+      schema mensal apenas IPVA (VALR_IPVA). Connector state_go_csv + join
+      IBGE7 por nome+UF. ICMS ausente no datastore 2026 publicado. Fixture
+      mínima. Sem crédito.
+  - uf: MA
+    name: Maranhão
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado. Não é território piloto aprovado.
+  - uf: MT
+    name: Mato Grosso
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: MS
+    name: Mato Grosso do Sul
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_datastore_dump
+    dataset_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    official_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    endpoint: https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026
+    taxes: [ICMS, IPVA, IPI, CIDE]
+    format: CSV
+    columns: [_id, Tipo_Repasse, Data, Data_Contabilização, Municipio, Valor_Total]
+    ibge_field: name_only
+    layout_version_icms: state-ms-icms-v1
+    layout_version_ipva: state-ms-ipva-v1
+    connector: state_ms_csv
+    download_probe_2026_09_19: datastore_dump_ok_icms_ipva
+    reason: >
+      Dump mensal CKAN DataStore 200 OK com Tipo_Repasse REPASSE DE ICMS e
+      REPASSE DE IPVA. Connector state_ms_csv + join IBGE7 por nome+UF após
+      remover prefixo PREFEITURA MUNICIPAL DE. Fixture mínima. Sem crédito.
+  - uf: MG
+    name: Minas Gerais
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_frictionless_csv_gz
+    dataset_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    official_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/ebed720b-5c5e-4e38-878b-be800c6e9967/download/ft_repasse_mun.csv.gz
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV.gz
+    ibge_field: cd_municipio_ibge
+    layout_version_icms: state-mg-icms-v1
+    layout_version_ipva: state-mg-ipva-v1
+    connector: state_mg_csv
+    download_probe_2026_09_19: csv_gz_bytes_ok_join_dims
+    reason: >
+      Frictionless ft_repasse_mun.csv.gz + dm_municipio + dm_tempo_mensal.
+      IBGE7 nativo; territórios sem IBGE7 em quarentena. Fixture mínima.
+      Gzip 200 OK neste runtime. Sem crédito.
+  - uf: PA
+    name: Pará
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: PB
+    name: Paraíba
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: PR
+    name: Paraná
+    status: PROVENANCE_VERIFIED
+    structured_official_source: html_report_only
+    dataset_url: https://www.transparencia.pr.gov.br/pte/assunto/4/100?origem=4
+    official_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
+    endpoint: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/relatorio/rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL
+    taxes: [ICMS, IPVA]
+    format: HTML
+    ibge_field: name_only
+    download_probe_2026_09_19: html_200_no_csv_api
+    reason: >
+      SEFA/Transparência publica repasse ICMS/IPVA em relatório HTML GET
+      (nome+código interno, sem IBGE). dados.pr.gov.br sem CKAN/API de
+      quota-parte. Sem ativação até CSV/API estruturado estável.
+  - uf: PE
+    name: Pernambuco
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    official_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    endpoint: https://dados.pe.gov.br/dataset/d157c770-7680-454e-9b0f-ddb777de4888/resource/ff98eec8-cce6-43ba-b8a8-bf55493c554f/download/transferencias_municipais_2024_.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    columns: [ano, mes, MUNICÍPIO, ICMS, IPI, IPVA, TOTAL]
+    ibge_field: name_only
+    layout_version_icms: state-pe-icms-v1
+    layout_version_ipva: state-pe-ipva-v1
+    connector: state_pe_csv
+    download_probe_2026_09_19: csv_bytes_ok
+    preferred_activation: true
+    reason: >
+      CSV 2024 ativado com connector state_pe_csv, fixture mínima e join IBGE7
+      por nome+UF. IPVA zero publicado como valor oficial. Sem crédito.
+  - uf: PI
+    name: Piauí
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: RJ
+    name: Rio de Janeiro
+    status: PROVENANCE_VERIFIED
+    structured_official_source: ckan_csv_cataloged
+    dataset_url: https://dadosabertos.rj.gov.br/dataset/distribuicoes-constitucionais-muns-obrig
+    official_url: https://portal.fazenda.rj.gov.br/transparencia-fiscal/relatorios/transferencias-aos-municipios/
+    endpoint: https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2024/02/Relatorio-de-Repasses-aos-Municipios-2024.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    dictionary_url: none
+    download_probe_2026_09_19: sefaz_ip_filter_html_block
+    reason: >
+      CKAN estadual lista CSV anual de repasses (ICMS/IPVA/IPI). Schema de colunas
+      ainda não confirmado em bytes baixáveis neste runtime (bloqueio HTML por
+      catálogo de IP da SEFAZ-RJ). Agregadores privados recusados. Sem ativação
+      de ingest até schema verificado.
+  - uf: RN
+    name: Rio Grande do Norte
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: RS
+    name: Rio Grande do Sul
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_montaarquivo_xls
+    dataset_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    official_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_icms_rep_202501
+    ipva_endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_ipva_rep_202501
+    taxes: [ICMS, IPVA]
+    format: XLS
+    columns_icms: [MUNICIPIO, weekly REPASSE/RETENÇÃO/LÍQUIDO, TOTAL month REPASSE]
+    columns_ipva: [NOME DO MUNICÍPIO, daily amounts, Total Mês, Total Ano]
+    ibge_field: name_only
+    layout_version_icms: state-rs-icms-v1
+    layout_version_ipva: state-rs-ipva-v1
+    connector: state_rs_xls
+    download_probe_2026_09_19: montaarquivo_xls_200_total_mes
+    reason: >
+      XLS mensal SEFAZ-RS via MontaArquivo (l_icms_rep_YYYYMM / l_ipva_rep_YYYYMM)
+      ativado com connector state_rs_xls (xlrd). ICMS usa coluna TOTAL
+      MÊS/ANO REPASSE; IPVA usa Total Mês. Join IBGE7 por nome+UF. Competência
+      2025-01. Fixture mínima. Sem crédito.
+  - uf: RO
+    name: Rondônia
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.ro.gov.br/dataset/repasses-icms
+    official_url: https://dados.ro.gov.br/dataset/repasses-icms
+    endpoint: https://dados.ro.gov.br/dataset/cfff3fa2-6bb2-4519-bfaa-2f60126dd811/resource/28a6ff6c-59d4-409e-947d-a38b35bae75b/download/___
+    ipva_dataset_url: https://dados.ro.gov.br/dataset/repasses-ipva
+    ipva_endpoint: https://dados.ro.gov.br/dataset/ae2649de-b047-4555-9dfe-501b6d447fb8/resource/5deb9684-7411-4824-a904-a855ad68ab66/download/ipva-portal-2019-2022.csv
+    taxes: [ICMS, IPVA]
+    format: CSV
+    columns_icms: [MUNICÍPIO, MM/YYYY...]
+    columns_ipva: [Código, Município, jan/yy...]
+    ibge_field: name_only_icms_ibge6_ipva
+    layout_version_icms: state-ro-icms-v1
+    layout_version_ipva: state-ro-ipva-v1
+    connector: state_ro_csv
+    download_probe_2026_09_19: csv_bytes_ok_wide_monthly
+    reason: >
+      CSV SEFIN no portal dados.ro.gov.br (ICMS-2022 e IPVA-2019-2022) ativado
+      com connector state_ro_csv. ICMS wide MM/YYYY + join IBGE7 por nome+UF.
+      IPVA wide jan/yy + IBGE6→7. Fixture mínima. Sem crédito.
+  - uf: RR
+    name: Roraima
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: SC
+    name: Santa Catarina
+    status: PROVENANCE_VERIFIED
+    structured_official_source: sef_csv_frozen_2017_plus_arrecadacao
+    dataset_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    official_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    endpoint: https://www.sef.sc.gov.br/api/download?id=5728&nomeArquivo=Anual_2017.csv&mime=application/vnd.ms-excel
+    arrecadacao_endpoint: https://dados.sc.gov.br/dataset/0eaade9e-98b9-4887-865d-096ccf142f1b/resource/eec848ff-67db-4a8d-9bc6-101e8573c1e2/download/icms_ipva.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    ibge_field: name_and_sef_code
+    download_probe_2026_09_19: sef_csv_200_max_2017_arrecadacao_not_quota
+    reason: >
+      SEF publica CSV de repasse via /api/download, porém congelado em ≤2017
+      (código SEF, sem IBGE). CKAN icms_ipva.csv é arrecadação (VL_PGTO), não
+      quota-parte. Repasse corrente aponta portal BB fora de *.sc.gov.br.
+      Sem ativação até série recente estruturada com IBGE.
+  - uf: SP
+    name: São Paulo
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: >
+      Portal SEFAZ-SP RepasseConsulta é HTML por município; dadosabertos.sp.gov.br
+      sem CSV/API de quota-parte municipal verificado nesta fatia.
+  - uf: SE
+    name: Sergipe
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+  - uf: TO
+    name: Tocantins
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.

@@ -12,20 +12,20 @@
 
 ---
 
-## Estado de execução em 18 de setembro de 2026
+## Estado de execução em 19 de setembro de 2026
 
 | Item | Estado registrado |
 |---|---|
 | Versão da especificação | `0.3.0` |
-| Versão da implementação local | `0.3.13` |
-| Linha técnica concluída | F0/S0-S4, G6–G8 locais, Alembic, F3.0/F3.1 sintético, checklists G0/G1 BLOCKED, Terraform docs |
+| Versão da implementação local | `0.3.40` |
+| Linha técnica em progresso | F0/S0-S4, G6–G8 locais, Alembic, F3, onda 1 PUBLIC_OPEN, lineage Gold, 15 dashboards, FPM/RREO/DCA/RGF, observabilidade, LC 214, Portal stub, diagnóstico, regras não vinculantes, calendário catalog-official-docs-v1, shells F5–F10, upload municipal, Cadastro 360, setoriais (ANP+ANEEL+EPE+BCB+Anatel+CNES ativados), backfill controlado FPM/RREO/DCA, RFB territorial sem carga nacional, PE+BA+MG+ES+MS+RO+AC+CE+RS ICMS (+IPVA onde publicado) + GO IPVA TECHNICALLY_APPROVED |
 | Dívida Alembic `0004 -> 0005` | `RESOLVED` (`ALEMBIC_HYGIENE`) |
-| Próximo passo automático | Nenhum. Restam apenas gates humanos. |
-| Commit de referência local | `57d4b12` (`feat/roadmap-technical-completion`) |
-| Commit de gates humanos em `main` | `86022ad` |
-| Nuvem, produção e dados fiscais reais | Não autorizados |
+| Próximo passo automático | Preferir UF restante com CSV/API (PB/MT/TO/PA/AM se estruturado); SP HTML-only; PR/SC PROVENANCE_ONLY; AC IPVA via Transparência POST+CSRF opcional; GO ICMS quando datastore publicar colunas; RJ IP-blocked. RFB sem carga nacional. Sem homologação humana agora. Gates G0/G1/G4/G5/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
+| Commit de referência local | `feat/official-public-ingest` |
+| Nuvem, produção e dados fiscais restritos | Não autorizados |
+| Estado composto | `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS` |
 
-A implementação `0.3.13` encerra as fatias técnicas locais desbloqueadas do ROADMAP 1.2 nesta branch. Nenhum desses marcos conclui o Programa SIRTA 2026 nem homologação institucional, tributária ou jurídica. Relatório: `docs/delivery/TECHNICAL_COMPLETION_REPORT.md`.
+A implementação `0.3.40` ativa ICMS/IPVA do Rio Grande do Sul (MontaArquivo SEFAZ) além de CE, AC, RO, CNES/DATASUS, Anatel, EPE, BCB SGS, ANEEL, ANP e ICMS/IPVA de MS/PE/BA/MG/ES e GO IPVA. Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`. O Programa SIRTA 2026 **não** está concluído. Pacote: `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`.
 
 ### Estados compostos dos gates
 

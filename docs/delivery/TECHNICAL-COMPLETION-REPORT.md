@@ -1,10 +1,12 @@
-# Relatório de conclusão técnica — índice
+# Relatório técnico 0.3.15
 
-A consolidação formal está em:
+Estado: `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS`
 
-- `docs/delivery/TECHNICAL_COMPLETION_REPORT.md`
-- `docs/delivery/RELEASE_NOTES_0.3.13.md`
+A consolidação desta fatia está em:
+
+- `docs/delivery/RELEASE_NOTES_0.3.15.md`
+- `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`
 - `docs/delivery/HUMAN_DECISIONS_REQUIRED.md`
-- `docs/delivery/REVIEW-HOMOLOGATION-CHECKLIST.md`
+- `current-state.yaml`
 
-Implementação local `0.3.13`. Branch `feat/roadmap-technical-completion`. Sem merge em `main`. Gates humanos BLOCKED.
+Implementação local `0.3.15`. Branch `feat/official-public-ingest`. Sem merge em `main`. Gates humanos BLOCKED. ROADMAP 1.2 não está concluído.

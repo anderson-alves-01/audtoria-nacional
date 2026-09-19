@@ -12,9 +12,11 @@ from sirta_api.adapters.db.models import (
     DataLoadRun,
     GoldEnrichment,
     GoldFunnel,
+    GoldOfficial,
     TaxCredit,
 )
 from sirta_api.application.audit import record_audit
+from sirta_api.config import get_settings
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.errors import ForbiddenError, ValidationFailedError
 
@@ -44,6 +46,8 @@ def execute_synthetic_iss_load(
 ) -> dict:
     if context.role.value != "tech_admin":
         raise ForbiddenError("Only a technical administrator may run data loads")
+    if not get_settings().allow_synthetic_loads:
+        raise ForbiddenError("Synthetic ISS loads are test-only and are not loaded in runtime")
     if not FIXTURE_PATH.exists():
         raise ValidationFailedError("Synthetic ISS fixture is missing")
     payload = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
@@ -181,6 +185,9 @@ def rollback_gold(session: Session, *, context: AccessContext, run_id: UUID) -> 
     enrichment = session.scalar(select(GoldEnrichment).where(GoldEnrichment.run_id == run.id))
     if enrichment is not None:
         enrichment.published = False
+    official = session.scalar(select(GoldOfficial).where(GoldOfficial.run_id == run.id))
+    if official is not None:
+        official.published = False
     session.flush()
     return _run_body(run, replay=False)
 

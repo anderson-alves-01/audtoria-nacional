@@ -1,0 +1,32 @@
+<section aria-labelledby="cadastro-360-title">
+  <h1 id="cadastro-360-title">Cadastro 360</h1>
+  <p>
+    Visão técnica vazia do contribuinte. Sem PII real e sem território inventado.
+    Minimização obrigatória até autorização.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando Cadastro 360…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. G0: {{ g0Status }}.
+      PII presente: {{ piiPresent ? 'sim' : 'não' }}.
+      Território inventado: {{ territoryInvented ? 'sim' : 'não' }}.
+    </p>
+    <ul>
+      @for (row of minimizationPolicy; track row.field) {
+        <li class="estimate">
+          <strong>{{ row.field }}</strong>
+          <span> — {{ row.policy }} ({{ row.present ? 'presente' : 'ausente' }})</span>
+        </li>
+      }
+    </ul>
+  }
+  @if (state === 'ok') {
+    <p role="status">Há sujeitos carregados (estado inesperado nesta fatia).</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

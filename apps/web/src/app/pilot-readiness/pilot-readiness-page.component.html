@@ -1,0 +1,32 @@
+<section aria-labelledby="pilot-readiness-title">
+  <h1 id="pilot-readiness-title">Prontidão técnica para piloto</h1>
+  <p>
+    Checklist técnico local. G9 permanece bloqueado sem município, usuários e
+    aceites institucionais. Sem território piloto inventado.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando prontidão de piloto…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status">Nenhum item de checklist técnico disponível.</p>
+  }
+  @if (state === 'ok') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. G9: {{ g9Status }}.
+      Técnico: {{ technicalReady ? 'pronto' : 'pendente' }}.
+      Institucional: {{ institutionalReady ? 'pronto' : 'pendente' }}.
+    </p>
+    <ul>
+      @for (item of checklist; track item.id) {
+        <li class="estimate">
+          <strong>{{ item.label }}</strong>
+          <span> — {{ item.met ? 'atendido' : 'pendente' }} ({{ item.category }})</span>
+        </li>
+      }
+    </ul>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

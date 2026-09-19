@@ -1,0 +1,2 @@
+﻿npx ng test --no-watch --browsers=ChromeHeadless --include=**/sectoral-enrichment-page.component.spec.ts
+TOTAL: 2 SUCCESS

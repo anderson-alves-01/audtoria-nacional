@@ -9,6 +9,7 @@ from sirta_api.adapters.db.synthetic_ids import (
     USER_ADMIN_ALPHA,
     USER_ANALYST_ALPHA,
 )
+from sirta_api.application.pipeline import LAYOUT_VERSION
 
 
 def _admin() -> dict[str, str]:
@@ -41,12 +42,14 @@ def test_synthetic_iss_load_quarantines_invalid_and_is_idempotent(api_client, db
     assert second.status_code == 200
     assert second.json()["runId"] == body["runId"]
     assert second.json()["replay"] is True
-    runs = db_session.scalars(select(DataLoadRun)).all()
+    runs = db_session.scalars(
+        select(DataLoadRun).where(DataLoadRun.layout_version == LAYOUT_VERSION)
+    ).all()
     assert len(runs) == 1
-    rows = db_session.scalars(select(DataLoadRow)).all()
+    rows = db_session.scalars(select(DataLoadRow).where(DataLoadRow.run_id == runs[0].id)).all()
     assert len(rows) == 3
     assert {row.status for row in rows} == {"VALIDATED", "QUARANTINED"}
-    gold = db_session.scalars(select(GoldFunnel)).all()
+    gold = db_session.scalars(select(GoldFunnel).where(GoldFunnel.run_id == runs[0].id)).all()
     assert len(gold) == 1
     assert gold[0].identified_count == 1
     assert "declaredAmount" not in str(first.json())

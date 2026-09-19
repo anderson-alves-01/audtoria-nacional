@@ -25,8 +25,8 @@ def test_upgrade_base_to_head_on_empty_database() -> None:
             impl = connection.execute(
                 text("SELECT value FROM schema_meta WHERE key = 'implementation_version'")
             ).scalar()
-        assert version == "0015_terraform_modules"
-        assert impl == "0.3.13"
+        assert version == "0043_state_rs_activation"
+        assert impl == "0.3.40"
         with Session(engine) as session:
             seed_synthetic(session)
             session.commit()
