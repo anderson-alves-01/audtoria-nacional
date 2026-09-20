@@ -376,7 +376,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.43/
     versao: "0.3.43"
-    commit: pending
+    commit: 9d4b048
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -400,7 +400,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.43/
     versao: "0.3.43"
-    commit: pending
+    commit: 9d4b048
     ci: null
     motivo_bloqueio: null
     next_action: >
