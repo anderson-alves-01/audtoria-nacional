@@ -6,10 +6,11 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI e RN TECHNICALLY_APPROVED (state_pe_csv /
+  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN e MA TECHNICALLY_APPROVED (state_pe_csv /
   state_ba_csv / state_mg_csv / state_es_csv / state_go_csv / state_ms_csv /
   state_ro_csv / state_ac_csv+state_ac_transparencia_json / state_ce_xls /
-  state_rs_xls / state_al_xls / state_pi_repasseweb_html / state_rn_xls).
+  state_rs_xls / state_al_xls / state_pi_repasseweb_html / state_rn_xls /
+  state_ma_xls).
   MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
   CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS ICMS/IPVA via
   CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG ativado; AC IPVA
@@ -18,10 +19,11 @@ notes: >
   mensal SEFAZ (TOTAL mês / Total Mês). AL ICMS/IPVA via XLS anual dados.al.gov.br
   (série 2015-2021; corrente SEFAZ-AL é PDF semanal). PI IPVA via Repasse WEB
   HTML (PrimeFaces; ICMS sem linhas no UI sondado). RN ICMS/IPVA via Nextcloud
-  XLS Repasses Prefeituras (abas). RJ IP-blocked. SC/PR
+  XLS Repasses Prefeituras (abas). MA ICMS/IPVA via SEFAZ SGC XLS semestral
+  (Repasses Municipais valores nominais). RJ IP-blocked. SC/PR
   PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML). PB/SE PROVENANCE_VERIFIED PDF.
   AM HTML-per-município. MT XLSX Transparency congelado ≤2015; corrente PDF.
-  TO/PA/MA/RR/AP/SP sem CSV/API estruturado estável neste ciclo. Sem agregador privado.
+  TO/PA/RR/AP/SP sem CSV/API estruturado estável neste ciclo. Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -178,9 +180,25 @@ states:
       mínima. Sem crédito.
   - uf: MA
     name: Maranhão
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado. Não é território piloto aprovado.
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_sgc_xls_downloadable
+    dataset_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
+    official_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
+    endpoint: https://ui-sgc.sefaz.ma.gov.br/sgc/api/portal/arquivos/public/identificador?identificador=2185e882-6a8a-4b89-bae7-4d687c2e4515
+    taxes: [ICMS, IPVA]
+    format: XLS
+    columns_icms: [MUNICIPIOS, Janeiro..Junho/Julho..Dezembro, Total do Semestre]
+    columns_ipva: [MUNICIPIOS, Janeiro..Junho/Julho..Dezembro, Total do Semestre]
+    ibge_field: name_only
+    layout_version_icms: state-ma-icms-v1
+    layout_version_ipva: state-ma-ipva-v1
+    connector: state_ma_xls
+    download_probe_2026_09_20: sgc_xls_200_sheets_icms_ipva_semester
+    reason: >
+      XLS Repasses Municipais SEFAZ-MA (SGC UUID público) ativado com connector
+      state_ma_xls. Abas ICMS/IPVA por semestre; coluna mensal; join IBGE7 por
+      nome+UF. Competência 2026-01. Fixture mínima. Sem crédito.
   - uf: MT
     name: Mato Grosso
     status: PROVENANCE_VERIFIED
@@ -440,6 +458,16 @@ states:
       tabular estável; sem ativação até arquivo estruturado.
   - uf: TO
     name: Tocantins
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: ipm_pdf_powerbi_no_money_series
+    dataset_url: https://www.to.gov.br/sefaz/ipm-indice-de-participacao-dos-municipios/3fyzm5k8xqry
+    official_url: https://www.to.gov.br/sefaz/ipm-indice-de-participacao-dos-municipios/3fyzm5k8xqry
+    endpoint: https://central.to.gov.br/download/459908
+    taxes: [ICMS]
+    format: PDF
+    ibge_field: name_only
+    download_probe_2026_09_20: pdf_ipm_200_no_csv_money_series
+    reason: >
+      SEFAZ-TO publica IPM (índices) em PDF/DOE e Power BI; servlet IPM exige
+      autenticação. dados.to.gov.br NXDOMAIN. Sem série monetária tabular de
+      quota-parte ICMS/IPVA; sem ativação até CSV/XLS/API estável.

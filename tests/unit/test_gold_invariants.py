@@ -15,6 +15,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_ce_xls,
     parse_state_es_csv,
     parse_state_go_csv,
+    parse_state_ma_xls,
     parse_state_mg_csv,
     parse_state_ms_csv,
     parse_state_pe_csv,
@@ -389,6 +390,36 @@ def test_state_rn_xls_joins_name_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-RN-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-RN-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_ma_xls_joins_name_and_quarantines_territory() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/ma-repasses-municipais-2026.xls"
+    ).read_bytes()
+    lookup = {
+        ("ACAILANDIA", "MA"): "2100055",
+        ("AFONSO CUNHA", "MA"): "2100154",
+    }
+    icms, quarantined_icms = parse_state_ma_xls(body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"2100055", "2100154"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "MA" for row in icms)
+    assert all(row["competence"] == "2026-01" for row in icms)
+    acailandia = next(row for row in icms if row["ibgeCode"] == "2100055")
+    assert acailandia["value"] == 10167145.37
+    afonso = next(row for row in icms if row["ibgeCode"] == "2100154")
+    assert afonso["value"] == 654767.6
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_ma_xls(body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    acailandia_ipva = next(row for row in ipva if row["ibgeCode"] == "2100055")
+    assert acailandia_ipva["value"] == 1083447.07
+    assert acailandia_ipva["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 0
+    assert presentation_for("ESTADO-MA-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-MA-IPVA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:

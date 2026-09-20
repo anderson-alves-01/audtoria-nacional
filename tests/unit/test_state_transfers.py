@@ -24,6 +24,8 @@ def test_state_transfers_panel_empty_and_non_credit() -> None:
     assert by_uf["AL"]["ingestAllowed"] is True
     assert by_uf["PI"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["PI"]["ingestAllowed"] is True
+    assert by_uf["MA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_uf["MA"]["ingestAllowed"] is True
     assert by_uf["SE"]["status"] == "PROVENANCE_VERIFIED"
     assert by_uf["RJ"]["status"] == "PROVENANCE_VERIFIED"
     assert by_uf["SP"]["status"] == "DISCOVERED"

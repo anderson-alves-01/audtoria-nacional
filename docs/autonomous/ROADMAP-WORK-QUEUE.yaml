@@ -1,15 +1,15 @@
 schema_version: 1
-updated_at: "2026-09-20T13:00:00-03:00"
+updated_at: "2026-09-20T14:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.44"
+implementation_version: "0.3.45"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.44: RN ICMS/IPVA ativado (state_rn_xls; SEFAZ-RN Nextcloud XLS);
-  MT XLSX Transparency congelado ≤2015; PI/AC/AL/RS/CE/RO/MS/PE/BA/MG/ES/GO e
+  Ciclo 0.3.45: MA ICMS/IPVA ativado (state_ma_xls; SEFAZ-MA SGC XLS);
+  TO PROVENANCE_ONLY; PA DISCOVERED; RN/PI/AC/AL/RS/CE/RO/MS/PE/BA/MG/ES/GO e
   setoriais intactos; PB/AM/SE PROVENANCE_VERIFIED; SP HTML-only; RJ IP-blocked;
   RFB territorial sem carga nacional.
 items:
@@ -356,9 +356,10 @@ items:
     ci: "35451439251"
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI e RN TECHNICALLY_APPROVED
+      PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN e MA TECHNICALLY_APPROVED
       (GO só IPVA; PI só IPVA via Repasse WEB; RN ICMS/IPVA via Nextcloud XLS;
-      SE/PB PROVENANCE_VERIFIED PDF; AM HTML-per-município; MT XLSX ≤2015).
+      MA ICMS/IPVA via SEFAZ SGC XLS; SE/PB PROVENANCE_VERIFIED PDF; AM
+      HTML-per-município; MT XLSX ≤2015; TO PROVENANCE_ONLY).
       SC CSV é arrecadação não quota. RJ IP-blocked. GO ICMS aguarda colunas no
       datastore. SP HTML-only. Sem agregador privado.
 
@@ -375,16 +376,17 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.44/
-    versao: "0.3.44"
-    commit: b5d664b
+    evidencia: evidence/releases/0.3.45/
+    versao: "0.3.45"
+    commit: pending
     ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG, ES, MS, RO, AC, CE, RS, AL e RN ICMS (+IPVA onde publicado) +
+      PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN e MA ICMS (+IPVA onde publicado) +
       GO/PI IPVA ativados. GO/PI ICMS não publicados nos endpoints sondados.
       MT XLSX Transparency congelado ≤2015. SC arrecadação não quota. SP HTML-only.
-      PB/SE/AM PROVENANCE_VERIFIED. RJ permanece IP-blocked. Sem agregador privado.
+      PB/SE/AM PROVENANCE_VERIFIED. TO PROVENANCE_ONLY. PA DISCOVERED. RJ permanece
+      IP-blocked. Sem agregador privado.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2
@@ -399,15 +401,16 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.44/
-    versao: "0.3.44"
-    commit: b5d664b
+    evidencia: evidence/releases/0.3.45/
+    versao: "0.3.45"
+    commit: pending
     ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG, ES, GO, MS, RO, CE, RS, AL, AC, PI e RN IPVA ativados. Seguir
-      outras UFs PUBLIC_OPEN; sem inventar valores. RN via Nextcloud XLS; PI via
-      Repasse WEB HTML; AC via Transparência POST+CSRF; RO IPVA IBGE6→7.
+      PE, BA, MG, ES, GO, MS, RO, CE, RS, AL, AC, PI, RN e MA IPVA ativados. Seguir
+      outras UFs PUBLIC_OPEN; sem inventar valores. MA via SEFAZ SGC XLS; RN via
+      Nextcloud XLS; PI via Repasse WEB HTML; AC via Transparência POST+CSRF;
+      RO IPVA IBGE6→7.
 
   - id: F3-RFB-CNPJ
     fase: F3.2
