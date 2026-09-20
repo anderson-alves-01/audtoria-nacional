@@ -321,9 +321,7 @@ def test_state_ac_transparencia_json_joins_name_and_quarantines_territory() -> N
         ("ACRELANDIA", "AC"): "1200013",
         ("ASSIS BRASIL", "AC"): "1200054",
     }
-    ipva, quarantined = parse_state_ac_transparencia_json(
-        body, tax="IPVA", ibge_lookup=lookup
-    )
+    ipva, quarantined = parse_state_ac_transparencia_json(body, tax="IPVA", ibge_lookup=lookup)
     assert len(ipva) == 2
     assert {row["ibgeCode"] for row in ipva} == {"1200013", "1200054"}
     assert all(row["modality"] == "IPVA_QUOTA" for row in ipva)
