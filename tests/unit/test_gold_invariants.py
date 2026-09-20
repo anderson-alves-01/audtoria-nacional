@@ -393,9 +393,7 @@ def test_state_rn_xls_joins_name_and_quarantines_territory() -> None:
 
 
 def test_state_ma_xls_joins_name_and_quarantines_territory() -> None:
-    body = Path(
-        "tests/fixtures/official-snapshots/ma-repasses-municipais-2026.xls"
-    ).read_bytes()
+    body = Path("tests/fixtures/official-snapshots/ma-repasses-municipais-2026.xls").read_bytes()
     lookup = {
         ("ACAILANDIA", "MA"): "2100055",
         ("AFONSO CUNHA", "MA"): "2100154",
