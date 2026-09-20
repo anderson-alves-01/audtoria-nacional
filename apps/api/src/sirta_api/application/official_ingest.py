@@ -34,6 +34,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_siconfi_entes,
     parse_siconfi_statement,
     parse_state_ac_csv,
+    parse_state_ac_transparencia_json,
     parse_state_al_xls,
     parse_state_ba_csv,
     parse_state_ce_xls,
@@ -96,6 +97,7 @@ PARSERS = {
     "state_ms_csv": parse_state_ms_csv,
     "state_ro_csv": parse_state_ro_csv,
     "state_ac_csv": parse_state_ac_csv,
+    "state_ac_transparencia_json": parse_state_ac_transparencia_json,
     "state_al_xls": parse_state_al_xls,
     "state_ce_xls": parse_state_ce_xls,
     "state_rs_xls": parse_state_rs_xls,
@@ -732,6 +734,17 @@ def _parse(
                 parameters.get("competence_year") or catalog.get("competence") or "2021"
             )[:4],
         )
+    if connector == "state_ac_transparencia_json":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "IPVA"),
+            uf=str(parameters.get("uf") or "AC"),
+            competence=str(parameters.get("competence") or catalog.get("competence") or "2025-01")[
+                :7
+            ],
+            ibge_lookup=_ibge_lookup(session, context=context),
+        )
     if connector == "state_al_xls":
         parameters = catalog.get("parameters") or {}
         return parser(
@@ -940,7 +953,38 @@ def _fetch_source(
     resolved = endpoint
     if connector == "tesouro_monthly_csv":
         resolved = resolve_fpm_endpoint(catalog) or endpoint
+    if connector == "state_ac_transparencia_json":
+        return _fetch_ac_transparencia_json(client, catalog=catalog, timeout=timeout)
     return _fetch_pages(client, endpoint=resolved, connector=connector, timeout=timeout)
+
+
+def _fetch_ac_transparencia_json(
+    client: OfficialHttpClient,
+    *,
+    catalog: dict,
+    timeout: float,
+) -> OfficialHttpResponse:
+    parameters = catalog.get("parameters") or {}
+    endpoint = str(catalog.get("endpoint") or "")
+    page_url = str(
+        parameters.get("csrf_page_url")
+        or catalog.get("official_url")
+        or "https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2"
+    )
+    competence = str(parameters.get("competence") or catalog.get("competence") or "2025-01")[:7]
+    year, month = competence.split("-") if "-" in competence else ("2025", "01")
+    form_data = {
+        "tipo": "json",
+        "ano": year,
+        "mes": str(int(month)),
+        "municipio": "",
+    }
+    return client.fetch_csrf_form_post(
+        page_url=page_url,
+        post_url=endpoint,
+        form_data=form_data,
+        timeout=timeout,
+    )
 
 
 def _fetch_document(

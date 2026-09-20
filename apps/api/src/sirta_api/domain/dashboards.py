@@ -97,6 +97,7 @@ DASHBOARDS = (
             "ESTADO-RO-ICMS-QUOTA",
             "ESTADO-RO-IPVA-QUOTA",
             "ESTADO-AC-ICMS-QUOTA",
+            "ESTADO-AC-IPVA-QUOTA",
             "ESTADO-CE-ICMS-QUOTA",
             "ESTADO-CE-IPVA-QUOTA",
             "ESTADO-RS-ICMS-QUOTA",

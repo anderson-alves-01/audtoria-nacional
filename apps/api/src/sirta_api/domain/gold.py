@@ -137,6 +137,14 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-AC-IPVA-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPVA estadual publicada "
+            "(AC ativado via Transparência POST+CSRF JSON). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-CE-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (

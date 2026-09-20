@@ -8,37 +8,46 @@ taxes: [ICMS, IPVA]
 notes: >
   PE, BA, MG, ES, GO, MS, RO, AC, CE, RS e AL TECHNICALLY_APPROVED (state_pe_csv /
   state_ba_csv / state_mg_csv / state_es_csv / state_go_csv / state_ms_csv /
-  state_ro_csv / state_ac_csv / state_ce_xls / state_rs_xls / state_al_xls).
-  MG/ES/AC/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
+  state_ro_csv / state_ac_csv+state_ac_transparencia_json / state_ce_xls /
+  state_rs_xls / state_al_xls).
+  MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
   CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS ICMS/IPVA via
-  CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG ativado; IPVA
-  mensal só via Transparência POST+CSRF (não ativado). CE ICMS/IPVA via XLS
-  mensal SEFAZ (Portaria). RS ICMS/IPVA via MontaArquivo XLS mensal SEFAZ
-  (TOTAL mês / Total Mês). AL ICMS/IPVA via XLS anual dados.al.gov.br (série
-  2015-2021; corrente SEFAZ-AL é PDF semanal). RJ IP-blocked. SC/PR
-  PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML). Sem agregador privado.
+  CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG ativado; AC IPVA
+  mensal via Transparência POST+CSRF JSON (state_ac_transparencia_json). CE
+  ICMS/IPVA via XLS mensal SEFAZ (Portaria). RS ICMS/IPVA via MontaArquivo XLS
+  mensal SEFAZ (TOTAL mês / Total Mês). AL ICMS/IPVA via XLS anual dados.al.gov.br
+  (série 2015-2021; corrente SEFAZ-AL é PDF semanal). RJ IP-blocked. SC/PR
+  PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML). PB/MT/TO/PA/AM sem CSV/API
+  estruturado verificado neste ciclo (PB/AM PDF ou HTML por município). Sem
+  agregador privado.
 states:
   - uf: AC
     name: Acre
     status: TECHNICALLY_APPROVED
     ingest_allowed: true
-    structured_official_source: ckan_csv_downloadable
+    structured_official_source: ckan_csv_and_transparencia_json
     dataset_url: https://dados.ac.gov.br/dataset/repasse-constitucional-de-icms-para-os-municipios
     official_url: https://dados.ac.gov.br/dataset/repasse-constitucional-de-icms-para-os-municipios
     endpoint: https://dados.ac.gov.br/dataset/e9f7ca08-2c55-45d5-a948-ef25a1acb296/resource/d0deaa76-c075-4b0d-8cf3-468c5fcb1267/download/repasse-constitucional-de-icms-para-os-municipios.csv
-    taxes: [ICMS]
-    format: CSV
+    ipva_dataset_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    ipva_endpoint: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios/dados-exportacao
+    taxes: [ICMS, IPVA]
+    format: CSV+JSON
     columns: [municipio, Cod IBGE, 2018, 2019, 2020, 2021]
+    columns_ipva: [ano, mes, municipio, valor_fundeb, valor_icms, valor_ipva, valor_total]
     ibge_field: Cod IBGE
     layout_version_icms: state-ac-icms-v1
+    layout_version_ipva: state-ac-ipva-transparencia-v1
     connector: state_ac_csv
+    ipva_connector: state_ac_transparencia_json
     download_probe_2026_09_19: csv_bytes_ok_ibge7_native_annual
+    download_probe_2026_09_20: transparencia_post_csrf_json_ok_ipva
     reason: >
       CSV anual SEPLAG Repasse Constitucional de ICMS ativado com connector
       state_ac_csv (`;`, latin-1, número BR). IBGE7 nativo em Cod IBGE;
-      competência anual filtrada (2021). IPVA mensal existe em
-      transparencia.ac.gov.br/conteudo/repasse-aos-municipios/dados-exportacao
-      (POST+CSRF); não ativado nesta fatia. Fixture mínima. Sem crédito.
+      competência anual filtrada (2021). IPVA mensal ativado via Transparência
+      POST+CSRF JSON (state_ac_transparencia_json), join nome+UF, competência
+      2025-01. Fixture mínima. Sem crédito.
   - uf: AL
     name: Alagoas
     status: TECHNICALLY_APPROVED
@@ -67,9 +76,18 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: AM
     name: Amazonas
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: html_per_municipality_srt
+    dataset_url: https://sistemas.sefaz.am.gov.br/srt/relatorioMensalRateioPublico.do?metodo=qbePublico&origem=publico
+    official_url: https://sistemas.sefaz.am.gov.br/srt/relatorioMensalRateioPublico.do?metodo=qbePublico&origem=publico
+    endpoint: https://sistemas.sefaz.am.gov.br/srt/relatorioMensalRateioPublico.do
+    taxes: [ICMS, IPVA]
+    format: HTML
+    ibge_field: name_only
+    download_probe_2026_09_20: html_export_per_municipio_no_bulk_csv
+    reason: >
+      SRT público exporta HTML/PDF por município (exportarHTML); Excel exige
+      sessão autenticada. Sem CSV/API bulk estável; sem ativação nesta fatia.
   - uf: BA
     name: Bahia
     status: TECHNICALLY_APPROVED
@@ -212,9 +230,19 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
   - uf: PB
     name: Paraíba
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: edocman_pdf_only
+    dataset_url: https://www.sefaz.pb.gov.br/cidadao/municipios/36-repasse-de-arrecadacao/35-icms
+    official_url: https://www.sefaz.pb.gov.br/cidadao/municipios/36-repasse-de-arrecadacao
+    endpoint: https://www.sefaz.pb.gov.br/cidadao/municipios?task=document.download&id=2684
+    taxes: [ICMS, IPVA]
+    format: PDF
+    ibge_field: unknown
+    download_probe_2026_09_20: pdf_edocman_200_no_csv_api
+    reason: >
+      SEFAZ-PB publica séries anuais ICMS/IPVA via edocman como PDF (ex.:
+      REPASSE DE ICMS EXERCÍCIO DE 2025.pdf). Sem CSV/API estruturado; sem
+      ativação até arquivo tabular estável.
   - uf: PR
     name: Paraná
     status: PROVENANCE_VERIFIED

@@ -9,6 +9,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_epe_open_files,
     parse_ibge_sidra_series,
     parse_state_ac_csv,
+    parse_state_ac_transparencia_json,
     parse_state_al_xls,
     parse_state_ba_csv,
     parse_state_ce_xls,
@@ -310,6 +311,32 @@ def test_state_ac_csv_uses_native_ibge7_and_quarantines_territory() -> None:
     assert quarantined[0][1] == "missing IBGE municipality code"
     assert presentation_for("ESTADO-AC-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-AC-ICMS-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_ac_transparencia_json_joins_name_and_quarantines_territory() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/ac-transparencia-repasses-2025-01.json"
+    ).read_bytes()
+    lookup = {
+        ("ACRELANDIA", "AC"): "1200013",
+        ("ASSIS BRASIL", "AC"): "1200054",
+    }
+    ipva, quarantined = parse_state_ac_transparencia_json(
+        body, tax="IPVA", ibge_lookup=lookup
+    )
+    assert len(ipva) == 2
+    assert {row["ibgeCode"] for row in ipva} == {"1200013", "1200054"}
+    assert all(row["modality"] == "IPVA_QUOTA" for row in ipva)
+    assert all(row["uf"] == "AC" for row in ipva)
+    assert all(row["competence"] == "2025-01" for row in ipva)
+    acrelandia = next(row for row in ipva if row["ibgeCode"] == "1200013")
+    assert acrelandia["value"] == 119355.73
+    assis = next(row for row in ipva if row["ibgeCode"] == "1200054")
+    assert assis["value"] == 20042.59
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "missing IBGE municipality code"
+    assert presentation_for("ESTADO-AC-IPVA-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-AC-IPVA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:

@@ -1145,8 +1145,49 @@ sources:
       Sem ajuste. Não constitui crédito.
     methodology_version: official-state-ac-icms-v1
     notes: >
-      CSV 2018-2021 downloadável em 2026-09-19. IPVA não publicado. Homologação
-      humana pendente.
+      CSV 2018-2021 downloadável em 2026-09-19. IPVA mensal ativado em
+      ESTADO-AC-IPVA-QUOTA via Transparência. Homologação humana pendente.
+
+  - source_id: ESTADO-AC-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (AC)
+    maintainer: SEFAZ-AC / Transparência Acre
+    official_domain: transparencia.ac.gov.br
+    official_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    endpoint: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios/dados-exportacao
+    documentation_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    dataset: ESTADO-AC-IPVA-2025-01
+    dictionary_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Portal da Transparência do Acre (repasse aos municípios)
+    license_terms: publicação oficial transparencia.ac.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ac_transparencia_json
+    layout_version: state-ac-ipva-transparencia-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: AC
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+      csrf_page_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    authentication: csrf_session
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ac_ipva_quota
+    formula: >
+      Valor IPVA (valor_ipva) do JSON oficial POST+CSRF
+      /conteudo/repasse-aos-municipios/dados-exportacao, competência filtrada,
+      município via join IBGE7 por nome+UF (SICONFI-ENTES). Sem ajuste. Não
+      constitui crédito.
+    methodology_version: official-state-ac-ipva-transparencia-v1
+    notes: >
+      Export JSON mensal verificado em 2026-09-20. Homologação humana pendente.
 
   - source_id: ESTADO-CE-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (CE)

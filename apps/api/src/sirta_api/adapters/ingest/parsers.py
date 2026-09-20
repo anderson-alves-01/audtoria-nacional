@@ -789,6 +789,83 @@ def parse_state_ac_csv(
     return silver, quarantined
 
 
+def parse_state_ac_transparencia_json(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "AC",
+    competence: str = "2025-01",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse AC Transparência JSON export (ICMS/IPVA); join IBGE7 by name+UF; no credit."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state AC Transparência tax filter: {tax}")
+    competence_key = str(competence or "2025-01").strip()[:7]
+    if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
+        raise ValueError(f"invalid AC Transparência competence: {competence}")
+    year, month = competence_key.split("-")
+    amount_field = "valor_icms" if tax_key == "ICMS" else "valor_ipva"
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return [], [({"rowId": "ac-transparencia-document"}, "invalid JSON")]
+    if not isinstance(payload, list):
+        return [], [({"rowId": "ac-transparencia-document"}, "unexpected envelope")]
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for index, item in enumerate(payload):
+        if not isinstance(item, dict):
+            continue
+        row_year = str(item.get("ano") or "").strip()
+        row_month = str(item.get("mes") or "").strip().zfill(2)
+        if row_year and row_year != year:
+            continue
+        if row_month and row_month != month:
+            continue
+        raw_name = str(item.get("municipio") or "").strip()
+        if not raw_name:
+            continue
+        place = normalize_place(raw_name)
+        if place in {"TOTAL", "TOTAIS"} or place.startswith("TOTAL"):
+            continue
+        amount_raw = item.get(amount_field)
+        try:
+            value = float(str(amount_raw).replace(",", "."))
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"ac-tr-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((place, normalize_place(uf)), "")
+        row = {
+            "rowId": f"ac-tr-{tax_key.lower()}-{ibge or index}-{competence_key}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence_key,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def _decode_csv_bytes(body: bytes) -> str:
     payload = body
     if len(payload) >= 2 and payload[0] == 0x1F and payload[1] == 0x8B:
