@@ -1,0 +1,10 @@
+PR probe 2026-09-20
+URL: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/relatorio/rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL
+HTTP 200 text/html;charset=windows-1252 len~832953
+Columns: Municipio, FPM, ICMS bruto, ICMS liquido, Fundo Exportacao, Royalties, IPVA, Total
+Sample Curitiba 2025-01: ICMS liquido=76.525.586,35 IPVA=353.118.489,28
+Sample Cascavel 2025-01: ICMS liquido=19.375.868,62 IPVA=51.603.050,91
+AP: sefaz.ap.gov.br/detalhes/17 -> 404
+RR: sefaz.rr.gov.br/central/repasses HTML totals only (no ICMS/IPVA split)
+RJ: still IP-filter HTML block
+GO datastore: still VALR_IPVA only (no ICMS columns)

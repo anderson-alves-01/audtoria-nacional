@@ -1103,6 +1103,81 @@ def parse_state_pi_repasseweb_html(
     return silver, quarantined
 
 
+def parse_state_pr_html(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "PR",
+    competence: str = "2025-01",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse SEFA/PR monthly HTML transfer report; ICMS líquido + IPVA; join IBGE7 by name+UF."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state PR HTML tax filter: {tax}")
+    competence_key = str(competence or "2025-01").strip()[:7]
+    if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
+        raise ValueError(f"invalid PR HTML competence: {competence}")
+    try:
+        html = body.decode("utf-8")
+    except UnicodeDecodeError:
+        html = body.decode("latin-1")
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    # Columns: município, FPM, ICMS bruto, ICMS líquido, FPEX, royalties, IPVA, total.
+    amount_index = 3 if tax_key == "ICMS" else 6
+    for match in re.finditer(r"<tr[^>]*>([\s\S]*?)</tr>", html, re.I):
+        cells = [
+            re.sub(r"<[^>]+>", "", cell).strip()
+            for cell in re.findall(r"<td[^>]*>([\s\S]*?)</td>", match.group(1), re.I)
+        ]
+        if len(cells) < 7:
+            continue
+        raw_name = cells[0].strip()
+        place = normalize_place(raw_name)
+        if not place or place in {"MUNICIPIO", "TOTAL", "TOTAIS"} or place.startswith("TOTAL"):
+            continue
+        if place.startswith("INDICE") or place.startswith("ICMS"):
+            continue
+        raw_amount = cells[amount_index] if len(cells) > amount_index else ""
+        try:
+            value = parse_brazilian_number(raw_amount)
+        except ValueError:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"pr-html-{tax_key.lower()}-{place or 'unknown'}-{competence_key}"[
+                            :64
+                        ],
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": raw_amount,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((place, normalize_place(uf)), "")
+        row = {
+            "rowId": f"pr-html-{tax_key.lower()}-{ibge or place}-{competence_key}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence_key,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def parse_state_ac_transparencia_json(
     body: bytes,
     *,

@@ -20,6 +20,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_ms_csv,
     parse_state_pe_csv,
     parse_state_pi_repasseweb_html,
+    parse_state_pr_html,
     parse_state_rn_xls,
     parse_state_ro_csv,
     parse_state_rs_xls,
@@ -418,6 +419,34 @@ def test_state_ma_xls_joins_name_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 0
     assert presentation_for("ESTADO-MA-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-MA-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_pr_html_joins_name_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/pr-repasses-mensal-2025-01.html").read_bytes()
+    lookup = {
+        ("CASCAVEL", "PR"): "4104808",
+        ("CURITIBA", "PR"): "4106902",
+    }
+    icms, quarantined_icms = parse_state_pr_html(body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"4104808", "4106902"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "PR" for row in icms)
+    assert all(row["competence"] == "2025-01" for row in icms)
+    cascavel = next(row for row in icms if row["ibgeCode"] == "4104808")
+    assert cascavel["value"] == 19375868.62
+    curitiba = next(row for row in icms if row["ibgeCode"] == "4106902")
+    assert curitiba["value"] == 76525586.35
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_pr_html(body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    curitiba_ipva = next(row for row in ipva if row["ibgeCode"] == "4106902")
+    assert curitiba_ipva["value"] == 353118489.28
+    assert curitiba_ipva["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-PR-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-PR-IPVA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:

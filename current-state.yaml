@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.45
+implementation_version: 0.3.46
 roadmap_version: "1.2"
-version: 0.3.45
+version: 0.3.46
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -66,6 +66,7 @@ completed:
     - state_pi_ipva_repasseweb_html_activation
     - state_rn_icms_ipva_xls_activation
     - state_ma_icms_ipva_xls_activation
+    - state_pr_icms_ipva_html_activation
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -127,6 +128,7 @@ gates:
   f3_state_pi_ipva_activation_local: GO
   f3_state_rn_activation_local: GO
   f3_state_ma_activation_local: GO
+  f3_state_pr_activation_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -138,6 +140,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.45/
-next_action: Prefer remaining UF with downloadable CSV/API (TO/PA still unstructured). MT Transparency XLSX congelado ≤2015; corrente PDF. SE/PB PROVENANCE_VERIFIED (PDF). AM HTML-per-município. SP HTML-only. PR/SC PROVENANCE_ONLY. GO ICMS when datastore publishes ICMS columns. PI ICMS when Repasse WEB publishes rows. RJ IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.46/
+next_action: Prefer remaining UF with downloadable CSV/API (TO/PA still unstructured). AP link broken; RR painel without ICMS/IPVA split; MT Transparency XLSX frozen ≤2015; SE/PB PROVENANCE_VERIFIED (PDF); AM HTML-per-município; SP HTML-only; SC PROVENANCE_ONLY; GO ICMS when datastore publishes ICMS columns; PI ICMS when Repasse WEB publishes rows; RJ IP-blocked. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

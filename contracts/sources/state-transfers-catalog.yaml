@@ -6,11 +6,11 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN e MA TECHNICALLY_APPROVED (state_pe_csv /
-  state_ba_csv / state_mg_csv / state_es_csv / state_go_csv / state_ms_csv /
-  state_ro_csv / state_ac_csv+state_ac_transparencia_json / state_ce_xls /
-  state_rs_xls / state_al_xls / state_pi_repasseweb_html / state_rn_xls /
-  state_ma_xls).
+  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA e PR TECHNICALLY_APPROVED
+  (state_pe_csv / state_ba_csv / state_mg_csv / state_es_csv / state_go_csv /
+  state_ms_csv / state_ro_csv / state_ac_csv+state_ac_transparencia_json /
+  state_ce_xls / state_rs_xls / state_al_xls / state_pi_repasseweb_html /
+  state_rn_xls / state_ma_xls / state_pr_html).
   MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
   CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS ICMS/IPVA via
   CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG ativado; AC IPVA
@@ -20,10 +20,12 @@ notes: >
   (série 2015-2021; corrente SEFAZ-AL é PDF semanal). PI IPVA via Repasse WEB
   HTML (PrimeFaces; ICMS sem linhas no UI sondado). RN ICMS/IPVA via Nextcloud
   XLS Repasses Prefeituras (abas). MA ICMS/IPVA via SEFAZ SGC XLS semestral
-  (Repasses Municipais valores nominais). RJ IP-blocked. SC/PR
-  PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML). PB/SE PROVENANCE_VERIFIED PDF.
-  AM HTML-per-município. MT XLSX Transparency congelado ≤2015; corrente PDF.
-  TO/PA/RR/AP/SP sem CSV/API estruturado estável neste ciclo. Sem agregador privado.
+  (Repasses Municipais valores nominais). PR ICMS/IPVA via HTML mensal SEFA
+  (líquido pós-FUNDEB + IPVA). RJ IP-blocked. SC PROVENANCE_ONLY (SEF CSV ≤2017).
+  PB/SE PROVENANCE_VERIFIED PDF. AM HTML-per-município. MT XLSX Transparency
+  congelado ≤2015; corrente PDF. TO/PA/RR/AP/SP sem CSV/API estruturado estável
+  neste ciclo (RR painel HTML sem split ICMS/IPVA; AP link sefaz detalhes/17
+  404). Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -75,9 +77,20 @@ states:
       CSV/API. Fixture mínima. Sem crédito.
   - uf: AP
     name: Amapá
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: transparencia_static_broken_link
+    dataset_url: http://www.transparencia.ap.gov.br/consulta_estatica/5/244/repasses/repasse-de-icms-e-ipva-aos-municipios
+    official_url: http://www.transparencia.ap.gov.br/consulta_estatica/5/244/repasses/repasse-de-icms-e-ipva-aos-municipios
+    endpoint: https://www.sefaz.ap.gov.br/detalhes/17
+    taxes: [ICMS, IPVA]
+    format: unknown
+    ibge_field: unknown
+    download_probe_2026_09_20: transparencia_lists_doc_sefaz_detalhes_17_404
+    reason: >
+      Portal Transparência lista “Demonstrativo de Repasses do ICMS E IPVA”,
+      porém o link sefaz.ap.gov.br/detalhes/17 retorna HTTP 404. Dados abertos
+      do portal cobrem receitas agregadas, não quota-parte municipal. Sem
+      ativação até arquivo estruturado estável.
   - uf: AM
     name: Amazonas
     status: PROVENANCE_VERIFIED
@@ -135,9 +148,11 @@ states:
       2025-01. Fixture mínima. Sem crédito.
   - uf: DF
     name: Distrito Federal
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: DF não reparte ICMS/IPVA com municípios da mesma forma; sem dataset municipal aplicável verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: not_applicable_no_municipalities
+    reason: >
+      DF não possui municípios; não há quota-parte municipal de ICMS/IPVA
+      estadual a ativar neste catálogo.
   - uf: ES
     name: Espírito Santo
     status: TECHNICALLY_APPROVED
@@ -275,19 +290,24 @@ states:
       ativação até arquivo tabular estável.
   - uf: PR
     name: Paraná
-    status: PROVENANCE_VERIFIED
-    structured_official_source: html_report_only
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefa_transparencia_html_monthly
     dataset_url: https://www.transparencia.pr.gov.br/pte/assunto/4/100?origem=4
     official_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
     endpoint: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/relatorio/rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL
     taxes: [ICMS, IPVA]
     format: HTML
     ibge_field: name_only
-    download_probe_2026_09_19: html_200_no_csv_api
+    layout_version_icms: state-pr-icms-v1
+    layout_version_ipva: state-pr-ipva-v1
+    connector: state_pr_html
+    download_probe_2026_09_20: html_200_icms_liquido_ipva_columns
+    preferred_activation: true
     reason: >
-      SEFA/Transparência publica repasse ICMS/IPVA em relatório HTML GET
-      (nome+código interno, sem IBGE). dados.pr.gov.br sem CKAN/API de
-      quota-parte. Sem ativação até CSV/API estruturado estável.
+      Relatório HTML mensal SEFA/PR ativado com connector state_pr_html
+      (ICMS líquido pós-FUNDEB + IPVA), fixture mínima e join IBGE7 por
+      nome+UF. Sem CSV/API; HTML GET estável. Sem crédito.
   - uf: PE
     name: Pernambuco
     status: TECHNICALLY_APPROVED
@@ -414,9 +434,20 @@ states:
       IPVA wide jan/yy + IBGE6→7. Fixture mínima. Sem crédito.
   - uf: RR
     name: Roraima
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: sefaz_painel_html_total_only
+    dataset_url: https://www.sefaz.rr.gov.br/central/repasses
+    official_url: https://www.sefaz.rr.gov.br/central/repasses
+    endpoint: https://www.sefaz.rr.gov.br/central/repasses
+    taxes: [ICMS, IPVA]
+    format: HTML
+    ibge_field: name_only
+    download_probe_2026_09_20: painel_html_200_total_sem_split_icms_ipva
+    reason: >
+      Painel SEFAZ-RR publica totais mensais por município a partir de planilha
+      interna, porém sem segregação ICMS/IPVA no HTML público. Boletins de
+      transferência são PDF. Sem ativação até série tabular com impostos
+      distintos.
   - uf: SC
     name: Santa Catarina
     status: PROVENANCE_VERIFIED
