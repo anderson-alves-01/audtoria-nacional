@@ -96,6 +96,9 @@ SNAPSHOT_URLS = {
         "resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b/download/repasses_estaduais.xls"
     ): "al-repasses-estaduais-2021.xls",
     (
+        "https://webas.sefaz.pi.gov.br/repasseweb/faces/views/repasseMunicipios.xhtml"
+    ): "pi-repasseweb-ipva-2025-01.html",
+    (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
     (

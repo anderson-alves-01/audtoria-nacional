@@ -43,6 +43,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_mg_csv,
     parse_state_ms_csv,
     parse_state_pe_csv,
+    parse_state_pi_repasseweb_html,
     parse_state_ro_csv,
     parse_state_rs_xls,
     parse_tesouro_monthly_csv,
@@ -98,6 +99,7 @@ PARSERS = {
     "state_ro_csv": parse_state_ro_csv,
     "state_ac_csv": parse_state_ac_csv,
     "state_ac_transparencia_json": parse_state_ac_transparencia_json,
+    "state_pi_repasseweb_html": parse_state_pi_repasseweb_html,
     "state_al_xls": parse_state_al_xls,
     "state_ce_xls": parse_state_ce_xls,
     "state_rs_xls": parse_state_rs_xls,
@@ -745,6 +747,17 @@ def _parse(
             ],
             ibge_lookup=_ibge_lookup(session, context=context),
         )
+    if connector == "state_pi_repasseweb_html":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "IPVA"),
+            uf=str(parameters.get("uf") or "PI"),
+            competence=str(parameters.get("competence") or catalog.get("competence") or "2025-01")[
+                :7
+            ],
+            ibge_lookup=_ibge_lookup(session, context=context),
+        )
     if connector == "state_al_xls":
         parameters = catalog.get("parameters") or {}
         return parser(
@@ -955,6 +968,8 @@ def _fetch_source(
         resolved = resolve_fpm_endpoint(catalog) or endpoint
     if connector == "state_ac_transparencia_json":
         return _fetch_ac_transparencia_json(client, catalog=catalog, timeout=timeout)
+    if connector == "state_pi_repasseweb_html":
+        return _fetch_pi_repasseweb_html(client, catalog=catalog, timeout=timeout)
     return _fetch_pages(client, endpoint=resolved, connector=connector, timeout=timeout)
 
 
@@ -983,6 +998,41 @@ def _fetch_ac_transparencia_json(
         page_url=page_url,
         post_url=endpoint,
         form_data=form_data,
+        timeout=timeout,
+    )
+
+
+def _fetch_pi_repasseweb_html(
+    client: OfficialHttpClient,
+    *,
+    catalog: dict,
+    timeout: float,
+) -> OfficialHttpResponse:
+    parameters = catalog.get("parameters") or {}
+    page_url = str(
+        catalog.get("endpoint")
+        or "https://webas.sefaz.pi.gov.br/repasseweb/faces/views/repasseMunicipios.xhtml"
+    )
+    home_url = str(
+        parameters.get("home_url")
+        or catalog.get("official_url")
+        or "https://webas.sefaz.pi.gov.br/repasseweb/"
+    )
+    competence = str(parameters.get("competence") or catalog.get("competence") or "2025-01")[:7]
+    year, month = competence.split("-") if "-" in competence else ("2025", "01")
+    tax = str(parameters.get("tax") or "IPVA").strip().upper()
+    tax_code = "2" if tax == "ICMS" else "1"
+    date_start = f"01/{month}/{year}"
+    # Inclusive end-of-month day for short months is handled by official UI; use 31.
+    date_end = f"31/{month}/{year}"
+    return client.fetch_primefaces_datatable(
+        home_url=home_url,
+        page_url=page_url,
+        tax_code=tax_code,
+        year=year,
+        date_start=date_start,
+        date_end=date_end,
+        rows=int(parameters.get("rows") or 1000),
         timeout=timeout,
     )
 

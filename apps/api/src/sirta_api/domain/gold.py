@@ -187,6 +187,14 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-PI-IPVA-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPVA estadual publicada "
+            "(PI ativado via SEFAZ Repasse WEB HTML). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ANP-REVENDEDORES": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

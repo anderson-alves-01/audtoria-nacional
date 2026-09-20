@@ -1,0 +1,6 @@
+﻿PI Repasse WEB IPVA probe 2026-09-20
+endpoint: https://webas.sefaz.pi.gov.br/repasseweb/faces/views/repasseMunicipios.xhtml
+tax=IPVA competence=2025-01 municipio=TODOS
+rowCount_live=905 after rows=1000
+sample_municipalities=ACAUA,AGRICOLANDIA
+ICMS consult same filters: Nenhum repasse encontrado (no bulk ICMS in this UI for probed ranges)

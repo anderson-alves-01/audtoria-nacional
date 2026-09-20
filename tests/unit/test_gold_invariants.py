@@ -18,6 +18,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_mg_csv,
     parse_state_ms_csv,
     parse_state_pe_csv,
+    parse_state_pi_repasseweb_html,
     parse_state_ro_csv,
     parse_state_rs_xls,
     parse_tesouro_monthly_csv,
@@ -335,6 +336,28 @@ def test_state_ac_transparencia_json_joins_name_and_quarantines_territory() -> N
     assert quarantined[0][1] == "missing IBGE municipality code"
     assert presentation_for("ESTADO-AC-IPVA-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-AC-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_pi_repasseweb_html_aggregates_banks_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/pi-repasseweb-ipva-2025-01.html").read_bytes()
+    lookup = {
+        ("ACAUA", "PI"): "2200053",
+        ("AGRICOLANDIA", "PI"): "2200103",
+    }
+    ipva, quarantined = parse_state_pi_repasseweb_html(body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    assert {row["ibgeCode"] for row in ipva} == {"2200053", "2200103"}
+    assert all(row["modality"] == "IPVA_QUOTA" for row in ipva)
+    assert all(row["uf"] == "PI" for row in ipva)
+    assert all(row["competence"] == "2025-01" for row in ipva)
+    acaua = next(row for row in ipva if row["ibgeCode"] == "2200053")
+    assert acaua["value"] == 103359.7
+    agricolandia = next(row for row in ipva if row["ibgeCode"] == "2200103")
+    assert agricolandia["value"] == 43613.82
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "missing IBGE municipality code"
+    assert presentation_for("ESTADO-PI-IPVA-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-PI-IPVA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:

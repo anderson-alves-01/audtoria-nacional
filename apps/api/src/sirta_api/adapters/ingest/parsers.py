@@ -789,6 +789,97 @@ def parse_state_ac_csv(
     return silver, quarantined
 
 
+def parse_state_pi_repasseweb_html(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "PI",
+    competence: str = "2025-01",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse SEFAZ-PI Repasse WEB HTML table; aggregate bank rows; join IBGE7 by name+UF."""
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state PI Repasse WEB tax filter: {tax}")
+    competence_key = str(competence or "2025-01").strip()[:7]
+    if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
+        raise ValueError(f"invalid PI Repasse WEB competence: {competence}")
+    year, month = competence_key.split("-")
+    period_key = f"{year}{month}"
+    try:
+        html = body.decode("utf-8")
+    except UnicodeDecodeError:
+        html = body.decode("latin-1")
+    lookup = ibge_lookup or {}
+    aggregated: dict[str, dict[str, object]] = {}
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for match in re.finditer(r"<tr[^>]*data-ri=\"[^\"]*\"[^>]*>([\s\S]*?)</tr>", html, re.I):
+        cells = [
+            re.sub(r"<[^>]+>", "", cell).strip()
+            for cell in re.findall(r"<td[^>]*>([\s\S]*?)</td>", match.group(1), re.I)
+        ]
+        if len(cells) < 7:
+            continue
+        period = cells[0].strip()
+        if period != period_key:
+            continue
+        raw_name = cells[1].strip()
+        if raw_name.upper().endswith(f"-{uf}"):
+            raw_name = raw_name[: -(len(uf) + 1)].strip()
+        if not raw_name:
+            continue
+        place = normalize_place(raw_name)
+        if place in {"TOTAL", "TOTAIS"} or place.startswith("TOTAL"):
+            continue
+        try:
+            value = parse_brazilian_number(cells[6])
+        except ValueError:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"pi-rw-{tax_key.lower()}-{place or 'unknown'}-{competence_key}"[
+                            :64
+                        ],
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": cells[6],
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        bucket = aggregated.get(place)
+        if bucket is None:
+            aggregated[place] = {
+                "territoryName": raw_name,
+                "value": value,
+            }
+        else:
+            bucket["value"] = round(float(bucket["value"]) + value, 2)
+    silver: list[dict] = []
+    for place, payload in sorted(aggregated.items()):
+        raw_name = str(payload["territoryName"])
+        value = float(payload["value"])
+        ibge = lookup.get((place, normalize_place(uf)), "")
+        row = {
+            "rowId": f"pi-rw-{tax_key.lower()}-{ibge or place}-{competence_key}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence_key,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def parse_state_ac_transparencia_json(
     body: bytes,
     *,

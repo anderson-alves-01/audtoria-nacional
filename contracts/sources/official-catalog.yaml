@@ -1387,6 +1387,48 @@ sources:
       XLS 2015-2021 downloadável em 2026-09-20. Série corrente semanal SEFAZ-AL
       permanece PDF. Homologação humana pendente.
 
+  - source_id: ESTADO-PI-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (PI)
+    maintainer: SEFAZ-PI / Repasse WEB
+    official_domain: sefaz.pi.gov.br
+    official_url: https://webas.sefaz.pi.gov.br/repasseweb/
+    endpoint: https://webas.sefaz.pi.gov.br/repasseweb/faces/views/repasseMunicipios.xhtml
+    documentation_url: https://webas.sefaz.pi.gov.br/repasseweb/
+    dataset: ESTADO-PI-IPVA-2025-01
+    dictionary_url: https://webas.sefaz.pi.gov.br/repasseweb/
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Portal Repasse WEB SEFAZ-PI (consulta pública)
+    license_terms: publicação oficial SEFAZ-PI
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_pi_repasseweb_html
+    layout_version: state-pi-ipva-repasseweb-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: PI
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+      home_url: https://webas.sefaz.pi.gov.br/repasseweb/
+      rows: 1000
+    authentication: jsf_session
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_pi_ipva_quota
+    formula: >
+      Soma de Repasse Municipio das linhas HTML do Repasse WEB (IPVA), filtradas
+      por competência YYYYMM, agregadas por município após remoção do sufixo -PI,
+      com join IBGE7 por nome+UF (SICONFI-ENTES). Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-pi-ipva-repasseweb-v1
+    notes: >
+      Probe 2026-09-20: IPVA TODOS 2025-01 retornou 905 linhas após rows=1000.
+      ICMS no mesmo UI sem linhas nos intervalos sondados. Homologação humana pendente.
+
   - source_id: ESTADO-AL-IPVA-QUOTA
     name: Quota-parte de IPVA estadual (AL)
     maintainer: SEPLAG-AL / dados.al.gov.br
