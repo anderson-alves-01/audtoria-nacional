@@ -1306,6 +1306,85 @@ sources:
       MontaArquivo l_ipva_rep_202501 downloadável em 2026-09-19. Homologação
       humana pendente.
 
+  - source_id: ESTADO-AL-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (AL)
+    maintainer: SEPLAG-AL / dados.al.gov.br
+    official_domain: dados.al.gov.br
+    official_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    endpoint: https://dados.al.gov.br/catalogo/dataset/58cf0b6f-4026-449e-8be8-17a9af3670c6/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b/download/repasses_estaduais.xls
+    documentation_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b
+    dataset: ESTADO-AL-ICMS-2021
+    dictionary_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    purpose: Transferência estadual de ICMS — valores publicados por município
+    legal_basis: Dados abertos oficiais de Alagoas (repasses estaduais)
+    license_terms: Creative Commons Atribuição (portal dados.al.gov.br)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_al_xls
+    layout_version: state-al-icms-v1
+    periodicity: annual
+    competence: "2021"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: AL
+      competence_year: "2021"
+      normalize: ibge7_native
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_al_icms_quota
+    formula: >
+      Valor da coluna ICMS Total do ano no XLS Repasses Estaduais, competência
+      filtrada por ano, município com Código IBGE7 nativo. Sem ajuste. Não
+      constitui crédito.
+    methodology_version: official-state-al-icms-v1
+    notes: >
+      XLS 2015-2021 downloadável em 2026-09-20. Série corrente semanal SEFAZ-AL
+      permanece PDF. Homologação humana pendente.
+
+  - source_id: ESTADO-AL-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (AL)
+    maintainer: SEPLAG-AL / dados.al.gov.br
+    official_domain: dados.al.gov.br
+    official_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    endpoint: https://dados.al.gov.br/catalogo/dataset/58cf0b6f-4026-449e-8be8-17a9af3670c6/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b/download/repasses_estaduais.xls
+    documentation_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b
+    dataset: ESTADO-AL-IPVA-2021
+    dictionary_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Dados abertos oficiais de Alagoas (repasses estaduais)
+    license_terms: Creative Commons Atribuição (portal dados.al.gov.br)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_al_xls
+    layout_version: state-al-ipva-v1
+    periodicity: annual
+    competence: "2021"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: AL
+      competence_year: "2021"
+      normalize: ibge7_native
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_al_ipva_quota
+    formula: >
+      Valor da coluna IPVA Total do ano no XLS Repasses Estaduais, competência
+      filtrada por ano, município com Código IBGE7 nativo. layout_version
+      distinto evita colisão de checksum com ICMS. Não constitui crédito.
+    methodology_version: official-state-al-ipva-v1
+    notes: >
+      Mesmo XLS 2015-2021 do ICMS. Homologação humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil

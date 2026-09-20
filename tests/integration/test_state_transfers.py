@@ -390,6 +390,37 @@ def test_state_rs_ingest_publishes_gold_without_credit(api_client) -> None:
     )
 
 
+def test_state_al_ingest_publishes_gold_without_credit(api_client) -> None:
+    icms = api_client.post("/v1/data-sources/ESTADO-AL-ICMS-QUOTA/ingest", headers=_admin())
+    assert icms.status_code == 200
+    assert icms.json()["silverCount"] == 2
+    assert icms.json()["quarantinedCount"] == 1
+    assert icms.json()["taxCreditCreated"] is False
+    ipva = api_client.post("/v1/data-sources/ESTADO-AL-IPVA-QUOTA/ingest", headers=_admin())
+    assert ipva.status_code == 200
+    assert ipva.json()["silverCount"] == 2
+    assert ipva.json()["quarantinedCount"] == 1
+    assert ipva.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["ESTADO-AL-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-AL-IPVA-QUOTA"]["createsTaxCredit"] is False
+    assert by_id["ESTADO-AL-IPVA-QUOTA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-AL-ICMS-QUOTA",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(item["value"] == 3318269.81 for item in lines.json()["items"])
+    assert any(item["value"] == 50000000.0 for item in lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
 def test_rfb_ingest_remains_blocked(api_client) -> None:
     listing = api_client.get("/v1/data-sources", headers=_analyst())
     by_id = {item["sourceId"]: item for item in listing.json()["items"]}

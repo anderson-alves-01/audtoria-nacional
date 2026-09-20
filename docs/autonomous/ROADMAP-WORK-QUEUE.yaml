@@ -1,15 +1,15 @@
 schema_version: 1
-updated_at: "2026-09-19T17:15:00-03:00"
+updated_at: "2026-09-20T08:45:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.40"
+implementation_version: "0.3.41"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.40: RS ICMS/IPVA ativados (state_rs_xls; SEFAZ MontaArquivo);
-  SP permanece HTML-only; AC/RO/MS/PE/BA/MG/ES/GO/CE e setoriais intactos;
+  Ciclo 0.3.41: AL ICMS/IPVA ativados (state_al_xls; dados.al.gov.br XLS anual
+  2021); RS/CE/AC/RO/MS/PE/BA/MG/ES/GO e setoriais intactos; SP HTML-only;
   RJ IP-blocked; RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -355,9 +355,9 @@ items:
     ci: "35451439251"
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG, ES, GO, MS, RO, AC, CE e RS TECHNICALLY_APPROVED (GO só IPVA via DataStore;
+      PE, BA, MG, ES, GO, MS, RO, AC, CE, RS e AL TECHNICALLY_APPROVED (GO só IPVA via DataStore;
       MS ICMS/IPVA via DataStore mensal; RO CSV SEFIN ICMS/IPVA; AC CSV SEPLAG ICMS;
-      CE XLS SEFAZ ICMS/IPVA; RS MontaArquivo XLS ICMS/IPVA). SC CSV é arrecadação não quota.
+      CE XLS SEFAZ ICMS/IPVA; RS MontaArquivo XLS ICMS/IPVA; AL XLS anual 2021). SC CSV é arrecadação não quota.
       RJ IP-blocked. GO ICMS aguarda colunas no datastore. SP HTML-only. Sem agregador privado.
 
   - id: F3-STATE-ICMS-ACTIVATION
@@ -373,13 +373,13 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.40/
-    versao: "0.3.40"
-    commit: d2e45d7
+    evidencia: evidence/releases/0.3.41/
+    versao: "0.3.41"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG, ES, MS, RO, AC, CE e RS ICMS (+IPVA onde publicado) + GO IPVA ativados.
+      PE, BA, MG, ES, MS, RO, AC, CE, RS e AL ICMS (+IPVA onde publicado) + GO IPVA ativados.
       GO ICMS não publicado no datastore 2026. SC arrecadação não quota. SP HTML-only.
       RJ permanece IP-blocked. Sem agregador privado.
 
@@ -396,15 +396,15 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.40/
-    versao: "0.3.40"
-    commit: d2e45d7
+    evidencia: evidence/releases/0.3.41/
+    versao: "0.3.41"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG, ES, GO, MS, RO, CE e RS IPVA ativados. AC sem IPVA publicado. Seguir
+      PE, BA, MG, ES, GO, MS, RO, CE, RS e AL IPVA ativados. AC sem IPVA publicado. Seguir
       outras UFs PUBLIC_OPEN; sem inventar valores. RO IPVA usa IBGE6→7; MS/GO/CE
-      usam nome+UF; MG/ES/AC usam IBGE7 nativo; RS usa nome+UF.
+      usam nome+UF; MG/ES/AC/AL usam IBGE7 nativo; RS usa nome+UF.
 
   - id: F3-RFB-CNPJ
     fase: F3.2

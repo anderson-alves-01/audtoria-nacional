@@ -589,6 +589,116 @@ def parse_state_rs_xls(
     return silver, quarantined
 
 
+def _ibge7_from_xls_cell(raw: object) -> str:
+    if isinstance(raw, bool):
+        return ""
+    if isinstance(raw, (int, float)):
+        if float(raw).is_integer():
+            return str(int(raw))
+        return ""
+    text = str(raw or "").strip()
+    if re.fullmatch(r"\d+\.0+", text):
+        return text.split(".", maxsplit=1)[0]
+    digits = re.sub(r"\D", "", text)
+    return digits if len(digits) == 7 else text
+
+
+def parse_state_al_xls(
+    body: bytes,
+    *,
+    tax: str,
+    uf: str = "AL",
+    competence_year: str = "2021",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse AL dados.al.gov.br annual XLS; native IBGE7; ICMS/IPVA; no credit."""
+    try:
+        import xlrd
+        from xlrd.biffh import XLRDError
+    except ImportError as exc:  # pragma: no cover - dependency declared in pyproject
+        raise RuntimeError("xlrd is required for state_al_xls") from exc
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state AL tax filter: {tax}")
+    year = str(competence_year or "2021").strip()[:4]
+    if not re.fullmatch(r"\d{4}", year):
+        raise ValueError(f"invalid AL competence_year: {competence_year}")
+    try:
+        book = xlrd.open_workbook(file_contents=body)
+    except (XLRDError, OSError, ValueError) as exc:
+        return [], [({"rowId": "al-header"}, f"invalid XLS: {exc}")]
+    sheet = book.sheet_by_index(0)
+    if sheet.nrows < 2 or sheet.ncols < 3:
+        return [], [({"rowId": "al-header"}, "empty workbook")]
+    headers = [str(sheet.cell_value(0, col) or "").strip() for col in range(sheet.ncols)]
+    amount_col = None
+    for index, name in enumerate(headers):
+        place = normalize_place(name)
+        if tax_key not in place or year not in place:
+            continue
+        if tax_key == "ICMS" and ("IPVA" in place or "IPI" in place):
+            continue
+        if tax_key == "IPVA" and "IPI" in place:
+            continue
+        amount_col = index
+        break
+    if amount_col is None:
+        return [], [({"rowId": "al-header"}, f"missing {tax_key} Total {year} column")]
+    ibge_col = next(
+        (index for index, name in enumerate(headers) if "CODIGO" in normalize_place(name)),
+        0,
+    )
+    name_col = next(
+        (index for index, name in enumerate(headers) if "MUNICIP" in normalize_place(name)),
+        1 if sheet.ncols > 1 else 0,
+    )
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for index in range(1, sheet.nrows):
+        raw_name = str(sheet.cell_value(index, name_col) or "").strip()
+        if not raw_name:
+            continue
+        place = normalize_place(raw_name)
+        if place in {"TOTAL", "TOTAIS", "ALAGOAS"} or place.startswith("TOTAL"):
+            continue
+        ibge = _ibge7_from_xls_cell(sheet.cell_value(index, ibge_col))
+        amount_raw = sheet.cell_value(index, amount_col)
+        try:
+            if isinstance(amount_raw, (int, float)) and not isinstance(amount_raw, bool):
+                value = float(amount_raw)
+            else:
+                value = parse_brazilian_number(amount_raw)
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"al-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        row = {
+            "rowId": f"al-{tax_key.lower()}-{ibge or index}-{year}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": year,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def parse_state_ac_csv(
     body: bytes,
     *,

@@ -9,6 +9,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_epe_open_files,
     parse_ibge_sidra_series,
     parse_state_ac_csv,
+    parse_state_al_xls,
     parse_state_ba_csv,
     parse_state_ce_xls,
     parse_state_es_csv,
@@ -362,6 +363,28 @@ def test_state_rs_xls_joins_name_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-RS-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-RS-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_al_xls_native_ibge_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/al-repasses-estaduais-2021.xls").read_bytes()
+    icms, quarantined_icms = parse_state_al_xls(body, tax="ICMS", competence_year="2021")
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"2700102", "2700300"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "AL" for row in icms)
+    assert all(row["competence"] == "2021" for row in icms)
+    agua = next(row for row in icms if row["ibgeCode"] == "2700102")
+    assert agua["value"] == 3318269.81
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_al_xls(body, tax="IPVA", competence_year="2021")
+    assert len(ipva) == 2
+    arapiraca = next(row for row in ipva if row["ibgeCode"] == "2700300")
+    assert arapiraca["value"] == 8000000.0
+    assert arapiraca["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-AL-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-AL-IPVA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_aneel_indqual_aggregates_by_ibge7() -> None:

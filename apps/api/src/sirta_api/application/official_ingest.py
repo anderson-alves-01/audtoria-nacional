@@ -34,6 +34,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_siconfi_entes,
     parse_siconfi_statement,
     parse_state_ac_csv,
+    parse_state_al_xls,
     parse_state_ba_csv,
     parse_state_ce_xls,
     parse_state_es_csv,
@@ -95,6 +96,7 @@ PARSERS = {
     "state_ms_csv": parse_state_ms_csv,
     "state_ro_csv": parse_state_ro_csv,
     "state_ac_csv": parse_state_ac_csv,
+    "state_al_xls": parse_state_al_xls,
     "state_ce_xls": parse_state_ce_xls,
     "state_rs_xls": parse_state_rs_xls,
     "anp_revendedores_api": parse_anp_revendedores_api,
@@ -726,6 +728,16 @@ def _parse(
             fetched.body,
             tax=str(parameters.get("tax") or "ICMS"),
             uf=str(parameters.get("uf") or "AC"),
+            competence_year=str(
+                parameters.get("competence_year") or catalog.get("competence") or "2021"
+            )[:4],
+        )
+    if connector == "state_al_xls":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "ICMS"),
+            uf=str(parameters.get("uf") or "AL"),
             competence_year=str(
                 parameters.get("competence_year") or catalog.get("competence") or "2021"
             )[:4],

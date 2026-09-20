@@ -89,6 +89,10 @@ SNAPSHOT_URLS = {
         "https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_ipva_rep_202501"
     ): "rs-ipva-repasses-2025-01.xls",
     (
+        "https://dados.al.gov.br/catalogo/dataset/58cf0b6f-4026-449e-8be8-17a9af3670c6/"
+        "resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b/download/repasses_estaduais.xls"
+    ): "al-repasses-estaduais-2021.xls",
+    (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
     (

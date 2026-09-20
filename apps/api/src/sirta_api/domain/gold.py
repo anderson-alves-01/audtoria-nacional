@@ -165,6 +165,20 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-AL-ICMS-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de ICMS estadual publicada (AL ativado via dados.al.gov.br). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-AL-IPVA-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPVA estadual publicada (AL ativado via dados.al.gov.br). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ANP-REVENDEDORES": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

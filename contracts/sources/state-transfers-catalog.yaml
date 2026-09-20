@@ -1,21 +1,22 @@
 contract_version: state-transfers-catalog-v1
-verified_at: "2026-09-19"
+verified_at: "2026-09-20"
 technical_reference_territory: none
 pilot_state_approved: false
 adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA, MG, ES, GO, MS, RO, AC, CE e RS TECHNICALLY_APPROVED (state_pe_csv /
+  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS e AL TECHNICALLY_APPROVED (state_pe_csv /
   state_ba_csv / state_mg_csv / state_es_csv / state_go_csv / state_ms_csv /
-  state_ro_csv / state_ac_csv / state_ce_xls / state_rs_xls). MG/ES/AC usam IBGE7 nativo.
-  RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via CKAN DataStore dump (CSV
-  upload 500; schema sem ICMS 2026). MS ICMS/IPVA via CKAN DataStore mensal
-  (Tipo_Repasse). AC ICMS anual SEPLAG ativado; IPVA mensal só via
-  Transparência POST+CSRF (não ativado). CE ICMS/IPVA via XLS mensal SEFAZ
-  (Portaria). RS ICMS/IPVA via MontaArquivo XLS mensal SEFAZ (TOTAL mês /
-  Total Mês). RJ IP-blocked. SC/PR PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML).
-  Sem agregador privado.
+  state_ro_csv / state_ac_csv / state_ce_xls / state_rs_xls / state_al_xls).
+  MG/ES/AC/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
+  CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS ICMS/IPVA via
+  CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG ativado; IPVA
+  mensal só via Transparência POST+CSRF (não ativado). CE ICMS/IPVA via XLS
+  mensal SEFAZ (Portaria). RS ICMS/IPVA via MontaArquivo XLS mensal SEFAZ
+  (TOTAL mês / Total Mês). AL ICMS/IPVA via XLS anual dados.al.gov.br (série
+  2015-2021; corrente SEFAZ-AL é PDF semanal). RJ IP-blocked. SC/PR
+  PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML). Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -40,9 +41,25 @@ states:
       (POST+CSRF); não ativado nesta fatia. Fixture mínima. Sem crédito.
   - uf: AL
     name: Alagoas
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: dados_al_xls_downloadable
+    dataset_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    official_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    endpoint: https://dados.al.gov.br/catalogo/dataset/58cf0b6f-4026-449e-8be8-17a9af3670c6/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b/download/repasses_estaduais.xls
+    taxes: [ICMS, IPVA, IPI]
+    format: XLS
+    columns: [Código, Município, IPI Total YYYY, Royalties Total YYYY, IPVA Total YYYY, ICMS Total YYYY]
+    ibge_field: Código
+    layout_version_icms: state-al-icms-v1
+    layout_version_ipva: state-al-ipva-v1
+    connector: state_al_xls
+    download_probe_2026_09_20: xls_bytes_ok_ibge7_native_annual_2021
+    reason: >
+      XLS anual Repasses Estaduais (dados.al.gov.br) ativado com connector
+      state_al_xls (xlrd). IBGE7 nativo em Código; competência anual filtrada
+      (2021). Série publicada 2015-2021; SEFAZ-AL corrente é PDF semanal sem
+      CSV/API. Fixture mínima. Sem crédito.
   - uf: AP
     name: Amapá
     status: DISCOVERED
