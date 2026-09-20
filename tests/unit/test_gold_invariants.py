@@ -19,6 +19,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_ms_csv,
     parse_state_pe_csv,
     parse_state_pi_repasseweb_html,
+    parse_state_rn_xls,
     parse_state_ro_csv,
     parse_state_rs_xls,
     parse_tesouro_monthly_csv,
@@ -358,6 +359,36 @@ def test_state_pi_repasseweb_html_aggregates_banks_and_quarantines_territory() -
     assert quarantined[0][1] == "missing IBGE municipality code"
     assert presentation_for("ESTADO-PI-IPVA-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-PI-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_rn_xls_joins_name_and_quarantines_territory() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/rn-repasses-prefeituras-2026-05.xls"
+    ).read_bytes()
+    lookup = {
+        ("ACARI", "RN"): "2400109",
+        ("NATAL", "RN"): "2408102",
+    }
+    icms, quarantined_icms = parse_state_rn_xls(body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"2400109", "2408102"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "RN" for row in icms)
+    assert all(row["competence"] == "2026-01" for row in icms)
+    acari = next(row for row in icms if row["ibgeCode"] == "2400109")
+    assert acari["value"] == 517463.75
+    natal = next(row for row in icms if row["ibgeCode"] == "2408102")
+    assert natal["value"] == 30427826.82
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_rn_xls(body, tax="IPVA", ibge_lookup=lookup)
+    assert len(ipva) == 2
+    natal_ipva = next(row for row in ipva if row["ibgeCode"] == "2408102")
+    assert natal_ipva["value"] == 6416335.88
+    assert natal_ipva["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    assert presentation_for("ESTADO-RN-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-RN-IPVA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:

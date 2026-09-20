@@ -99,6 +99,11 @@ SNAPSHOT_URLS = {
         "https://webas.sefaz.pi.gov.br/repasseweb/faces/views/repasseMunicipios.xhtml"
     ): "pi-repasseweb-ipva-2025-01.html",
     (
+        "https://www.sefaz.rn.gov.br/wp-json/nextcloud/v1/download?filePath="
+        "SEFAZ-GOVRN%2FTranspar%C3%AAncia%2FTransfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN"
+        "%2F2026%2FRepasses%20Prefeituras%202026%20-%20Valores%20Repassados%20at%C3%A9%20o%20dia%2031-05-2026.xls"
+    ): "rn-repasses-prefeituras-2026-05.xls",
+    (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
     (

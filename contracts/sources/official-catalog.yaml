@@ -1468,6 +1468,86 @@ sources:
     notes: >
       Mesmo XLS 2015-2021 do ICMS. Homologação humana pendente.
 
+  - source_id: ESTADO-RN-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (RN)
+    maintainer: SEFAZ-RN
+    official_domain: sefaz.rn.gov.br
+    official_url: https://www.sefaz.rn.gov.br/documentos/Transpar%C3%AAncia/Transfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN/2026/
+    endpoint: https://www.sefaz.rn.gov.br/wp-json/nextcloud/v1/download?filePath=SEFAZ-GOVRN%2FTranspar%C3%AAncia%2FTransfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN%2F2026%2FRepasses%20Prefeituras%202026%20-%20Valores%20Repassados%20at%C3%A9%20o%20dia%2031-05-2026.xls
+    documentation_url: https://www.transparencia.rn.gov.br/transferencia-para-municipios
+    dataset: ESTADO-RN-ICMS-2026-01
+    dictionary_url: https://www.sefaz.rn.gov.br/documentos/Transpar%C3%AAncia/Transfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN/
+    purpose: Transferência estadual de ICMS — valores publicados por município
+    legal_basis: Publicação SEFAZ-RN de repasses às prefeituras (Nextcloud)
+    license_terms: publicação oficial SEFAZ-RN
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_rn_xls
+    layout_version: state-rn-icms-v1
+    periodicity: monthly
+    competence: "2026-01"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: RN
+      competence: "2026-01"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_rn_icms_quota
+    formula: >
+      Valor da coluna do mês na planilha ICMS do XLS Repasses Prefeituras
+      SEFAZ-RN, competência parametrizada, município via join IBGE7 por
+      nome+UF. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-rn-icms-v1
+    notes: >
+      Nextcloud XLS downloadável em 2026-09-20 (valores até 31-05-2026).
+      Homologação humana pendente.
+
+  - source_id: ESTADO-RN-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (RN)
+    maintainer: SEFAZ-RN
+    official_domain: sefaz.rn.gov.br
+    official_url: https://www.sefaz.rn.gov.br/documentos/Transpar%C3%AAncia/Transfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN/2026/
+    endpoint: https://www.sefaz.rn.gov.br/wp-json/nextcloud/v1/download?filePath=SEFAZ-GOVRN%2FTranspar%C3%AAncia%2FTransfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN%2F2026%2FRepasses%20Prefeituras%202026%20-%20Valores%20Repassados%20at%C3%A9%20o%20dia%2031-05-2026.xls
+    documentation_url: https://www.transparencia.rn.gov.br/transferencia-para-municipios
+    dataset: ESTADO-RN-IPVA-2026-01
+    dictionary_url: https://www.sefaz.rn.gov.br/documentos/Transpar%C3%AAncia/Transfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN/
+    purpose: Transferência estadual de IPVA — valores publicados por município
+    legal_basis: Publicação SEFAZ-RN de repasses às prefeituras (Nextcloud)
+    license_terms: publicação oficial SEFAZ-RN
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_rn_xls
+    layout_version: state-rn-ipva-v1
+    periodicity: monthly
+    competence: "2026-01"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: RN
+      competence: "2026-01"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_rn_ipva_quota
+    formula: >
+      Valor da coluna do mês na planilha IPVA do XLS Repasses Prefeituras
+      SEFAZ-RN, competência parametrizada, município via join IBGE7 por
+      nome+UF. layout_version distinto evita colisão de checksum com ICMS.
+      Não constitui crédito.
+    methodology_version: official-state-rn-ipva-v1
+    notes: >
+      Mesmo XLS do ICMS (abas distintas). Homologação humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil

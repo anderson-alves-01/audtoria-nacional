@@ -6,10 +6,10 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL e PI TECHNICALLY_APPROVED (state_pe_csv /
+  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI e RN TECHNICALLY_APPROVED (state_pe_csv /
   state_ba_csv / state_mg_csv / state_es_csv / state_go_csv / state_ms_csv /
   state_ro_csv / state_ac_csv+state_ac_transparencia_json / state_ce_xls /
-  state_rs_xls / state_al_xls / state_pi_repasseweb_html).
+  state_rs_xls / state_al_xls / state_pi_repasseweb_html / state_rn_xls).
   MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
   CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS ICMS/IPVA via
   CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG ativado; AC IPVA
@@ -17,10 +17,11 @@ notes: >
   ICMS/IPVA via XLS mensal SEFAZ (Portaria). RS ICMS/IPVA via MontaArquivo XLS
   mensal SEFAZ (TOTAL mês / Total Mês). AL ICMS/IPVA via XLS anual dados.al.gov.br
   (série 2015-2021; corrente SEFAZ-AL é PDF semanal). PI IPVA via Repasse WEB
-  HTML (PrimeFaces; ICMS sem linhas no UI sondado). RJ IP-blocked. SC/PR
+  HTML (PrimeFaces; ICMS sem linhas no UI sondado). RN ICMS/IPVA via Nextcloud
+  XLS Repasses Prefeituras (abas). RJ IP-blocked. SC/PR
   PROVENANCE_ONLY (SC SEF CSV ≤2017; PR HTML). PB/SE PROVENANCE_VERIFIED PDF.
-  AM HTML-per-município. MT/TO/PA/MA/RN/RR/AP/SP sem CSV/API estruturado
-  estável neste ciclo. Sem agregador privado.
+  AM HTML-per-município. MT XLSX Transparency congelado ≤2015; corrente PDF.
+  TO/PA/MA/RR/AP/SP sem CSV/API estruturado estável neste ciclo. Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -182,9 +183,19 @@ states:
     reason: Sem API/arquivo estruturado oficial de quota-parte verificado. Não é território piloto aprovado.
   - uf: MT
     name: Mato Grosso
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: PROVENANCE_VERIFIED
+    structured_official_source: transparency_xlsx_frozen_2015_plus_pdf_current
+    dataset_url: https://www5.sefaz.mt.gov.br/-/transparencia
+    official_url: https://www5.sefaz.mt.gov.br/fundo-de-participacao-dos-municipios
+    endpoint: https://www5.sefaz.mt.gov.br/documents/6071037/6402159/Item23_Repasse_aos_Municipios_Base_de_Dados.xlsx/e45f0890-9d55-4a2e-a97a-bd85dced0133
+    taxes: [ICMS, IPVA, IPI, FEP, FUPIS]
+    format: XLSX+PDF
+    ibge_field: name_only
+    download_probe_2026_09_20: xlsx_200_frozen_2013_to_maio_2015_current_pdf
+    reason: >
+      Item23 Base de Dados XLSX downloadável, porém série congelada 2013–maio/2015.
+      Repasses correntes na página Fundo de Participação dos Municípios são PDF
+      mensais. Sem ativação até série tabular recente com IBGE.
   - uf: MS
     name: Mato Grosso do Sul
     status: TECHNICALLY_APPROVED
@@ -318,9 +329,25 @@ states:
       de ingest até schema verificado.
   - uf: RN
     name: Rio Grande do Norte
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_nextcloud_xls
+    dataset_url: https://www.sefaz.rn.gov.br/documentos/Transpar%C3%AAncia/Transfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN/
+    official_url: https://www.transparencia.rn.gov.br/transferencia-para-municipios
+    endpoint: https://www.sefaz.rn.gov.br/wp-json/nextcloud/v1/download?filePath=SEFAZ-GOVRN%2FTranspar%C3%AAncia%2FTransfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN%2F2026%2FRepasses%20Prefeituras%202026%20-%20Valores%20Repassados%20at%C3%A9%20o%20dia%2031-05-2026.xls
+    taxes: [ICMS, IPVA, IPI]
+    format: XLS
+    columns_icms: [MUNICÍPIOS, ÍNDICE %, JANEIRO..DEZEMBRO]
+    columns_ipva: [MUNICÍPIOS, JANEIRO..DEZEMBRO]
+    ibge_field: name_only
+    layout_version_icms: state-rn-icms-v1
+    layout_version_ipva: state-rn-ipva-v1
+    connector: state_rn_xls
+    download_probe_2026_09_20: nextcloud_xls_200_sheets_icms_ipva
+    reason: >
+      XLS Repasses Prefeituras SEFAZ-RN via Nextcloud (abas ICMS/IPVA/IPI)
+      ativado com connector state_rn_xls. Coluna mensal JANEIRO..; join IBGE7
+      por nome+UF. Competência 2026-01. Fixture mínima. Sem crédito.
   - uf: RS
     name: Rio Grande do Sul
     status: TECHNICALLY_APPROVED

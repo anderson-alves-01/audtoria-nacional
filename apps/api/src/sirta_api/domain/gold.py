@@ -195,6 +195,20 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-RN-ICMS-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de ICMS estadual publicada (RN ativado via SEFAZ Nextcloud XLS). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-RN-IPVA-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPVA estadual publicada (RN ativado via SEFAZ Nextcloud XLS). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ANP-REVENDEDORES": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

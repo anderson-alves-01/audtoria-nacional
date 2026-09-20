@@ -104,6 +104,9 @@ DASHBOARDS = (
             "ESTADO-RS-IPVA-QUOTA",
             "ESTADO-AL-ICMS-QUOTA",
             "ESTADO-AL-IPVA-QUOTA",
+            "ESTADO-PI-IPVA-QUOTA",
+            "ESTADO-RN-ICMS-QUOTA",
+            "ESTADO-RN-IPVA-QUOTA",
         ),
         "emptyReason": (
             "Somente valores oficiais publicados. Dicionário FPM não é valor transferido. "
