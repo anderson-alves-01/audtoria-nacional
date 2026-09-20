@@ -55,7 +55,7 @@ def test_state_transfers_endpoint_is_empty_shell(api_client) -> None:
     assert by_uf["RO"]["ingestAllowed"] is True
     assert by_uf["AC"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["AC"]["ingestAllowed"] is True
-    assert by_uf["AC"]["taxes"] == ["ICMS"]
+    assert by_uf["AC"]["taxes"] == ["ICMS", "IPVA"]
     assert by_uf["CE"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["CE"]["ingestAllowed"] is True
     assert by_uf["CE"]["taxes"] == ["ICMS", "IPVA", "IPI"]
