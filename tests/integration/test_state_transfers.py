@@ -84,7 +84,7 @@ def test_tech_admin_cannot_read_state_transfers(api_client) -> None:
 def test_state_pe_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     icms = api_client.post("/v1/data-sources/ESTADO-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
@@ -116,7 +116,7 @@ def test_state_pe_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_ba_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     icms = api_client.post("/v1/data-sources/ESTADO-BA-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
@@ -206,7 +206,7 @@ def test_state_es_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_go_ipva_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     ipva = api_client.post("/v1/data-sources/ESTADO-GO-IPVA-QUOTA/ingest", headers=_admin())
     assert ipva.status_code == 200
     assert ipva.json()["silverCount"] == 2
@@ -235,7 +235,7 @@ def test_state_go_ipva_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_ms_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     icms = api_client.post("/v1/data-sources/ESTADO-MS-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
@@ -269,7 +269,7 @@ def test_state_ms_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_ro_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     icms = api_client.post("/v1/data-sources/ESTADO-RO-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
@@ -303,7 +303,7 @@ def test_state_ro_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_ac_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     icms = api_client.post("/v1/data-sources/ESTADO-AC-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
@@ -353,7 +353,7 @@ def test_state_ac_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_ce_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     icms = api_client.post("/v1/data-sources/ESTADO-CE-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
@@ -387,7 +387,7 @@ def test_state_ce_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_rs_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     icms = api_client.post("/v1/data-sources/ESTADO-RS-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
@@ -452,7 +452,7 @@ def test_state_al_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_pi_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     ipva = api_client.post("/v1/data-sources/ESTADO-PI-IPVA-QUOTA/ingest", headers=_admin())
     assert ipva.status_code == 200
     assert ipva.json()["silverCount"] == 2
@@ -481,7 +481,7 @@ def test_state_pi_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_state_rn_ingest_publishes_gold_without_credit(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 20
+    assert siconfi.json()["silverCount"] == 22
     icms = api_client.post("/v1/data-sources/ESTADO-RN-ICMS-QUOTA/ingest", headers=_admin())
     assert icms.status_code == 200
     assert icms.json()["silverCount"] == 2
