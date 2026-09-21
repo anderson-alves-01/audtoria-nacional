@@ -664,7 +664,7 @@ items:
     evidencia: evidence/releases/0.3.77/
     versao: "0.3.77"
     commit: 417aa83
-    ci: null
+    ci: "35607397901"
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA+IPCA Livres+IPCA
@@ -679,6 +679,7 @@ items:
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
       publicada; ou OLINDA IPCA Administrados / IPCA Alimentação se priorizado.
       Commit: 417aa83.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35607397901.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
