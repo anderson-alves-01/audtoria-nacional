@@ -1125,6 +1125,43 @@ def test_bcb_olinda_expectativas_parses_mensais_ipca() -> None:
     assert presentation_for("BCB-OLINDA-EXPECTATIVAS-MENSAIS")["createsTaxCredit"] is False
 
 
+def test_bcb_olinda_expectativas_parses_mensais_igp_m_and_cambio() -> None:
+    igp = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-igp-m-mensais-top8.json"
+    ).read_bytes()
+    cambio = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-cambio-mensais-top8.json"
+    ).read_bytes()
+    silver_igp, q_igp = parse_bcb_olinda_expectativas(
+        igp,
+        indicator_allowlist=["IGP-M"],
+        max_rows=8,
+        indicator_units={"IGP-M": "PERCENT_PER_MONTH"},
+        focus_label="FOCUS_MENSAL",
+    )
+    silver_cambio, q_cambio = parse_bcb_olinda_expectativas(
+        cambio,
+        indicator_allowlist=["Câmbio"],
+        max_rows=8,
+        indicator_units={"Câmbio": "BRL_PER_USD"},
+        focus_label="FOCUS_MENSAL",
+    )
+    assert q_igp == []
+    assert q_cambio == []
+    assert len(silver_igp) == 8
+    assert len(silver_cambio) == 8
+    assert silver_igp[0]["seriesId"] == "IGP-M"
+    assert silver_igp[0]["unit"] == "PERCENT_PER_MONTH"
+    assert silver_igp[0]["value"] == 0.4327
+    assert silver_igp[0]["horizonYear"] == "01/2027"
+    assert "FOCUS_MENSAL" in silver_igp[0]["transferName"]
+    assert silver_cambio[0]["seriesId"] == "Câmbio"
+    assert silver_cambio[0]["unit"] == "BRL_PER_USD"
+    assert silver_cambio[0]["value"] == 5.17
+    assert silver_cambio[0]["horizonYear"] == "01/2027"
+    assert "FOCUS_MENSAL" in silver_cambio[0]["transferName"]
+
+
 def test_bcb_olinda_expectativas_parses_selic_and_cambio_units() -> None:
     selic = Path(
         "tests/fixtures/official-snapshots/bcb-olinda-expectativas-selic-anuais-top8.json"

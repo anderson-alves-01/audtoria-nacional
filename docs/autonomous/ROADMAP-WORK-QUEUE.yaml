@@ -1,17 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-21T15:15:00-03:00"
+updated_at: "2026-09-21T15:45:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.89"
+implementation_version: "0.3.90"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.89: BCB OLINDA Expectativas mensais IPCA
-  (ExpectativaMercadoMensais, PERCENT_PER_MONTH, baseCalculo=1). Layout
-  mensais-v1; silverCount 8. Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS.
-  Próximo: demais mensais (IGP-M/Câmbio/IPCA Livres…) ou trimestrais.
+  Ciclo 0.3.90: BCB OLINDA Expectativas mensais IGP-M + Câmbio
+  (ExpectativaMercadoMensais, allowlist IPCA/IGP-M/Câmbio, baseCalculo=1).
+  Layout mensais-v2; silverCount 24. Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS.
+  Próximo: IPCA Livres/Serviços/Administrados mensais ou trimestrais.
   RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -662,22 +662,20 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.89/
-    versao: "0.3.89"
-    commit: f888cd2
-    ci: "35636991193"
+    evidencia: evidence/releases/0.3.90/
+    versao: "0.3.90"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
       até Balança Saldo/Exportações/Importações) TECHNICALLY_APPROVED.
-      Nova fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS (ExpectativaMercadoMensais,
-      IPCA baseCalculo=1, PERCENT_PER_MONTH, max_rows=8, layout mensais-v1,
-      silverCount=8) TECHNICALLY_APPROVED. Gold REFERENCE_QUANTITY. Sem
-      crédito. Homologação humana pendente. Próximo: demais mensais ativos
-      (IGP-M, Câmbio, IPCA Livres/Serviços/Administrados) ou
-      ExpectativasMercadoTrimestrais; UF tabular quando publicada. Commit:
-      f888cd2. CI verde:
-      https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35636991193.
+      Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS (ExpectativaMercadoMensais,
+      allowlist IPCA/IGP-M/Câmbio baseCalculo=1, max_rows=8, layout mensais-v2,
+      silverCount=24) TECHNICALLY_APPROVED. Gold REFERENCE_QUANTITY. Sem
+      crédito. Homologação humana pendente. Próximo: IPCA Livres/Serviços/
+      Administrados/Alimentação/Bens industrializados mensais ou
+      ExpectativasMercadoTrimestrais; UF tabular quando publicada.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2

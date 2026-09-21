@@ -1,0 +1,4 @@
+ci: pending_push
+tests: 17 passed (unit gold mensais + sectoral enrichment unit/integration)
+migration: 0093_bcb_olinda_igp_cambio
+version: 0.3.90

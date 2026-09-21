@@ -3746,7 +3746,7 @@ sources:
       (REST SGS).       Homologação humana pendente. Não constitui crédito.
 
   - source_id: BCB-OLINDA-EXPECTATIVAS-MENSAIS
-    name: Banco Central — OLINDA Expectativas Focus mensais (IPCA)
+    name: Banco Central — OLINDA Expectativas Focus mensais (IPCA/IGP-M/Câmbio)
     maintainer: Banco Central do Brasil
     official_domain: bcb.gov.br
     official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
@@ -3763,12 +3763,12 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: bcb_olinda_expectativas
-    layout_version: bcb-olinda-expectativas-mensais-v1
+    layout_version: bcb-olinda-expectativas-mensais-v2
     periodicity: as_published
     competence: as_published
     granularity: series
     parameters:
-      indicator_allowlist: [IPCA]
+      indicator_allowlist: [IPCA, IGP-M, Câmbio]
       primary_indicator: IPCA
       max_rows: 8
       value_field: Mediana
@@ -3778,18 +3778,22 @@ sources:
       base_calculo: 1
       indicator_units:
         IPCA: PERCENT_PER_MONTH
+        IGP-M: PERCENT_PER_MONTH
+        Câmbio: BRL_PER_USD
     indicator: bcb_olinda_expectativas_focus_mensais
     formula: >
       Mediana das expectativas mensais Focus (ExpectativaMercadoMensais) para
-      indicadores na allowlist (IPCA), com baseCalculo=1, limitados a
-      max_rows=N (multi-fetch). Competência = Data de publicação; horizonte =
-      DataReferencia (MM/AAAA). Unidade PERCENT_PER_MONTH. Distinto de
-      BCB-OLINDA-EXPECTATIVAS (anuais). Sem crédito.
-    methodology_version: official-bcb-olinda-expectativas-mensais-v1
+      indicadores na allowlist (IPCA, IGP-M, Câmbio), com baseCalculo=1,
+      limitados a max_rows=N (multi-fetch). Competência = Data de publicação;
+      horizonte = DataReferencia (MM/AAAA). Unidades PERCENT_PER_MONTH (IPCA,
+      IGP-M) e BRL_PER_USD (Câmbio). Distinto de BCB-OLINDA-EXPECTATIVAS
+      (anuais). Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-mensais-v2
     notes: >
-      OData OLINDA oficial verificado. Ativação técnica com allowlist IPCA,
-      $top/max_rows=8 e fixture mínima. Entity set ExpectativaMercadoMensais.
-      Homologação humana pendente. Não constitui crédito.
+      OData OLINDA oficial verificado. Ativação técnica com allowlist
+      IPCA+IGP-M+Câmbio, $top/max_rows=8 por indicador e fixtures mínimas.
+      Entity set ExpectativaMercadoMensais. Homologação humana pendente.
+      Não constitui crédito.
 
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)
