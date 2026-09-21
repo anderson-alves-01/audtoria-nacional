@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.86/
     versao: "0.3.86"
-    commit: PENDING_COMMIT
+    commit: 41bd527
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -684,7 +684,7 @@ items:
       (congelada na fonte). Produção industrial: última publicação 2021-09-13.
       Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
-      publicada; ou OLINDA IPC-Fipe / IPA-M / IPA-DI.
+      publicada; ou OLINDA IPC-Fipe / IPA-M / IPA-DI. Commit: 41bd527.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
