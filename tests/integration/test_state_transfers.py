@@ -587,9 +587,7 @@ def test_state_pa_icms_verde_ingest_publishes_gold_without_credit(api_client) ->
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
     assert siconfi.json()["silverCount"] == 28
-    verde = api_client.post(
-        "/v1/data-sources/ESTADO-PA-ICMS-VERDE-QUOTA/ingest", headers=_admin()
-    )
+    verde = api_client.post("/v1/data-sources/ESTADO-PA-ICMS-VERDE-QUOTA/ingest", headers=_admin())
     assert verde.status_code == 200
     assert verde.json()["silverCount"] == 2
     assert verde.json()["quarantinedCount"] == 1
