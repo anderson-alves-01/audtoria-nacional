@@ -308,14 +308,15 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.64/
     versao: "0.3.64"
-    commit: null
-    ci: null
+    commit: 5794f2d
+    ci: "35577286713"
     motivo_bloqueio: null
     next_action: >
       Conector tesouro_coint_municipio_csv com max_rows=8 e competência 2018-01.
       Série histórica oficial (valores não nulos até 2018). Distinto de
       TESOURO-LC176-VALORES. Sem carga nacional do CSV ~17 MiB. Homologação
       humana pendente.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35577286713.
 
   - id: F3-TESOURO-COINT-CIDE-FEX
     fase: F3.2
