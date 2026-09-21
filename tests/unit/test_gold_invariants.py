@@ -220,6 +220,40 @@ def test_tesouro_monthly_csv_iof_ouro_allowlist() -> None:
     )
 
 
+def test_tesouro_monthly_csv_fundeb_complement_allowlist() -> None:
+    body = Path("tests/fixtures/official-snapshots/tesouro-fpm-202608.csv").read_bytes()
+    lookup = {
+        ("COLINAS", "MA"): "2103505",
+        ("CONCEICAO DO LAGO-ACU", "MA"): "2103554",
+    }
+    silver, quarantined = parse_tesouro_monthly_csv(
+        body,
+        ibge_lookup=lookup,
+        item_allowlist=[
+            "COUN VAAT",
+            "COUN VAAR",
+            "COUN VAAF",
+            "AJUSTE FUNDEB VAAT",
+        ],
+        transfer_name="FDB-COMP",
+    )
+    assert len(quarantined) == 1
+    assert len(silver) == 5
+    assert all(row["transferName"] == "FDB-COMP" for row in silver)
+    assert {row["modality"] for row in silver} == {
+        "FDB_COMP_TO_FUNDEB",
+        "FDB_COMP_TO_AJUSTE_FUNDEB",
+    }
+    assert {row["ibgeCode"] for row in silver} == {"2103505", "2103554"}
+    assert sum(row["value"] for row in silver) == 108.0
+    assert all(len(row["rowId"]) <= 64 for row in silver)
+    assert len({row["rowId"] for row in silver}) == 5
+    assert presentation_for("TESOURO-FUNDEB-COMPLEMENT-VALORES")["createsTaxCredit"] is False
+    assert presentation_for("TESOURO-FUNDEB-COMPLEMENT-VALORES")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+
+
 def test_tesouro_coint_cide_fex_wide_csv() -> None:
     lookup = {
         ("ACRELANDIA", "AC"): "1200013",

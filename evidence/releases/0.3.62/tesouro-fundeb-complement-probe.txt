@@ -1,0 +1,17 @@
+# Tesouro monthly probe — FUNDEB complement (2026-09-21)
+
+CSV: Transferencia_Mensal_Municipios_202609.csv (competence month 08/2026)
+
+Item counts (streamed sample / full download ~4.9 MiB):
+
+| Item | Approx rows | Destination |
+|------|-------------|-------------|
+| COUN VAAR | 3025 | FUNDEB |
+| COUN VAAT | 2541 | FUNDEB |
+| COUN VAAF | 1757 | FUNDEB |
+| AJUSTE FUNDEB VAAT | 1568 | AJUSTE FUNDEB |
+
+Distinct from retention rows FPM/IPI-EXP/ITR/ICMS/IPVA → FUNDEB.
+
+Activated as TESOURO-FUNDEB-COMPLEMENT-VALORES with transfer_name FDB-COMP
+(short rowId ≤64).

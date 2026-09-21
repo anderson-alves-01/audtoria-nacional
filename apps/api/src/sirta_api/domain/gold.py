@@ -82,6 +82,14 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "TESOURO-FUNDEB-COMPLEMENT-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Complementação da União ao FUNDEB (COUN VAAT/VAAR/VAAF) e "
+            "AJUSTE FUNDEB publicados pelo Tesouro. Ocorrência para análise, "
+            "não crédito nem cobrança."
+        ),
+    },
     "TESOURO-CIDE-VALORES": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (

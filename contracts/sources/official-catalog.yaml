@@ -463,6 +463,62 @@ sources:
       CIDE/FEX deste CSV mensal permanecem ausentes; ver TESOURO-CIDE-VALORES
       e TESOURO-FEX-VALORES (dataset COINT). Sem crédito.
 
+  - source_id: TESOURO-FUNDEB-COMPLEMENT-VALORES
+    name: Tesouro Nacional — complementação e ajuste FUNDEB por município (CKAN)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-constitucionais-para-municipios
+    dataset: TESOURO-FUNDEB-COMPLEMENT-MENSAL
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    purpose: >
+      Complementação da União ao FUNDEB (COUN VAAT/VAAR/VAAF) e AJUSTE FUNDEB
+      publicados no CSV mensal oficial
+    legal_basis: Dataset CKAN Transferências Constitucionais para Municípios (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_monthly_csv
+    layout_version: tesouro-ckan-transferencia-mensal-fundeb-complement-v1
+    periodicity: monthly
+    competence: "2026-08"
+    granularity: municipality
+    parameters:
+      package_id: af4e7c47-2132-4d9a-bd7c-34e28a210b03
+      resource_id: 17336152-2728-4368-9ba2-c3f7821e4acf
+      file_name: Transferencia_Mensal_Municipios_202609.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2026-08"
+      transfer_item_allowlist:
+        - COUN VAAT
+        - COUN VAAR
+        - COUN VAAF
+        - AJUSTE FUNDEB VAAT
+      transfer_name: FDB-COMP
+      resource_url_by_competence:
+        "2026-08": https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_fundeb_complement_published
+    formula: >
+      Soma dos três decêndios das linhas em que Item transferência ∈
+      {COUN VAAT, COUN VAAR, COUN VAAF, AJUSTE FUNDEB VAAT}. Destinos
+      observados: FUNDEB (COUN*) e AJUSTE FUNDEB (AJUSTE FUNDEB VAAT).
+      Join município+UF ao IBGE via SICONFI/entes. Não constitui crédito.
+    methodology_version: official-tesouro-fundeb-complement-mensal-v1
+    notes: >
+      Probe 202609: COUN VAAR≈3025, COUN VAAT≈2541, COUN VAAF≈1757,
+      AJUSTE FUNDEB VAAT≈1568 linhas. Distinto de retenções FPM/IPI-EXP→FUNDEB.
+      Aria dicionário: FUNDEB (código 10) e AJUSTE FUNDEB (código 14).
+      transfer_name curto (FDB-COMP) para rowId ≤64. Sem crédito.
+
   - source_id: TESOURO-CIDE-VALORES
     name: Tesouro Nacional — CIDE-Combustíveis por município (CKAN COINT)
     maintainer: Tesouro Nacional

@@ -1,17 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-21T07:30:00-03:00"
+updated_at: "2026-09-21T08:00:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.61"
+implementation_version: "0.3.62"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.61: RS Compensação LC 194/22 via MontaArquivo
-  l_compensacao_perdas_icms_2024 (aba OUTUBRO 2024, REPASSE*). UFs restantes
-  ainda sem tabular recente. Próximo: UF tabular nova quando publicada. RFB
-  territorial sem carga nacional.
+  Ciclo 0.3.62: Tesouro FUNDEB complement (COUN VAAT/VAAR/VAAF + AJUSTE FUNDEB
+  VAAT) via allowlist no CSV mensal CKAN. UFs restantes ainda sem tabular
+  recente. Próximo: UF tabular nova quando publicada. RFB territorial sem
+  carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -239,7 +239,7 @@ items:
   - id: F3-TESOURO-MONTHLY-ALLOWLIST
     fase: F3.2
     dominio: D9
-    descricao: Allowlist ITR, IPI-EXP, Royalties, LC176 e IOF-Ouro no CSV mensal Tesouro
+    descricao: Allowlist ITR, IPI-EXP, Royalties, LC176, IOF-Ouro e FUNDEB complement no CSV mensal Tesouro
     dependencias: [F3-FPM-MUNICIPAL]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -250,18 +250,20 @@ items:
       - TESOURO-ROYALTIES-VALORES
       - TESOURO-LC176-VALORES
       - TESOURO-IOF-OURO-VALORES
+      - TESOURO-FUNDEB-COMPLEMENT-VALORES
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.53/
-    versao: "0.3.53"
-    commit: c26abed
-    ci: "35557636835"
+    evidencia: evidence/releases/0.3.62/
+    versao: "0.3.62"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      ITR/IPI-EXP/Royalties/LC176/IOF-Ouro allowlists ativos. CIDE/FEX ausentes
-      no CSV mensal municipal; ativados em F3-TESOURO-COINT-CIDE-FEX.
+      ITR/IPI-EXP/Royalties/LC176/IOF-Ouro/FUNDEB-COMPLEMENT allowlists ativos.
+      CIDE/FEX ausentes no CSV mensal municipal; ativados em
+      F3-TESOURO-COINT-CIDE-FEX. Ciclo 0.3.62.
 
   - id: F3-TESOURO-COINT-CIDE-FEX
     fase: F3.2
