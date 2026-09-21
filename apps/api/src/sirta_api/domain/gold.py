@@ -542,7 +542,8 @@ PRESENTATION = {
     "BCB-OLINDA-EXPECTATIVAS": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (
-            "Expectativas Focus anuais OLINDA do Banco Central (allowlist IPCA). "
+            "Expectativas Focus anuais OLINDA do Banco Central "
+            "(allowlist IPCA/Selic/Câmbio). "
             "Contexto setorial; não constitui crédito tributário."
         ),
     },

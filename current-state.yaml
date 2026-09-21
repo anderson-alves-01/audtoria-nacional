@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.66
+implementation_version: 0.3.67
 roadmap_version: "1.2"
-version: 0.3.66
+version: 0.3.67
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -58,6 +58,7 @@ completed:
     - aneel_indqual_municipio_uf_scoped_activation
     - sectoral_bcb_sgs_allowlist_activation
     - sectoral_bcb_olinda_expectativas_activation
+    - sectoral_bcb_olinda_expectativas_selic_cambio
     - sectoral_epe_anuario_dados_brutos_uf_scoped_activation
     - sectoral_anatel_meu_municipio_uf_scoped_activation
     - sectoral_cnes_demas_uf_scoped_activation
@@ -142,6 +143,7 @@ gates:
   f3_aneel_indqual_local: GO
   f3_bcb_sgs_local: GO
   f3_bcb_olinda_expectativas_local: GO
+  f3_bcb_olinda_selic_cambio_local: GO
   f3_epe_dados_brutos_local: GO
   f3_anatel_meu_municipio_local: GO
   f3_cnes_demas_local: GO
@@ -184,6 +186,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.66/
-next_action: Prefer remaining UF with downloadable CSV/API (none currently tabular-stable). Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. BCB OLINDA Expectativas IPCA ativado (além de SGS 432/433). Tesouro COINT municipal package complete. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.67/
+next_action: Prefer remaining UF with downloadable CSV/API (none currently tabular-stable). Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. BCB OLINDA Expectativas IPCA+Selic+Câmbio ativado (além de SGS 432/433). Tesouro COINT municipal package complete. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

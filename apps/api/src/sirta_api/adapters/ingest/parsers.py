@@ -1850,6 +1850,7 @@ def parse_bcb_olinda_expectativas(
     indicator_allowlist: list[str] | tuple[str, ...] | None = None,
     max_rows: int = 8,
     value_field: str = "Mediana",
+    indicator_units: dict[str, str] | None = None,
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
     """Parse BCB OLINDA ExpectativasMercadoAnuais OData; never tax credit."""
     allowed = {
@@ -1857,6 +1858,11 @@ def parse_bcb_olinda_expectativas(
     }
     if not allowed:
         raise ValueError("BCB OLINDA Expectativas requires a non-empty indicator_allowlist")
+    units = {
+        str(key).strip().upper(): str(value).strip()
+        for key, value in (indicator_units or {}).items()
+        if str(key).strip() and str(value).strip()
+    }
     try:
         payload = json.loads(body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
@@ -1920,6 +1926,9 @@ def parse_bcb_olinda_expectativas(
             )
             continue
         label = f"{indicator}_FOCUS_ANUAL_{horizon}"
+        unit = units.get(indicator.upper()) or (
+            "BRL_PER_USD" if indicator.upper() == "CÂMBIO" else "PERCENT_PER_YEAR"
+        )
         silver.append(
             {
                 "rowId": f"bcb-olinda-{indicator}-{raw_date}-{horizon}"[:64],
@@ -1929,7 +1938,7 @@ def parse_bcb_olinda_expectativas(
                 "competence": raw_date,
                 "transferName": label,
                 "value": value,
-                "unit": "PERCENT_PER_YEAR",
+                "unit": unit,
                 "seriesId": indicator,
                 "horizonYear": horizon,
             }

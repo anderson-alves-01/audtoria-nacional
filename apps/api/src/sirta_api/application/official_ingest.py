@@ -4,6 +4,7 @@ import json
 import time
 from datetime import UTC, datetime
 from pathlib import Path
+from urllib.parse import quote
 from uuid import uuid4
 
 from sqlalchemy import func, select
@@ -918,12 +919,11 @@ def _parse(
             parser=parser,
         )
     if connector == "bcb_olinda_expectativas":
-        parameters = catalog.get("parameters") or {}
-        return parser(
-            fetched.body,
-            indicator_allowlist=list(parameters.get("indicator_allowlist") or ["IPCA"]),
-            max_rows=int(parameters.get("max_rows") or 8),
-            value_field=str(parameters.get("value_field") or "Mediana"),
+        return _parse_bcb_olinda_expectativas_allowlist(
+            fetched,
+            catalog=catalog,
+            http_client=http_client,
+            parser=parser,
         )
     if connector == "epe_open_files":
         parameters = catalog.get("parameters") or {}
@@ -999,6 +999,59 @@ def _parse_bcb_sgs_allowlist(
             series_label=label,
             unit=unit,
             allowlist=allowlist,
+        )
+        silver.extend(part_silver)
+        quarantined.extend(part_quarantined)
+    return silver, quarantined
+
+
+def _bcb_olinda_expectativas_url(*, indicator: str, max_rows: int) -> str:
+    encoded = quote(str(indicator).strip(), safe="")
+    top = max(1, int(max_rows or 8))
+    return (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        f"ExpectativasMercadoAnuais?$top={top}&$format=json&"
+        f"$filter=Indicador%20eq%20%27{encoded}%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    )
+
+
+def _parse_bcb_olinda_expectativas_allowlist(
+    fetched: OfficialHttpResponse,
+    *,
+    catalog: dict,
+    http_client: OfficialHttpClient | None,
+    parser,
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    parameters = catalog.get("parameters") or {}
+    allowlist = [str(item).strip() for item in (parameters.get("indicator_allowlist") or []) if str(item).strip()]
+    if not allowlist:
+        raise ConflictError("BCB OLINDA Expectativas requires indicator_allowlist")
+    max_rows = int(parameters.get("max_rows") or 8)
+    value_field = str(parameters.get("value_field") or "Mediana")
+    indicator_units = parameters.get("indicator_units") or {}
+    primary = str(parameters.get("primary_indicator") or allowlist[0]).strip()
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    timeout = get_settings().official_http_timeout_seconds
+    for indicator in allowlist:
+        if indicator == primary:
+            body = fetched.body
+        else:
+            if http_client is None:
+                raise ConflictError("BCB Expectativas secondary indicators require HTTP client")
+            url = _bcb_olinda_expectativas_url(indicator=indicator, max_rows=max_rows)
+            secondary = http_client.fetch(url, timeout=timeout)
+            if secondary.status_code >= 400 or not secondary.body:
+                raise ConflictError(f"BCB Expectativas indicator {indicator} download failed")
+            body = secondary.body
+        part_silver, part_quarantined = parser(
+            body,
+            indicator_allowlist=[indicator],
+            max_rows=max_rows,
+            value_field=value_field,
+            indicator_units=indicator_units,
         )
         silver.extend(part_silver)
         quarantined.extend(part_quarantined)

@@ -1084,6 +1084,7 @@ def test_bcb_olinda_expectativas_parses_odata_points() -> None:
         indicator_allowlist=["IPCA"],
         max_rows=8,
         value_field="Mediana",
+        indicator_units={"IPCA": "PERCENT_PER_YEAR"},
     )
     assert len(silver) == 8
     assert quarantined == []
@@ -1095,6 +1096,37 @@ def test_bcb_olinda_expectativas_parses_odata_points() -> None:
     assert silver[0]["uf"] == "BR"
     assert presentation_for("BCB-OLINDA-EXPECTATIVAS")["valueKind"] == "REFERENCE_QUANTITY"
     assert presentation_for("BCB-OLINDA-EXPECTATIVAS")["createsTaxCredit"] is False
+
+
+def test_bcb_olinda_expectativas_parses_selic_and_cambio_units() -> None:
+    selic = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-selic-anuais-top8.json"
+    ).read_bytes()
+    cambio = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-cambio-anuais-top8.json"
+    ).read_bytes()
+    silver_selic, q_selic = parse_bcb_olinda_expectativas(
+        selic,
+        indicator_allowlist=["Selic"],
+        max_rows=8,
+        indicator_units={"Selic": "PERCENT_PER_YEAR"},
+    )
+    silver_cambio, q_cambio = parse_bcb_olinda_expectativas(
+        cambio,
+        indicator_allowlist=["Câmbio"],
+        max_rows=8,
+        indicator_units={"Câmbio": "BRL_PER_USD"},
+    )
+    assert q_selic == []
+    assert q_cambio == []
+    assert len(silver_selic) == 8
+    assert len(silver_cambio) == 8
+    assert silver_selic[0]["seriesId"] == "Selic"
+    assert silver_selic[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_selic[0]["value"] == 13.5625
+    assert silver_cambio[0]["seriesId"] == "Câmbio"
+    assert silver_cambio[0]["unit"] == "BRL_PER_USD"
+    assert silver_cambio[0]["value"] == 5.2
 
 
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:

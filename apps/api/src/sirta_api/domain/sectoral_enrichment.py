@@ -69,7 +69,7 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         "ingestAllowed": True,
         "personalDataRisk": "none",
         "activationGate": "INDICATOR_ALLOWLIST",
-        "indicatorAllowlist": ["IPCA"],
+        "indicatorAllowlist": ["IPCA", "Selic", "Câmbio"],
     },
     {
         "sourceId": "CNES-DATASUS",
@@ -87,7 +87,7 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
 DISCLAIMER = (
     "Fontes setoriais oficiais catalogadas (ANP, ANEEL, EPE, Anatel, BCB, CNES). "
     "ANP, ANEEL, EPE, Anatel e CNES ativadas com escopo UF; BCB com allowlist SGS "
-    "432/433 e OLINDA Expectativas Focus (IPCA). "
+    "432/433 e OLINDA Expectativas Focus (IPCA/Selic/Câmbio). "
     "REFERENCE_ENRICHMENT apenas. Não constitui crédito tributário."
 )
 
