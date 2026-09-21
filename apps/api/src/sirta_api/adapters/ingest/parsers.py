@@ -1568,9 +1568,10 @@ def parse_state_mg_csv(
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
     """Parse MG frictionless fact CSV.gz with municipio/tempo dims; native IBGE7."""
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    amount_fields = {"ICMS": "vr_icms", "IPVA": "vr_ipva", "IPI": "vr_ipi"}
+    if tax_key not in amount_fields:
         raise ValueError(f"unsupported state MG tax filter: {tax}")
-    amount_field = "vr_icms" if tax_key == "ICMS" else "vr_ipva"
+    amount_field = amount_fields[tax_key]
     year = str(competence_year or "2024").strip()[:4]
     municipio_by_id: dict[str, dict[str, str]] = {}
     if municipio_dim:
@@ -2434,7 +2435,7 @@ def parse_state_pe_csv(
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
     """Parse PE municipal transfer CSV; publish zero IPVA as official; no credit."""
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    if tax_key not in {"ICMS", "IPVA", "IPI"}:
         raise ValueError(f"unsupported state PE tax filter: {tax}")
     text = body.decode("utf-8-sig")
     reader = csv.DictReader(io.StringIO(text))
@@ -2511,11 +2512,12 @@ def parse_state_ba_csv(
     uf: str = "BA",
     competence: str = "2024",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse BA multi-header semicolon CSV; monthly ICMS/IPVA columns; no credit."""
+    """Parse BA multi-header semicolon CSV; monthly ICMS/IPI/IPVA columns; no credit."""
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    amount_indexes = {"ICMS": 4, "IPI": 9, "IPVA": 13}
+    if tax_key not in amount_indexes:
         raise ValueError(f"unsupported state BA tax filter: {tax}")
-    amount_index = 4 if tax_key == "ICMS" else 13
+    amount_index = amount_indexes[tax_key]
     try:
         text = body.decode("utf-8-sig")
     except UnicodeDecodeError:

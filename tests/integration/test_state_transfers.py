@@ -98,19 +98,25 @@ def test_state_pe_ingest_publishes_gold_without_credit(api_client) -> None:
     assert ipva.status_code == 200
     assert ipva.json()["silverCount"] == 2
     assert ipva.json()["taxCreditCreated"] is False
+    ipi = api_client.post("/v1/data-sources/ESTADO-PE-IPI-QUOTA/ingest", headers=_admin())
+    assert ipi.status_code == 200
+    assert ipi.json()["silverCount"] == 2
+    assert ipi.json()["taxCreditCreated"] is False
     gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
     by_id = {item["sourceId"]: item for item in gold.json()["items"]}
     assert by_id["ESTADO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-IPVA-QUOTA"]["createsTaxCredit"] is False
-    assert by_id["ESTADO-IPVA-QUOTA"]["homologationStatus"] == (
+    assert by_id["ESTADO-PE-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-PE-IPI-QUOTA"]["homologationStatus"] == (
         "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
     )
     lines = api_client.get(
-        "/v1/indicators/official-gold/lines?sourceId=ESTADO-IPVA-QUOTA",
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-PE-IPI-QUOTA",
         headers=_analyst(),
     )
     assert lines.status_code == 200
-    assert any(item["value"] == 0.0 for item in lines.json()["items"])
+    assert any(item["value"] == 132.82 for item in lines.json()["items"])
+    assert any(item["value"] == 10.0 for item in lines.json()["items"])
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
@@ -130,19 +136,25 @@ def test_state_ba_ingest_publishes_gold_without_credit(api_client) -> None:
     assert ipva.status_code == 200
     assert ipva.json()["silverCount"] == 2
     assert ipva.json()["taxCreditCreated"] is False
+    ipi = api_client.post("/v1/data-sources/ESTADO-BA-IPI-QUOTA/ingest", headers=_admin())
+    assert ipi.status_code == 200
+    assert ipi.json()["silverCount"] == 2
+    assert ipi.json()["taxCreditCreated"] is False
     gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
     by_id = {item["sourceId"]: item for item in gold.json()["items"]}
     assert by_id["ESTADO-BA-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-BA-IPVA-QUOTA"]["createsTaxCredit"] is False
-    assert by_id["ESTADO-BA-IPVA-QUOTA"]["homologationStatus"] == (
+    assert by_id["ESTADO-BA-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-BA-IPI-QUOTA"]["homologationStatus"] == (
         "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
     )
     lines = api_client.get(
-        "/v1/indicators/official-gold/lines?sourceId=ESTADO-BA-ICMS-QUOTA",
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-BA-IPI-QUOTA",
         headers=_analyst(),
     )
     assert lines.status_code == 200
-    assert any(item["value"] == 374980.42 for item in lines.json()["items"])
+    assert any(item["value"] == 2707.67 for item in lines.json()["items"])
+    assert any(item["value"] == 82490.23 for item in lines.json()["items"])
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
@@ -159,19 +171,25 @@ def test_state_mg_ingest_publishes_gold_without_credit(api_client) -> None:
     assert ipva.status_code == 200
     assert ipva.json()["silverCount"] == 2
     assert ipva.json()["taxCreditCreated"] is False
+    ipi = api_client.post("/v1/data-sources/ESTADO-MG-IPI-QUOTA/ingest", headers=_admin())
+    assert ipi.status_code == 200
+    assert ipi.json()["silverCount"] == 2
+    assert ipi.json()["taxCreditCreated"] is False
     gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
     by_id = {item["sourceId"]: item for item in gold.json()["items"]}
     assert by_id["ESTADO-MG-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MG-IPVA-QUOTA"]["createsTaxCredit"] is False
-    assert by_id["ESTADO-MG-IPVA-QUOTA"]["homologationStatus"] == (
+    assert by_id["ESTADO-MG-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-MG-IPI-QUOTA"]["homologationStatus"] == (
         "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
     )
     lines = api_client.get(
-        "/v1/indicators/official-gold/lines?sourceId=ESTADO-MG-ICMS-QUOTA",
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-MG-IPI-QUOTA",
         headers=_analyst(),
     )
     assert lines.status_code == 200
-    assert any(item["value"] == 817661.12 for item in lines.json()["items"])
+    assert any(item["value"] == 7602.47 for item in lines.json()["items"])
+    assert any(item["value"] == 899989.38 for item in lines.json()["items"])
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]

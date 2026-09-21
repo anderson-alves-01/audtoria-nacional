@@ -1040,6 +1040,45 @@ sources:
       Mesmo endpoint CSV do ICMS; layout_version distinto evita colisão de
       checksum na idempotência. Homologação humana pendente.
 
+  - source_id: ESTADO-PE-IPI-QUOTA
+    name: Quota-parte de IPI estadual (PE)
+    maintainer: Governo de Pernambuco / dados.pe.gov.br
+    official_domain: dados.pe.gov.br
+    official_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    endpoint: https://dados.pe.gov.br/dataset/d157c770-7680-454e-9b0f-ddb777de4888/resource/ff98eec8-cce6-43ba-b8a8-bf55493c554f/download/transferencias_municipais_2024_.csv
+    documentation_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    dataset: ESTADO-PE-IPI-2024
+    dictionary_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    purpose: Transferência estadual de IPI — valores publicados por município
+    legal_basis: Dados abertos oficiais de Pernambuco (quota-parte municipal)
+    license_terms: termos do portal dados.pe.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_pe_csv
+    layout_version: state-pe-ipi-v1
+    periodicity: monthly
+    competence: "2024"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: PE
+      normalize: ibge7
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_pe_ipi_quota
+    formula: >
+      Valor da coluna IPI do mesmo CSV oficial de PE, competência ano-mês,
+      município resolvido para IBGE7 por nome+UF via SICONFI-ENTES. Sem
+      ajuste. Não constitui crédito.
+    methodology_version: official-state-pe-ipi-v1
+    notes: >
+      Mesmo endpoint CSV do ICMS/IPVA PE; layout_version distinto evita
+      colisão de checksum. Homologação humana pendente.
+
   - source_id: ESTADO-BA-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (BA)
     maintainer: Governo da Bahia / dados.ba.gov.br
@@ -1118,6 +1157,46 @@ sources:
     notes: >
       Mesmo endpoint CSV do ICMS BA; layout_version distinto evita colisão de
       checksum. Homologação humana pendente.
+
+  - source_id: ESTADO-BA-IPI-QUOTA
+    name: Quota-parte de IPI estadual (BA)
+    maintainer: Governo da Bahia / dados.ba.gov.br
+    official_domain: dados.ba.gov.br
+    official_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
+    endpoint: https://dados.ba.gov.br/dataset/2ac6387d-80ee-4855-aaba-d6820a5f8a71/resource/76430704-b1a2-484f-87dc-c86248f4f288/download/2024.csv
+    documentation_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
+    dataset: ESTADO-BA-IPI-2024
+    dictionary_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
+    purpose: Transferência estadual de IPI — valores publicados por município
+    legal_basis: Dados abertos oficiais da Bahia (quota-parte municipal)
+    license_terms: termos do portal dados.ba.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ba_csv
+    layout_version: state-ba-ipi-v1
+    periodicity: annual_extract
+    competence: "2024"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: BA
+      normalize: ibge7
+      competence: "2024"
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ba_ipi_quota
+    formula: >
+      Valor da coluna posicional IPI mensal (índice 9) do mesmo CSV oficial
+      da BA (`;`, latin-1, número BR). Join IBGE7 por nome+UF. Não constitui
+      crédito.
+    methodology_version: official-state-ba-ipi-v1
+    notes: >
+      Mesmo endpoint CSV do ICMS/IPVA BA; layout_version distinto evita
+      colisão de checksum. Homologação humana pendente.
 
   - source_id: ESTADO-MG-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (MG)
@@ -1200,6 +1279,46 @@ sources:
     methodology_version: official-state-mg-ipva-v1
     notes: >
       Mesmo endpoint gzip do ICMS MG. Homologação humana pendente.
+
+  - source_id: ESTADO-MG-IPI-QUOTA
+    name: Quota-parte de IPI estadual (MG)
+    maintainer: Governo de Minas Gerais / dados.mg.gov.br
+    official_domain: dados.mg.gov.br
+    official_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/ebed720b-5c5e-4e38-878b-be800c6e9967/download/ft_repasse_mun.csv.gz
+    documentation_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    dataset: ESTADO-MG-IPI-2024
+    dictionary_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    purpose: Transferência estadual de IPI — valores publicados por município
+    legal_basis: Dados abertos oficiais de Minas Gerais (quota-parte municipal)
+    license_terms: CC-BY-4.0 / termos do portal dados.mg.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_mg_csv
+    layout_version: state-mg-ipi-v1
+    periodicity: monthly
+    competence: "2024"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: MG
+      competence_year: "2024"
+      normalize: ibge7_native
+      municipio_endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/bf4671ef-1131-497f-9580-e720bb8ad585/download/dm_municipio.csv.gz
+      tempo_endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/a3a38dfc-2724-4276-9e0f-0b98d4138f09/download/dm_tempo_mensal.csv.gz
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_mg_ipi_quota
+    formula: >
+      Valor vr_ipi do mesmo fato ft_repasse_mun. IBGE7 nativo. layout_version
+      distinto evita colisão de checksum com ICMS/IPVA. Não constitui crédito.
+    methodology_version: official-state-mg-ipi-v1
+    notes: >
+      Mesmo endpoint gzip do ICMS/IPVA MG. Homologação humana pendente.
 
   - source_id: ESTADO-ES-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (ES)

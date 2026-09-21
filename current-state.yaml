@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.55
+implementation_version: 0.3.56
 roadmap_version: "1.2"
-version: 0.3.55
+version: 0.3.56
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -77,6 +77,7 @@ completed:
     - tesouro_monthly_iof_ouro_allowlist
     - tesouro_coint_cide_fex_municipio_csv
     - state_ce_al_rn_ipi_activation
+    - state_pe_ba_mg_ipi_activation
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -149,6 +150,7 @@ gates:
   f3_tesouro_iof_ouro_local: GO
   f3_tesouro_coint_cide_fex_local: GO
   f3_state_ce_al_rn_ipi_local: GO
+  f3_state_pe_ba_mg_ipi_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -160,6 +162,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.55/
-next_action: Prefer remaining UF with downloadable CSV/API (none currently tabular-stable). Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.56/
+next_action: Prefer remaining UF with downloadable CSV/API (none currently tabular-stable). Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. MS IPI/CIDE await Tipo_Repasse. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

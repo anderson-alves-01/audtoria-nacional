@@ -1,17 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-21T01:35:00-03:00"
+updated_at: "2026-09-21T02:00:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.55"
+implementation_version: "0.3.56"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.55: IPI estadual CE/AL/RN nos arquivos já aprovados
-  (state_ce_xls / state_al_xls / state_rn_xls). UFs restantes ainda sem
-  tabular recente. Próximo: UF tabular nova quando publicada. RFB
-  territorial sem carga nacional.
+  Ciclo 0.3.56: IPI estadual PE/BA/MG nos arquivos já aprovados
+  (state_pe_csv / state_ba_csv / state_mg_csv). UFs restantes ainda sem
+  tabular recente. MS IPI/CIDE sem Tipo_Repasse. Próximo: UF tabular nova
+  quando publicada. RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -437,12 +437,13 @@ items:
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA, PR e GO ICMS (+IPVA/IPI
-      onde publicado) + ES IPI/CIDE + CE/AL/RN IPI + PI IPVA + PA ICMS Verde
-      ativados. GO IPI via Economia XLSX (IPI-Exportação Bruto). PI ICMS não
-      publicado no Repasse WEB. PA cota plena ainda DOE PDF. MT XLSX Transparency
-      congelado ≤2015. SC arrecadação não quota. SP HTML-only. PB/SE/AM/AP/RR/DF
-      PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ permanece IP-blocked.
-      Sem agregador privado. Ciclo 0.3.55 commit e188eb1.
+      onde publicado) + ES IPI/CIDE + CE/AL/RN/PE/BA/MG IPI + PI IPVA + PA
+      ICMS Verde ativados. GO IPI via Economia XLSX (IPI-Exportação Bruto).
+      PI ICMS não publicado no Repasse WEB. PA cota plena ainda DOE PDF. MT
+      XLSX Transparency congelado ≤2015. SC arrecadação não quota. SP
+      HTML-only. PB/SE/AM/AP/RR/DF PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED.
+      RJ permanece IP-blocked. MS IPI/CIDE sem Tipo_Repasse no DataStore.
+      Sem agregador privado. Ciclo 0.3.56.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2

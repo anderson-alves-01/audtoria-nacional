@@ -17,6 +17,8 @@ notes: >
   PUBLIC_OPEN já usados para ICMS/IPVA (state_es_csv / state_go_economia_xlsx).
   Ciclo 0.3.55: CE/AL/RN IPI ativados nos mesmos arquivos já aprovados
   (state_ce_xls / state_al_xls / state_rn_xls).
+  Ciclo 0.3.56: PE/BA/MG IPI ativados nos mesmos arquivos já aprovados
+  (state_pe_csv / state_ba_csv / state_mg_csv).
   UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
   SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
   SE/PB PDF; AM HTML-per-município; TO índices PDF.
@@ -118,11 +120,12 @@ states:
     ibge_field: name_only
     layout_version_icms: state-ba-icms-v1
     layout_version_ipva: state-ba-ipva-v1
+    layout_version_ipi: state-ba-ipi-v1
     connector: state_ba_csv
     download_probe_2026_09_19: csv_bytes_ok_multi_header
     reason: >
       CSV anual ativado com connector state_ba_csv (`;`, latin-1, número BR).
-      Colunas posicionais ICMS=4 e IPVA=13 após cabeçalho multi-coluna.
+      Colunas posicionais ICMS=4, IPI=9 e IPVA=13 após cabeçalho multi-coluna.
       Fixture mínima + join IBGE7 por nome+UF. Sem crédito.
   - uf: CE
     name: Ceará
@@ -273,12 +276,13 @@ states:
     ibge_field: cd_municipio_ibge
     layout_version_icms: state-mg-icms-v1
     layout_version_ipva: state-mg-ipva-v1
+    layout_version_ipi: state-mg-ipi-v1
     connector: state_mg_csv
     download_probe_2026_09_19: csv_gz_bytes_ok_join_dims
     reason: >
       Frictionless ft_repasse_mun.csv.gz + dm_municipio + dm_tempo_mensal.
-      IBGE7 nativo; territórios sem IBGE7 em quarentena. Fixture mínima.
-      Gzip 200 OK neste runtime. Sem crédito.
+      IBGE7 nativo; territórios sem IBGE7 em quarentena. IPI via vr_ipi.
+      Fixture mínima. Gzip 200 OK neste runtime. Sem crédito.
   - uf: PA
     name: Pará
     status: TECHNICALLY_APPROVED
@@ -350,12 +354,14 @@ states:
     ibge_field: name_only
     layout_version_icms: state-pe-icms-v1
     layout_version_ipva: state-pe-ipva-v1
+    layout_version_ipi: state-pe-ipi-v1
     connector: state_pe_csv
     download_probe_2026_09_19: csv_bytes_ok
     preferred_activation: true
     reason: >
       CSV 2024 ativado com connector state_pe_csv, fixture mínima e join IBGE7
-      por nome+UF. IPVA zero publicado como valor oficial. Sem crédito.
+      por nome+UF. IPVA zero publicado como valor oficial. IPI via coluna IPI
+      no mesmo arquivo. Sem crédito.
   - uf: PI
     name: Piauí
     status: TECHNICALLY_APPROVED

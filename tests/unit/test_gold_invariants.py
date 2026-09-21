@@ -277,8 +277,17 @@ def test_state_pe_csv_joins_ibge_and_publishes_zero_ipva() -> None:
     assert abreu["value"] == 0.0
     assert abreu["modality"] == "IPVA_QUOTA"
     assert len(quarantined_ipva) == 1
+    ipi, quarantined_ipi = parse_state_pe_csv(body, tax="IPI", ibge_lookup=lookup)
+    assert len(ipi) == 2
+    abreu_ipi = next(row for row in ipi if row["ibgeCode"] == "2600054")
+    assert abreu_ipi["value"] == 132.82
+    assert abreu_ipi["modality"] == "IPI_QUOTA"
+    recife_ipi = next(row for row in ipi if row["ibgeCode"] == "2611606")
+    assert recife_ipi["value"] == 10.0
+    assert len(quarantined_ipi) == 1
     assert presentation_for("ESTADO-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-IPVA-QUOTA")["createsTaxCredit"] is False
+    assert presentation_for("ESTADO-PE-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ba_csv_parses_multi_header_and_joins_ibge() -> None:
@@ -302,8 +311,17 @@ def test_state_ba_csv_parses_multi_header_and_joins_ibge() -> None:
     assert alagoinhas["value"] == 1066957.0
     assert alagoinhas["modality"] == "IPVA_QUOTA"
     assert len(quarantined_ipva) == 1
+    ipi, quarantined_ipi = parse_state_ba_csv(body, tax="IPI", ibge_lookup=lookup)
+    assert len(ipi) == 2
+    abaira_ipi = next(row for row in ipi if row["ibgeCode"] == "2900108")
+    assert abaira_ipi["value"] == 2707.67
+    assert abaira_ipi["modality"] == "IPI_QUOTA"
+    alagoinhas_ipi = next(row for row in ipi if row["ibgeCode"] == "2900702")
+    assert alagoinhas_ipi["value"] == 82490.23
+    assert len(quarantined_ipi) == 1
     assert presentation_for("ESTADO-BA-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-BA-IPVA-QUOTA")["createsTaxCredit"] is False
+    assert presentation_for("ESTADO-BA-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_mg_csv_joins_native_ibge_and_quarantines_territory() -> None:
@@ -330,8 +348,19 @@ def test_state_mg_csv_joins_native_ibge_and_quarantines_territory() -> None:
     assert bh["value"] == 817489013.21
     assert bh["modality"] == "IPVA_QUOTA"
     assert len(quarantined_ipva) == 1
+    ipi, quarantined_ipi = parse_state_mg_csv(
+        body, tax="IPI", municipio_dim=municipio, tempo_dim=tempo
+    )
+    assert len(ipi) == 2
+    abadia_ipi = next(row for row in ipi if row["ibgeCode"] == "3100104")
+    assert abadia_ipi["value"] == 7602.47
+    assert abadia_ipi["modality"] == "IPI_QUOTA"
+    bh_ipi = next(row for row in ipi if row["ibgeCode"] == "3106200")
+    assert bh_ipi["value"] == 899989.38
+    assert len(quarantined_ipi) == 1
     assert presentation_for("ESTADO-MG-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-MG-IPVA-QUOTA")["createsTaxCredit"] is False
+    assert presentation_for("ESTADO-MG-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_es_csv_joins_native_ibge_and_quarantines_territory() -> None:

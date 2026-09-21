@@ -110,6 +110,13 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-PE-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI estadual publicada (PE ativado via CSV dados.pe.gov.br). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-BA-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
@@ -124,6 +131,13 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-BA-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI estadual publicada (BA ativado via CSV dados.ba.gov.br). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-MG-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
@@ -135,6 +149,13 @@ PRESENTATION = {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
             "Quota-parte de IPVA estadual publicada (MG ativado). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-MG-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI estadual publicada (MG ativado via ft_repasse_mun). "
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
