@@ -1,0 +1,2 @@
+PIB Agropecuária|bc=1|n=8|Med=2.5|Data=2026-09-11|file=bcb-olinda-expectativas-pib-agropecuaria-anuais-top8.json
+PIB Indústria|bc=1|n=8|Med=1.6|Data=2026-09-11|file=bcb-olinda-expectativas-pib-industria-anuais-top8.json

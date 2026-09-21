@@ -1205,6 +1205,37 @@ def test_bcb_olinda_expectativas_parses_igp_m_igp_di_and_inpc() -> None:
     assert silver_inpc[0]["value"] == 3.34
 
 
+def test_bcb_olinda_expectativas_parses_pib_agropecuaria_and_industria() -> None:
+    agro = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-pib-agropecuaria-anuais-top8.json"
+    ).read_bytes()
+    industria = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-pib-industria-anuais-top8.json"
+    ).read_bytes()
+    silver_agro, q_agro = parse_bcb_olinda_expectativas(
+        agro,
+        indicator_allowlist=["PIB Agropecuária"],
+        max_rows=8,
+        indicator_units={"PIB Agropecuária": "PERCENT_PER_YEAR"},
+    )
+    silver_ind, q_ind = parse_bcb_olinda_expectativas(
+        industria,
+        indicator_allowlist=["PIB Indústria"],
+        max_rows=8,
+        indicator_units={"PIB Indústria": "PERCENT_PER_YEAR"},
+    )
+    assert q_agro == []
+    assert q_ind == []
+    assert len(silver_agro) == 8
+    assert len(silver_ind) == 8
+    assert silver_agro[0]["seriesId"] == "PIB Agropecuária"
+    assert silver_agro[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_agro[0]["value"] == 2.5
+    assert silver_ind[0]["seriesId"] == "PIB Indústria"
+    assert silver_ind[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_ind[0]["value"] == 1.6
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"

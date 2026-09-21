@@ -218,6 +218,20 @@ SNAPSHOT_URLS = {
     (
         "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
         "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27PIB%20Agropecu%C3%A1ria%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-pib-agropecuaria-anuais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27PIB%20Ind%C3%BAstria%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-pib-industria-anuais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
         "$filter=Indicador%20eq%20%27IGP-M%27%20and%20baseCalculo%20eq%201&"
         "$orderby=Data%20desc,DataReferencia%20asc&"
         "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"

@@ -543,7 +543,8 @@ PRESENTATION = {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (
             "Expectativas Focus anuais OLINDA do Banco Central "
-            "(allowlist IPCA/Selic/Câmbio/PIB Total/PIB Serviços/IGP-M/IGP-DI/INPC). "
+            "(allowlist IPCA/Selic/Câmbio/PIB Total/PIB Serviços/"
+            "PIB Agropecuária/PIB Indústria/IGP-M/IGP-DI/INPC). "
             "Contexto setorial; não constitui crédito tributário."
         ),
     },
