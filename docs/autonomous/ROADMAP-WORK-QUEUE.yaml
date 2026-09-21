@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.80/
     versao: "0.3.80"
-    commit: pending
+    commit: e9999a2
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -680,7 +680,7 @@ items:
       mínimas e Gold REFERENCE_QUANTITY. Unidades PERCENT_OF_GDP, USD_BILLION
       e PERCENT. Sem crédito. Homologação humana pendente. Próximo ciclo: UF
       tabular nova quando publicada; ou OLINDA PIB Despesa de consumo das
-      famílias (demanda Focus) se priorizado.
+      famílias (demanda Focus) se priorizado. Commit: e9999a2.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
