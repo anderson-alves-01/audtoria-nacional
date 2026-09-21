@@ -114,7 +114,16 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         "ingestAllowed": True,
         "personalDataRisk": "none",
         "activationGate": "INDICATOR_ALLOWLIST",
-        "indicatorAllowlist": ["IPCA", "IGP-M", "Câmbio"],
+        "indicatorAllowlist": [
+            "IPCA",
+            "IPCA Livres",
+            "IPCA Serviços",
+            "IPCA Administrados",
+            "IPCA Alimentação no domicílio",
+            "IPCA Bens industrializados",
+            "IGP-M",
+            "Câmbio",
+        ],
     },
     {
         "sourceId": "CNES-DATASUS",
@@ -133,7 +142,7 @@ DISCLAIMER = (
     "Fontes setoriais oficiais catalogadas (ANP, ANEEL, EPE, Anatel, BCB, CNES). "
     "ANP, ANEEL, EPE, Anatel e CNES ativadas com escopo UF; BCB com allowlist SGS "
     "432/433 e OLINDA Expectativas Focus anuais (IPCA/Selic/Câmbio/PIB Total/PIB Serviços/"
-    "IGP-M/IGP-DI/INPC) e mensais (IPCA/IGP-M/Câmbio). "
+    "IGP-M/IGP-DI/INPC) e mensais (IPCA/componentes/IGP-M/Câmbio). "
     "REFERENCE_ENRICHMENT apenas. Não constitui crédito tributário."
 )
 

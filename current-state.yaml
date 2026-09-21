@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.90
+implementation_version: 0.3.91
 roadmap_version: "1.2"
-version: 0.3.90
+version: 0.3.91
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -114,6 +114,7 @@ completed:
     - sectoral_bcb_olinda_expectativas_balanca_exportacoes_importacoes
     - sectoral_bcb_olinda_expectativas_mensais_ipca
     - sectoral_bcb_olinda_expectativas_mensais_igp_cambio
+    - sectoral_bcb_olinda_expectativas_mensais_ipca_components
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -222,6 +223,7 @@ gates:
   f3_state_ac_transparencia_icms_fundeb_local: GO
   f3_state_rs_compensacao_lc194_local: GO
   f3_bcb_olinda_mensais_igp_cambio_local: GO
+  f3_bcb_olinda_mensais_ipca_comp_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -233,6 +235,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.90/
-next_action: Prefer remaining Focus mensais (IPCA Livres/Serviços/Administrados/Alimentação/Bens industrializados) or trimestrais. Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. BCB OLINDA Expectativas anuais completo na allowlist atual; mensais IPCA+IGP-M+Câmbio ativados. Tesouro COINT municipal package complete. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.91/
+next_action: Prefer Selic/IPA-M/IPA-DI mensais if baseCalculo active, or ExpectativasMercadoTrimestrais, or remaining UF tabular. Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. BCB OLINDA Expectativas anuais completo na allowlist atual; mensais IPCA+componentes+IGP-M+Câmbio ativados. Tesouro COINT municipal package complete. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

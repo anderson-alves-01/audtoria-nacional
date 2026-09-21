@@ -1162,6 +1162,52 @@ def test_bcb_olinda_expectativas_parses_mensais_igp_m_and_cambio() -> None:
     assert "FOCUS_MENSAL" in silver_cambio[0]["transferName"]
 
 
+def test_bcb_olinda_expectativas_parses_mensais_ipca_components() -> None:
+    cases = [
+        (
+            "bcb-olinda-expectativas-ipca-livres-mensais-top8.json",
+            "IPCA Livres",
+            0.515,
+        ),
+        (
+            "bcb-olinda-expectativas-ipca-servicos-mensais-top8.json",
+            "IPCA Serviços",
+            0.31,
+        ),
+        (
+            "bcb-olinda-expectativas-ipca-administrados-mensais-top8.json",
+            "IPCA Administrados",
+            0.335,
+        ),
+        (
+            "bcb-olinda-expectativas-ipca-alimentacao-mensais-top8.json",
+            "IPCA Alimentação no domicílio",
+            1.38,
+        ),
+        (
+            "bcb-olinda-expectativas-ipca-bens-industrializados-mensais-top8.json",
+            "IPCA Bens industrializados",
+            0.3,
+        ),
+    ]
+    for fixture, series_id, mediana in cases:
+        body = Path(f"tests/fixtures/official-snapshots/{fixture}").read_bytes()
+        silver, quarantined = parse_bcb_olinda_expectativas(
+            body,
+            indicator_allowlist=[series_id],
+            max_rows=8,
+            indicator_units={series_id: "PERCENT_PER_MONTH"},
+            focus_label="FOCUS_MENSAL",
+        )
+        assert quarantined == []
+        assert len(silver) == 8
+        assert silver[0]["seriesId"] == series_id
+        assert silver[0]["unit"] == "PERCENT_PER_MONTH"
+        assert silver[0]["value"] == mediana
+        assert silver[0]["horizonYear"] == "01/2027"
+        assert "FOCUS_MENSAL" in silver[0]["transferName"]
+
+
 def test_bcb_olinda_expectativas_parses_selic_and_cambio_units() -> None:
     selic = Path(
         "tests/fixtures/official-snapshots/bcb-olinda-expectativas-selic-anuais-top8.json"

@@ -552,8 +552,9 @@ PRESENTATION = {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (
             "Expectativas Focus mensais OLINDA do Banco Central "
-            "(allowlist IPCA/IGP-M/Câmbio). Contexto setorial; "
-            "não constitui crédito tributário."
+            "(allowlist IPCA/IPCA Livres/IPCA Serviços/IPCA Administrados/"
+            "IPCA Alimentação/IPCA Bens industrializados/IGP-M/Câmbio). "
+            "Contexto setorial; não constitui crédito tributário."
         ),
     },
     "EPE-DADOS-ABERTOS": {

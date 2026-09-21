@@ -1,17 +1,18 @@
 schema_version: 1
-updated_at: "2026-09-21T15:45:00-03:00"
+updated_at: "2026-09-21T16:00:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.90"
+implementation_version: "0.3.91"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.90: BCB OLINDA Expectativas mensais IGP-M + Câmbio
-  (ExpectativaMercadoMensais, allowlist IPCA/IGP-M/Câmbio, baseCalculo=1).
-  Layout mensais-v2; silverCount 24. Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS.
-  Próximo: IPCA Livres/Serviços/Administrados mensais ou trimestrais.
+  Ciclo 0.3.91: BCB OLINDA Expectativas mensais IPCA componentes
+  (IPCA Livres/Serviços/Administrados/Alimentação/Bens industrializados)
+  além de IPCA/IGP-M/Câmbio; layout mensais-v3; silverCount 64.
+  Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS.
+  Próximo: Selic/IPA mensais se ativos, ou trimestrais.
   RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -662,22 +663,22 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.90/
-    versao: "0.3.90"
-    commit: 42449e7
-    ci: "35638716985"
+    evidencia: evidence/releases/0.3.91/
+    versao: "0.3.91"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
       até Balança Saldo/Exportações/Importações) TECHNICALLY_APPROVED.
       Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS (ExpectativaMercadoMensais,
-      allowlist IPCA/IGP-M/Câmbio baseCalculo=1, max_rows=8, layout mensais-v2,
-      silverCount=24) TECHNICALLY_APPROVED. Gold REFERENCE_QUANTITY. Sem
-      crédito. Homologação humana pendente. Próximo: IPCA Livres/Serviços/
-      Administrados/Alimentação/Bens industrializados mensais ou
-      ExpectativasMercadoTrimestrais; UF tabular quando publicada. Commit:
-      42449e7. CI verde:
-      https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35638716985.
+      allowlist IPCA+IPCA Livres+IPCA Serviços+IPCA Administrados+IPCA
+      Alimentação no domicílio+IPCA Bens industrializados+IGP-M+Câmbio
+      baseCalculo=1, max_rows=8, layout mensais-v3, silverCount=64)
+      TECHNICALLY_APPROVED. Gold REFERENCE_QUANTITY. Sem crédito.
+      Homologação humana pendente. Próximo: Selic/IPA-M/IPA-DI mensais se
+      baseCalculo ativo, ou ExpectativasMercadoTrimestrais; UF tabular
+      quando publicada.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2

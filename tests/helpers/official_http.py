@@ -210,6 +210,42 @@ SNAPSHOT_URLS = {
     ): "bcb-olinda-expectativas-cambio-mensais-top8.json",
     (
         "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativaMercadoMensais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Livres%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-livres-mensais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativaMercadoMensais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Servi%C3%A7os%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-servicos-mensais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativaMercadoMensais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Administrados%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-administrados-mensais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativaMercadoMensais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Alimenta%C3%A7%C3%A3o%20no%20domic%C3%ADlio%27"
+        "%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-alimentacao-mensais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativaMercadoMensais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Bens%20industrializados%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-bens-industrializados-mensais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
         "ExpectativasMercadoAnuais?$top=8&$format=json&"
         "$filter=Indicador%20eq%20%27IPCA%20Livres%27%20and%20baseCalculo%20eq%201&"
         "$orderby=Data%20desc,DataReferencia%20asc&"
