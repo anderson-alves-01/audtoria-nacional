@@ -281,7 +281,7 @@ items:
     evidencia: evidence/releases/0.3.54/
     versao: "0.3.54"
     commit: 2989b75
-    ci: null
+    ci: "35558606217"
     motivo_bloqueio: null
     next_action: >
       Conector tesouro_coint_municipio_csv com max_rows=8 e competência 2025-01.
