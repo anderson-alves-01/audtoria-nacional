@@ -153,6 +153,17 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         ],
     },
     {
+        "sourceId": "BCB-OLINDA-EXPECTATIVAS-SELIC",
+        "maintainer": "Banco Central",
+        "connector": "bcb_olinda_expectativas",
+        "structuredOfficialSource": "olinda_odata_expectativas_selic",
+        "status": "TECHNICALLY_APPROVED",
+        "ingestAllowed": True,
+        "personalDataRisk": "none",
+        "activationGate": "INDICATOR_ALLOWLIST",
+        "indicatorAllowlist": ["Selic"],
+    },
+    {
         "sourceId": "CNES-DATASUS",
         "maintainer": "Ministério da Saúde / DATASUS",
         "connector": "cnes_datasus_open",

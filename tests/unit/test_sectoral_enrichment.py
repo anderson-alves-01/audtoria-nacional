@@ -14,7 +14,7 @@ def test_sectoral_panel_partial_anp_aneel_bcb_epe_anatel_cnes_activation() -> No
     assert panel["total"] == 0
     assert panel["sourceRole"] == "REFERENCE_ENRICHMENT"
     assert panel["institutionalStatus"] == "PARTIAL_TECHNICAL_ACTIVATION"
-    assert len(panel["sources"]) == 9
+    assert len(panel["sources"]) == 10
     by_id = {row["sourceId"]: row for row in panel["sources"]}
     assert by_id["ANP-REVENDEDORES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ANP-REVENDEDORES"]["ingestAllowed"] is True
@@ -28,6 +28,8 @@ def test_sectoral_panel_partial_anp_aneel_bcb_epe_anatel_cnes_activation() -> No
     assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["ingestAllowed"] is True
     assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["ingestAllowed"] is True
     assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["ANATEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"

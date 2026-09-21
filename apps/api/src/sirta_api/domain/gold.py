@@ -588,6 +588,14 @@ PRESENTATION = {
             "Contexto setorial; não constitui crédito tributário."
         ),
     },
+    "BCB-OLINDA-EXPECTATIVAS-SELIC": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Expectativas Focus Selic OLINDA do Banco Central por reunião Copom "
+            "(allowlist Selic; horizonte Reuniao). "
+            "Contexto setorial; não constitui crédito tributário."
+        ),
+    },
     "EPE-DADOS-ABERTOS": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

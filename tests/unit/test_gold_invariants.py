@@ -1391,6 +1391,29 @@ def test_bcb_olinda_expectativas_parses_trimestrais_ipca_cambio_pib() -> None:
     assert presentation_for("BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS")["createsTaxCredit"] is False
 
 
+def test_bcb_olinda_expectativas_parses_selic_reuniao() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-selic-reuniao-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["Selic"],
+        max_rows=8,
+        indicator_units={"Selic": "PERCENT_PER_YEAR"},
+        focus_label="FOCUS_SELIC",
+        horizon_field="Reuniao",
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "Selic"
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["value"] == 13.25
+    assert silver[0]["horizonYear"] == "R1/2027"
+    assert "FOCUS_SELIC" in silver[0]["transferName"]
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-SELIC")["valueKind"] == "REFERENCE_QUANTITY"
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-SELIC")["createsTaxCredit"] is False
+
+
 def test_bcb_olinda_expectativas_parses_selic_and_cambio_units() -> None:
     selic = Path(
         "tests/fixtures/official-snapshots/bcb-olinda-expectativas-selic-anuais-top8.json"

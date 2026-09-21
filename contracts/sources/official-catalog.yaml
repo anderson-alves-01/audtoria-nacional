@@ -4025,6 +4025,54 @@ sources:
       industrial sem linhas no entity set — não ativados. Homologação humana
       pendente. Não constitui crédito.
 
+  - source_id: BCB-OLINDA-EXPECTATIVAS-SELIC
+    name: Banco Central — OLINDA Expectativas Focus Selic por reunião Copom
+    maintainer: Banco Central do Brasil
+    official_domain: bcb.gov.br
+    official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    endpoint: >-
+      https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoSelic?$top=8&$format=json&$filter=Indicador%20eq%20%27Selic%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,Reuniao%20asc&$select=Indicador,Data,Reuniao,Mediana,Media,baseCalculo
+    documentation_url: https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/swagger-ui3#/
+    dataset: BCB-OLINDA-EXPECTATIVAS-SELIC
+    dictionary_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    purpose: Expectativas de mercado Focus Selic (mediana por reunião Copom) como referência; nunca crédito tributário
+    legal_basis: API OLINDA pública do Banco Central
+    license_terms: termos de uso do Banco Central para dados abertos
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: bcb_olinda_expectativas
+    layout_version: bcb-olinda-expectativas-selic-v1
+    periodicity: as_published
+    competence: as_published
+    granularity: series
+    parameters:
+      indicator_allowlist: [Selic]
+      primary_indicator: Selic
+      max_rows: 8
+      value_field: Mediana
+      scrape_forbidden: true
+      entity_set: ExpectativasMercadoSelic
+      focus_label: FOCUS_SELIC
+      horizon_field: Reuniao
+      base_calculo: 1
+      indicator_units:
+        Selic: PERCENT_PER_YEAR
+    indicator: bcb_olinda_expectativas_focus_selic_reuniao
+    formula: >
+      Mediana das expectativas Focus Selic (ExpectativasMercadoSelic) com
+      baseCalculo=1 e max_rows=N. Competência = Data de publicação; horizonte =
+      Reuniao Copom (R#/AAAA). Unidade PERCENT_PER_YEAR (meta Selic anualizada).
+      Distinto de BCB-OLINDA-EXPECTATIVAS (Selic anual) e de Selic no entity set
+      trimestral (vazio na fonte). Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-selic-v1
+    notes: >
+      OData OLINDA oficial verificado. Ativação técnica com allowlist Selic,
+      $top/max_rows=8, horizon_field=Reuniao e fixture mínima. Entity set
+      ExpectativasMercadoSelic. Publicação Focus observada em 2026-09-18.
+      Homologação humana pendente. Não constitui crédito.
+
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)
     maintainer: Ministério da Saúde / DATASUS

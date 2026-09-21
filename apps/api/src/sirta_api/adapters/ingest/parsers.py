@@ -1852,8 +1852,9 @@ def parse_bcb_olinda_expectativas(
     value_field: str = "Mediana",
     indicator_units: dict[str, str] | None = None,
     focus_label: str = "FOCUS_ANUAL",
+    horizon_field: str = "DataReferencia",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse BCB OLINDA Expectativas OData (anuais/mensais/trimestrais); never tax credit."""
+    """Parse BCB OLINDA Expectativas OData (anuais/mensais/trimestrais/Selic); never tax credit."""
     allowed = {
         str(item).strip().upper() for item in (indicator_allowlist or ()) if str(item).strip()
     }
@@ -1865,6 +1866,7 @@ def parse_bcb_olinda_expectativas(
         if str(key).strip() and str(value).strip()
     }
     period = str(focus_label or "FOCUS_ANUAL").strip() or "FOCUS_ANUAL"
+    horizon_key = str(horizon_field or "DataReferencia").strip() or "DataReferencia"
     try:
         payload = json.loads(body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
@@ -1896,7 +1898,7 @@ def parse_bcb_olinda_expectativas(
             )
             continue
         raw_date = str(item.get("Data") or "").strip()
-        horizon = str(item.get("DataReferencia") or "").strip() or "na"
+        horizon = str(item.get(horizon_key) or item.get("DataReferencia") or "").strip() or "na"
         horizon_token = horizon.replace("/", "-")
         raw_value = item.get(field)
         try:
