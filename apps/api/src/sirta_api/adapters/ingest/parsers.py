@@ -1851,8 +1851,9 @@ def parse_bcb_olinda_expectativas(
     max_rows: int = 8,
     value_field: str = "Mediana",
     indicator_units: dict[str, str] | None = None,
+    focus_label: str = "FOCUS_ANUAL",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse BCB OLINDA ExpectativasMercadoAnuais OData; never tax credit."""
+    """Parse BCB OLINDA Expectativas OData (anuais/mensais/trimestrais); never tax credit."""
     allowed = {
         str(item).strip().upper() for item in (indicator_allowlist or ()) if str(item).strip()
     }
@@ -1863,6 +1864,7 @@ def parse_bcb_olinda_expectativas(
         for key, value in (indicator_units or {}).items()
         if str(key).strip() and str(value).strip()
     }
+    period = str(focus_label or "FOCUS_ANUAL").strip() or "FOCUS_ANUAL"
     try:
         payload = json.loads(body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
@@ -1895,6 +1897,7 @@ def parse_bcb_olinda_expectativas(
             continue
         raw_date = str(item.get("Data") or "").strip()
         horizon = str(item.get("DataReferencia") or "").strip() or "na"
+        horizon_token = horizon.replace("/", "-")
         raw_value = item.get(field)
         try:
             value = float(str(raw_value).replace(",", "."))
@@ -1927,14 +1930,17 @@ def parse_bcb_olinda_expectativas(
             continue
         detalhe = str(item.get("IndicadorDetalhe") or "").strip()
         label_core = f"{indicator}_{detalhe}" if detalhe else indicator
-        label = f"{label_core}_FOCUS_ANUAL_{horizon}"
-        unit = units.get(indicator.upper()) or (
-            "BRL_PER_USD" if indicator.upper() == "CÂMBIO" else "PERCENT_PER_YEAR"
+        label = f"{label_core}_{period}_{horizon_token}"
+        default_unit = (
+            "PERCENT_PER_MONTH"
+            if period == "FOCUS_MENSAL"
+            else ("BRL_PER_USD" if indicator.upper() == "CÂMBIO" else "PERCENT_PER_YEAR")
         )
-        raw_row_id = f"bcb-olinda-{label_core}-{raw_date}-{horizon}"
+        unit = units.get(indicator.upper()) or default_unit
+        raw_row_id = f"bcb-olinda-{label_core}-{raw_date}-{horizon_token}"
         if len(raw_row_id) > 64:
             digest = hashlib.sha256(label_core.encode("utf-8")).hexdigest()[:12]
-            raw_row_id = f"bcb-olinda-{digest}-{raw_date}-{horizon}"
+            raw_row_id = f"bcb-olinda-{digest}-{raw_date}-{horizon_token}"
         silver.append(
             {
                 "rowId": raw_row_id[:64],

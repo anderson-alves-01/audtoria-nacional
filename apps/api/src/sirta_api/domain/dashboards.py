@@ -33,6 +33,7 @@ DASHBOARDS = (
             "ANEEL-DADOS-ABERTOS",
             "BCB-SGS-OLINDA",
             "BCB-OLINDA-EXPECTATIVAS",
+            "BCB-OLINDA-EXPECTATIVAS-MENSAIS",
             "EPE-DADOS-ABERTOS",
             "ANATEL-DADOS-ABERTOS",
             "CNES-DATASUS",

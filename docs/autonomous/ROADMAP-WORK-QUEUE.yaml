@@ -1,18 +1,18 @@
 schema_version: 1
-updated_at: "2026-09-21T15:00:00-03:00"
+updated_at: "2026-09-21T15:15:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.88"
+implementation_version: "0.3.89"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.88: BCB OLINDA Expectativas Balança comercial multi-detalhe
-  (Saldo+Exportações+Importações, USD_BILLION, baseCalculo=1). Layout v23;
-  silverCount 280. Name-probe sem novo Indicador anual fora da allowlist.
-  Próximo: UF tabular nova quando publicada; ou entity sets Focus
-  mensais/trimestrais OLINDA. RFB territorial sem carga nacional.
+  Ciclo 0.3.89: BCB OLINDA Expectativas mensais IPCA
+  (ExpectativaMercadoMensais, PERCENT_PER_MONTH, baseCalculo=1). Layout
+  mensais-v1; silverCount 8. Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS.
+  Próximo: demais mensais (IGP-M/Câmbio/IPCA Livres…) ou trimestrais.
+  RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -657,37 +657,25 @@ items:
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
-    fontes_oficiais: [BCB-SGS-OLINDA, BCB-OLINDA-EXPECTATIVAS]
+    fontes_oficiais: [BCB-SGS-OLINDA, BCB-OLINDA-EXPECTATIVAS, BCB-OLINDA-EXPECTATIVAS-MENSAIS]
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.88/
-    versao: "0.3.88"
-    commit: 4c3bbc5
-    ci: "35634377752"
+    evidencia: evidence/releases/0.3.89/
+    versao: "0.3.89"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA+IPCA Livres+IPCA
-      Serviços+IPCA Administrados+IPCA Alimentação no domicílio+IPCA Bens
-      industrializados+Selic+Câmbio+PIB Total+PIB Serviços+PIB Agropecuária+PIB
-      Indústria+PIB Formação Bruta de Capital Fixo+PIB Despesa de consumo das
-      famílias+PIB Despesa de consumo da administração pública+PIB Exportação
-      de bens e serviços+PIB Importação de bens e serviços+Produção
-      industrial+IPCA-15+IPC-Fipe+IPA-M+IPA-DI+IGP-M+IGP-DI+INPC+Dívida líquida
-      do setor público+Dívida bruta do governo geral+Balança comercial
-      Saldo/Exportações/Importações+Resultado primário+Conta corrente+Resultado
-      nominal+Taxa de desocupação+Investimento direto no país, max_rows=8 por
-      indicador/detalhe, multi-fetch, indicator_base_calculo para
-      IPCA-15/IPC-Fipe/IPA-M/IPA-DI/IGP-DI/INPC/Dívidas=0, indicator_detalhe
-      Balança=[Saldo, Exportações, Importações]) TECHNICALLY_APPROVED com
-      fixtures mínimas e Gold REFERENCE_QUANTITY. IPC-Fipe/IPA-M/IPA-DI:
-      baseCalculo=0; última publicação Focus Anuais 2021-02-17 (congelada na
-      fonte). Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
-      Homologação humana pendente. Próximo ciclo: UF tabular nova quando
-      publicada; ou entity sets Focus mensais/trimestrais OLINDA. Commit:
-      4c3bbc5. CI verde:
-      https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35634377752.
+      SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
+      até Balança Saldo/Exportações/Importações) TECHNICALLY_APPROVED.
+      Nova fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS (ExpectativaMercadoMensais,
+      IPCA baseCalculo=1, PERCENT_PER_MONTH, max_rows=8, layout mensais-v1,
+      silverCount=8) TECHNICALLY_APPROVED. Gold REFERENCE_QUANTITY. Sem
+      crédito. Homologação humana pendente. Próximo: demais mensais ativos
+      (IGP-M, Câmbio, IPCA Livres/Serviços/Administrados) ou
+      ExpectativasMercadoTrimestrais; UF tabular quando publicada.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2

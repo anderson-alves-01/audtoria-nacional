@@ -9,7 +9,7 @@ Sistema local persistente que abre **sessões novas** do Cursor Agent (`agent`) 
 | Branch | `feat/official-public-ingest` |
 | HEAD inicial | `1d7a601` ou sucessor |
 | PR | #2 |
-| Versão | 0.3.88 |
+| Versão | 0.3.89 |
 | Estado | `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS` |
 | Merge em main | proibido |
 | Gold | `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION` |

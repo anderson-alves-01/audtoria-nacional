@@ -1,0 +1,280 @@
+{
+  "hits": [
+    {
+      "indicator": "IPCA",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.47,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA",
+      "baseCalculo": 1,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.4937,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IGP-M",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.466,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IGP-M",
+      "baseCalculo": 1,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.4327,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IGP-DI",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2021-02-17",
+      "mediana": 0.27,
+      "dataReferencia": "01/2022"
+    },
+    {
+      "indicator": "INPC",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2021-02-17",
+      "mediana": 0.33,
+      "dataReferencia": "01/2022"
+    },
+    {
+      "indicator": "IPC-Fipe",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2021-02-17",
+      "mediana": 0.35,
+      "dataReferencia": "01/2022"
+    },
+    {
+      "indicator": "IPCA-15",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2021-02-17",
+      "mediana": 0.35,
+      "dataReferencia": "01/2022"
+    },
+    {
+      "indicator": "Câmbio",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 5.2,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "Câmbio",
+      "baseCalculo": 1,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 5.17,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "Selic",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2005-12-14",
+      "mediana": 18.0,
+      "dataReferencia": "12/2005"
+    },
+    {
+      "indicator": "IPA-M",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2021-02-17",
+      "mediana": 0.29,
+      "dataReferencia": "01/2022"
+    },
+    {
+      "indicator": "IPA-DI",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2021-02-17",
+      "mediana": 0.33,
+      "dataReferencia": "01/2022"
+    },
+    {
+      "indicator": "IPCA Livres",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.5028,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA Livres",
+      "baseCalculo": 1,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.515,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA Serviços",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.333,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA Serviços",
+      "baseCalculo": 1,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.31,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA Administrados",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.3019,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA Administrados",
+      "baseCalculo": 1,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.335,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA Alimentação no domicílio",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 1.28,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA Alimentação no domicílio",
+      "baseCalculo": 1,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 1.38,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA Bens industrializados",
+      "baseCalculo": 0,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.3,
+      "dataReferencia": "01/2027"
+    },
+    {
+      "indicator": "IPCA Bens industrializados",
+      "baseCalculo": 1,
+      "count": 8,
+      "data": "2026-09-18",
+      "mediana": 0.3,
+      "dataReferencia": "01/2027"
+    }
+  ],
+  "distinct_pairs": [
+    {
+      "Indicador": "IPCA Livres",
+      "baseCalculo": 0,
+      "n": 120
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "baseCalculo": 1,
+      "n": 120
+    },
+    {
+      "Indicador": "IPCA",
+      "baseCalculo": 0,
+      "n": 120
+    },
+    {
+      "Indicador": "IPCA",
+      "baseCalculo": 1,
+      "n": 120
+    },
+    {
+      "Indicador": "IPCA Administrados",
+      "baseCalculo": 0,
+      "n": 119
+    },
+    {
+      "Indicador": "IPCA Administrados",
+      "baseCalculo": 1,
+      "n": 119
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "baseCalculo": 0,
+      "n": 119
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "baseCalculo": 1,
+      "n": 119
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "baseCalculo": 0,
+      "n": 119
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "baseCalculo": 1,
+      "n": 119
+    },
+    {
+      "Indicador": "IPCA Serviços",
+      "baseCalculo": 0,
+      "n": 119
+    },
+    {
+      "Indicador": "IPCA Serviços",
+      "baseCalculo": 1,
+      "n": 119
+    },
+    {
+      "Indicador": "Câmbio",
+      "baseCalculo": 0,
+      "n": 115
+    },
+    {
+      "Indicador": "Câmbio",
+      "baseCalculo": 1,
+      "n": 115
+    },
+    {
+      "Indicador": "IGP-M",
+      "baseCalculo": 0,
+      "n": 85
+    },
+    {
+      "Indicador": "IGP-M",
+      "baseCalculo": 1,
+      "n": 85
+    },
+    {
+      "Indicador": "Taxa de desocupação",
+      "baseCalculo": 0,
+      "n": 84
+    },
+    {
+      "Indicador": "Taxa de desocupação",
+      "baseCalculo": 1,
+      "n": 84
+    }
+  ]
+}

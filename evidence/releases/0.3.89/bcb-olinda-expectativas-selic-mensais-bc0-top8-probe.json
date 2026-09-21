@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "Selic",
+      "Data": "2005-12-14",
+      "DataReferencia": "12/2005",
+      "Media": 17.94,
+      "Mediana": 18.0,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "Selic",
+      "Data": "2005-12-13",
+      "DataReferencia": "12/2005",
+      "Media": 17.94,
+      "Mediana": 18.0,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "Selic",
+      "Data": "2005-12-12",
+      "DataReferencia": "12/2005",
+      "Media": 17.94,
+      "Mediana": 18.0,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "Selic",
+      "Data": "2005-12-09",
+      "DataReferencia": "12/2005",
+      "Media": 17.94,
+      "Mediana": 18.0,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "Selic",
+      "Data": "2005-12-08",
+      "DataReferencia": "12/2005",
+      "Media": 17.93,
+      "Mediana": 18.0,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "Selic",
+      "Data": "2005-12-07",
+      "DataReferencia": "12/2005",
+      "Media": 17.93,
+      "Mediana": 18.0,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "Selic",
+      "Data": "2005-12-06",
+      "DataReferencia": "12/2005",
+      "Media": 17.91,
+      "Mediana": 18.0,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "Selic",
+      "Data": "2005-12-05",
+      "DataReferencia": "12/2005",
+      "Media": 17.91,
+      "Mediana": 18.0,
+      "baseCalculo": 0
+    }
+  ]
+}

@@ -1098,6 +1098,33 @@ def test_bcb_olinda_expectativas_parses_odata_points() -> None:
     assert presentation_for("BCB-OLINDA-EXPECTATIVAS")["createsTaxCredit"] is False
 
 
+def test_bcb_olinda_expectativas_parses_mensais_ipca() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-ipca-mensais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["IPCA"],
+        max_rows=8,
+        indicator_units={"IPCA": "PERCENT_PER_MONTH"},
+        focus_label="FOCUS_MENSAL",
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "IPCA"
+    assert silver[0]["unit"] == "PERCENT_PER_MONTH"
+    assert silver[0]["value"] == 0.4937
+    assert silver[0]["horizonYear"] == "01/2027"
+    assert "FOCUS_MENSAL" in silver[0]["transferName"]
+    assert "/" not in silver[0]["rowId"]
+    assert len(silver[0]["rowId"]) <= 64
+    assert len({row["rowId"] for row in silver}) == 8
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-MENSAIS")["valueKind"] == (
+        "REFERENCE_QUANTITY"
+    )
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-MENSAIS")["createsTaxCredit"] is False
+
+
 def test_bcb_olinda_expectativas_parses_selic_and_cambio_units() -> None:
     selic = Path(
         "tests/fixtures/official-snapshots/bcb-olinda-expectativas-selic-anuais-top8.json"

@@ -1005,16 +1005,30 @@ def _parse_bcb_sgs_allowlist(
     return silver, quarantined
 
 
+_BCB_OLINDA_FOCUS_LABELS = {
+    "ExpectativasMercadoAnuais": "FOCUS_ANUAL",
+    "ExpectativaMercadoMensais": "FOCUS_MENSAL",
+    "ExpectativasMercadoTrimestrais": "FOCUS_TRIMESTRAL",
+}
+
+
+def _bcb_olinda_focus_label(entity_set: str) -> str:
+    key = str(entity_set or "").strip() or "ExpectativasMercadoAnuais"
+    return _BCB_OLINDA_FOCUS_LABELS.get(key, "FOCUS_ANUAL")
+
+
 def _bcb_olinda_expectativas_url(
     *,
     indicator: str,
     max_rows: int,
     base_calculo: int = 1,
     indicator_detalhe: str | None = None,
+    entity_set: str = "ExpectativasMercadoAnuais",
 ) -> str:
     encoded = quote(str(indicator).strip(), safe="")
     top = max(1, int(max_rows or 8))
     base = int(base_calculo)
+    set_name = str(entity_set or "").strip() or "ExpectativasMercadoAnuais"
     detalhe = str(indicator_detalhe or "").strip()
     if detalhe:
         enc_det = quote(detalhe, safe="")
@@ -1029,7 +1043,7 @@ def _bcb_olinda_expectativas_url(
         select = "Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
     return (
         "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
-        f"ExpectativasMercadoAnuais?$top={top}&$format=json&"
+        f"{set_name}?$top={top}&$format=json&"
         f"$filter={filter_clause}&"
         "$orderby=Data%20desc,DataReferencia%20asc&"
         f"$select={select}"
@@ -1057,6 +1071,10 @@ def _parse_bcb_olinda_expectativas_allowlist(
     default_base = int(parameters.get("base_calculo") or 1)
     indicator_base_calculo = parameters.get("indicator_base_calculo") or {}
     indicator_detalhe = parameters.get("indicator_detalhe") or {}
+    entity_set = str(parameters.get("entity_set") or "ExpectativasMercadoAnuais").strip()
+    focus_label = str(parameters.get("focus_label") or "").strip() or _bcb_olinda_focus_label(
+        entity_set
+    )
     primary = str(parameters.get("primary_indicator") or allowlist[0]).strip()
     silver: list[dict] = []
     quarantined: list[tuple[dict, str]] = []
@@ -1076,6 +1094,7 @@ def _parse_bcb_olinda_expectativas_allowlist(
                     max_rows=max_rows,
                     base_calculo=base_calculo,
                     indicator_detalhe=detalhe or None,
+                    entity_set=entity_set,
                 )
                 secondary = http_client.fetch(url, timeout=timeout)
                 if secondary.status_code >= 400 or not secondary.body:
@@ -1090,6 +1109,7 @@ def _parse_bcb_olinda_expectativas_allowlist(
                 max_rows=max_rows,
                 value_field=value_field,
                 indicator_units=indicator_units,
+                focus_label=focus_label,
             )
             silver.extend(part_silver)
             quarantined.extend(part_quarantined)

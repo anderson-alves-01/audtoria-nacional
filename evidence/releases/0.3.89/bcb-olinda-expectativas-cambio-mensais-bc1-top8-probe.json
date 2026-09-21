@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "Câmbio",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2027",
+      "Media": 5.1922,
+      "Mediana": 5.17,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "Câmbio",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2028",
+      "Media": 5.2479,
+      "Mediana": 5.26,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "Câmbio",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2027",
+      "Media": 5.197,
+      "Mediana": 5.176,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "Câmbio",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2028",
+      "Media": 5.2534,
+      "Mediana": 5.27,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "Câmbio",
+      "Data": "2026-09-18",
+      "DataReferencia": "03/2027",
+      "Media": 5.2026,
+      "Mediana": 5.185,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "Câmbio",
+      "Data": "2026-09-18",
+      "DataReferencia": "03/2028",
+      "Media": 5.2553,
+      "Mediana": 5.27,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "Câmbio",
+      "Data": "2026-09-18",
+      "DataReferencia": "04/2027",
+      "Media": 5.2108,
+      "Mediana": 5.2,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "Câmbio",
+      "Data": "2026-09-18",
+      "DataReferencia": "04/2028",
+      "Media": 5.2569,
+      "Mediana": 5.2795,
+      "baseCalculo": 1
+    }
+  ]
+}

@@ -3743,7 +3743,53 @@ sources:
       IPCA-15/IPC-Fipe/IPA-M/IPA-DI: baseCalculo=0 obrigatório (base=1 retorna
       vazio); última publicação Focus Anuais observada em 2021-02-17 (séries
       congeladas na fonte; ainda PUBLIC_OPEN). Distinto de BCB-SGS-OLINDA
-      (REST SGS). Homologação humana pendente. Não constitui crédito.
+      (REST SGS).       Homologação humana pendente. Não constitui crédito.
+
+  - source_id: BCB-OLINDA-EXPECTATIVAS-MENSAIS
+    name: Banco Central — OLINDA Expectativas Focus mensais (IPCA)
+    maintainer: Banco Central do Brasil
+    official_domain: bcb.gov.br
+    official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    endpoint: >-
+      https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativaMercadoMensais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo
+    documentation_url: https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/swagger-ui3#/
+    dataset: BCB-OLINDA-EXPECTATIVAS-MENSAIS
+    dictionary_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    purpose: Expectativas de mercado Focus (mediana mensal) como referência; nunca crédito tributário
+    legal_basis: API OLINDA pública do Banco Central
+    license_terms: termos de uso do Banco Central para dados abertos
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: bcb_olinda_expectativas
+    layout_version: bcb-olinda-expectativas-mensais-v1
+    periodicity: as_published
+    competence: as_published
+    granularity: series
+    parameters:
+      indicator_allowlist: [IPCA]
+      primary_indicator: IPCA
+      max_rows: 8
+      value_field: Mediana
+      scrape_forbidden: true
+      entity_set: ExpectativaMercadoMensais
+      focus_label: FOCUS_MENSAL
+      base_calculo: 1
+      indicator_units:
+        IPCA: PERCENT_PER_MONTH
+    indicator: bcb_olinda_expectativas_focus_mensais
+    formula: >
+      Mediana das expectativas mensais Focus (ExpectativaMercadoMensais) para
+      indicadores na allowlist (IPCA), com baseCalculo=1, limitados a
+      max_rows=N (multi-fetch). Competência = Data de publicação; horizonte =
+      DataReferencia (MM/AAAA). Unidade PERCENT_PER_MONTH. Distinto de
+      BCB-OLINDA-EXPECTATIVAS (anuais). Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-mensais-v1
+    notes: >
+      OData OLINDA oficial verificado. Ativação técnica com allowlist IPCA,
+      $top/max_rows=8 e fixture mínima. Entity set ExpectativaMercadoMensais.
+      Homologação humana pendente. Não constitui crédito.
 
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)

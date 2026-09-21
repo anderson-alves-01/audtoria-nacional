@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2027",
+      "Media": 0.2948,
+      "Mediana": 0.3,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2028",
+      "Media": 0.2763,
+      "Mediana": 0.27,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2027",
+      "Media": 0.275,
+      "Mediana": 0.2675,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2028",
+      "Media": 0.2754,
+      "Mediana": 0.27,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "03/2027",
+      "Media": 0.272,
+      "Mediana": 0.2625,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "03/2028",
+      "Media": 0.255,
+      "Mediana": 0.25,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "04/2027",
+      "Media": 0.3146,
+      "Mediana": 0.3,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "04/2028",
+      "Media": 0.3135,
+      "Mediana": 0.2998,
+      "baseCalculo": 0
+    }
+  ]
+}

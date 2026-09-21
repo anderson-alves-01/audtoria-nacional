@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2027",
+      "Media": 1.3488,
+      "Mediana": 1.38,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2028",
+      "Media": 0.8013,
+      "Mediana": 0.8,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2027",
+      "Media": 0.8592,
+      "Mediana": 0.85,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2028",
+      "Media": 0.4698,
+      "Mediana": 0.45,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "03/2027",
+      "Media": 1.0797,
+      "Mediana": 1.0,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "03/2028",
+      "Media": 0.6353,
+      "Mediana": 0.6125,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "04/2027",
+      "Media": 0.8978,
+      "Mediana": 0.83,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "04/2028",
+      "Media": 0.5842,
+      "Mediana": 0.55,
+      "baseCalculo": 1
+    }
+  ]
+}
