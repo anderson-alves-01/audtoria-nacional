@@ -11,6 +11,7 @@ via `ExpectativaMercadoMensais` e `baseCalculo=0`.
 - Layout `bcb-olinda-expectativas-mensais-v4`; silverCount 96
 - Selic mensal não ativado (congelado 2005-12-14)
 - Migration `0095_bcb_olinda_mensais_ipa` → `0.3.92`
+- Commit: `eb1dbe7`
 - Gold REFERENCE_QUANTITY; createsTaxCredit=false
 
 ## Próximo

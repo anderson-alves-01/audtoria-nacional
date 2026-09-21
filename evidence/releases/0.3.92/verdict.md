@@ -12,6 +12,7 @@ BCB OLINDA Expectativas mensais: expandiu allowlist com `IPA-M`, `IPA-DI`,
   (Data 2021-02-17; séries congeladas na fonte)
 - Layout `bcb-olinda-expectativas-mensais-v4`; silverCount 96
 - Migration: `0095_bcb_olinda_mensais_ipa` → implementation_version `0.3.92`
+- Commit: `eb1dbe7`
 - Gold REFERENCE_QUANTITY; createsTaxCredit=false
 - Selic mensal não ativado (congelado 2005-12-14)
 - Sem carga nacional; sem crédito

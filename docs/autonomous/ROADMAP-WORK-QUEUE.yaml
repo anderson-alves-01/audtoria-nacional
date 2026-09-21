@@ -665,7 +665,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.92/
     versao: "0.3.92"
-    commit: pending
+    commit: eb1dbe7
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -678,6 +678,7 @@ items:
       Gold REFERENCE_QUANTITY. Sem crédito. Homologação humana pendente.
       Selic mensal não ativado (congelado 2005-12-14).
       Próximo: ExpectativasMercadoTrimestrais; UF tabular quando publicada.
+      Commit: eb1dbe7.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
