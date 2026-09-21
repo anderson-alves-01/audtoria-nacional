@@ -1,0 +1,35 @@
+name: terraform-prod-check
+
+on:
+  pull_request:
+    paths:
+      - "infra/terraform/**"
+      - ".github/workflows/terraform-prod-check.yml"
+      - ".github/workflows/deploy-prod.yml"
+  push:
+    paths:
+      - "infra/terraform/**"
+      - ".github/workflows/terraform-prod-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/terraform/environments/prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
+      - name: Fmt
+        run: terraform fmt -check -recursive ../..
+      - name: Init
+        run: terraform init -backend=false
+      - name: Validate
+        run: terraform validate
+      - name: Plan gated off
+        run: terraform plan -input=false -var=cloud_apply_authorized=false -lock=false

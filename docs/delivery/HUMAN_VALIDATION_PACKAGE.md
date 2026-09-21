@@ -1,35 +1,50 @@
-# Pacote de validação humana — Gold oficial 0.3.15
+# Pacote de validação humana — Gold oficial (consolidação técnica)
 
-Estado: `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS`
+Estado técnico: `DOC_HOMOLOGATION_PACKAGE_TECH_COMPLETE`  
+`implementation_version`: ver `current-state.yaml`  
+Branch de consolidação: `feat/official-public-ingest` / fatias sucessoras.  
+Deploy AWS PROD: gate G10 separado — ver `docs/ops/G10-AUTHORIZATION.md`.
 
-Este pacote **não** encerra o ROADMAP. A declaração `REAL_DATA_PIPELINES_COMPLETE_AWAITING_HUMAN_VALIDATION` foi prematura e não deve ser usada enquanto existirem fontes públicas ativáveis, dashboards, domínios ou itens técnicos em aberto.
+Este pacote **consolida** a evidência técnica para homologação humana. **Não** solicita aceite agora, **não** promove Gold e **não** autoriza produção.
 
 Nenhum indicador abaixo está homologado, exigível, cobrável ou classificado como crédito tributário. Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`.
 
-## O que a onda 1 já processou tecnicamente
+## O que a onda oficial PUBLIC_OPEN já processou tecnicamente
 
 1. SIDRA 6579 (população) — quantidade de referência, não crédito.
 2. SIDRA 5938 variável 37 (PIB) — quantidade de referência, não potencial de ISS.
-3. SIDRA 5938 variável 6575 — permanece em quarentena quando a célula oficial é `...`, sem interpolação.
+3. SIDRA 5938 variável 6575 — quarentena quando a célula oficial é `...`, sem interpolação.
 4. SIDRA 9509 CEMP (707/662/367) — ocupação, massa salarial e empresas; referência, não base de ISS.
 5. SICONFI `/entes` — cadastro de cobertura, não demonstrativo fiscal.
 6. Tesouro Aria `/custom/transferencias` — dicionário de tipos. FPM código 3 não é valor transferido.
-7. Tesouro CKAN `Transferencia_Mensal_Municipios_202609.csv` — valores de FPM publicados (join IBGE via SICONFI/entes).
-8. SICONFI RREO e DCA — conectores particionados com checkpoint; carga nacional limitada por `max_entes_per_run`.
-9. EC 132 — documento oficial com retry/Senado; `binding=false`, `operational=false`, `homologated=false`.
+7. Tesouro CKAN transferências mensais municipais (allowlist FPM/LC176/IOF-Ouro/COINT) — valores publicados com lineage.
+8. SICONFI RREO, DCA e RGF — conectores particionados com checkpoint; carga limitada por `max_entes_per_run`.
+9. EC 132 / LC 214 — documentos oficiais com retry; `binding=false`, `operational=false`, `homologated=false`.
+10. Transferências estaduais ICMS/IPVA/IPI/CIDE e correlatas — UFs com fonte `PUBLIC_OPEN` tabular ativada; demais bloqueadas por formato/provenance.
+11. Setoriais ANP/ANEEL/EPE/ANATEL/CNES e BCB SGS/OLINDA Expectativas (anuais, mensais, trimestrais, Selic reunião, Inflação 12/24m) — allowlist versionada.
+12. RFB CNPJ — `READY_FOR_TERRITORIAL_SCOPE`, sem carga nacional.
+13. Quinze dashboards oficiais — shell vazio quando não autorizado; sem crédito.
+14. Domínios arrecadação, pagamentos, dívida ativa, procuradoria, cadastro 360, findings, casos, notificações — shells técnicos oficiais vazios / `CREDENTIAL_REQUIRED` onde couber.
 
 ## Divergência de cobertura
 
-A diferença **5.571 versus 5.570** (IBGE 6579 versus SICONFI/entes e IBGE 5938) é cobertura pendente de homologação. Não é ocorrência administrativa.
+A diferença **5.571 versus 5.570** (IBGE 6579 versus SICONFI/entes e IBGE 5938) é cobertura pendente de homologação humana. Não é ocorrência administrativa.
 
-## O que permanece em aberto (não solicitar validação humana agora)
+## O que permanece institucionalmente aberto
 
-- Backfill nacional controlado de RREO/DCA/FINBRA.
-- Ativação estadual ICMS/IPVA somente após fonte PUBLIC_OPEN estruturada verificada.
-- RFB CNPJ — `READY_FOR_TERRITORIAL_SCOPE`, sem carga nacional.
-- ISS/IPTU/ITBI/DA/pagamentos/processos — `CREDENTIAL_REQUIRED`.
-- Demais itens técnicos do ROADMAP 1.2 e operação de piloto/produção.
+- Gates humanos G0/G1/G4/G5/G7-oficial/G8-oficial/G9/G10 (`docs/delivery/HUMAN_DECISIONS_REQUIRED.md`).
+- Aceite humano de Gold / dashboards / fórmulas.
+- Fontes estaduais ainda sem tabular estável (RJ HTML IP-blocked, SP HTML-only, etc.).
+- ISS/IPTU/ITBI/DA/pagamentos/processos municipais — `CREDENTIAL_REQUIRED`.
+- `terraform apply` / deploy produção — exige ato G10 escrito.
 
 ## O que não validar como operação
 
-Cobrança, constituição de crédito, diferença de transferência como ocorrência confirmada, regra IBS/CBS vinculante, ROI, potencial tributário como crédito, aceite institucional de dashboard.
+Cobrança, constituição de crédito, diferença de transferência como ocorrência confirmada, regra IBS/CBS vinculante, ROI, potencial tributário como crédito, aceite institucional de dashboard, promoção de Gold.
+
+## Evidências de consolidação
+
+- `current-state.yaml`
+- `docs/autonomous/ROADMAP-WORK-QUEUE.yaml` (item `DOC-HOMOLOGATION-PACKAGE`)
+- `docs/delivery/HUMAN_DECISIONS_REQUIRED.md`
+- Releases e ciclos em `docs/delivery/` e `docs/autonomous/`

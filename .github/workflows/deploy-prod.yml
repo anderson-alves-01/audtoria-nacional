@@ -1,0 +1,74 @@
+name: deploy-prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag to deploy (must already exist in ECR after build-prod)"
+        required: true
+        type: string
+      confirm_environment:
+        description: "Type production to confirm"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Confirm production intent
+        run: |
+          if [ "${{ inputs.confirm_environment }}" != "production" ]; then
+            echo "REFUSED: confirm_environment must be exactly 'production'"
+            exit 1
+          fi
+          echo "Manual production environment approval required via GitHub Environment 'production'."
+
+  terraform-validate:
+    needs: guard
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/terraform/environments/prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive ../..
+      - name: Terraform init (no backend)
+        run: terraform init -backend=false
+      - name: Terraform validate
+        run: terraform validate
+      - name: Gate remains closed in CI
+        run: |
+          terraform plan -input=false -var=cloud_apply_authorized=false -lock=false
+          echo "CI never sets cloud_apply_authorized=true. Apply is local/G10 only."
+
+  build-push:
+    needs: [guard, terraform-validate]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Note on credentials
+        run: |
+          echo "Configure AWS OIDC role secrets for this environment before enabling push."
+          echo "This job is gated by GitHub Environment 'production' approval."
+          echo "Image tag requested: ${{ inputs.image_tag }}"
+      - name: Build images locally in runner (no push without OIDC)
+        run: |
+          docker build -f apps/api/Dockerfile -t sirta-api:${{ inputs.image_tag }} .
+          docker build -f apps/web/Dockerfile -t sirta-web:${{ inputs.image_tag }} .
+          docker build -f apps/workers/Dockerfile -t sirta-worker:${{ inputs.image_tag }} .
+          echo "Push to ECR is intentionally disabled until AWS OIDC role is wired under environment production."
