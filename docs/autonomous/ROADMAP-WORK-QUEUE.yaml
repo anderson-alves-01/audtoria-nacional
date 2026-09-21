@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.78/
     versao: "0.3.78"
-    commit: null
+    commit: 695c3ff
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -679,7 +679,7 @@ items:
       mínimas e Gold REFERENCE_QUANTITY. Unidades PERCENT_OF_GDP, USD_BILLION
       e PERCENT. Sem crédito. Homologação humana pendente. Próximo ciclo: UF
       tabular nova quando publicada; ou OLINDA IPCA Bens industrializados se
-      priorizado.
+      priorizado. Commit: 695c3ff.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
