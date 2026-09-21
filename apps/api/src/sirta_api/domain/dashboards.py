@@ -130,6 +130,7 @@ DASHBOARDS = (
             "ESTADO-CE-IPI-QUOTA",
             "ESTADO-RS-ICMS-QUOTA",
             "ESTADO-RS-IPVA-QUOTA",
+            "ESTADO-RS-COMPENSACAO-LC194-QUOTA",
             "ESTADO-AL-ICMS-QUOTA",
             "ESTADO-AL-IPVA-QUOTA",
             "ESTADO-AL-IPI-QUOTA",

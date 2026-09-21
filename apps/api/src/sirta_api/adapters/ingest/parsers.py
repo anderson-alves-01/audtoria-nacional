@@ -698,14 +698,14 @@ def parse_state_rs_xls(
     uf: str = "RS",
     competence: str = "2025-01",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse SEFAZ-RS MontaArquivo monthly XLS; ICMS TOTAL month REPASSE / IPVA Total Mês."""
+    """Parse SEFAZ-RS MontaArquivo XLS; ICMS/IPVA mensais ou Compensação LC194."""
     try:
         import xlrd
         from xlrd.biffh import XLRDError
     except ImportError as exc:  # pragma: no cover - dependency declared in pyproject
         raise RuntimeError("xlrd is required for state_rs_xls") from exc
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    if tax_key not in {"ICMS", "IPVA", "COMPENSACAO_LC194"}:
         raise ValueError(f"unsupported state RS tax filter: {tax}")
     competence_key = str(competence or "2025-01").strip()[:7]
     if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
@@ -717,11 +717,26 @@ def parse_state_rs_xls(
     except (XLRDError, OSError, ValueError) as exc:
         return [], [({"rowId": "rs-header"}, f"invalid XLS: {exc}")]
     sheet = None
-    for index in range(book.nsheets):
-        candidate = book.sheet_by_index(index)
-        if candidate.nrows > 0 and candidate.ncols > 0:
-            sheet = candidate
-            break
+    if tax_key == "COMPENSACAO_LC194":
+        for index in range(book.nsheets):
+            candidate = book.sheet_by_index(index)
+            label = normalize_place(candidate.name)
+            if candidate.nrows > 0 and month_name in label and year in label:
+                sheet = candidate
+                break
+        if sheet is None:
+            return [], [
+                (
+                    {"rowId": "rs-header"},
+                    f"missing sheet {month_name} {year} for Compensação LC194",
+                )
+            ]
+    else:
+        for index in range(book.nsheets):
+            candidate = book.sheet_by_index(index)
+            if candidate.nrows > 0 and candidate.ncols > 0:
+                sheet = candidate
+                break
     if sheet is None:
         return [], [({"rowId": "rs-header"}, "empty workbook")]
     lookup = ibge_lookup or {}
@@ -729,7 +744,28 @@ def parse_state_rs_xls(
     quarantined: list[tuple[dict, str]] = []
     modality = f"{tax_key}_QUOTA"
 
-    if tax_key == "ICMS":
+    if tax_key == "COMPENSACAO_LC194":
+        header_row = None
+        for row_index in range(min(sheet.nrows, 10)):
+            first = normalize_place(str(sheet.cell_value(row_index, 0) or ""))
+            if first.startswith("MUNICIP"):
+                header_row = row_index
+                break
+        if header_row is None:
+            return [], [({"rowId": "rs-header"}, "missing MUNICIPIO header")]
+        amount_col = None
+        for probe_row in range(header_row, min(header_row + 3, sheet.nrows)):
+            for col in range(sheet.ncols):
+                label = normalize_place(str(sheet.cell_value(probe_row, col) or ""))
+                if "REPASSE" in label:
+                    amount_col = col
+                    break
+            if amount_col is not None:
+                break
+        if amount_col is None:
+            return [], [({"rowId": "rs-header"}, "missing REPASSE column")]
+        data_start = header_row + 2
+    elif tax_key == "ICMS":
         header_row = None
         for row_index in range(min(sheet.nrows, 10)):
             first = normalize_place(str(sheet.cell_value(row_index, 0) or ""))
@@ -772,8 +808,10 @@ def parse_state_rs_xls(
         if (
             place in {"TOTAL", "TOTAIS"}
             or place.startswith("TOTAL")
+            or place.startswith("REPASSE TOTAL")
             or place.startswith("SAC ")
             or place.startswith("OUVIDORIA")
+            or place.startswith("*")
             or set(place) <= {"-", " "}
             or "DEBITO" in place
         ):

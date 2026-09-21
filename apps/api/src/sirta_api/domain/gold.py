@@ -334,6 +334,14 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-RS-COMPENSACAO-LC194-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Compensação de perdas de ICMS LC 194/22 publicada "
+            "(RS ativado via SEFAZ MontaArquivo). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-AL-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (

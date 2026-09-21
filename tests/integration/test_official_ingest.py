@@ -194,6 +194,11 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     rs_ipva = api_client.post("/v1/data-sources/ESTADO-RS-IPVA-QUOTA/ingest", headers=_admin())
     assert rs_ipva.status_code == 200
     assert rs_ipva.json()["silverCount"] == 2
+    rs_comp = api_client.post(
+        "/v1/data-sources/ESTADO-RS-COMPENSACAO-LC194-QUOTA/ingest", headers=_admin()
+    )
+    assert rs_comp.status_code == 200
+    assert rs_comp.json()["silverCount"] == 2
     al_icms = api_client.post("/v1/data-sources/ESTADO-AL-ICMS-QUOTA/ingest", headers=_admin())
     assert al_icms.status_code == 200
     assert al_icms.json()["silverCount"] == 2
@@ -318,6 +323,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "ESTADO-CE-IPI-QUOTA",
         "ESTADO-RS-ICMS-QUOTA",
         "ESTADO-RS-IPVA-QUOTA",
+        "ESTADO-RS-COMPENSACAO-LC194-QUOTA",
         "ESTADO-AL-ICMS-QUOTA",
         "ESTADO-AL-IPVA-QUOTA",
         "ESTADO-AL-IPI-QUOTA",
@@ -387,6 +393,9 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["ESTADO-CE-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-RS-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-RS-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-RS-COMPENSACAO-LC194-QUOTA"]["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
     assert by_id["ESTADO-AL-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-AL-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-AL-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -493,7 +502,9 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["ESTADO-CE-IPI-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-RS-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-RS-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-RS-COMPENSACAO-LC194-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-RS-ICMS-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-RS-COMPENSACAO-LC194-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-AL-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-AL-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-AL-IPI-QUOTA"]["status"] == "TECHNICALLY_APPROVED"

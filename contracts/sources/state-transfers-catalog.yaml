@@ -29,6 +29,8 @@ notes: >
   Ciclo 0.3.60: AC ICMS mensal (valor_icms) e FUNDEB (valor_fundeb) ativados
   no mesmo JSON Transparência já aprovado (state_ac_transparencia_json),
   distintos do CSV anual SEPLAG ESTADO-AC-ICMS-QUOTA.
+  Ciclo 0.3.61: RS Compensação LC 194/22 (aba OUTUBRO 2024, coluna REPASSE*)
+  ativada via MontaArquivo l_compensacao_perdas_icms_2024 (state_rs_xls).
   UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
   SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
   SE/PB PDF; AM HTML-per-município; TO índices PDF.
@@ -465,20 +467,25 @@ states:
     official_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
     endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_icms_rep_202501
     ipva_endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_ipva_rep_202501
-    taxes: [ICMS, IPVA]
+    taxes: [ICMS, IPVA, COMPENSACAO_LC194]
     format: XLS
     columns_icms: [MUNICIPIO, weekly REPASSE/RETENÇÃO/LÍQUIDO, TOTAL month REPASSE]
     columns_ipva: [NOME DO MUNICÍPIO, daily amounts, Total Mês, Total Ano]
+    columns_compensacao_lc194: [MUNICIPIO, IPM, REPASSE*]
+    compensacao_lc194_endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_compensacao_perdas_icms_2024
     ibge_field: name_only
     layout_version_icms: state-rs-icms-v1
     layout_version_ipva: state-rs-ipva-v1
+    layout_version_compensacao_lc194: state-rs-compensacao-lc194-v1
     connector: state_rs_xls
     download_probe_2026_09_19: montaarquivo_xls_200_total_mes
+    download_probe_2026_09_21: montaarquivo_compensacao_lc194_2024_outubro
     reason: >
       XLS mensal SEFAZ-RS via MontaArquivo (l_icms_rep_YYYYMM / l_ipva_rep_YYYYMM)
       ativado com connector state_rs_xls (xlrd). ICMS usa coluna TOTAL
-      MÊS/ANO REPASSE; IPVA usa Total Mês. Join IBGE7 por nome+UF. Competência
-      2025-01. Fixture mínima. Sem crédito.
+      MÊS/ANO REPASSE; IPVA usa Total Mês. Compensação LC 194/22 via
+      l_compensacao_perdas_icms_2024 (aba OUTUBRO 2024, coluna REPASSE*).
+      Join IBGE7 por nome+UF. Fixture mínima. Sem crédito.
   - uf: RO
     name: Rondônia
     status: TECHNICALLY_APPROVED

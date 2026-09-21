@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.60
+implementation_version: 0.3.61
 roadmap_version: "1.2"
-version: 0.3.60
+version: 0.3.61
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -83,6 +83,7 @@ completed:
     - state_al_pr_royalty_activation
     - state_es_frd_compensacao_activation
     - state_ac_transparencia_icms_fundeb_activation
+    - state_rs_compensacao_lc194_activation
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -161,6 +162,7 @@ gates:
   f3_state_al_pr_royalty_local: GO
   f3_state_es_frd_compensacao_local: GO
   f3_state_ac_transparencia_icms_fundeb_local: GO
+  f3_state_rs_compensacao_lc194_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -172,6 +174,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.60/
-next_action: Prefer remaining UF with downloadable CSV/API (none currently tabular-stable). Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. AC Transparência ICMS/FUNDEB activated on existing JSON. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.61/
+next_action: Prefer remaining UF with downloadable CSV/API (none currently tabular-stable). Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. RS Compensação LC194 activated on MontaArquivo. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

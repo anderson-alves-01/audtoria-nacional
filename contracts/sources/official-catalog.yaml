@@ -2289,6 +2289,47 @@ sources:
       MontaArquivo l_ipva_rep_202501 downloadável em 2026-09-19. Homologação
       humana pendente.
 
+  - source_id: ESTADO-RS-COMPENSACAO-LC194-QUOTA
+    name: Compensação de perdas de ICMS LC 194/22 (RS)
+    maintainer: SEFAZ-RS
+    official_domain: sefaz.rs.gov.br
+    official_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_compensacao_perdas_icms
+    endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_compensacao_perdas_icms_2024
+    documentation_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_compensacao_perdas_icms_2024
+    dataset: ESTADO-RS-COMPENSACAO-LC194-2024-10
+    dictionary_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_compensacao_perdas_icms
+    purpose: Compensação LC 194/22 — valores líquidos publicados por município
+    legal_basis: Publicação SEFAZ-RS Compensação das Perdas de ICMS LC 194/22 (MontaArquivo)
+    license_terms: publicação oficial SEFAZ-RS
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_rs_xls
+    layout_version: state-rs-compensacao-lc194-v1
+    periodicity: monthly
+    competence: "2024-10"
+    granularity: municipality
+    parameters:
+      tax: COMPENSACAO_LC194
+      uf: RS
+      competence: "2024-10"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_rs_compensacao_lc194_quota
+    formula: >
+      Valor da coluna REPASSE* da aba MÊS/ANO do XLS SEFAZ-RS MontaArquivo
+      l_compensacao_perdas_icms_YYYY, município via join IBGE7 por nome+UF.
+      Valores líquidos já deduzidos conforme nota oficial. Sem ajuste.
+      Não constitui crédito.
+    methodology_version: official-state-rs-compensacao-lc194-v1
+    notes: >
+      MontaArquivo l_compensacao_perdas_icms_2024 (aba OUTUBRO 2024)
+      downloadável em 2026-09-21. Homologação humana pendente.
+
   - source_id: ESTADO-AL-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (AL)
     maintainer: SEPLAG-AL / dados.al.gov.br

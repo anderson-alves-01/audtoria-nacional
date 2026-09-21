@@ -62,7 +62,7 @@ def test_state_transfers_endpoint_is_empty_shell(api_client) -> None:
     assert by_uf["CE"]["taxes"] == ["ICMS", "IPVA", "IPI"]
     assert by_uf["RS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["RS"]["ingestAllowed"] is True
-    assert by_uf["RS"]["taxes"] == ["ICMS", "IPVA"]
+    assert by_uf["RS"]["taxes"] == ["ICMS", "IPVA", "COMPENSACAO_LC194"]
     assert by_uf["PI"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["PI"]["ingestAllowed"] is True
     assert by_uf["PI"]["taxes"] == ["IPVA"]
@@ -607,6 +607,33 @@ def test_state_rs_ingest_publishes_gold_without_credit(api_client) -> None:
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
+    )
+    compensacao = api_client.post(
+        "/v1/data-sources/ESTADO-RS-COMPENSACAO-LC194-QUOTA/ingest", headers=_admin()
+    )
+    assert compensacao.status_code == 200
+    assert compensacao.json()["silverCount"] == 2
+    assert compensacao.json()["quarantinedCount"] == 1
+    assert compensacao.json()["taxCreditCreated"] is False
+    gold_comp = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_comp = {item["sourceId"]: item for item in gold_comp.json()["items"]}
+    assert by_comp["ESTADO-RS-COMPENSACAO-LC194-QUOTA"]["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    assert by_comp["ESTADO-RS-COMPENSACAO-LC194-QUOTA"]["createsTaxCredit"] is False
+    assert by_comp["ESTADO-RS-COMPENSACAO-LC194-QUOTA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    comp_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-RS-COMPENSACAO-LC194-QUOTA",
+        headers=_analyst(),
+    )
+    assert comp_lines.status_code == 200
+    assert any(item["value"] == 194293.15 for item in comp_lines.json()["items"])
+    assert any(item["value"] == 25000000.0 for item in comp_lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in comp_lines.json()["items"]
     )
 
 

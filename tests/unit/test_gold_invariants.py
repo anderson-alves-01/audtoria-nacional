@@ -836,6 +836,26 @@ def test_state_rs_xls_joins_name_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-RS-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-RS-IPVA-QUOTA")["createsTaxCredit"] is False
+    compensacao_body = Path(
+        "tests/fixtures/official-snapshots/rs-compensacao-lc194-2024-10.xls"
+    ).read_bytes()
+    compensacao, quarantined_comp = parse_state_rs_xls(
+        compensacao_body,
+        tax="COMPENSACAO_LC194",
+        competence="2024-10",
+        ibge_lookup=lookup,
+    )
+    assert len(compensacao) == 2
+    assert {row["ibgeCode"] for row in compensacao} == {"4300034", "4314902"}
+    assert all(row["modality"] == "COMPENSACAO_LC194_QUOTA" for row in compensacao)
+    assert all(row["competence"] == "2024-10" for row in compensacao)
+    acegua_comp = next(row for row in compensacao if row["ibgeCode"] == "4300034")
+    assert acegua_comp["value"] == 194293.15
+    assert len(quarantined_comp) == 1
+    assert presentation_for("ESTADO-RS-COMPENSACAO-LC194-QUOTA")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    assert presentation_for("ESTADO-RS-COMPENSACAO-LC194-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_al_xls_native_ibge_and_quarantines_territory() -> None:
