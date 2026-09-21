@@ -1300,6 +1300,23 @@ def test_bcb_olinda_expectativas_parses_resultado_primario_and_conta_corrente() 
     assert silver_conta[0]["value"] == -60.85
 
 
+def test_bcb_olinda_expectativas_parses_resultado_nominal() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-resultado-nominal-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["Resultado nominal"],
+        max_rows=8,
+        indicator_units={"Resultado nominal": "PERCENT_OF_GDP"},
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "Resultado nominal"
+    assert silver[0]["unit"] == "PERCENT_OF_GDP"
+    assert silver[0]["value"] == -9.0
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"

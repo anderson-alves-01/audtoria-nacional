@@ -3608,7 +3608,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: bcb_olinda_expectativas
-    layout_version: bcb-olinda-expectativas-anuais-v7
+    layout_version: bcb-olinda-expectativas-anuais-v8
     periodicity: as_published
     competence: as_published
     granularity: series
@@ -3629,6 +3629,7 @@ sources:
           Balança comercial,
           Resultado primário,
           Conta corrente,
+          Resultado nominal,
         ]
       primary_indicator: IPCA
       max_rows: 8
@@ -3657,6 +3658,7 @@ sources:
         Balança comercial: USD_BILLION
         Resultado primário: PERCENT_OF_GDP
         Conta corrente: USD_BILLION
+        Resultado nominal: PERCENT_OF_GDP
     authentication: none
     rate_limit: http_429_possible
     personal_data: false
@@ -3667,20 +3669,21 @@ sources:
       indicadores na allowlist (IPCA, Selic, Câmbio, PIB Total, PIB Serviços,
       PIB Agropecuária, PIB Indústria, IGP-M, IGP-DI, INPC, Dívida líquida do
       setor público, Balança comercial/Saldo, Resultado primário, Conta
-      corrente), com baseCalculo default=1 e override por indicador
-      (IGP-DI/INPC/Dívida=0), IndicadorDetalhe=Saldo para Balança comercial,
-      limitados a max_rows=N por indicador (multi-fetch). Competência = Data
-      de publicação; horizonte = DataReferencia. Unidades distintas:
-      PERCENT_OF_GDP (Dívida, Resultado primário) e USD_BILLION (Balança
-      Saldo, Conta corrente). Sem crédito.
-    methodology_version: official-bcb-olinda-expectativas-anuais-v7
+      corrente, Resultado nominal), com baseCalculo default=1 e override por
+      indicador (IGP-DI/INPC/Dívida=0), IndicadorDetalhe=Saldo para Balança
+      comercial, limitados a max_rows=N por indicador (multi-fetch). Competência
+      = Data de publicação; horizonte = DataReferencia. Unidades distintas:
+      PERCENT_OF_GDP (Dívida, Resultado primário, Resultado nominal) e
+      USD_BILLION (Balança Saldo, Conta corrente). Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-anuais-v8
     notes: >
       OData OLINDA oficial verificado. Ativação técnica com allowlist
       IPCA+Selic+Câmbio+PIB Total+PIB Serviços+PIB Agropecuária+PIB Indústria+
       IGP-M+IGP-DI+INPC+Dívida líquida do setor público+Balança comercial
-      (Saldo)+Resultado primário+Conta corrente, $top/max_rows=8 por indicador
-      e fixtures mínimas. Distinto de BCB-SGS-OLINDA (REST SGS). Homologação
-      humana pendente. Não constitui crédito.
+      (Saldo)+Resultado primário+Conta corrente+Resultado nominal,
+      $top/max_rows=8 por indicador e fixtures mínimas. Distinto de
+      BCB-SGS-OLINDA (REST SGS). Homologação humana pendente. Não constitui
+      crédito.
 
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)

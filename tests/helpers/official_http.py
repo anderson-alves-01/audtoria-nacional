@@ -283,6 +283,14 @@ SNAPSHOT_URLS = {
         "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
     ): "bcb-olinda-expectativas-conta-corrente-anuais-top8.json",
     (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27Resultado%20nominal%27"
+        "%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-resultado-nominal-anuais-top8.json",
+    (
         "https://www.epe.gov.br/sites-pt/publicacoes-dados-abertos/dados-abertos/"
         "Documents/Dados%20brutos.xlsx"
     ): "epe-anuario-dados-brutos-ms-2024.csv",

@@ -84,6 +84,7 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
             "Balança comercial",
             "Resultado primário",
             "Conta corrente",
+            "Resultado nominal",
         ],
     },
     {
