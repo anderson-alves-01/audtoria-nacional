@@ -666,7 +666,7 @@ items:
     evidencia: evidence/releases/0.3.93/
     versao: "0.3.93"
     commit: 334efe5
-    ci: null
+    ci: "35646346911"
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
