@@ -1452,8 +1452,7 @@ def test_bcb_olinda_expectativas_parses_ipca_bens_industrializados() -> None:
 
 def test_bcb_olinda_expectativas_parses_pib_fbcf() -> None:
     body = Path(
-        "tests/fixtures/official-snapshots/"
-        "bcb-olinda-expectativas-pib-fbcf-anuais-top8.json"
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-pib-fbcf-anuais-top8.json"
     ).read_bytes()
     silver, quarantined = parse_bcb_olinda_expectativas(
         body,
