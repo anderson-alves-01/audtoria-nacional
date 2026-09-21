@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.82/
     versao: "0.3.82"
-    commit: null
+    commit: d37aaa0
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -682,7 +682,7 @@ items:
       Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
       publicada; ou OLINDA PIB Exportação de bens e serviços (demanda Focus)
-      se priorizado.
+      se priorizado. Commit: d37aaa0.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
