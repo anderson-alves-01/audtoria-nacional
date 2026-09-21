@@ -1,0 +1,2 @@
+﻿CI green for 0.3.84:
+https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35625104838
