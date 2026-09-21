@@ -665,7 +665,7 @@ items:
     evidencia: evidence/releases/0.3.86/
     versao: "0.3.86"
     commit: 41bd527
-    ci: null
+    ci: "35629436408"
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA+IPCA Livres+IPCA
@@ -685,6 +685,7 @@ items:
       Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
       publicada; ou OLINDA IPC-Fipe / IPA-M / IPA-DI. Commit: 41bd527.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35629436408.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
