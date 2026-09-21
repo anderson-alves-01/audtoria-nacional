@@ -167,7 +167,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.48/
     versao: "0.3.48"
-    commit: 34fbb37
+    commit: 711c780
     ci: null
     motivo_bloqueio: null
     next_action: >
