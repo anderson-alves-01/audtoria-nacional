@@ -17,6 +17,9 @@ Focus (`IPCA Livres`, `IPCA Serviços`, `IPCA Administrados`,
 - Gold REFERENCE_QUANTITY; createsTaxCredit=false
 - Sem carga nacional; sem crédito
 
+- Testes: 18 passed (unit+sectoral integration)
+- CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35640606510
+
 ## Próximo
 
 Selic/IPA-M/IPA-DI mensais se baseCalculo ativo; ou entity set trimestral;
