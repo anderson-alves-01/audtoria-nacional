@@ -1005,9 +1005,7 @@ def _parse_bcb_sgs_allowlist(
     return silver, quarantined
 
 
-def _bcb_olinda_expectativas_url(
-    *, indicator: str, max_rows: int, base_calculo: int = 1
-) -> str:
+def _bcb_olinda_expectativas_url(*, indicator: str, max_rows: int, base_calculo: int = 1) -> str:
     encoded = quote(str(indicator).strip(), safe="")
     top = max(1, int(max_rows or 8))
     base = int(base_calculo)
