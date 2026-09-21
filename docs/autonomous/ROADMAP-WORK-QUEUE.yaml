@@ -663,7 +663,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.87/
     versao: "0.3.87"
-    commit: pending
+    commit: dcd8000
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -683,7 +683,7 @@ items:
       baseCalculo=0; última publicação Focus Anuais 2021-02-17 (congelada na
       fonte). Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
-      publicada; ou demais Focus anuais OLINDA restantes.
+      publicada; ou demais Focus anuais OLINDA restantes. Commit: dcd8000.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
