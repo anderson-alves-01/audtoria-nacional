@@ -434,7 +434,7 @@ items:
     evidencia: evidence/releases/0.3.61/
     versao: "0.3.61"
     commit: 63d27ad
-    ci: null
+    ci: "35571881274"
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA, PR e GO ICMS (+IPVA/IPI
