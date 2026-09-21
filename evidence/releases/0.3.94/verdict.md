@@ -13,6 +13,7 @@ Indústria em `BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS`
   (Data 2021-09-13, horizonte 1/2022)
 - Layout `bcb-olinda-expectativas-trimestrais-v2`; silverCount 88
 - Migration: `0097_bcb_olinda_trim_pib_sec` -> implementation_version `0.3.94`
+- Commit: `176eeaf`
 - Gold REFERENCE_QUANTITY; createsTaxCredit=false
 - Serie setorial congelada na fonte; Selic/IGP/IPA/INPC trimestrais vazios
 - Sem carga nacional; sem credito
