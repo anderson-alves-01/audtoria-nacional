@@ -1,1 +1,4 @@
-CI not yet run for this commit. Will record after push to PR #2.
+CI green for 0.3.88 (HEAD 4c3bbc5):
+- PR run: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35634377752
+- Push run: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35634372008
+Jobs: python, web, containers = SUCCESS
