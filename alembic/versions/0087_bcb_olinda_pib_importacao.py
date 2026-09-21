@@ -7,7 +7,6 @@ Create Date: 2026-09-21
 
 from alembic import op
 
-
 revision = "0087_bcb_olinda_pib_importacao"
 down_revision = "0086_bcb_olinda_pib_exportacao"
 branch_labels = None
