@@ -224,6 +224,22 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-MS-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI-Exportação estadual publicada "
+            "(MS ativado via DataStore, Tipo_Repasse REPASSE DE IPI EXPORTAÇÃO). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-MS-CIDE-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Cota-parte CIDE publicada "
+            "(MS ativado via DataStore, Tipo_Repasse REPASSE DA CIDE). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-RO-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
@@ -352,6 +368,14 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-MA-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI-Exportação/FPEX estadual publicada "
+            "(MA ativado via SEFAZ SGC XLS, aba FPEX). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-PR-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
@@ -365,6 +389,14 @@ PRESENTATION = {
         "label": (
             "Quota-parte de IPVA estadual publicada "
             "(PR ativado via relatório HTML SEFA/Transparência). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-PR-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI-Exportação/FPEX estadual publicada "
+            "(PR ativado via coluna Fundo de Exportação no HTML SEFA). "
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },

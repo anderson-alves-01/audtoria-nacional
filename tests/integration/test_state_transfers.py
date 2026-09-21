@@ -68,7 +68,10 @@ def test_state_transfers_endpoint_is_empty_shell(api_client) -> None:
     assert by_uf["PI"]["taxes"] == ["IPVA"]
     assert by_uf["MA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["MA"]["ingestAllowed"] is True
-    assert by_uf["MA"]["taxes"] == ["ICMS", "IPVA"]
+    assert by_uf["MA"]["taxes"] == ["ICMS", "IPVA", "IPI"]
+    assert by_uf["PR"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_uf["PR"]["ingestAllowed"] is True
+    assert by_uf["PR"]["taxes"] == ["ICMS", "IPVA", "IPI"]
     assert by_uf["SE"]["status"] == "PROVENANCE_VERIFIED"
     assert by_uf["RJ"]["status"] == "PROVENANCE_VERIFIED"
 
@@ -352,6 +355,37 @@ def test_state_ms_ingest_publishes_gold_without_credit(api_client) -> None:
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
     )
+    ipi = api_client.post("/v1/data-sources/ESTADO-MS-IPI-QUOTA/ingest", headers=_admin())
+    assert ipi.status_code == 200
+    assert ipi.json()["silverCount"] == 2
+    assert ipi.json()["quarantinedCount"] == 1
+    assert ipi.json()["taxCreditCreated"] is False
+    cide = api_client.post("/v1/data-sources/ESTADO-MS-CIDE-QUOTA/ingest", headers=_admin())
+    assert cide.status_code == 200
+    assert cide.json()["silverCount"] == 2
+    assert cide.json()["quarantinedCount"] == 1
+    assert cide.json()["taxCreditCreated"] is False
+    gold_ext = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_ext = {item["sourceId"]: item for item in gold_ext.json()["items"]}
+    assert by_ext["ESTADO-MS-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_ext["ESTADO-MS-CIDE-QUOTA"]["createsTaxCredit"] is False
+    assert by_ext["ESTADO-MS-CIDE-QUOTA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    ipi_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-MS-IPI-QUOTA",
+        headers=_analyst(),
+    )
+    assert ipi_lines.status_code == 200
+    assert any(item["value"] == 57988.46 for item in ipi_lines.json()["items"])
+    assert any(item["value"] == 605892.90 for item in ipi_lines.json()["items"])
+    cide_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-MS-CIDE-QUOTA",
+        headers=_analyst(),
+    )
+    assert cide_lines.status_code == 200
+    assert any(item["value"] == 15981.94 for item in cide_lines.json()["items"])
+    assert any(item["value"] == 397118.34 for item in cide_lines.json()["items"])
 
 
 def test_state_ro_ingest_publishes_gold_without_credit(api_client) -> None:
@@ -650,6 +684,23 @@ def test_state_ma_ingest_publishes_gold_without_credit(api_client) -> None:
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
     )
+    ipi = api_client.post("/v1/data-sources/ESTADO-MA-IPI-QUOTA/ingest", headers=_admin())
+    assert ipi.status_code == 200
+    assert ipi.json()["silverCount"] == 2
+    assert ipi.json()["quarantinedCount"] == 1
+    assert ipi.json()["taxCreditCreated"] is False
+    gold_ipi = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_ipi = {item["sourceId"]: item for item in gold_ipi.json()["items"]}
+    assert by_ipi["ESTADO-MA-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_ipi["ESTADO-MA-IPI-QUOTA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    ipi_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-MA-IPI-QUOTA",
+        headers=_analyst(),
+    )
+    assert any(item["value"] == 61876.21 for item in ipi_lines.json()["items"])
+    assert any(item["value"] == 3984.85 for item in ipi_lines.json()["items"])
 
 
 def test_state_pr_ingest_publishes_gold_without_credit(api_client) -> None:
@@ -684,6 +735,23 @@ def test_state_pr_ingest_publishes_gold_without_credit(api_client) -> None:
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
     )
+    ipi = api_client.post("/v1/data-sources/ESTADO-PR-IPI-QUOTA/ingest", headers=_admin())
+    assert ipi.status_code == 200
+    assert ipi.json()["silverCount"] == 2
+    assert ipi.json()["quarantinedCount"] == 1
+    assert ipi.json()["taxCreditCreated"] is False
+    gold_ipi = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_ipi = {item["sourceId"]: item for item in gold_ipi.json()["items"]}
+    assert by_ipi["ESTADO-PR-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_ipi["ESTADO-PR-IPI-QUOTA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    ipi_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-PR-IPI-QUOTA",
+        headers=_analyst(),
+    )
+    assert any(item["value"] == 225792.78 for item in ipi_lines.json()["items"])
+    assert any(item["value"] == 891840.03 for item in ipi_lines.json()["items"])
 
 
 def test_state_pa_icms_verde_ingest_publishes_gold_without_credit(api_client) -> None:

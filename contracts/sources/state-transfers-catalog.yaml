@@ -19,13 +19,16 @@ notes: >
   (state_ce_xls / state_al_xls / state_rn_xls).
   Ciclo 0.3.56: PE/BA/MG IPI ativados nos mesmos arquivos já aprovados
   (state_pe_csv / state_ba_csv / state_mg_csv).
+  Ciclo 0.3.57: MA FPEX e PR Fundo de Exportação ativados como IPI-Exportação
+  nos mesmos arquivos já aprovados (state_ma_xls / state_pr_html); MS IPI
+  EXPORTAÇÃO e CIDE ativados no mesmo DataStore já aprovado (state_ms_csv).
   UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
   SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
   SE/PB PDF; AM HTML-per-município; TO índices PDF.
   MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
-  CKAN DataStore dump (CSV upload 500). MS ICMS/IPVA via CKAN DataStore mensal.
-  AC ICMS anual SEPLAG; AC IPVA Transparência POST+CSRF JSON. CE/RS/AL/RN/MA XLS;
-  PI IPVA Repasse WEB; PR HTML SEFA. Sem agregador privado.
+  CKAN DataStore dump (CSV upload 500). MS ICMS/IPVA/IPI/CIDE via CKAN DataStore
+  mensal. AC ICMS anual SEPLAG; AC IPVA Transparência POST+CSRF JSON.
+  CE/RS/AL/RN/MA XLS; PI IPVA Repasse WEB; PR HTML SEFA. Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -215,19 +218,23 @@ states:
     dataset_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
     official_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
     endpoint: https://ui-sgc.sefaz.ma.gov.br/sgc/api/portal/arquivos/public/identificador?identificador=2185e882-6a8a-4b89-bae7-4d687c2e4515
-    taxes: [ICMS, IPVA]
+    taxes: [ICMS, IPVA, IPI]
     format: XLS
     columns_icms: [MUNICIPIOS, Janeiro..Junho/Julho..Dezembro, Total do Semestre]
     columns_ipva: [MUNICIPIOS, Janeiro..Junho/Julho..Dezembro, Total do Semestre]
+    columns_ipi: [MUNICIPIOS, Janeiro..Junho/Julho..Dezembro, Total do Semestre]
     ibge_field: name_only
     layout_version_icms: state-ma-icms-v1
     layout_version_ipva: state-ma-ipva-v1
+    layout_version_ipi: state-ma-ipi-fpex-v1
     connector: state_ma_xls
     download_probe_2026_09_20: sgc_xls_200_sheets_icms_ipva_semester
+    download_probe_2026_09_21: sgc_xls_200_sheets_fpex_semester
     reason: >
       XLS Repasses Municipais SEFAZ-MA (SGC UUID público) ativado com connector
-      state_ma_xls. Abas ICMS/IPVA por semestre; coluna mensal; join IBGE7 por
-      nome+UF. Competência 2026-01. Fixture mínima. Sem crédito.
+      state_ma_xls. Abas ICMS/IPVA/FPEX por semestre; coluna mensal; join IBGE7
+      por nome+UF. IPI via aba FPEX (IPI-Exportação). Competência 2026-01.
+      Fixture mínima. Sem crédito.
   - uf: MT
     name: Mato Grosso
     status: PROVENANCE_VERIFIED
@@ -257,12 +264,16 @@ states:
     ibge_field: name_only
     layout_version_icms: state-ms-icms-v1
     layout_version_ipva: state-ms-ipva-v1
+    layout_version_ipi: state-ms-ipi-v1
+    layout_version_cide: state-ms-cide-v1
     connector: state_ms_csv
     download_probe_2026_09_19: datastore_dump_ok_icms_ipva
+    download_probe_2026_09_21: datastore_dump_ok_ipi_exportacao_cide
     reason: >
-      Dump mensal CKAN DataStore 200 OK com Tipo_Repasse REPASSE DE ICMS e
-      REPASSE DE IPVA. Connector state_ms_csv + join IBGE7 por nome+UF após
-      remover prefixo PREFEITURA MUNICIPAL DE. Fixture mínima. Sem crédito.
+      Dump mensal CKAN DataStore 200 OK com Tipo_Repasse REPASSE DE ICMS,
+      REPASSE DE IPVA, REPASSE DE IPI EXPORTAÇÃO e REPASSE DA CIDE. Connector
+      state_ms_csv + join IBGE7 por nome+UF após remover prefixo PREFEITURA
+      MUNICIPAL DE. Fixture mínima. Sem crédito.
   - uf: MG
     name: Minas Gerais
     status: TECHNICALLY_APPROVED
@@ -328,18 +339,22 @@ states:
     dataset_url: https://www.transparencia.pr.gov.br/pte/assunto/4/100?origem=4
     official_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
     endpoint: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/relatorio/rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL
-    taxes: [ICMS, IPVA]
+    taxes: [ICMS, IPVA, IPI]
     format: HTML
+    columns: [Municipio, FPM, ICMS bruto, ICMS liquido, Fundo de Exportacao, Royalties, IPVA, Total]
     ibge_field: name_only
     layout_version_icms: state-pr-icms-v1
     layout_version_ipva: state-pr-ipva-v1
+    layout_version_ipi: state-pr-ipi-fpex-v1
     connector: state_pr_html
     download_probe_2026_09_20: html_200_icms_liquido_ipva_columns
+    download_probe_2026_09_21: html_200_fpex_column_index_4
     preferred_activation: true
     reason: >
       Relatório HTML mensal SEFA/PR ativado com connector state_pr_html
-      (ICMS líquido pós-FUNDEB + IPVA), fixture mínima e join IBGE7 por
-      nome+UF. Sem CSV/API; HTML GET estável. Sem crédito.
+      (ICMS líquido pós-FUNDEB + IPVA + Fundo de Exportação/FPEX como IPI),
+      fixture mínima e join IBGE7 por nome+UF. Sem CSV/API; HTML GET estável.
+      Sem crédito.
   - uf: PE
     name: Pernambuco
     status: TECHNICALLY_APPROVED

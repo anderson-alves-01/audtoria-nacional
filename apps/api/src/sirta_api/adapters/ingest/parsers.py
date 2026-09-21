@@ -488,15 +488,19 @@ def parse_state_ma_xls(
     uf: str = "MA",
     competence: str = "2026-01",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse SEFAZ-MA Repasses Municipais XLS; semester sheets; name+UF join."""
+    """Parse SEFAZ-MA Repasses Municipais XLS; semester sheets; name+UF join.
+
+    IPI is published as FPEX (Fundo de Participação nas Exportações / IPI-Exportação).
+    """
     try:
         import xlrd
         from xlrd.biffh import XLRDError
     except ImportError as exc:  # pragma: no cover - dependency declared in pyproject
         raise RuntimeError("xlrd is required for state_ma_xls") from exc
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    if tax_key not in {"ICMS", "IPVA", "IPI"}:
         raise ValueError(f"unsupported state MA tax filter: {tax}")
+    sheet_tax = "FPEX" if tax_key == "IPI" else tax_key
     competence_key = str(competence or "2026-01").strip()[:7]
     if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
         raise ValueError(f"invalid MA competence: {competence}")
@@ -511,14 +515,14 @@ def parse_state_ma_xls(
     for index in range(book.nsheets):
         candidate = book.sheet_by_index(index)
         label = normalize_place(candidate.name)
-        if tax_key in label and semester_token in label and "SEMESTRE" in label:
+        if sheet_tax in label and semester_token in label and "SEMESTRE" in label:
             sheet = candidate
             break
     if sheet is None:
         return [], [
             (
                 {"rowId": "ma-header"},
-                f"missing sheet {tax_key} {semester_token}o Semestre",
+                f"missing sheet {sheet_tax} {semester_token}o Semestre",
             )
         ]
     if sheet.nrows < 12 or sheet.ncols < 2:
@@ -1113,9 +1117,12 @@ def parse_state_pr_html(
     uf: str = "PR",
     competence: str = "2025-01",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse SEFA/PR monthly HTML transfer report; ICMS líquido + IPVA; join IBGE7 by name+UF."""
+    """Parse SEFA/PR monthly HTML transfer report; ICMS líquido, FPEX/IPI, IPVA.
+
+    Join IBGE7 by name+UF. IPI is published as Fundo de Exportação (FPEX).
+    """
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    if tax_key not in {"ICMS", "IPVA", "IPI"}:
         raise ValueError(f"unsupported state PR HTML tax filter: {tax}")
     competence_key = str(competence or "2025-01").strip()[:7]
     if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
@@ -1129,7 +1136,7 @@ def parse_state_pr_html(
     quarantined: list[tuple[dict, str]] = []
     modality = f"{tax_key}_QUOTA"
     # Columns: município, FPM, ICMS bruto, ICMS líquido, FPEX, royalties, IPVA, total.
-    amount_index = 3 if tax_key == "ICMS" else 6
+    amount_index = {"ICMS": 3, "IPI": 4, "IPVA": 6}[tax_key]
     for match in re.finditer(r"<tr[^>]*>([\s\S]*?)</tr>", html, re.I):
         cells = [
             re.sub(r"<[^>]+>", "", cell).strip()
@@ -2297,6 +2304,14 @@ def _ms_municipality_name(raw: str) -> str:
     return text
 
 
+_MS_TIPO_REPASSE = {
+    "ICMS": "REPASSE DE ICMS",
+    "IPVA": "REPASSE DE IPVA",
+    "IPI": "REPASSE DE IPI EXPORTAÇÃO",
+    "CIDE": "REPASSE DA CIDE",
+}
+
+
 def parse_state_ms_csv(
     body: bytes,
     *,
@@ -2304,11 +2319,11 @@ def parse_state_ms_csv(
     ibge_lookup: dict[tuple[str, str], str] | None = None,
     uf: str = "MS",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse MS CKAN datastore dump; filter Tipo_Repasse ICMS/IPVA; no credit."""
+    """Parse MS CKAN datastore dump; filter Tipo_Repasse ICMS/IPVA/IPI/CIDE; no credit."""
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    if tax_key not in _MS_TIPO_REPASSE:
         raise ValueError(f"unsupported state MS tax filter: {tax}")
-    target = normalize_place(f"REPASSE DE {tax_key}")
+    target = normalize_place(_MS_TIPO_REPASSE[tax_key])
     reader = csv.DictReader(io.StringIO(_decode_csv_bytes(body)))
     lookup = ibge_lookup or {}
     silver: list[dict] = []

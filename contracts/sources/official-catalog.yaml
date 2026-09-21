@@ -1689,6 +1689,86 @@ sources:
     notes: >
       Mesmo endpoint DataStore do ICMS MS. Homologação humana pendente.
 
+  - source_id: ESTADO-MS-IPI-QUOTA
+    name: Quota-parte de IPI-Exportação estadual (MS)
+    maintainer: Governo de Mato Grosso do Sul / dados.ms.gov.br
+    official_domain: dados.ms.gov.br
+    official_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    endpoint: https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026
+    documentation_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    dataset: ESTADO-MS-IPI-202601
+    dictionary_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    purpose: Transferência estadual de IPI-Exportação — valores publicados por município
+    legal_basis: Dados abertos oficiais de Mato Grosso do Sul (repasses aos municípios)
+    license_terms: termos do portal dados.ms.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ms_csv
+    layout_version: state-ms-ipi-v1
+    periodicity: monthly
+    competence: "2026-01"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: MS
+      normalize: ibge7_name_uf
+      tipo_repasse: REPASSE DE IPI EXPORTAÇÃO
+      datastore_dump: true
+      resource_id: repasses-dos-municipios-01_2026
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ms_ipi_quota
+    formula: >
+      Valor_Total das linhas Tipo_Repasse=REPASSE DE IPI EXPORTAÇÃO no mesmo
+      dump mensal MS. IBGE7 por nome+UF. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-ms-ipi-v1
+    notes: >
+      Tipo_Repasse confirmado no dump 01/2026. Homologação humana pendente.
+
+  - source_id: ESTADO-MS-CIDE-QUOTA
+    name: Cota-parte CIDE estadual (MS)
+    maintainer: Governo de Mato Grosso do Sul / dados.ms.gov.br
+    official_domain: dados.ms.gov.br
+    official_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    endpoint: https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026
+    documentation_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    dataset: ESTADO-MS-CIDE-202601
+    dictionary_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    purpose: Transferência estadual de CIDE — valores publicados por município
+    legal_basis: Dados abertos oficiais de Mato Grosso do Sul (repasses aos municípios)
+    license_terms: termos do portal dados.ms.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ms_csv
+    layout_version: state-ms-cide-v1
+    periodicity: monthly
+    competence: "2026-01"
+    granularity: municipality
+    parameters:
+      tax: CIDE
+      uf: MS
+      normalize: ibge7_name_uf
+      tipo_repasse: REPASSE DA CIDE
+      datastore_dump: true
+      resource_id: repasses-dos-municipios-01_2026
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ms_cide_quota
+    formula: >
+      Valor_Total das linhas Tipo_Repasse=REPASSE DA CIDE no mesmo dump mensal
+      MS. IBGE7 por nome+UF. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-ms-cide-v1
+    notes: >
+      Tipo_Repasse confirmado no dump 01/2026. Homologação humana pendente.
+
   - source_id: ESTADO-RO-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (RO)
     maintainer: SEFIN-RO / dados.ro.gov.br
@@ -2405,6 +2485,47 @@ sources:
     notes: >
       Mesmo XLS do ICMS (abas distintas). Homologação humana pendente.
 
+  - source_id: ESTADO-MA-IPI-QUOTA
+    name: Quota-parte de IPI-Exportação/FPEX estadual (MA)
+    maintainer: SEFAZ-MA
+    official_domain: sefaz.ma.gov.br
+    official_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
+    endpoint: https://ui-sgc.sefaz.ma.gov.br/sgc/api/portal/arquivos/public/identificador?identificador=2185e882-6a8a-4b89-bae7-4d687c2e4515
+    documentation_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
+    dataset: ESTADO-MA-IPI-FPEX-2026-01
+    dictionary_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
+    purpose: Transferência estadual de IPI-Exportação/FPEX — valores publicados por município
+    legal_basis: Publicação SEFAZ-MA Repasses Municipais (valores nominais)
+    license_terms: publicação oficial SEFAZ-MA
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ma_xls
+    layout_version: state-ma-ipi-fpex-v1
+    periodicity: monthly
+    competence: "2026-01"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: MA
+      competence: "2026-01"
+      normalize: ibge7_name_uf
+      sheet_label: FPEX
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ma_ipi_quota
+    formula: >
+      Valor da coluna do mês na planilha FPEX do semestre correspondente
+      no XLS Repasses Municipais SEFAZ-MA, competência parametrizada,
+      município via join IBGE7 por nome+UF. FPEX é a publicação estadual
+      de IPI-Exportação. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-ma-ipi-fpex-v1
+    notes: >
+      Mesmo XLS do ICMS/IPVA (aba FPEX). Homologação humana pendente.
+
   - source_id: ESTADO-PR-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (PR)
     maintainer: SEFA/PR / Portal da Transparência
@@ -2482,6 +2603,46 @@ sources:
     methodology_version: official-state-pr-ipva-v1
     notes: >
       Mesmo HTML do ICMS (colunas distintas). Homologação humana pendente.
+
+  - source_id: ESTADO-PR-IPI-QUOTA
+    name: Quota-parte de IPI-Exportação/FPEX estadual (PR)
+    maintainer: SEFA/PR / Portal da Transparência
+    official_domain: pr.gov.br
+    official_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
+    endpoint: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/relatorio/rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL
+    documentation_url: https://www.transparencia.pr.gov.br/pte/assunto/4/100?origem=4
+    dataset: ESTADO-PR-IPI-FPEX-2025-01
+    dictionary_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
+    purpose: Transferência estadual de IPI-Exportação/FPEX — valores publicados por município
+    legal_basis: Relatório público de repasses SEFA/PR (visão mensal)
+    license_terms: publicação oficial SEFA/PR
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_pr_html
+    layout_version: state-pr-ipi-fpex-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: PR
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+      amount_column: Fundo de Exportacao
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_pr_ipi_quota
+    formula: >
+      Valor da coluna Fundo de Exportação (FPEX / IPI sobre exportações) no
+      relatório HTML mensal SEFA/PR, competência Param_Data, município via
+      join IBGE7 por nome+UF. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-pr-ipi-fpex-v1
+    notes: >
+      Mesmo HTML do ICMS/IPVA (coluna FPEX). Homologação humana pendente.
 
   - source_id: ESTADO-PA-ICMS-VERDE-QUOTA
     name: ICMS Verde — componente ecológico da cota-parte (PA)

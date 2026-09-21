@@ -484,6 +484,24 @@ def test_state_ms_csv_joins_name_uf_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-MS-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-MS-IPVA-QUOTA")["createsTaxCredit"] is False
+    ipi, quarantined_ipi = parse_state_ms_csv(body, tax="IPI", ibge_lookup=lookup)
+    assert len(ipi) == 2
+    agua_ipi = next(row for row in ipi if row["ibgeCode"] == "5000203")
+    assert agua_ipi["value"] == 57988.46
+    assert agua_ipi["modality"] == "IPI_QUOTA"
+    campo_ipi = next(row for row in ipi if row["ibgeCode"] == "5002704")
+    assert campo_ipi["value"] == 605892.90
+    assert len(quarantined_ipi) == 1
+    cide, quarantined_cide = parse_state_ms_csv(body, tax="CIDE", ibge_lookup=lookup)
+    assert len(cide) == 2
+    agua_cide = next(row for row in cide if row["ibgeCode"] == "5000203")
+    assert agua_cide["value"] == 15981.94
+    assert agua_cide["modality"] == "CIDE_QUOTA"
+    campo_cide = next(row for row in cide if row["ibgeCode"] == "5002704")
+    assert campo_cide["value"] == 397118.34
+    assert len(quarantined_cide) == 1
+    assert presentation_for("ESTADO-MS-IPI-QUOTA")["createsTaxCredit"] is False
+    assert presentation_for("ESTADO-MS-CIDE-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
 
 
 def test_state_ro_csv_joins_name_and_ibge6_and_quarantines_territory() -> None:
@@ -642,6 +660,15 @@ def test_state_ma_xls_joins_name_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 0
     assert presentation_for("ESTADO-MA-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-MA-IPVA-QUOTA")["createsTaxCredit"] is False
+    ipi, quarantined_ipi = parse_state_ma_xls(body, tax="IPI", ibge_lookup=lookup)
+    assert len(ipi) == 2
+    acailandia_ipi = next(row for row in ipi if row["ibgeCode"] == "2100055")
+    assert acailandia_ipi["value"] == 61876.21
+    assert acailandia_ipi["modality"] == "IPI_QUOTA"
+    afonso_ipi = next(row for row in ipi if row["ibgeCode"] == "2100154")
+    assert afonso_ipi["value"] == 3984.85
+    assert len(quarantined_ipi) == 1
+    assert presentation_for("ESTADO-MA-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_pr_html_joins_name_and_quarantines_territory() -> None:
@@ -670,6 +697,15 @@ def test_state_pr_html_joins_name_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-PR-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-PR-IPVA-QUOTA")["createsTaxCredit"] is False
+    ipi, quarantined_ipi = parse_state_pr_html(body, tax="IPI", ibge_lookup=lookup)
+    assert len(ipi) == 2
+    cascavel_ipi = next(row for row in ipi if row["ibgeCode"] == "4104808")
+    assert cascavel_ipi["value"] == 225792.78
+    assert cascavel_ipi["modality"] == "IPI_QUOTA"
+    curitiba_ipi = next(row for row in ipi if row["ibgeCode"] == "4106902")
+    assert curitiba_ipi["value"] == 891840.03
+    assert len(quarantined_ipi) == 1
+    assert presentation_for("ESTADO-PR-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_pa_icms_verde_xlsx_joins_name_and_quarantines_territory() -> None:
