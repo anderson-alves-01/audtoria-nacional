@@ -1,0 +1,5 @@
+﻿CI green for 0.3.49 GO ICMS Economia
+PR #2 https://github.com/anderson-alves-01/audtoria-nacional/pull/2
+run https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35552948068
+head 20c3cad
+jobs python/web/containers SUCCESS
