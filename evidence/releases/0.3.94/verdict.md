@@ -18,7 +18,7 @@ Indústria em `BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS`
 - Serie setorial congelada na fonte; Selic/IGP/IPA/INPC trimestrais vazios
 - Sem carga nacional; sem credito
 - Testes: unit trimestrais + sectoral ingest + alembic paths
-- CI: apos push
+- CI: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35648904520
 
 ## Proximo
 
