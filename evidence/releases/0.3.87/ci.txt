@@ -6,4 +6,7 @@ Local gates before push:
 - integration sectoral enrichment: 11 passed
 - silverCount BCB-OLINDA-EXPECTATIVAS: 264
 
-CI GitHub Actions: pending after push to PR #2.
+CI GitHub Actions (PR #2):
+- pull_request: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35631718656 (python/web/containers SUCCESS)
+- push: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35631713771 (python/web/containers SUCCESS)
+
