@@ -2677,6 +2677,9 @@ def _tesouro_transfer_family(name: str) -> str:
         "CIDE-Combustíveis": "CIDE",
         "CIDE-Combustiveis": "CIDE",
         "FEX": "FEX",
+        "LC87": "LC87",
+        "LC 87/96": "LC87",
+        "LC87/96": "LC87",
     }
     if name in mapping:
         return mapping[name]

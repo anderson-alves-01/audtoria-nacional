@@ -112,6 +112,15 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "TESOURO-LC87-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores LC 87/96 (Lei Kandir) publicados pelo Tesouro (COINT). "
+            "Série histórica oficial com valores não nulos até 2018; "
+            "colunas 2019–2020 publicadas vazias. Ocorrência para análise, "
+            "não crédito nem cobrança."
+        ),
+    },
     "ESTADO-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (

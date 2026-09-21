@@ -98,6 +98,7 @@ DASHBOARDS = (
             "TESOURO-FUNDEB-VALORES",
             "TESOURO-CIDE-VALORES",
             "TESOURO-FEX-VALORES",
+            "TESOURO-LC87-VALORES",
             "TESOURO-TRANSPARENTE",
             "ESTADO-ICMS-QUOTA",
             "ESTADO-IPVA-QUOTA",

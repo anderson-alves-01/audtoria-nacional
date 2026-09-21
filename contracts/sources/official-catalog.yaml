@@ -569,6 +569,57 @@ sources:
       TESOURO-FUNDEB-COMPLEMENT-VALORES (CSV mensal COUN/AJUSTE). max_rows=8
       no ciclo técnico; sem carga nacional ilimitada. Sem crédito.
 
+  - source_id: TESOURO-LC87-VALORES
+    name: Tesouro Nacional — LC 87/96 por município (CKAN COINT)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-obrigatorias-da-uniao-por-municipio
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/06aed495-8f46-4852-97f1-ae49822aa179/download/lc-8796-por-municipio.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-obrigatorias-da-uniao-por-municipio
+    dataset: TESOURO-LC87-COINT
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/a3bee117-d467-4374-aefe-bb29b9698c42/download/metadados---transferencias-obrigatorias-da-uniao---por-municipio.pdf
+    purpose: >
+      Valores transferidos aos municípios referentes aos repasses da Lei
+      Complementar nº 87/1996 (série COINT histórica)
+    legal_basis: Dataset CKAN Transferências Obrigatórias da União - por Município (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_coint_municipio_csv
+    layout_version: tesouro-ckan-coint-lc87-municipio-v1
+    periodicity: monthly
+    competence: "2018-01"
+    granularity: municipality
+    parameters:
+      package_id: 3b5a779d-78f5-4602-a6b7-23ece6d60f27
+      resource_id: 06aed495-8f46-4852-97f1-ae49822aa179
+      file_name: lc-8796-por-municipio.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2018-01"
+      transfer_name: "LC 87/96"
+      max_rows: 8
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_lc87_received
+    formula: >
+      Valor da coluna do ano da competência, na linha cujo Mês corresponde ao
+      mês da competência, no CSV COINT LC 87/96 por município. Células vazias ou
+      com traço são omitidas. Join município+UF ao IBGE via SICONFI/entes.
+      COD_MUN do arquivo não é IBGE7. Não constitui crédito.
+    methodology_version: official-tesouro-coint-lc87-v1
+    notes: >
+      Probe 2026-09-21: HTTP 200, ~17,4 MiB, layout wide anos 1996–2020,
+      valores municipais não nulos observados até 2018 (colunas 2019–2020
+      publicadas vazias). Série histórica oficial; competência técnica
+      2018-01. Distinto de TESOURO-LC176-VALORES (CSV mensal). max_rows=8
+      no ciclo técnico; sem carga nacional ilimitada. Sem crédito.
+
   - source_id: TESOURO-CIDE-VALORES
     name: Tesouro Nacional — CIDE-Combustíveis por município (CKAN COINT)
     maintainer: Tesouro Nacional

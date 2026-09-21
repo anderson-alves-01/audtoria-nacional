@@ -48,6 +48,11 @@ SNAPSHOT_URLS = {
         "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
         "4ca6aad2-fa9d-48e1-a608-5614578d7df2/download/fex-por-municipio.csv"
     ): "tesouro-fex-por-municipio.csv",
+    (
+        "https://www.tesourotransparente.gov.br/ckan/dataset/"
+        "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
+        "06aed495-8f46-4852-97f1-ae49822aa179/download/lc-8796-por-municipio.csv"
+    ): "tesouro-lc8796-por-municipio.csv",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo": "siconfi-rreo.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca": "siconfi-dca.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf": "siconfi-rgf.json",

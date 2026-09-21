@@ -1,0 +1,24 @@
+# Tesouro COINT LC 87/96 probe — 2026-09-21
+
+Resource: LC 87/96 por Município
+URL: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/06aed495-8f46-4852-97f1-ae49822aa179/download/lc-8796-por-municipio.csv
+Bytes: 18252441 (~17.4 MiB)
+Layout: COD_MUN;Município;UF;Município - UF;Mês;1996..2020 (latin-1, ';')
+ncols: 30
+
+Non-zero sample (Acrelândia-AC mês 1):
+| Year | Value |
+|------|-------|
+| 2017 | 384,65 |
+| 2018 | 376,76 |
+| 2019 | blank |
+| 2020 | blank |
+
+Sample 2018-01 Assis Brasil-AC: 428,92
+
+Series is historical; last non-blank year observed in probe = 2018.
+Columns 2019–2020 exist but are empty for sampled municipalities.
+
+COD_MUN is not IBGE7; join name+UF via SICONFI/entes.
+Activated with max_rows=8, competence=2018-01.
+Distinct from TESOURO-LC176-VALORES (monthly constitutional CSV).
