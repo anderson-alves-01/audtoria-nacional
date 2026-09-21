@@ -258,7 +258,7 @@ items:
     evidencia: evidence/releases/0.3.53/
     versao: "0.3.53"
     commit: c26abed
-    ci: null
+    ci: "35557636835"
     motivo_bloqueio: null
     next_action: >
       ITR/IPI-EXP/Royalties/LC176/IOF-Ouro allowlists ativos. CIDE/FEX ausentes
