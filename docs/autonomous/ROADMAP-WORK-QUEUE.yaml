@@ -1,4 +1,4 @@
-schema_version: 1
+﻿schema_version: 1
 updated_at: "2026-09-20T14:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
@@ -6,17 +6,17 @@ implementation_version: "0.3.47"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
-  Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
-  não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
+  Fila completa do ROADMAP 1.2. Volume, duraÃ§Ã£o ou necessidade de outro ciclo
+  nÃ£o classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
   Ciclo 0.3.47: PA ICMS Verde ativado (state_pa_icms_verde_xlsx; componente
-  ecológico ≤8%, não cota ICMS total); PR/MA/RN/PI/AC/AL/RS/CE/RO/MS/PE/BA/MG/ES/GO
+  ecolÃ³gico â‰¤8%, nÃ£o cota ICMS total); PR/MA/RN/PI/AC/AL/RS/CE/RO/MS/PE/BA/MG/ES/GO
   e setoriais intactos; PB/AM/SE/AP/RR/DF PROVENANCE_VERIFIED; SP HTML-only;
-  RJ IP-blocked; SC PROVENANCE_ONLY; TO índices; RFB territorial sem carga nacional.
+  RJ IP-blocked; SC PROVENANCE_ONLY; TO Ã­ndices; RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
     dominio: D1
-    descricao: CI Python, web e containers reproduzível
+    descricao: CI Python, web e containers reproduzÃ­vel
     dependencias: []
     estado_tecnico: TECH_COMPLETE
     estado_institucional: LOCAL_GO
@@ -34,7 +34,7 @@ items:
   - id: F2-TENANT-ISOLATION
     fase: F2
     dominio: D1
-    descricao: Testes de isolamento de tenant e autorização negativa
+    descricao: Testes de isolamento de tenant e autorizaÃ§Ã£o negativa
     dependencias: []
     estado_tecnico: TECH_COMPLETE
     estado_institucional: LOCAL_GO
@@ -54,7 +54,7 @@ items:
   - id: F2-OBSERVABILITY
     fase: F2
     dominio: D1
-    descricao: Observabilidade de API, jobs e ingestão (métricas, logs, traces)
+    descricao: Observabilidade de API, jobs e ingestÃ£o (mÃ©tricas, logs, traces)
     dependencias: [F2-CI-CD]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: LOCAL_GO
@@ -69,12 +69,12 @@ items:
     commit: 0c91448
     ci: null
     motivo_bloqueio: null
-    next_action: Expandir métricas Prometheus/OTel em ciclo futuro; manter logs de ingestão.
+    next_action: Expandir mÃ©tricas Prometheus/OTel em ciclo futuro; manter logs de ingestÃ£o.
 
   - id: F2-BACKUP-RESTORE
     fase: F10
     dominio: D1
-    descricao: Continuidade, backup e restauração documentados e testáveis localmente
+    descricao: Continuidade, backup e restauraÃ§Ã£o documentados e testÃ¡veis localmente
     dependencias: [F2-CI-CD]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -89,12 +89,12 @@ items:
     commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Manter dry-run e recusa de host não local; sem apply em nuvem.
+    next_action: Manter dry-run e recusa de host nÃ£o local; sem apply em nuvem.
 
   - id: F2-SECURITY-HARDENING
     fase: F2
     dominio: D1
-    descricao: MFA não local, DLP de prompt, auditoria de tool calls, secrets fora do código
+    descricao: MFA nÃ£o local, DLP de prompt, auditoria de tool calls, secrets fora do cÃ³digo
     dependencias: [F2-TENANT-ISOLATION]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: LOCAL_GO
@@ -109,7 +109,7 @@ items:
     commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Expandir vault gerenciado quando ambiente não local for autorizado.
+    next_action: Expandir vault gerenciado quando ambiente nÃ£o local for autorizado.
 
   - id: F3-SOURCE-CATALOG
     fase: F3.0
@@ -129,12 +129,12 @@ items:
     commit: 1d7a601
     ci: "35437663525"
     motivo_bloqueio: null
-    next_action: Atualizar catálogo a cada fonte investigada.
+    next_action: Atualizar catÃ¡logo a cada fonte investigada.
 
   - id: F3-GOLD-LINEAGE
     fase: F3.1
     dominio: D3
-    descricao: Lineage Gold por linha até Silver, Bronze, landing e URL
+    descricao: Lineage Gold por linha atÃ© Silver, Bronze, landing e URL
     dependencias: [F3-SOURCE-CATALOG]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -154,7 +154,7 @@ items:
   - id: F3-IBGE-SIDRA
     fase: F3.2
     dominio: D3
-    descricao: IBGE SIDRA 6579 e 5938; variável 6575 em quarentena
+    descricao: IBGE SIDRA 6579 e 5938; variÃ¡vel 6575 em quarentena
     dependencias: [F3-GOLD-LINEAGE]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -169,12 +169,12 @@ items:
     commit: 1d7a601
     ci: "35437663525"
     motivo_bloqueio: null
-    next_action: Manter 6575 sem interpolação; exibir cobertura 5571 vs 5570.
+    next_action: Manter 6575 sem interpolaÃ§Ã£o; exibir cobertura 5571 vs 5570.
 
   - id: F3-SICONFI-ENTES
     fase: F3.2
     dominio: D3
-    descricao: Cadastro SICONFI/entes como cobertura, não demonstrativo
+    descricao: Cadastro SICONFI/entes como cobertura, nÃ£o demonstrativo
     dependencias: [F3-GOLD-LINEAGE]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -189,12 +189,12 @@ items:
     commit: 1d7a601
     ci: "35437663525"
     motivo_bloqueio: null
-    next_action: Não apresentar como RREO/DCA.
+    next_action: NÃ£o apresentar como RREO/DCA.
 
   - id: F3-TESOURO-DICTIONARY
     fase: F3.2
     dominio: D9
-    descricao: Dicionário Aria de tipos de transferência
+    descricao: DicionÃ¡rio Aria de tipos de transferÃªncia
     dependencias: [F3-GOLD-LINEAGE]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -214,7 +214,7 @@ items:
   - id: F3-FPM-MUNICIPAL
     fase: F3.2
     dominio: D9
-    descricao: Valores mensais de FPM por município (CKAN) com retenções FUNDEB
+    descricao: Valores mensais de FPM por municÃ­pio (CKAN) com retenÃ§Ãµes FUNDEB
     dependencias: [F3-SICONFI-ENTES]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -230,13 +230,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Controles de competência e disco presentes. Carga nacional multi-mês
-      permanece fora sem autorização e espaço; manter join IBGE.
+      Controles de competÃªncia e disco presentes. Carga nacional multi-mÃªs
+      permanece fora sem autorizaÃ§Ã£o e espaÃ§o; manter join IBGE.
 
   - id: F3-RREO-BACKFILL
     fase: F3.2
     dominio: D3
-    descricao: Backfill controlado SICONFI RREO com paginação, checkpoint e limite de entes
+    descricao: Backfill controlado SICONFI RREO com paginaÃ§Ã£o, checkpoint e limite de entes
     dependencias: [F3-SICONFI-ENTES]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -252,7 +252,7 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      max_entes=5 com hard_cap=25, métricas e COMPLETE sem wrap. Sem carga
+      max_entes=5 com hard_cap=25, mÃ©tricas e COMPLETE sem wrap. Sem carga
       nacional ilimitada.
 
   - id: F3-DCA-FINBRA-BACKFILL
@@ -274,13 +274,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Controles iguais ao RREO; fixture DCA no fluxo de integração. Exercícios
-      adicionais só com max_entes e hard_cap.
+      Controles iguais ao RREO; fixture DCA no fluxo de integraÃ§Ã£o. ExercÃ­cios
+      adicionais sÃ³ com max_entes e hard_cap.
 
   - id: F3-SICONFI-OTHER-STATEMENTS
     fase: F3.2
     dominio: D3
-    descricao: Demais demonstrativos SICONFI necessários aos indicadores (RGF e anexos)
+    descricao: Demais demonstrativos SICONFI necessÃ¡rios aos indicadores (RGF e anexos)
     dependencias: [F3-RREO-BACKFILL]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -295,12 +295,12 @@ items:
     commit: null
     ci: null
     motivo_bloqueio: null
-    next_action: Backfill controlado por max_entes_per_run; anexos adicionais só se PUBLIC_OPEN.
+    next_action: Backfill controlado por max_entes_per_run; anexos adicionais sÃ³ se PUBLIC_OPEN.
 
   - id: F3-PORTAL-TRANSPARENCIA
     fase: F3.2
     dominio: D9
-    descricao: Portal da Transparência da União para transferências quando API estruturada existir
+    descricao: Portal da TransparÃªncia da UniÃ£o para transferÃªncias quando API estruturada existir
     dependencias: [F3-TESOURO-DICTIONARY]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: CREDENTIAL_REQUIRED
@@ -320,7 +320,7 @@ items:
   - id: F3-REGULATORY-BEYOND-EC132
     fase: F3.2
     dominio: D10
-    descricao: Catálogo documental LC 214, normas CGIBS, RFB e demais oficiais além da EC 132
+    descricao: CatÃ¡logo documental LC 214, normas CGIBS, RFB e demais oficiais alÃ©m da EC 132
     dependencias: []
     estado_tecnico: TECH_COMPLETE
     estado_institucional: NON_BINDING
@@ -335,12 +335,12 @@ items:
     commit: 0c91448
     ci: null
     motivo_bloqueio: null
-    next_action: Adicionar CGIBS/RFB documentais quando URL única estável existir; manter NON_BINDING.
+    next_action: Adicionar CGIBS/RFB documentais quando URL Ãºnica estÃ¡vel existir; manter NON_BINDING.
 
   - id: F3-STATE-CATALOG
     fase: F3.2
     dominio: D9
-    descricao: Catálogo dos 26 estados e DF para ICMS/IPVA
+    descricao: CatÃ¡logo dos 26 estados e DF para ICMS/IPVA
     dependencias: []
     estado_tecnico: TECH_COMPLETE
     estado_institucional: DISCOVERED
@@ -352,14 +352,14 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.47/
     versao: "0.3.47"
-    commit: null
+    commit: 5f6284d
     ci: null
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA e PR
-      TECHNICALLY_APPROVED (GO só IPVA; PI só IPVA; PR via HTML SEFA; PA parcial
-      via ICMS Verde SEMAS; SE/PB/AM/AP/RR/DF PROVENANCE_VERIFIED; MT XLSX ≤2015;
-      TO PROVENANCE_VERIFIED PDF/índices; SC CSV ≤2017; SP HTML-only; RJ
+      TECHNICALLY_APPROVED (GO sÃ³ IPVA; PI sÃ³ IPVA; PR via HTML SEFA; PA parcial
+      via ICMS Verde SEMAS; SE/PB/AM/AP/RR/DF PROVENANCE_VERIFIED; MT XLSX â‰¤2015;
+      TO PROVENANCE_VERIFIED PDF/Ã­ndices; SC CSV â‰¤2017; SP HTML-only; RJ
       IP-blocked). GO ICMS aguarda colunas no datastore. Sem agregador privado.
 
   - id: F3-STATE-ICMS-ACTIVATION
@@ -376,15 +376,14 @@ items:
     pipeline: true
     testes: true
     evidencia: evidence/releases/0.3.47/
-    versao: "0.3.47"
-    commit: null
+    versao: "0.3.47"`n    commit: 5f6284d
     ci: null
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA e PR ICMS (+IPVA onde publicado) +
-      GO/PI IPVA + PA ICMS Verde (componente ecológico) ativados. GO/PI ICMS não
+      GO/PI IPVA + PA ICMS Verde (componente ecolÃ³gico) ativados. GO/PI ICMS nÃ£o
       publicados nos endpoints sondados. PA cota plena ainda DOE PDF. MT XLSX
-      Transparency congelado ≤2015. SC arrecadação não quota. SP HTML-only.
+      Transparency congelado â‰¤2015. SC arrecadaÃ§Ã£o nÃ£o quota. SP HTML-only.
       PB/SE/AM/AP/RR/DF PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ permanece
       IP-blocked. Sem agregador privado.
 
@@ -402,20 +401,19 @@ items:
     pipeline: true
     testes: true
     evidencia: evidence/releases/0.3.47/
-    versao: "0.3.47"
-    commit: null
+    versao: "0.3.47"`n    commit: 5f6284d
     ci: null
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO, MS, RO, CE, RS, AL, AC, PI, RN, MA e PR IPVA ativados. Seguir
       outras UFs PUBLIC_OPEN; sem inventar valores. PR via HTML SEFA; MA via SEFAZ SGC
-      XLS; RN via Nextcloud XLS; PI via Repasse WEB HTML; AC via Transparência
-      POST+CSRF; RO IPVA IBGE6→7. PA sem IPVA tabular nesta fatia (só ICMS Verde).
+      XLS; RN via Nextcloud XLS; PI via Repasse WEB HTML; AC via TransparÃªncia
+      POST+CSRF; RO IPVA IBGE6â†’7. PA sem IPVA tabular nesta fatia (sÃ³ ICMS Verde).
 
   - id: F3-RFB-CNPJ
     fase: F3.2
     dominio: D4
-    descricao: Conector RFB CNPJ com minimização, streaming e escopo territorial
+    descricao: Conector RFB CNPJ com minimizaÃ§Ã£o, streaming e escopo territorial
     dependencias: []
     estado_tecnico: TECH_COMPLETE
     estado_institucional: READY_FOR_TERRITORIAL_SCOPE
@@ -431,7 +429,7 @@ items:
     ci: "35445715071"
     motivo_bloqueio: null
     next_action: >
-      Escopo, resume, manifesto e EI prontos. Manter ingestAllowed=false até
+      Escopo, resume, manifesto e EI prontos. Manter ingestAllowed=false atÃ©
       territorial_scope autorizado; sem carga nacional.
 
   - id: F3-SECTORAL-ANP
@@ -453,8 +451,8 @@ items:
     ci: "35452312674"
     motivo_bloqueio: null
     next_action: >
-      ANP e ANEEL TECHNICALLY_APPROVED com escopo UF=MS, fixture mínima e Gold
-      REFERENCE_QUANTITY. Demais setoriais permanecem DISCOVERED. Sem crédito.
+      ANP e ANEEL TECHNICALLY_APPROVED com escopo UF=MS, fixture mÃ­nima e Gold
+      REFERENCE_QUANTITY. Demais setoriais permanecem DISCOVERED. Sem crÃ©dito.
 
   - id: F3-SECTORAL-ANEEL-EPE
     fase: F3.2
@@ -475,9 +473,9 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      ANEEL IndQual e EPE Anuário Dados brutos TECHNICALLY_APPROVED com escopo
+      ANEEL IndQual e EPE AnuÃ¡rio Dados brutos TECHNICALLY_APPROVED com escopo
       UF=MS (EPE competence_year=2024, max_rows=8). Gold REFERENCE_QUANTITY.
-      Sem crédito.
+      Sem crÃ©dito.
 
   - id: F3-SECTORAL-ANATEL
     fase: F3.2
@@ -498,9 +496,9 @@ items:
     ci: "35460729005"
     motivo_bloqueio: null
     next_action: >
-      Meu Município ZIP/CSV TECHNICALLY_APPROVED com escopo UF=MS,
-      competência 2025-11, serviço Banda Larga Fixa, IBGE7 nativo e
-      max_rows=8. Gold REFERENCE_QUANTITY. Sem crédito.
+      Meu MunicÃ­pio ZIP/CSV TECHNICALLY_APPROVED com escopo UF=MS,
+      competÃªncia 2025-11, serviÃ§o Banda Larga Fixa, IBGE7 nativo e
+      max_rows=8. Gold REFERENCE_QUANTITY. Sem crÃ©dito.
 
   - id: F3-SECTORAL-BCB
     fase: F3.2
@@ -521,8 +519,8 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      SGS 432 (Meta Selic) e 433 (IPCA) TECHNICALLY_APPROVED com fixture mínima
-      e Gold REFERENCE_QUANTITY. OLINDA OData permanece DISCOVERED. Sem crédito.
+      SGS 432 (Meta Selic) e 433 (IPCA) TECHNICALLY_APPROVED com fixture mÃ­nima
+      e Gold REFERENCE_QUANTITY. OLINDA OData permanece DISCOVERED. Sem crÃ©dito.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
@@ -545,7 +543,7 @@ items:
     next_action: >
       API DEMAS TECHNICALLY_APPROVED com escopo UF=MS (codigo_uf=50),
       limit=8, IBGE7 derivado e max_rows=8. Gold REFERENCE_QUANTITY.
-      PII (CNPJ/e-mail/telefone) não sobe a Silver. Sem crédito.
+      PII (CNPJ/e-mail/telefone) nÃ£o sobe a Silver. Sem crÃ©dito.
 
   - id: F3-MUNICIPAL-RESTRICTED
     fase: F3.3
@@ -566,13 +564,13 @@ items:
     ci: null
     motivo_bloqueio: DPA e G0 ausentes; uploadEnabled=false.
     next_action: >
-      Manter /v1/municipal-uploads vazio, uploadEnabled=false, POST → 409.
+      Manter /v1/municipal-uploads vazio, uploadEnabled=false, POST â†’ 409.
       Sem amostra municipal. G0 BLOCKED.
 
   - id: F4-DIAGNOSIS
     fase: F4
     dominio: D5
-    descricao: Diagnóstico municipal técnico com estado vazio funcional
+    descricao: DiagnÃ³stico municipal tÃ©cnico com estado vazio funcional
     dependencias: [F3-IBGE-SIDRA]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -592,7 +590,7 @@ items:
   - id: F4-CADASTRO-360
     fase: F4
     dominio: D4
-    descricao: Cadastro 360 técnico sem PII real
+    descricao: Cadastro 360 tÃ©cnico sem PII real
     dependencias: [F3-RFB-CNPJ, F3-MUNICIPAL-RESTRICTED]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: CREDENTIAL_REQUIRED
@@ -609,12 +607,12 @@ items:
     motivo_bloqueio: Escopo territorial RFB e DPA ausentes; piiPresent=false.
     next_action: >
       Manter /v1/cadastro-360 vazio, piiPresent=false, territoryInvented=false,
-      POST → 409. Sem território inventado. G0 BLOCKED.
+      POST â†’ 409. Sem territÃ³rio inventado. G0 BLOCKED.
 
   - id: F4-AUDIT-RULES
     fase: F4
     dominio: D5
-    descricao: Regras de auditoria versionadas não vinculantes
+    descricao: Regras de auditoria versionadas nÃ£o vinculantes
     dependencias: [F4-DIAGNOSIS]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -634,7 +632,7 @@ items:
   - id: F5-FINDINGS-CASES
     fase: F5
     dominio: D5
-    descricao: Achados, evidências e casos com APIs vazias
+    descricao: Achados, evidÃªncias e casos com APIs vazias
     dependencias: [F4-AUDIT-RULES]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -650,13 +648,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Manter items vazios, POST /v1/cases → 409, legalCommandsEnabled=false.
-      Sem crédito público. G5 BLOCKED.
+      Manter items vazios, POST /v1/cases â†’ 409, legalCommandsEnabled=false.
+      Sem crÃ©dito pÃºblico. G5 BLOCKED.
 
   - id: F5-HUMAN-VALIDATION
     fase: F5
     dominio: D5
-    descricao: Workflow de validação humana (não a homologação institucional)
+    descricao: Workflow de validaÃ§Ã£o humana (nÃ£o a homologaÃ§Ã£o institucional)
     dependencias: [F5-FINDINGS-CASES]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -673,12 +671,12 @@ items:
     motivo_bloqueio: null
     next_action: >
       Manter referenceStates documentais e queue vazia; publishesPublicCredit=false.
-      Distinto da homologação Gold. G4/G5 BLOCKED.
+      Distinto da homologaÃ§Ã£o Gold. G4/G5 BLOCKED.
 
   - id: F5-NOTIFICATIONS
     fase: F5
     dominio: D6
-    descricao: Notificações administrativas desativadas até aprovação humana
+    descricao: NotificaÃ§Ãµes administrativas desativadas atÃ© aprovaÃ§Ã£o humana
     dependencias: [F5-HUMAN-VALIDATION]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -694,13 +692,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Manter items vazios, POST /v1/notifications → 409, sendEnabled=false.
-      Sem comunicação ao contribuinte. G5 BLOCKED.
+      Manter items vazios, POST /v1/notifications â†’ 409, sendEnabled=false.
+      Sem comunicaÃ§Ã£o ao contribuinte. G5 BLOCKED.
 
   - id: F5-COLLECTION
     fase: F5
     dominio: D6
-    descricao: Cobrança administrativa controlada
+    descricao: CobranÃ§a administrativa controlada
     dependencias: [F5-HUMAN-VALIDATION]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -716,7 +714,7 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Manter painel oficial vazio, commandsDisabled=true; fluxo sintético só em
+      Manter painel oficial vazio, commandsDisabled=true; fluxo sintÃ©tico sÃ³ em
       testes de API via tax-credit collection-cases. G0/G4/G5 BLOCKED.
 
   - id: F6-PAYMENTS
@@ -738,13 +736,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Manter /v1/payments vazio, recoveryInvented=false, POST → 409.
-      Sem recuperação inventada. G0/G5 BLOCKED; G6 oficial BLOCKED.
+      Manter /v1/payments vazio, recoveryInvented=false, POST â†’ 409.
+      Sem recuperaÃ§Ã£o inventada. G0/G5 BLOCKED; G6 oficial BLOCKED.
 
   - id: F6-ACTIVE-DEBT
     fase: F6
     dominio: D8
-    descricao: Dívida ativa
+    descricao: DÃ­vida ativa
     dependencias: [F6-PAYMENTS]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: CREDENTIAL_REQUIRED
@@ -760,13 +758,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Manter /v1/active-debt vazio, inscriptionEnabled=false, POST → 409.
-      Sem inscrição real. G0/G5 BLOCKED.
+      Manter /v1/active-debt vazio, inscriptionEnabled=false, POST â†’ 409.
+      Sem inscriÃ§Ã£o real. G0/G5 BLOCKED.
 
   - id: F6-PROCURADORIA
     fase: F6
     dominio: D8
-    descricao: Módulo Procuradoria
+    descricao: MÃ³dulo Procuradoria
     dependencias: [F6-ACTIVE-DEBT]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -782,13 +780,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Manter /v1/procuradoria vazio, altersLegalStatus=false, POST → 409.
-      Sem alteração jurídica automática. G0/G5 BLOCKED.
+      Manter /v1/procuradoria vazio, altersLegalStatus=false, POST â†’ 409.
+      Sem alteraÃ§Ã£o jurÃ­dica automÃ¡tica. G0/G5 BLOCKED.
 
   - id: F7-TRANSFER-RECONCILIATION
     fase: F7
     dominio: D9
-    descricao: Conciliação previsto versus realizado de transferências
+    descricao: ConciliaÃ§Ã£o previsto versus realizado de transferÃªncias
     dependencias: [F3-FPM-MUNICIPAL, F3-STATE-ICMS-ACTIVATION]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -805,13 +803,13 @@ items:
     motivo_bloqueio: null
     next_action: >
       Manter /v1/transfer-reconciliation vazio, createsTaxCredit=false,
-      differenceIsOccurrenceOnly=true, POST → 409. Comparar só quando ambos
-      existirem após backfill FPM/ICMS. G7 oficial BLOCKED.
+      differenceIsOccurrenceOnly=true, POST â†’ 409. Comparar sÃ³ quando ambos
+      existirem apÃ³s backfill FPM/ICMS. G7 oficial BLOCKED.
 
   - id: F8-IBS-CBS
     fase: F8
     dominio: D10
-    descricao: Prontidão IBS/CBS documental e calendário não vinculante
+    descricao: ProntidÃ£o IBS/CBS documental e calendÃ¡rio nÃ£o vinculante
     dependencias: [F3-REGULATORY-BEYOND-EC132]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: NON_BINDING
@@ -833,7 +831,7 @@ items:
   - id: F9-PILOT-TECHNICAL
     fase: F9
     dominio: D1
-    descricao: Prontidão técnica de piloto assistido sem município aprovado
+    descricao: ProntidÃ£o tÃ©cnica de piloto assistido sem municÃ­pio aprovado
     dependencias: [DASHBOARDS-COMPLETE]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -849,13 +847,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Manter /v1/pilot-readiness e /prontidao; technicalReady possível;
-      institutionalReady=false; G9 BLOCKED. Sem município inventado.
+      Manter /v1/pilot-readiness e /prontidao; technicalReady possÃ­vel;
+      institutionalReady=false; G9 BLOCKED. Sem municÃ­pio inventado.
 
   - id: F10-OPS-GOVERNANCE
     fase: F10
     dominio: D1
-    descricao: Operação, governança e gates sem fabricar aprovação
+    descricao: OperaÃ§Ã£o, governanÃ§a e gates sem fabricar aprovaÃ§Ã£o
     dependencias: [F2-OBSERVABILITY]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: BLOCKED
@@ -893,13 +891,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Rotas dedicadas cobranca/gates ainda usam componentes próprios além do
+      Rotas dedicadas cobranca/gates ainda usam componentes prÃ³prios alÃ©m do
       /v1/dashboards/{id}; manter emptySources/lineage nas 13 rotas compartilhadas.
 
   - id: DOC-HOMOLOGATION-PACKAGE
     fase: F10
     dominio: D1
-    descricao: Pacote único final de homologação humana
+    descricao: Pacote Ãºnico final de homologaÃ§Ã£o humana
     dependencias: [DASHBOARDS-COMPLETE, F3-RREO-BACKFILL, F3-FPM-MUNICIPAL, F8-IBS-CBS]
     estado_tecnico: PENDING
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -914,12 +912,12 @@ items:
     commit: 1d7a601
     ci: null
     motivo_bloqueio: null
-    next_action: Não solicitar homologação agora; consolidar somente quando a fila técnica fechar.
+    next_action: NÃ£o solicitar homologaÃ§Ã£o agora; consolidar somente quando a fila tÃ©cnica fechar.
 
   - id: G0-HUMAN
     fase: G0
     dominio: D1
-    descricao: Autorização institucional do programa municipal
+    descricao: AutorizaÃ§Ã£o institucional do programa municipal
     dependencias: []
     estado_tecnico: NOT_APPLICABLE
     estado_institucional: BLOCKED
@@ -933,13 +931,13 @@ items:
     versao: "0.3.15"
     commit: null
     ci: null
-    motivo_bloqueio: Patrocinador, município piloto e DPA ausentes.
-    next_action: Nenhuma ação automática. Não fabricar aprovação.
+    motivo_bloqueio: Patrocinador, municÃ­pio piloto e DPA ausentes.
+    next_action: Nenhuma aÃ§Ã£o automÃ¡tica. NÃ£o fabricar aprovaÃ§Ã£o.
 
   - id: G1-HUMAN
     fase: G1
     dominio: D5
-    descricao: Homologação institucional do diagnóstico
+    descricao: HomologaÃ§Ã£o institucional do diagnÃ³stico
     dependencias: [F4-DIAGNOSIS]
     estado_tecnico: NOT_APPLICABLE
     estado_institucional: BLOCKED
@@ -953,13 +951,13 @@ items:
     versao: "0.3.15"
     commit: null
     ci: null
-    motivo_bloqueio: Diagnóstico municipal não homologado.
-    next_action: Nenhuma ação automática.
+    motivo_bloqueio: DiagnÃ³stico municipal nÃ£o homologado.
+    next_action: Nenhuma aÃ§Ã£o automÃ¡tica.
 
   - id: G4-HUMAN
     fase: G4
     dominio: D5
-    descricao: Homologação especialista ISS
+    descricao: HomologaÃ§Ã£o especialista ISS
     dependencias: [F4-AUDIT-RULES]
     estado_tecnico: NOT_APPLICABLE
     estado_institucional: BLOCKED
@@ -973,8 +971,8 @@ items:
     versao: "0.3.15"
     commit: null
     ci: null
-    motivo_bloqueio: Regras e fórmulas não homologadas.
-    next_action: Nenhuma ação automática.
+    motivo_bloqueio: Regras e fÃ³rmulas nÃ£o homologadas.
+    next_action: Nenhuma aÃ§Ã£o automÃ¡tica.
 
   - id: G9-HUMAN
     fase: G9
@@ -993,13 +991,13 @@ items:
     versao: "0.3.15"
     commit: null
     ci: null
-    motivo_bloqueio: Município e usuários do piloto ausentes.
-    next_action: Nenhuma ação automática.
+    motivo_bloqueio: MunicÃ­pio e usuÃ¡rios do piloto ausentes.
+    next_action: Nenhuma aÃ§Ã£o automÃ¡tica.
 
   - id: G10-HUMAN
     fase: G10
     dominio: D1
-    descricao: Autorização de produção
+    descricao: AutorizaÃ§Ã£o de produÃ§Ã£o
     dependencias: [F10-OPS-GOVERNANCE]
     estado_tecnico: NOT_APPLICABLE
     estado_institucional: BLOCKED
@@ -1013,5 +1011,5 @@ items:
     versao: "0.3.15"
     commit: null
     ci: null
-    motivo_bloqueio: Segurança, operação e aceite institucional ausentes.
-    next_action: Nenhuma ação automática.
+    motivo_bloqueio: SeguranÃ§a, operaÃ§Ã£o e aceite institucional ausentes.
+    next_action: Nenhuma aÃ§Ã£o automÃ¡tica.
