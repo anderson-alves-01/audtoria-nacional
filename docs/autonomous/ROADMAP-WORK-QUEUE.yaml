@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.94/
     versao: "0.3.94"
-    commit: null
+    commit: 176eeaf
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -682,6 +682,7 @@ items:
       Gold REFERENCE_QUANTITY. Sem crédito. Homologação humana pendente.
       Selic/IGP/IPA/INPC trimestrais vazios na fonte.
       Próximo: UF tabular PUBLIC_OPEN restante.
+      Commit: 176eeaf.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
