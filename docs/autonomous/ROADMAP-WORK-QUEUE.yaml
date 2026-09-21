@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.88/
     versao: "0.3.88"
-    commit: null
+    commit: 1440897
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -685,7 +685,8 @@ items:
       baseCalculo=0; última publicação Focus Anuais 2021-02-17 (congelada na
       fonte). Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
-      publicada; ou entity sets Focus mensais/trimestrais OLINDA.
+      publicada; ou entity sets Focus mensais/trimestrais OLINDA. Commit:
+      1440897.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
