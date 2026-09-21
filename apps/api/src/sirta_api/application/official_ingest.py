@@ -1063,33 +1063,50 @@ def _parse_bcb_olinda_expectativas_allowlist(
     timeout = get_settings().official_http_timeout_seconds
     for indicator in allowlist:
         base_calculo = int(indicator_base_calculo.get(indicator, default_base))
-        detalhe_raw = indicator_detalhe.get(indicator)
-        detalhe = str(detalhe_raw).strip() if detalhe_raw is not None else ""
-        if indicator == primary:
-            body = fetched.body
-        else:
-            if http_client is None:
-                raise ConflictError("BCB Expectativas secondary indicators require HTTP client")
-            url = _bcb_olinda_expectativas_url(
-                indicator=indicator,
+        detalhes = _normalize_indicator_detalhes(indicator_detalhe.get(indicator))
+        for index, detalhe in enumerate(detalhes):
+            use_primary_body = indicator == primary and index == 0 and len(detalhes) == 1
+            if use_primary_body:
+                body = fetched.body
+            else:
+                if http_client is None:
+                    raise ConflictError(
+                        "BCB Expectativas secondary indicators require HTTP client"
+                    )
+                url = _bcb_olinda_expectativas_url(
+                    indicator=indicator,
+                    max_rows=max_rows,
+                    base_calculo=base_calculo,
+                    indicator_detalhe=detalhe or None,
+                )
+                secondary = http_client.fetch(url, timeout=timeout)
+                if secondary.status_code >= 400 or not secondary.body:
+                    detail_label = f"/{detalhe}" if detalhe else ""
+                    raise ConflictError(
+                        f"BCB Expectativas indicator {indicator}{detail_label} download failed"
+                    )
+                body = secondary.body
+            part_silver, part_quarantined = parser(
+                body,
+                indicator_allowlist=[indicator],
                 max_rows=max_rows,
-                base_calculo=base_calculo,
-                indicator_detalhe=detalhe or None,
+                value_field=value_field,
+                indicator_units=indicator_units,
             )
-            secondary = http_client.fetch(url, timeout=timeout)
-            if secondary.status_code >= 400 or not secondary.body:
-                raise ConflictError(f"BCB Expectativas indicator {indicator} download failed")
-            body = secondary.body
-        part_silver, part_quarantined = parser(
-            body,
-            indicator_allowlist=[indicator],
-            max_rows=max_rows,
-            value_field=value_field,
-            indicator_units=indicator_units,
-        )
-        silver.extend(part_silver)
-        quarantined.extend(part_quarantined)
+            silver.extend(part_silver)
+            quarantined.extend(part_quarantined)
     return silver, quarantined
+
+
+def _normalize_indicator_detalhes(raw: object) -> list[str]:
+    """Accept a single detalhe string or a list of detalhes; empty means no filter."""
+    if raw is None:
+        return [""]
+    if isinstance(raw, (list, tuple)):
+        values = [str(item).strip() for item in raw if str(item).strip()]
+        return values or [""]
+    text = str(raw).strip()
+    return [text] if text else [""]
 
 
 def _fetch_mg_dims(

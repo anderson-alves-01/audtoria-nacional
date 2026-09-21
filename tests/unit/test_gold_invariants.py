@@ -1269,6 +1269,41 @@ def test_bcb_olinda_expectativas_parses_divida_and_balanca_saldo_units() -> None
     assert "Saldo" in silver_balanca[0]["transferName"]
 
 
+def test_bcb_olinda_expectativas_parses_balanca_exportacoes_and_importacoes() -> None:
+    exportacoes = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-balanca-exportacoes-anuais-top8.json"
+    ).read_bytes()
+    importacoes = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-balanca-importacoes-anuais-top8.json"
+    ).read_bytes()
+    silver_exp, q_exp = parse_bcb_olinda_expectativas(
+        exportacoes,
+        indicator_allowlist=["Balança comercial"],
+        max_rows=8,
+        indicator_units={"Balança comercial": "USD_BILLION"},
+    )
+    silver_imp, q_imp = parse_bcb_olinda_expectativas(
+        importacoes,
+        indicator_allowlist=["Balança comercial"],
+        max_rows=8,
+        indicator_units={"Balança comercial": "USD_BILLION"},
+    )
+    assert q_exp == []
+    assert q_imp == []
+    assert len(silver_exp) == 8
+    assert len(silver_imp) == 8
+    assert silver_exp[0]["seriesId"] == "Balança comercial"
+    assert silver_exp[0]["unit"] == "USD_BILLION"
+    assert silver_exp[0]["value"] == 372.9
+    assert silver_exp[0]["indicatorDetail"] == "Exportações"
+    assert "Exportações" in silver_exp[0]["transferName"]
+    assert silver_imp[0]["seriesId"] == "Balança comercial"
+    assert silver_imp[0]["unit"] == "USD_BILLION"
+    assert silver_imp[0]["value"] == 294.0198
+    assert silver_imp[0]["indicatorDetail"] == "Importações"
+    assert "Importações" in silver_imp[0]["transferName"]
+
+
 def test_bcb_olinda_expectativas_parses_resultado_primario_and_conta_corrente() -> None:
     resultado = Path(
         "tests/fixtures/official-snapshots/bcb-olinda-expectativas-resultado-primario-anuais-top8.json"

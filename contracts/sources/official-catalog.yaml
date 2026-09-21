@@ -3591,7 +3591,7 @@ sources:
       fixture mínima (ultimos=3). Homologação humana pendente. Não constitui crédito.
 
   - source_id: BCB-OLINDA-EXPECTATIVAS
-    name: Banco Central — OLINDA Expectativas Focus anuais (IPCA/decomposições, Selic, Câmbio, PIB, Produção industrial, IPCA-15, IPC-Fipe, IPA-M/DI, IGP, INPC, Dívida, Balança, Resultado, Conta corrente, Desocupação, Invest. direto)
+    name: Banco Central — OLINDA Expectativas Focus anuais (IPCA/decomposições, Selic, Câmbio, PIB, Produção industrial, IPCA-15, IPC-Fipe, IPA-M/DI, IGP, INPC, Dívida, Balança Saldo/Exportações/Importações, Resultado, Conta corrente, Desocupação, Invest. direto)
     maintainer: Banco Central do Brasil
     official_domain: bcb.gov.br
     official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
@@ -3608,7 +3608,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: bcb_olinda_expectativas
-    layout_version: bcb-olinda-expectativas-anuais-v22
+    layout_version: bcb-olinda-expectativas-anuais-v23
     periodicity: as_published
     competence: as_published
     granularity: series
@@ -3665,7 +3665,7 @@ sources:
         Dívida líquida do setor público: 0
         Dívida bruta do governo geral: 0
       indicator_detalhe:
-        Balança comercial: Saldo
+        Balança comercial: [Saldo, Exportações, Importações]
       indicator_units:
         IPCA: PERCENT_PER_YEAR
         IPCA Livres: PERCENT_PER_YEAR
@@ -3714,16 +3714,18 @@ sources:
       PIB Despesa de consumo da administração pública, PIB Exportação de bens e
       serviços, PIB Importação de bens e serviços, Produção industrial, IPCA-15,
       IPC-Fipe, IPA-M, IPA-DI, IGP-M, IGP-DI, INPC, Dívida líquida do setor
-      público, Dívida bruta do governo geral, Balança comercial/Saldo, Resultado
-      primário, Conta corrente, Resultado nominal, Taxa de desocupação,
-      Investimento direto no país), com baseCalculo default=1 e override por
-      indicador (IPCA-15/IPC-Fipe/IPA-M/IPA-DI/IGP-DI/INPC/Dívida líquida/Dívida
-      bruta=0), IndicadorDetalhe=Saldo para Balança comercial, limitados a
-      max_rows=N por indicador (multi-fetch). Competência = Data de publicação;
+      público, Dívida bruta do governo geral, Balança comercial
+      (Saldo/Exportações/Importações), Resultado primário, Conta corrente,
+      Resultado nominal, Taxa de desocupação, Investimento direto no país), com
+      baseCalculo default=1 e override por indicador
+      (IPCA-15/IPC-Fipe/IPA-M/IPA-DI/IGP-DI/INPC/Dívida líquida/Dívida bruta=0),
+      multi-detalhe Balança comercial, limitados a max_rows=N por
+      indicador/detalhe (multi-fetch). Competência = Data de publicação;
       horizonte = DataReferencia. Unidades distintas: PERCENT_OF_GDP (Dívidas,
-      Resultado primário, Resultado nominal), USD_BILLION (Balança Saldo, Conta
-      corrente, Investimento direto) e PERCENT (Taxa de desocupação). Sem crédito.
-    methodology_version: official-bcb-olinda-expectativas-anuais-v22
+      Resultado primário, Resultado nominal), USD_BILLION (Balança
+      Saldo/Exportações/Importações, Conta corrente, Investimento direto) e
+      PERCENT (Taxa de desocupação). Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-anuais-v23
     notes: >
       OData OLINDA oficial verificado. Ativação técnica com allowlist
       IPCA+IPCA Livres+IPCA Serviços+IPCA Administrados+IPCA Alimentação no
@@ -3733,15 +3735,15 @@ sources:
       administração pública+PIB Exportação de bens e serviços+PIB Importação
       de bens e serviços+Produção industrial+IPCA-15+IPC-Fipe+IPA-M+IPA-DI+
       IGP-M+IGP-DI+INPC+Dívida líquida do setor público+Dívida bruta do governo
-      geral+Balança comercial (Saldo)+Resultado primário+Conta corrente+Resultado
-      nominal+Taxa de desocupação+Investimento direto no país, $top/max_rows=8
-      por indicador e fixtures mínimas. Produção industrial: última
-      publicação Focus Anuais observada em 2021-09-13 (série congelada na
-      fonte; ainda PUBLIC_OPEN). IPCA-15/IPC-Fipe/IPA-M/IPA-DI: baseCalculo=0
-      obrigatório (base=1 retorna vazio); última publicação Focus Anuais
-      observada em 2021-02-17 (séries congeladas na fonte; ainda PUBLIC_OPEN).
-      Distinto de BCB-SGS-OLINDA (REST SGS). Homologação humana pendente. Não
-      constitui crédito.
+      geral+Balança comercial (Saldo+Exportações+Importações)+Resultado
+      primário+Conta corrente+Resultado nominal+Taxa de desocupação+Investimento
+      direto no país, $top/max_rows=8 por indicador/detalhe e fixtures mínimas.
+      Produção industrial: última publicação Focus Anuais observada em
+      2021-09-13 (série congelada na fonte; ainda PUBLIC_OPEN).
+      IPCA-15/IPC-Fipe/IPA-M/IPA-DI: baseCalculo=0 obrigatório (base=1 retorna
+      vazio); última publicação Focus Anuais observada em 2021-02-17 (séries
+      congeladas na fonte; ainda PUBLIC_OPEN). Distinto de BCB-SGS-OLINDA
+      (REST SGS). Homologação humana pendente. Não constitui crédito.
 
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)

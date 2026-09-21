@@ -1,0 +1,820 @@
+{
+  "summary": {
+    "sanity_ipca": {
+      "ok": true,
+      "count": 8,
+      "median": 4.9741,
+      "error": null
+    },
+    "found_new_indicators": [],
+    "balanca_hits": [
+      {
+        "detalhe": "Exportações",
+        "baseCalculo": 1,
+        "count": 8,
+        "median": 372.9,
+        "data": "2026-09-18"
+      },
+      {
+        "detalhe": "Exportações",
+        "baseCalculo": 0,
+        "count": 8,
+        "median": 373.2,
+        "data": "2026-09-18"
+      },
+      {
+        "detalhe": "Importações",
+        "baseCalculo": 1,
+        "count": 8,
+        "median": 294.0198,
+        "data": "2026-09-18"
+      },
+      {
+        "detalhe": "Importações",
+        "baseCalculo": 0,
+        "count": 8,
+        "median": 294.079,
+        "data": "2026-09-18"
+      },
+      {
+        "detalhe": "Saldo",
+        "baseCalculo": 1,
+        "count": 8,
+        "median": 77.58,
+        "data": "2026-09-18"
+      },
+      {
+        "detalhe": "Saldo",
+        "baseCalculo": 0,
+        "count": 8,
+        "median": 77.0,
+        "data": "2026-09-18"
+      }
+    ],
+    "distinct_names_count": 1,
+    "missing_from_allowlist": [],
+    "balanca_detalhe_variants": [
+      {
+        "Indicador": "Balança comercial",
+        "IndicadorDetalhe": "Exportações",
+        "baseCalculo": 0,
+        "n": 4000
+      }
+    ],
+    "distinct_pairs_count": 1
+  },
+  "distinct": {
+    "pages": [
+      {
+        "page": 0,
+        "rows": 100
+      },
+      {
+        "page": 1,
+        "rows": 100
+      },
+      {
+        "page": 2,
+        "rows": 100
+      },
+      {
+        "page": 3,
+        "rows": 100
+      },
+      {
+        "page": 4,
+        "rows": 100
+      },
+      {
+        "page": 5,
+        "rows": 100
+      },
+      {
+        "page": 6,
+        "rows": 100
+      },
+      {
+        "page": 7,
+        "rows": 100
+      },
+      {
+        "page": 8,
+        "rows": 100
+      },
+      {
+        "page": 9,
+        "rows": 100
+      },
+      {
+        "page": 10,
+        "rows": 100
+      },
+      {
+        "page": 11,
+        "rows": 100
+      },
+      {
+        "page": 12,
+        "rows": 100
+      },
+      {
+        "page": 13,
+        "rows": 100
+      },
+      {
+        "page": 14,
+        "rows": 100
+      },
+      {
+        "page": 15,
+        "rows": 100
+      },
+      {
+        "page": 16,
+        "rows": 100
+      },
+      {
+        "page": 17,
+        "rows": 100
+      },
+      {
+        "page": 18,
+        "rows": 100
+      },
+      {
+        "page": 19,
+        "rows": 100
+      },
+      {
+        "page": 20,
+        "rows": 100
+      },
+      {
+        "page": 21,
+        "rows": 100
+      },
+      {
+        "page": 22,
+        "rows": 100
+      },
+      {
+        "page": 23,
+        "rows": 100
+      },
+      {
+        "page": 24,
+        "rows": 100
+      },
+      {
+        "page": 25,
+        "rows": 100
+      },
+      {
+        "page": 26,
+        "rows": 100
+      },
+      {
+        "page": 27,
+        "rows": 100
+      },
+      {
+        "page": 28,
+        "rows": 100
+      },
+      {
+        "page": 29,
+        "rows": 100
+      },
+      {
+        "page": 30,
+        "rows": 100
+      },
+      {
+        "page": 31,
+        "rows": 100
+      },
+      {
+        "page": 32,
+        "rows": 100
+      },
+      {
+        "page": 33,
+        "rows": 100
+      },
+      {
+        "page": 34,
+        "rows": 100
+      },
+      {
+        "page": 35,
+        "rows": 100
+      },
+      {
+        "page": 36,
+        "rows": 100
+      },
+      {
+        "page": 37,
+        "rows": 100
+      },
+      {
+        "page": 38,
+        "rows": 100
+      },
+      {
+        "page": 39,
+        "rows": 100
+      }
+    ],
+    "pairs": [
+      {
+        "Indicador": "Balança comercial",
+        "IndicadorDetalhe": "Exportações",
+        "baseCalculo": 0,
+        "n": 4000
+      }
+    ]
+  },
+  "results": [
+    {
+      "indicator": "IPCA",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 8,
+      "sample": [
+        {
+          "Indicador": "IPCA",
+          "Data": "2026-09-18",
+          "DataReferencia": "2026",
+          "Media": 4.9719,
+          "Mediana": 4.9741,
+          "baseCalculo": 1
+        },
+        {
+          "Indicador": "IPCA",
+          "Data": "2026-09-18",
+          "DataReferencia": "2027",
+          "Media": 4.3642,
+          "Mediana": 4.3534,
+          "baseCalculo": 1
+        },
+        {
+          "Indicador": "IPCA",
+          "Data": "2026-09-18",
+          "DataReferencia": "2028",
+          "Media": 3.8094,
+          "Mediana": 3.8013,
+          "baseCalculo": 1
+        }
+      ],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IGP-10",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IGP-10%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IGP-10",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IGP-10%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPA",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPA%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPA",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPA%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPC-Br",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPC-Br%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPC-Br",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPC-Br%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "INCC-M",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27INCC-M%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "INCC-M",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27INCC-M%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "INCC-DI",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27INCC-DI%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "INCC-DI",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27INCC-DI%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "INCC",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27INCC%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "INCC",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27INCC%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Habitação",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Habita%C3%A7%C3%A3o%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Habitação",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Habita%C3%A7%C3%A3o%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Transportes",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Transportes%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Transportes",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Transportes%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Educação",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Educa%C3%A7%C3%A3o%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Educação",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Educa%C3%A7%C3%A3o%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Comunicação",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Comunica%C3%A7%C3%A3o%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Comunicação",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Comunica%C3%A7%C3%A3o%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Vestuário",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Vestu%C3%A1rio%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "IPCA Vestuário",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27IPCA%20Vestu%C3%A1rio%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Meta para inflação",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Meta%20para%20infla%C3%A7%C3%A3o%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Meta para inflação",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Meta%20para%20infla%C3%A7%C3%A3o%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Produção Industrial",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Produ%C3%A7%C3%A3o%20Industrial%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Produção Industrial",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Produ%C3%A7%C3%A3o%20Industrial%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Exportações",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Exporta%C3%A7%C3%B5es%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Exportações",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Exporta%C3%A7%C3%B5es%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Importações",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Importa%C3%A7%C3%B5es%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Importações",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Importa%C3%A7%C3%B5es%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "PIB",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27PIB%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "PIB",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27PIB%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "TJLP",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27TJLP%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "TJLP",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27TJLP%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "TR",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27TR%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "TR",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "sample": [],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27TR%27%20and%20baseCalculo%20eq%200&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Balança comercial",
+      "baseCalculo": 1,
+      "detalhe": "Exportações",
+      "count": 8,
+      "sample": [
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Exportações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2026",
+          "Media": 374.2583,
+          "Mediana": 372.9,
+          "baseCalculo": 1
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Exportações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2027",
+          "Media": 377.5183,
+          "Mediana": 374.3,
+          "baseCalculo": 1
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Exportações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2028",
+          "Media": 381.2245,
+          "Mediana": 386.24,
+          "baseCalculo": 1
+        }
+      ],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Balan%C3%A7a%20comercial%27%20and%20baseCalculo%20eq%201%20and%20IndicadorDetalhe%20eq%20%27Exporta%C3%A7%C3%B5es%27&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Balança comercial",
+      "baseCalculo": 0,
+      "detalhe": "Exportações",
+      "count": 8,
+      "sample": [
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Exportações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2026",
+          "Media": 373.6562,
+          "Mediana": 373.2,
+          "baseCalculo": 0
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Exportações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2027",
+          "Media": 377.5567,
+          "Mediana": 374.3,
+          "baseCalculo": 0
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Exportações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2028",
+          "Media": 387.1624,
+          "Mediana": 386.24,
+          "baseCalculo": 0
+        }
+      ],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Balan%C3%A7a%20comercial%27%20and%20baseCalculo%20eq%200%20and%20IndicadorDetalhe%20eq%20%27Exporta%C3%A7%C3%B5es%27&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Balança comercial",
+      "baseCalculo": 1,
+      "detalhe": "Importações",
+      "count": 8,
+      "sample": [
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Importações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2026",
+          "Media": 295.9733,
+          "Mediana": 294.0198,
+          "baseCalculo": 1
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Importações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2027",
+          "Media": 299.6758,
+          "Mediana": 295.0,
+          "baseCalculo": 1
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Importações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2028",
+          "Media": 306.8595,
+          "Mediana": 303.2,
+          "baseCalculo": 1
+        }
+      ],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Balan%C3%A7a%20comercial%27%20and%20baseCalculo%20eq%201%20and%20IndicadorDetalhe%20eq%20%27Importa%C3%A7%C3%B5es%27&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Balança comercial",
+      "baseCalculo": 0,
+      "detalhe": "Importações",
+      "count": 8,
+      "sample": [
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Importações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2026",
+          "Media": 295.5886,
+          "Mediana": 294.079,
+          "baseCalculo": 0
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Importações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2027",
+          "Media": 298.5842,
+          "Mediana": 295.0,
+          "baseCalculo": 0
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Importações",
+          "Data": "2026-09-18",
+          "DataReferencia": "2028",
+          "Media": 306.3347,
+          "Mediana": 305.0,
+          "baseCalculo": 0
+        }
+      ],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Balan%C3%A7a%20comercial%27%20and%20baseCalculo%20eq%200%20and%20IndicadorDetalhe%20eq%20%27Importa%C3%A7%C3%B5es%27&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Balança comercial",
+      "baseCalculo": 1,
+      "detalhe": "Saldo",
+      "count": 8,
+      "sample": [
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Saldo",
+          "Data": "2026-09-18",
+          "DataReferencia": "2026",
+          "Media": 78.285,
+          "Mediana": 77.58,
+          "baseCalculo": 1
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Saldo",
+          "Data": "2026-09-18",
+          "DataReferencia": "2027",
+          "Media": 77.8425,
+          "Mediana": 79.15,
+          "baseCalculo": 1
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Saldo",
+          "Data": "2026-09-18",
+          "DataReferencia": "2028",
+          "Media": 74.365,
+          "Mediana": 73.0,
+          "baseCalculo": 1
+        }
+      ],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Balan%C3%A7a%20comercial%27%20and%20baseCalculo%20eq%201%20and%20IndicadorDetalhe%20eq%20%27Saldo%27&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    },
+    {
+      "indicator": "Balança comercial",
+      "baseCalculo": 0,
+      "detalhe": "Saldo",
+      "count": 8,
+      "sample": [
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Saldo",
+          "Data": "2026-09-18",
+          "DataReferencia": "2026",
+          "Media": 78.0676,
+          "Mediana": 77.0,
+          "baseCalculo": 0
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Saldo",
+          "Data": "2026-09-18",
+          "DataReferencia": "2027",
+          "Media": 78.9725,
+          "Mediana": 79.0,
+          "baseCalculo": 0
+        },
+        {
+          "Indicador": "Balança comercial",
+          "IndicadorDetalhe": "Saldo",
+          "Data": "2026-09-18",
+          "DataReferencia": "2028",
+          "Media": 80.8276,
+          "Mediana": 79.0,
+          "baseCalculo": 0
+        }
+      ],
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27Balan%C3%A7a%20comercial%27%20and%20baseCalculo%20eq%200%20and%20IndicadorDetalhe%20eq%20%27Saldo%27&%24orderby=Data%20desc%2CDataReferencia%20asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": true
+    }
+  ]
+}
