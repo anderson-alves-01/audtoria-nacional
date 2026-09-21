@@ -663,13 +663,13 @@ items:
     evidencia: evidence/releases/0.3.66/
     versao: "0.3.66"
     commit: 087fd9a
-    ci: null
+    ci: "35582387470"
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA, max_rows=8)
       TECHNICALLY_APPROVED com fixtures mínimas e Gold REFERENCE_QUANTITY.
       Sem crédito. Homologação humana pendente.
-      Commit: 087fd9a.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35582387470.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
