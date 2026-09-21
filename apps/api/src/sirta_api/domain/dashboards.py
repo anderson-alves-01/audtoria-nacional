@@ -93,6 +93,7 @@ DASHBOARDS = (
             "TESOURO-IPI-EXP-VALORES",
             "TESOURO-ROYALTIES-VALORES",
             "TESOURO-LC176-VALORES",
+            "TESOURO-IOF-OURO-VALORES",
             "TESOURO-TRANSPARENTE",
             "ESTADO-ICMS-QUOTA",
             "ESTADO-IPVA-QUOTA",

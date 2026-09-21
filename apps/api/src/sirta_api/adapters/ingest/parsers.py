@@ -2592,6 +2592,8 @@ def _tesouro_transfer_family(name: str) -> str:
         "Royalties": "ROYALTY",
         "LC176": "LC176",
         "LC 176/2020 (ADO25)": "LC176",
+        "IOF-Ouro": "IOF_OURO",
+        "IOF Ouro": "IOF_OURO",
     }
     if name in mapping:
         return mapping[name]

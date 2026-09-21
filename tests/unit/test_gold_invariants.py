@@ -196,6 +196,29 @@ def test_tesouro_monthly_csv_lc176_allowlist() -> None:
     )
 
 
+def test_tesouro_monthly_csv_iof_ouro_allowlist() -> None:
+    body = Path("tests/fixtures/official-snapshots/tesouro-fpm-202608.csv").read_bytes()
+    lookup = {
+        ("COLINAS", "MA"): "2103505",
+        ("CONCEICAO DO LAGO-ACU", "MA"): "2103554",
+    }
+    silver, quarantined = parse_tesouro_monthly_csv(
+        body,
+        ibge_lookup=lookup,
+        item_allowlist=["IOF Ouro"],
+        transfer_name="IOF-Ouro",
+    )
+    assert len(quarantined) == 1
+    assert all(row["modality"] == "IOF_OURO_RECEIVED" for row in silver)
+    assert all(row["transferName"] == "IOF-Ouro" for row in silver)
+    assert {row["ibgeCode"] for row in silver} == {"2103505", "2103554"}
+    assert sum(row["value"] for row in silver) == 21.0
+    assert presentation_for("TESOURO-IOF-OURO-VALORES")["createsTaxCredit"] is False
+    assert presentation_for("TESOURO-IOF-OURO-VALORES")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+
+
 def test_state_pe_csv_joins_ibge_and_publishes_zero_ipva() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/pe-transferencias-municipais-2024.csv"

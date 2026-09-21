@@ -76,6 +76,10 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert lc176.status_code == 200
     assert lc176.json()["silverCount"] == 2
     assert lc176.json()["taxCreditCreated"] is False
+    iof = api_client.post("/v1/data-sources/TESOURO-IOF-OURO-VALORES/ingest", headers=_admin())
+    assert iof.status_code == 200
+    assert iof.json()["silverCount"] == 2
+    assert iof.json()["taxCreditCreated"] is False
     pe_icms = api_client.post("/v1/data-sources/ESTADO-ICMS-QUOTA/ingest", headers=_admin())
     assert pe_icms.status_code == 200
     assert pe_icms.json()["silverCount"] == 2
@@ -212,6 +216,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "TESOURO-IPI-EXP-VALORES",
         "TESOURO-ROYALTIES-VALORES",
         "TESOURO-LC176-VALORES",
+        "TESOURO-IOF-OURO-VALORES",
         "ESTADO-ICMS-QUOTA",
         "ESTADO-IPVA-QUOTA",
         "ESTADO-BA-ICMS-QUOTA",
@@ -258,6 +263,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["TESOURO-IPI-EXP-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-ROYALTIES-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-LC176-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-IOF-OURO-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-BA-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -319,6 +325,8 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["TESOURO-ROYALTIES-VALORES"]["ingestAllowed"] is True
     assert by_id["TESOURO-LC176-VALORES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["TESOURO-LC176-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-IOF-OURO-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-IOF-OURO-VALORES"]["ingestAllowed"] is True
     assert by_id["ESTADO-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-ICMS-QUOTA"]["ingestAllowed"] is True
