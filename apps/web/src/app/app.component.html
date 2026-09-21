@@ -1,41 +1,35 @@
 <a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
-<header>
-  <p>SIRTA Municipal · implementação 0.3.27 · onda 1 oficial concluída · roadmap em progresso · homologação humana pendente</p>
-  <nav aria-label="Principal">
-    <a routerLink="/">Saúde</a>
-    <a routerLink="/executivo">Executivo</a>
-    <a routerLink="/financeiro">Financeiro</a>
-    <a routerLink="/economia">Economia</a>
-    <a routerLink="/operacao">Operação</a>
-    <a routerLink="/achados">Achados</a>
-    <a routerLink="/casos-auditoria">Casos</a>
-    <a routerLink="/notificacoes">Notificações</a>
-    <a routerLink="/cobranca">Cobrança</a>
-    <a routerLink="/pagamentos">Pagamentos</a>
-    <a routerLink="/divida-ativa">Dívida ativa</a>
-    <a routerLink="/procuradoria">Procuradoria</a>
-    <a routerLink="/transferencias">Transferências</a>
-    <a routerLink="/conciliacao-transferencias">Conciliação</a>
-    <a routerLink="/ibs-cbs">IBS/CBS</a>
-    <a routerLink="/qualidade">Qualidade</a>
-    <a routerLink="/auditoria">Auditoria</a>
-    <a routerLink="/diagnostico">Diagnóstico</a>
-    <a routerLink="/regras-auditoria">Regras</a>
-    <a routerLink="/gates">Gates</a>
-    <a routerLink="/operacao-governanca">Ops</a>
-    <a routerLink="/upload-municipal">Upload municipal</a>
-    <a routerLink="/cadastro-360">Cadastro 360</a>
-    <a routerLink="/setorial">Setorial</a>
-    <a routerLink="/transferencias-estaduais">ICMS/IPVA estadual</a>
-    <a routerLink="/publico">Público</a>
-    <a routerLink="/prontidao">Prontidão</a>
-    <a routerLink="/funil">Funil</a>
-    <a routerLink="/fontes">Fontes</a>
-    <a routerLink="/validacao">Validação</a>
-    <a routerLink="/validacao-humana">Validação humana</a>
-    <a routerLink="/calendario">Calendário</a>
+
+<header class="shell-header">
+  <div class="shell-brand">
+    <div class="shell-brand-text">
+      <p class="shell-product">{{ title }}</p>
+      <p class="shell-meta">
+        implementação {{ implementationVersion }} · {{ statusLine }}
+      </p>
+    </div>
+  </div>
+
+  <nav class="shell-nav" aria-label="Principal">
+    @for (group of navGroups; track group.id) {
+      <div class="shell-nav-group">
+        <p class="shell-nav-label" [id]="'nav-' + group.id">{{ group.label }}</p>
+        <ul class="shell-nav-list" [attr.aria-labelledby]="'nav-' + group.id">
+          @for (item of group.items; track item.path) {
+            <li>
+              <a
+                [routerLink]="item.path"
+                routerLinkActive="is-active"
+                [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+              >{{ item.label }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
   </nav>
 </header>
-<main id="conteudo-principal">
+
+<main id="conteudo-principal" class="shell-main">
   <router-outlet />
 </main>
