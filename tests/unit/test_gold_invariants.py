@@ -1269,6 +1269,37 @@ def test_bcb_olinda_expectativas_parses_divida_and_balanca_saldo_units() -> None
     assert "Saldo" in silver_balanca[0]["transferName"]
 
 
+def test_bcb_olinda_expectativas_parses_resultado_primario_and_conta_corrente() -> None:
+    resultado = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-resultado-primario-anuais-top8.json"
+    ).read_bytes()
+    conta = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-conta-corrente-anuais-top8.json"
+    ).read_bytes()
+    silver_resultado, q_resultado = parse_bcb_olinda_expectativas(
+        resultado,
+        indicator_allowlist=["Resultado primário"],
+        max_rows=8,
+        indicator_units={"Resultado primário": "PERCENT_OF_GDP"},
+    )
+    silver_conta, q_conta = parse_bcb_olinda_expectativas(
+        conta,
+        indicator_allowlist=["Conta corrente"],
+        max_rows=8,
+        indicator_units={"Conta corrente": "USD_BILLION"},
+    )
+    assert q_resultado == []
+    assert q_conta == []
+    assert len(silver_resultado) == 8
+    assert len(silver_conta) == 8
+    assert silver_resultado[0]["seriesId"] == "Resultado primário"
+    assert silver_resultado[0]["unit"] == "PERCENT_OF_GDP"
+    assert silver_resultado[0]["value"] == -0.4
+    assert silver_conta[0]["seriesId"] == "Conta corrente"
+    assert silver_conta[0]["unit"] == "USD_BILLION"
+    assert silver_conta[0]["value"] == -60.85
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
