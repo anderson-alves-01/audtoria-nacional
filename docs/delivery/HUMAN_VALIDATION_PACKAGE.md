@@ -11,11 +11,12 @@ Nenhum indicador abaixo está homologado, exigível, cobrável ou classificado c
 1. SIDRA 6579 (população) — quantidade de referência, não crédito.
 2. SIDRA 5938 variável 37 (PIB) — quantidade de referência, não potencial de ISS.
 3. SIDRA 5938 variável 6575 — permanece em quarentena quando a célula oficial é `...`, sem interpolação.
-4. SICONFI `/entes` — cadastro de cobertura, não demonstrativo fiscal.
-5. Tesouro Aria `/custom/transferencias` — dicionário de tipos. FPM código 3 não é valor transferido.
-6. Tesouro CKAN `Transferencia_Mensal_Municipios_202609.csv` — valores de FPM publicados (join IBGE via SICONFI/entes).
-7. SICONFI RREO e DCA — conectores particionados com checkpoint; carga nacional limitada por `max_entes_per_run`.
-8. EC 132 — documento oficial com retry/Senado; `binding=false`, `operational=false`, `homologated=false`.
+4. SIDRA 9509 CEMP (707/662/367) — ocupação, massa salarial e empresas; referência, não base de ISS.
+5. SICONFI `/entes` — cadastro de cobertura, não demonstrativo fiscal.
+6. Tesouro Aria `/custom/transferencias` — dicionário de tipos. FPM código 3 não é valor transferido.
+7. Tesouro CKAN `Transferencia_Mensal_Municipios_202609.csv` — valores de FPM publicados (join IBGE via SICONFI/entes).
+8. SICONFI RREO e DCA — conectores particionados com checkpoint; carga nacional limitada por `max_entes_per_run`.
+9. EC 132 — documento oficial com retry/Senado; `binding=false`, `operational=false`, `homologated=false`.
 
 ## Divergência de cobertura
 

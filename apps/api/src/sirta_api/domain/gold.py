@@ -24,6 +24,13 @@ PRESENTATION = {
             "PIB municipal publicado pelo IBGE. Não é crédito tributário nem potencial de ISS."
         ),
     },
+    "IBGE-SIDRA-CEMP": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Cadastro Central de Empresas (SIDRA 9509): ocupação, massa salarial e "
+            "empresas atuantes. Não é base de ISS nem crédito tributário."
+        ),
+    },
     "SICONFI-ENTES": {
         "valueKind": "COVERAGE_REGISTRY",
         "label": "Cadastro de entes do SICONFI. Não é demonstrativo fiscal (RREO/DCA).",

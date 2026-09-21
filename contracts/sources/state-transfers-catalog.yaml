@@ -13,6 +13,9 @@ notes: >
   state_rn_xls / state_ma_xls / state_pr_html).
   PA parcial TECHNICALLY_APPROVED via ICMS Verde SEMAS XLSX
   (state_pa_icms_verde_xlsx; componente ecológico ≤8%, não cota ICMS total).
+  Ciclo 0.3.48 re-sondou sem nova ativação estadual: RJ IP HTML block; GO ZIP
+  download 500 e datastore só IPVA; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
+  SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF.
   MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
   CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS ICMS/IPVA via
   CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG ativado; AC IPVA

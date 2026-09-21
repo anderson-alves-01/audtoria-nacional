@@ -13,6 +13,10 @@ SNAPSHOT_URLS = {
         "https://servicodados.ibge.gov.br/api/v3/agregados/5938/"
         "periodos/2023/variaveis/37|6575?localidades=N6[all]"
     ): "ibge-5938.json",
+    (
+        "https://servicodados.ibge.gov.br/api/v3/agregados/9509/"
+        "periodos/2024/variaveis/707|662|367?localidades=N6[all]"
+    ): "ibge-9509.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes": "siconfi-entes.json",
     (
         "https://apiapex.tesouro.gov.br/aria/v1/"

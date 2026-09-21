@@ -73,6 +73,49 @@ sources:
     methodology_version: official-sidra-5938-v1
     notes: Último período publicado verificado em 2026-09-18 foi 2023.
 
+  - source_id: IBGE-SIDRA-CEMP
+    name: IBGE/SIDRA — Cadastro Central de Empresas municipal (tabela 9509)
+    maintainer: IBGE
+    official_domain: servicodados.ibge.gov.br
+    official_url: https://sidra.ibge.gov.br/tabela/9509
+    endpoint: https://servicodados.ibge.gov.br/api/v3/agregados/9509/periodos/2024/variaveis/707|662|367?localidades=N6[all]
+    documentation_url: https://servicodados.ibge.gov.br/api/docs/agregados?versao=3
+    dataset: SIDRA-9509
+    dictionary_url: https://sidra.ibge.gov.br/tabela/9509
+    purpose: >
+      Pessoal ocupado, massa salarial e número de empresas atuantes por município
+      como contexto econômico territorial; nunca base de ISS nem crédito
+    legal_basis: Cadastro Central de Empresas / SIDRA publicado pelo IBGE
+    license_terms: termos de uso do IBGE para dados abertos da API Aggregates v3
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: ibge_sidra_series
+    layout_version: sidra-agregados-v3-9509
+    periodicity: annual
+    competence: "2024"
+    granularity: municipality
+    parameters:
+      agregado: "9509"
+      variavel: "707|662|367"
+      localidades: N6[all]
+      periodo: "2024"
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: ibge_cemp_municipal_totals
+    formula: >
+      Valores municipais publicados na tabela SIDRA 9509, variáveis 707 (pessoal
+      ocupado), 662 (salários e outras remunerações em mil reais) e 367 (empresas
+      atuantes), localidades N6, competência da série oficial. Células '...', '-'
+      ou 'X' são quarentenadas. Sem interpolação. Não constitui crédito.
+    methodology_version: official-sidra-9509-v1
+    notes: >
+      PUBLIC_OPEN verificado em 2026-09-20 (competência 2024). Agregados
+      municipais do CEMP; não é microdado RAIS. Homologação humana pendente.
+
   - source_id: SICONFI-ENTES
     name: SICONFI — cadastro de entes
     maintainer: Tesouro Nacional

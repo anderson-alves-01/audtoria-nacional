@@ -3,7 +3,13 @@ DASHBOARDS = (
         "id": "executivo",
         "path": "/executivo",
         "title": "Painel executivo",
-        "goldSourceIds": ("IBGE-SIDRA", "IBGE-SIDRA-PIB", "SICONFI-ENTES", "COVERAGE-DIVERGENCE"),
+        "goldSourceIds": (
+            "IBGE-SIDRA",
+            "IBGE-SIDRA-PIB",
+            "IBGE-SIDRA-CEMP",
+            "SICONFI-ENTES",
+            "COVERAGE-DIVERGENCE",
+        ),
         "emptyReason": "Sem Gold oficial publicado para o recorte executivo.",
         "commandsDisabled": True,
     },
@@ -22,6 +28,7 @@ DASHBOARDS = (
         "goldSourceIds": (
             "IBGE-SIDRA-PIB",
             "IBGE-SIDRA",
+            "IBGE-SIDRA-CEMP",
             "ANP-REVENDEDORES",
             "ANEEL-DADOS-ABERTOS",
             "BCB-SGS-OLINDA",
@@ -29,7 +36,9 @@ DASHBOARDS = (
             "ANATEL-DADOS-ABERTOS",
             "CNES-DATASUS",
         ),
-        "emptyReason": "PIB e população não são potencial de ISS nem crédito constituído.",
+        "emptyReason": (
+            "PIB, população e CEMP não são potencial de ISS nem crédito constituído."
+        ),
         "commandsDisabled": True,
     },
     {

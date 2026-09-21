@@ -1,0 +1,146 @@
+﻿# UF probe detail 0.3.48 2026-09-20T21:53:33.2313334-03:00
+RJ package title=Distribuições Constitucionais aos Municípios (Transferências Obrigatórias) resources=35
+RJ-RES name=FUNDEB-ICMS 2013 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Participacao-dos-Municipios-no-FUNDEB-ICMS-2013.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=FUNDEB-ICMS 2014 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Participacao-dos-Municipios-no-FUNDEB-ICMS.xls
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=FUNDEB-ICMS 2014 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Participacao-dos-Municipios-no-FUNDEB-ICMS-2014.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=FUNDEB-IPVA 2013 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Participacao-dos-Municipios-no-FUNDEB-IPVA-1.xls
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=FUNDEB-IPVA 2013 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Participacao-dos-Municipios-no-FUNDEB-IPVA-2013.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=FUNDEB-IPVA 2014 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Participacao-dos-Municipios-no-FUNDEB-IPVA.xls
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=FUNDEB-IPVA 2014 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Participacao-dos-Municipios-no-FUNDEB-IPVA-2014.csv
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2011 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Repasses-transferencias-aos-municipios-e-juros-e-multas-exercicio-2011.xls
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2011 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Repasses-transferencias-aos-municipios-e-juros-e-multas-exercicio-2011.csv
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2012 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Repasses-transferencias-aos-municipios-e-juros-e-multas-exercicio-2012.xls
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2012 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Repasses-transferencias-aos-municipios-e-juros-e-multas-exercicio-2012.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2013 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Repasses-transferencias-aos-municipios-e-juros-e-multas-exercicio-2013.xls
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2013 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Repasses-transferencias-aos-municipios-e-juros-e-multas-exercicio-2013.csv
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2014 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/TRANSFERENCIAS-AO-MUNICIPIOS-E-JUROS-E-MULTAS-2014-sem-CIDE-1.xlsx
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2014 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/TRANSFERENCIAS-AO-MUNICIPIOS-E-JUROS-E-MULTAS-2014-sem-CIDE-1.csv
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2015 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2015.xlsx
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2015 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2015.csv
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2016 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2016.xlsx
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2016 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2016.csv
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2017 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2017.xlsx
+  GET status=200 ct=text/html len=1605 snip=<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br /> <br> As operadoras de telecomunicaÃ§Ã£o do Br
+RJ-RES name=Relatório de Repasses aos Municípios 2017 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2017.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2018 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2018.xlsx
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2018 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2018.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2019 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2019.xlsx
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2019 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2019.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2020 format=XLS url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2020.xlsx
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2020 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2020.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2021 format=XLSX url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2021.xlsx
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2021 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2021.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2022 format=XLSX url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2022.xlsx
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2022 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/RELATORIO-DE-REPASSES-AOS-MUNICIPIOS-2022.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2023 format=XLSX url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Relatorio-de-Repasses-aos-Municipios-2023.xlsx
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2023 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2023/12/Relatorio-de-Repasses-aos-Municipios-2023.csv
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2024 format=XLSX url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2024/02/Relatorio-de-Repasses-aos-Municipios-2024.xlsx
+  HEAD status=200 ct=text/html len=1605
+RJ-RES name=Relatório de Repasses aos Municípios 2024 format=CSV url=https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2024/02/Relatorio-de-Repasses-aos-Municipios-2024.csv
+  HEAD status=200 ct=text/html len=1605
+GO resources=22
+GO-RES name=Dicionário de Dados de Repasses format=PDF datastore=False id=9e086748-7027-4890-ba67-f2305255945c url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/9e086748-7027-4890-ba67-f2305255945c/download/dicionario_dados_repasses.pdf
+GO-RES name=Repasses - Agosto/2026 format=CSV datastore=True id=343d1fb0-a182-4005-9203-dce168d2ad60 url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/343d1fb0-a182-4005-9203-dce168d2ad60/download/repassesmunicipios202608.csv
+GO-RES name=Repasses - Julho/2026 format=CSV datastore=True id=54322b99-f158-4d48-bebd-183c2e33930e url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/54322b99-f158-4d48-bebd-183c2e33930e/download/repassesmunicipios202607.csv
+GO-RES name=Repasses - Junho/2026 format=CSV datastore=True id=8e5a10d6-158a-4342-a7c4-46f144476e95 url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/8e5a10d6-158a-4342-a7c4-46f144476e95/download/repassesmunicipios202606.csv
+GO-RES name=Repasses - Maio/2026 format=CSV datastore=True id=3894e8bc-befd-4800-a301-90231419cc3b url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/3894e8bc-befd-4800-a301-90231419cc3b/download/repassesmunicipios202605.csv
+GO-RES name=Repasses - Abril/2026 format=CSV datastore=True id=343fa70c-ed8c-42b0-b230-ff2c4a1c856d url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/343fa70c-ed8c-42b0-b230-ff2c4a1c856d/download/repassesmunicipios202604.csv
+GO-RES name=Repasses - Fevereiro/2026 format=CSV datastore=True id=0d71968a-c94d-45f1-9ea5-7056e4461c6d url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/0d71968a-c94d-45f1-9ea5-7056e4461c6d/download/repassesmunicipios202602.csv
+GO-RES name=Repasses - Março/2026 format=CSV datastore=True id=27e56249-c364-4afa-ad6d-996518af193d url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/27e56249-c364-4afa-ad6d-996518af193d/download/repassesmunicipios202603.csv
+GO-RES name=Repasses - Janeiro/2026 format=CSV datastore=True id=0b5f0c08-4e67-4e33-85bf-1037e48e371f url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/0b5f0c08-4e67-4e33-85bf-1037e48e371f/download/repassesmunicipios202601.csv
+GO-RES name=Repasses - 2025 format=ZIP datastore=False id=2b247d3c-0299-4b50-a7a9-2040f1cf9099 url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/2b247d3c-0299-4b50-a7a9-2040f1cf9099/download/repasses_municipios_ano_2025.zip
+GO-RES name=Repasses - 2024 format=ZIP datastore=False id=1e85560d-dbae-40a1-83ab-0386b4a5fefa url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/1e85560d-dbae-40a1-83ab-0386b4a5fefa/download/repasses_municipios_ano_2024.zip
+GO-RES name=Repasses - 2023 format=ZIP datastore=False id=32668d0e-b172-4915-9974-da85f292719b url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/32668d0e-b172-4915-9974-da85f292719b/download/repasses_municipios_ano_2023.zip
+GO-RES name=Repasses - 2022 format=ZIP datastore=False id=6b168831-31d2-4d4e-a09d-ff674cbef7e7 url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/6b168831-31d2-4d4e-a09d-ff674cbef7e7/download/repasses_municipios_ano_2022.zip
+GO-RES name=Repasses - 2021 format=ZIP datastore=False id=3e5e6694-94b5-4f07-9371-630a4617b94f url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/3e5e6694-94b5-4f07-9371-630a4617b94f/download/repasses_municipios_ano_2021.zip
+GO-RES name=Repasses - 2020 format=ZIP datastore=False id=43ff57e7-836c-4919-afbf-ee820b82f1d8 url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/43ff57e7-836c-4919-afbf-ee820b82f1d8/download/repasses_municipios_ano_2020.zip
+GO-RES name=Repasses - 2019 format=ZIP datastore=False id=952b0f3b-9c01-4411-bfa6-cb009f0caf14 url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/952b0f3b-9c01-4411-bfa6-cb009f0caf14/download/repasses_municipios_ano_2019.zip
+GO-RES name=Repasses - 2018 format=ZIP datastore=False id=e71b4af0-c785-4e77-bcbf-7f020638f453 url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/e71b4af0-c785-4e77-bcbf-7f020638f453/download/repasses_municipios_ano_2018.zip
+GO-RES name=Repasses - 2017 format=ZIP datastore=False id=7fe99f58-312d-41eb-8fb1-010a1138b61e url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/7fe99f58-312d-41eb-8fb1-010a1138b61e/download/repasses_municipios_ano_2017.zip
+GO-RES name=Repasses - 2016 format=ZIP datastore=False id=71f380d4-3fc8-467c-89e5-91a3d0774202 url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/71f380d4-3fc8-467c-89e5-91a3d0774202/download/repasses_municipios_ano_2016.zip
+GO-RES name=Repasses - 2015 format=ZIP datastore=False id=c5956276-105b-422f-9122-22c494948470 url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/c5956276-105b-422f-9122-22c494948470/download/repasses_municipios_ano_2015.zip
+GO-RES name=Repasses - 2014 format=ZIP datastore=False id=2a1e00c9-adcc-475b-b3c5-7e0cbdb748ca url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/2a1e00c9-adcc-475b-b3c5-7e0cbdb748ca/download/repasses_municipios_ano_2014.zip
+GO-RES name=Repasses Municipios 2014 - 2025 format=ZIP datastore=False id=5d001bcf-236e-47da-8901-e21f012792be url=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/5d001bcf-236e-47da-8901-e21f012792be/download/repasses_municipios_2014_2025.zip
+GO-FIELDS _id,VALR_IPVA,VALOR_TOTAL,VALR_IPVA_FUNDEB,DATA_COMPLETA_CREDITO,NUMR_ANO_MES,DATA_COMPLETA_REPASSE,DESC_MUN
+SP-SEARCH count=4
+SP-PKG title=REPASSES AOS MUNICIPIOS FUNDOCAMP name=repasses-aos-municipios-fundocamp
+SP-PKG title=APORTES DE RECURSOS  AO FUNDO - ESTADO E MUNICÍPIOS name=https-agem-sp-gov-br-habit_ag_santista-fundo-movimentacao-financeira
+SP-PKG title=Emendas Parlamentares Estaduais Impositivas name=emendas-parlamentares-estaduais-impositivas
+SP-PKG title=DADETUR - Recursos Liberados Obras Públicas name=dadetur-recursos-liberados-obras-publicas
+SC-MATCH-COUNT=506
+SC-MATCH 2020
+SC-MATCH 2020
+SC-MATCH 2020
+SC-MATCH 2020
+SC-MATCH 2026
+SC-MATCH 2026
+SC-MATCH 2026
+SC-MATCH 2026
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+SC-MATCH 2026
+SC-MATCH 2024
+RR-MATCH-COUNT=2
+RR-MATCH https://fonts.googleapis.com
+RR-MATCH https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Source+Sans+3:wght@400;500;600;700&display=swap
+MT-MATCH-COUNT=0

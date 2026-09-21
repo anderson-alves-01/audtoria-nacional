@@ -90,6 +90,20 @@ def test_sidra_6575_stays_quarantined_without_interpolation() -> None:
     assert all(reason == "missing value" for _row, reason in quarantined_6575)
 
 
+def test_sidra_9509_cemp_publishes_reference_quantities_without_credit() -> None:
+    body = Path("tests/fixtures/official-snapshots/ibge-9509.json").read_bytes()
+    silver, quarantined = parse_ibge_sidra_series(body)
+    assert quarantined == []
+    assert len(silver) == 6
+    assert {row["variableId"] for row in silver} == {"707", "662", "367"}
+    assert {row["competence"] for row in silver} == {"2024"}
+    assert all(row["territorialLevel"] == "N6" for row in silver)
+    presentation = presentation_for("IBGE-SIDRA-CEMP")
+    assert presentation["valueKind"] == "REFERENCE_QUANTITY"
+    assert presentation["createsTaxCredit"] is False
+    assert "crédito" in presentation["label"].lower() or "ISS" in presentation["label"]
+
+
 def test_coverage_divergence_explains_5571_versus_5570() -> None:
     item = coverage_divergence(
         [

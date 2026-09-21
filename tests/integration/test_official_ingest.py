@@ -45,6 +45,11 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert pib.status_code == 200
     assert pib.json()["silverCount"] == 2
     assert pib.json()["quarantinedCount"] == 2
+    cemp = api_client.post("/v1/data-sources/IBGE-SIDRA-CEMP/ingest", headers=_admin())
+    assert cemp.status_code == 200
+    assert cemp.json()["silverCount"] == 6
+    assert cemp.json()["quarantinedCount"] == 0
+    assert cemp.json()["taxCreditCreated"] is False
     planalto = api_client.post("/v1/data-sources/PLANALTO-LEGISLACAO/ingest", headers=_admin())
     assert planalto.status_code == 200
     assert planalto.json()["silverCount"] == 1
@@ -169,6 +174,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     expected = {
         "SICONFI-ENTES",
         "IBGE-SIDRA-PIB",
+        "IBGE-SIDRA-CEMP",
         "PLANALTO-LEGISLACAO",
         "PLANALTO-LC-214",
         "TESOURO-FPM-VALORES",
@@ -206,6 +212,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "SICONFI-RGF",
     }
     assert expected <= set(by_id)
+    assert by_id["IBGE-SIDRA-CEMP"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["PLANALTO-LC-214"]["valueKind"] == "REGULATORY_DOCUMENT"
     assert by_id["SICONFI-ENTES"]["valueKind"] == "COVERAGE_REGISTRY"
     assert by_id["TESOURO-FPM-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"

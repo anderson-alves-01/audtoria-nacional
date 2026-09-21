@@ -1,17 +1,18 @@
 schema_version: 1
-updated_at: "2026-09-20T14:30:00-03:00"
+updated_at: "2026-09-20T22:05:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.47"
+implementation_version: "0.3.48"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.47: PA ICMS Verde ativado (state_pa_icms_verde_xlsx; componente
-  ecológico ≤8%, não cota ICMS total); PR/MA/RN/PI/AC/AL/RS/CE/RO/MS/PE/BA/MG/ES/GO
-  e setoriais intactos; PB/AM/SE/AP/RR/DF PROVENANCE_VERIFIED; SP HTML-only;
-  RJ IP-blocked; SC PROVENANCE_ONLY; TO índices; RFB territorial sem carga nacional.
+  Ciclo 0.3.48: IBGE SIDRA 9509 CEMP ativado (IBGE-SIDRA-CEMP); UFs restantes
+  re-sondadas sem nova ativação estadual (RJ IP-block; GO ZIP 500 / IPVA-only;
+  PI ICMS vazio; SP HTML-per-muni; SC ≤2017; RR total sem split). PA Verde e
+  PR/MA/RN/PI/AC/AL/RS/CE/RO/MS/PE/BA/MG/ES/GO intactos. RFB territorial sem
+  carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -154,22 +155,24 @@ items:
   - id: F3-IBGE-SIDRA
     fase: F3.2
     dominio: D3
-    descricao: IBGE SIDRA 6579 e 5938; variável 6575 em quarentena
+    descricao: IBGE SIDRA 6579, 5938 e 9509 CEMP; variável 6575 em quarentena
     dependencias: [F3-GOLD-LINEAGE]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
-    fontes_oficiais: [IBGE-SIDRA, IBGE-SIDRA-PIB]
+    fontes_oficiais: [IBGE-SIDRA, IBGE-SIDRA-PIB, IBGE-SIDRA-CEMP]
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/official-ingest/2026-09-19/
-    versao: "0.3.15"
-    commit: 1d7a601
-    ci: "35437663525"
+    evidencia: evidence/releases/0.3.48/
+    versao: "0.3.48"
+    commit: 34fbb37
+    ci: null
     motivo_bloqueio: null
-    next_action: Manter 6575 sem interpolação; exibir cobertura 5571 vs 5570.
+    next_action: >
+      Manter 6575 sem interpolação; exibir cobertura 5571 vs 5570; CEMP 9509
+      (707/662/367) é REFERENCE_QUANTITY, nunca base de ISS.
 
   - id: F3-SICONFI-ENTES
     fase: F3.2
