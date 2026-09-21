@@ -337,8 +337,8 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.65/
     versao: "0.3.65"
-    commit: 4b65d7f
-    ci: null
+    commit: 024538d
+    ci: "35579924293"
     motivo_bloqueio: null
     next_action: >
       Conector tesouro_coint_municipio_csv com max_rows=8. FPM/ITR/LC176
@@ -346,6 +346,7 @@ items:
       CSV mensais TESOURO-*-VALORES. Pacote COINT municipal do dataset
       Transferências Obrigatórias completo. Sem carga nacional. Homologação
       humana pendente.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35579924293.
 
   - id: F3-TESOURO-COINT-CIDE-FEX
     fase: F3.2
