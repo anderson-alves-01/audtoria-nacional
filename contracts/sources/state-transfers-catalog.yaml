@@ -26,6 +26,9 @@ notes: >
   arquivos já aprovados (state_al_xls / state_pr_html).
   Ciclo 0.3.59: ES FRD (FundoReducaoDesigualdades) e CompensacaoFinanceira
   ativados no mesmo CSV TransfEstadoMunicipios já aprovado (state_es_csv).
+  Ciclo 0.3.60: AC ICMS mensal (valor_icms) e FUNDEB (valor_fundeb) ativados
+  no mesmo JSON Transparência já aprovado (state_ac_transparencia_json),
+  distintos do CSV anual SEPLAG ESTADO-AC-ICMS-QUOTA.
   UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
   SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
   SE/PB PDF; AM HTML-per-município; TO índices PDF.
@@ -44,23 +47,29 @@ states:
     endpoint: https://dados.ac.gov.br/dataset/e9f7ca08-2c55-45d5-a948-ef25a1acb296/resource/d0deaa76-c075-4b0d-8cf3-468c5fcb1267/download/repasse-constitucional-de-icms-para-os-municipios.csv
     ipva_dataset_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
     ipva_endpoint: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios/dados-exportacao
-    taxes: [ICMS, IPVA]
+    taxes: [ICMS, IPVA, FUNDEB]
     format: CSV+JSON
     columns: [municipio, Cod IBGE, 2018, 2019, 2020, 2021]
     columns_ipva: [ano, mes, municipio, valor_fundeb, valor_icms, valor_ipva, valor_total]
     ibge_field: Cod IBGE
     layout_version_icms: state-ac-icms-v1
+    layout_version_icms_transparencia: state-ac-icms-transparencia-v1
     layout_version_ipva: state-ac-ipva-transparencia-v1
+    layout_version_fundeb: state-ac-fundeb-transparencia-v1
     connector: state_ac_csv
     ipva_connector: state_ac_transparencia_json
+    icms_transparencia_connector: state_ac_transparencia_json
+    fundeb_connector: state_ac_transparencia_json
     download_probe_2026_09_19: csv_bytes_ok_ibge7_native_annual
     download_probe_2026_09_20: transparencia_post_csrf_json_ok_ipva
+    download_probe_2026_09_21: transparencia_json_ok_icms_fundeb_columns
     reason: >
       CSV anual SEPLAG Repasse Constitucional de ICMS ativado com connector
       state_ac_csv (`;`, latin-1, número BR). IBGE7 nativo em Cod IBGE;
-      competência anual filtrada (2021). IPVA mensal ativado via Transparência
-      POST+CSRF JSON (state_ac_transparencia_json), join nome+UF, competência
-      2025-01. Fixture mínima. Sem crédito.
+      competência anual filtrada (2021). IPVA/ICMS/FUNDEB mensais ativados via
+      Transparência POST+CSRF JSON (state_ac_transparencia_json), join nome+UF,
+      competência 2025-01 (valor_ipva/valor_icms/valor_fundeb). Fixture mínima.
+      Sem crédito.
   - uf: AL
     name: Alagoas
     status: TECHNICALLY_APPROVED

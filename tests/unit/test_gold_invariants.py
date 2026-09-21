@@ -587,6 +587,26 @@ def test_state_ac_transparencia_json_joins_name_and_quarantines_territory() -> N
     assert quarantined[0][1] == "missing IBGE municipality code"
     assert presentation_for("ESTADO-AC-IPVA-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-AC-IPVA-QUOTA")["createsTaxCredit"] is False
+    icms, icms_q = parse_state_ac_transparencia_json(body, tax="ICMS", ibge_lookup=lookup)
+    assert len(icms) == 2
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    acrelandia_icms = next(row for row in icms if row["ibgeCode"] == "1200013")
+    assert acrelandia_icms["value"] == 620540.98
+    assert len(icms_q) == 1
+    assert presentation_for("ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    assert presentation_for("ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA")["createsTaxCredit"] is False
+    fundeb, fundeb_q = parse_state_ac_transparencia_json(body, tax="FUNDEB", ibge_lookup=lookup)
+    assert len(fundeb) == 2
+    assert all(row["modality"] == "FUNDEB_QUOTA" for row in fundeb)
+    acrelandia_fundeb = next(row for row in fundeb if row["ibgeCode"] == "1200013")
+    assert acrelandia_fundeb["value"] == 155135.15
+    assert len(fundeb_q) == 1
+    assert presentation_for("ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    assert presentation_for("ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_pi_repasseweb_html_aggregates_banks_and_quarantines_territory() -> None:

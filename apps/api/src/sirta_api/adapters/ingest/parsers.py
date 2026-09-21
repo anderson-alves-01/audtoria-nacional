@@ -1488,15 +1488,20 @@ def parse_state_ac_transparencia_json(
     uf: str = "AC",
     competence: str = "2025-01",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse AC Transparência JSON export (ICMS/IPVA); join IBGE7 by name+UF; no credit."""
+    """Parse AC Transparência JSON export (ICMS/IPVA/FUNDEB); join IBGE7 by name+UF; no credit."""
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    amount_fields = {
+        "ICMS": "valor_icms",
+        "IPVA": "valor_ipva",
+        "FUNDEB": "valor_fundeb",
+    }
+    if tax_key not in amount_fields:
         raise ValueError(f"unsupported state AC Transparência tax filter: {tax}")
     competence_key = str(competence or "2025-01").strip()[:7]
     if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
         raise ValueError(f"invalid AC Transparência competence: {competence}")
     year, month = competence_key.split("-")
-    amount_field = "valor_icms" if tax_key == "ICMS" else "valor_ipva"
+    amount_field = amount_fields[tax_key]
     try:
         payload = json.loads(body.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):

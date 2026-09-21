@@ -1963,8 +1963,92 @@ sources:
       Sem ajuste. Não constitui crédito.
     methodology_version: official-state-ac-icms-v1
     notes: >
-      CSV 2018-2021 downloadável em 2026-09-19. IPVA mensal ativado em
-      ESTADO-AC-IPVA-QUOTA via Transparência. Homologação humana pendente.
+      CSV 2018-2021 downloadável em 2026-09-19. ICMS/IPVA/FUNDEB mensais
+      ativados via Transparência (ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA,
+      ESTADO-AC-IPVA-QUOTA, ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA). Homologação
+      humana pendente.
+
+  - source_id: ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA
+    name: Quota-parte de ICMS estadual mensal (AC Transparência)
+    maintainer: SEFAZ-AC / Transparência Acre
+    official_domain: transparencia.ac.gov.br
+    official_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    endpoint: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios/dados-exportacao
+    documentation_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    dataset: ESTADO-AC-ICMS-TRANSPARENCIA-2025-01
+    dictionary_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    purpose: Transferência estadual de ICMS mensal — valores publicados por município
+    legal_basis: Portal da Transparência do Acre (repasse aos municípios)
+    license_terms: publicação oficial transparencia.ac.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ac_transparencia_json
+    layout_version: state-ac-icms-transparencia-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: AC
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+      csrf_page_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    authentication: csrf_session
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ac_icms_transparencia_quota
+    formula: >
+      Valor ICMS (valor_icms) do JSON oficial POST+CSRF
+      /conteudo/repasse-aos-municipios/dados-exportacao, competência filtrada,
+      município via join IBGE7 por nome+UF (SICONFI-ENTES). Distinto do CSV
+      anual SEPLAG (ESTADO-AC-ICMS-QUOTA). Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-ac-icms-transparencia-v1
+    notes: >
+      Mesmo endpoint JSON do IPVA/FUNDEB AC. Homologação humana pendente.
+
+  - source_id: ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA
+    name: Valor FUNDEB publicado (AC Transparência)
+    maintainer: SEFAZ-AC / Transparência Acre
+    official_domain: transparencia.ac.gov.br
+    official_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    endpoint: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios/dados-exportacao
+    documentation_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    dataset: ESTADO-AC-FUNDEB-TRANSPARENCIA-2025-01
+    dictionary_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    purpose: Valor FUNDEB publicado no export de repasses aos municípios
+    legal_basis: Portal da Transparência do Acre (repasse aos municípios)
+    license_terms: publicação oficial transparencia.ac.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ac_transparencia_json
+    layout_version: state-ac-fundeb-transparencia-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: FUNDEB
+      uf: AC
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+      csrf_page_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    authentication: csrf_session
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ac_fundeb_transparencia_quota
+    formula: >
+      Valor FUNDEB (valor_fundeb) do JSON oficial POST+CSRF
+      /conteudo/repasse-aos-municipios/dados-exportacao, competência filtrada,
+      município via join IBGE7 por nome+UF (SICONFI-ENTES). Valor como
+      publicado; não inferir retenção nem crédito. Sem ajuste.
+    methodology_version: official-state-ac-fundeb-transparencia-v1
+    notes: >
+      Mesmo endpoint JSON do ICMS/IPVA AC. Homologação humana pendente.
 
   - source_id: ESTADO-AC-IPVA-QUOTA
     name: Quota-parte de IPVA estadual (AC)

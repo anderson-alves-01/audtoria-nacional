@@ -56,7 +56,7 @@ def test_state_transfers_endpoint_is_empty_shell(api_client) -> None:
     assert by_uf["RO"]["ingestAllowed"] is True
     assert by_uf["AC"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["AC"]["ingestAllowed"] is True
-    assert by_uf["AC"]["taxes"] == ["ICMS", "IPVA"]
+    assert by_uf["AC"]["taxes"] == ["ICMS", "IPVA", "FUNDEB"]
     assert by_uf["CE"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["CE"]["ingestAllowed"] is True
     assert by_uf["CE"]["taxes"] == ["ICMS", "IPVA", "IPI"]
@@ -460,6 +460,20 @@ def test_state_ac_ingest_publishes_gold_without_credit(api_client) -> None:
     assert ipva.json()["silverCount"] == 2
     assert ipva.json()["quarantinedCount"] == 1
     assert ipva.json()["taxCreditCreated"] is False
+    icms_tr = api_client.post(
+        "/v1/data-sources/ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA/ingest", headers=_admin()
+    )
+    assert icms_tr.status_code == 200
+    assert icms_tr.json()["silverCount"] == 2
+    assert icms_tr.json()["quarantinedCount"] == 1
+    assert icms_tr.json()["taxCreditCreated"] is False
+    fundeb = api_client.post(
+        "/v1/data-sources/ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA/ingest", headers=_admin()
+    )
+    assert fundeb.status_code == 200
+    assert fundeb.json()["silverCount"] == 2
+    assert fundeb.json()["quarantinedCount"] == 1
+    assert fundeb.json()["taxCreditCreated"] is False
     gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
     by_id = {item["sourceId"]: item for item in gold.json()["items"]}
     assert by_id["ESTADO-AC-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -472,6 +486,14 @@ def test_state_ac_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-AC-IPVA-QUOTA"]["homologationStatus"] == (
         "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
     )
+    assert by_id["ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA"]["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    assert by_id["ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA"]["createsTaxCredit"] is False
+    assert by_id["ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA"]["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    assert by_id["ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA"]["createsTaxCredit"] is False
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-AC-ICMS-QUOTA",
         headers=_analyst(),
@@ -493,6 +515,24 @@ def test_state_ac_ingest_publishes_gold_without_credit(api_client) -> None:
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in ipva_lines.json()["items"]
+    )
+    icms_tr_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA",
+        headers=_analyst(),
+    )
+    assert icms_tr_lines.status_code == 200
+    assert any(item["value"] == 620540.98 for item in icms_tr_lines.json()["items"])
+    assert any(item["value"] == 538555.43 for item in icms_tr_lines.json()["items"])
+    fundeb_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA",
+        headers=_analyst(),
+    )
+    assert fundeb_lines.status_code == 200
+    assert any(item["value"] == 155135.15 for item in fundeb_lines.json()["items"])
+    assert any(item["value"] == 134638.78 for item in fundeb_lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in fundeb_lines.json()["items"]
     )
 
 

@@ -169,6 +169,16 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     ac_ipva = api_client.post("/v1/data-sources/ESTADO-AC-IPVA-QUOTA/ingest", headers=_admin())
     assert ac_ipva.status_code == 200
     assert ac_ipva.json()["silverCount"] == 2
+    ac_icms_tr = api_client.post(
+        "/v1/data-sources/ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA/ingest", headers=_admin()
+    )
+    assert ac_icms_tr.status_code == 200
+    assert ac_icms_tr.json()["silverCount"] == 2
+    ac_fundeb = api_client.post(
+        "/v1/data-sources/ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA/ingest", headers=_admin()
+    )
+    assert ac_fundeb.status_code == 200
+    assert ac_fundeb.json()["silverCount"] == 2
     ce_icms = api_client.post("/v1/data-sources/ESTADO-CE-ICMS-QUOTA/ingest", headers=_admin())
     assert ce_icms.status_code == 200
     assert ce_icms.json()["silverCount"] == 2
@@ -300,6 +310,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "ESTADO-RO-ICMS-QUOTA",
         "ESTADO-RO-IPVA-QUOTA",
         "ESTADO-AC-ICMS-QUOTA",
+        "ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA",
+        "ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA",
         "ESTADO-AC-IPVA-QUOTA",
         "ESTADO-CE-ICMS-QUOTA",
         "ESTADO-CE-IPVA-QUOTA",
@@ -363,6 +375,12 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["ESTADO-RO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-RO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-AC-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert (
+        by_id["ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    assert (
+        by_id["ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
     assert by_id["ESTADO-AC-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-CE-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-CE-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -462,6 +480,10 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["ESTADO-RO-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-AC-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-AC-ICMS-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-AC-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-AC-IPVA-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-CE-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"

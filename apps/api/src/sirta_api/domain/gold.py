@@ -275,6 +275,22 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de ICMS estadual mensal publicada "
+            "(AC ativado via Transparência POST+CSRF JSON, valor_icms). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-AC-FUNDEB-TRANSPARENCIA-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valor FUNDEB publicado no export Transparência AC "
+            "(valor_fundeb; série mensal POST+CSRF JSON). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-AC-IPVA-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
