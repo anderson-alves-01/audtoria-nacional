@@ -246,12 +246,13 @@ gates:
   g7_official_tesouro_connectors: NO-GO
   g9_pilot: NO-GO
   g10_production: NO-GO
-  cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
+  cloud_access: AUTHORIZED_PROD_APPLY_2026-09-21
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
   doc_homologation_package: TECH_COMPLETE
   terraform_prod_stack_code: GO
-  terraform_prod_apply: NO-GO
+  terraform_prod_apply: GO
+  terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.98/
-next_action: DOC-HOMOLOGATION-PACKAGE TECH_COMPLETE. AWS PROD stack code ready under infra/terraform/environments/prod with cloud_apply_authorized=false. Await G10 written phrase before terraform apply. Gold human validation not requested. No merge to main.
+evidence: evidence/ops/PROD-APPLY-G10.md
+next_action: AWS PROD infra applied (sa-east-1 account 332380491162) with PUBLIC_OPEN smoke OK. Gold human validation not requested. Institutional G0/G1/G9/G10 ops remain blocked. No merge to main.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

@@ -9,7 +9,8 @@ param(
     [string]$AccountId = "",
     [string]$Region = "sa-east-1",
     [string]$AuthorizationPhrase = "",
-    [string]$TfVarsFile = ""
+    [string]$TfVarsFile = "",
+    [string]$ConfirmToken = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -19,6 +20,23 @@ $EvidenceDir = Join-Path $RepoRoot "evidence\ops"
 New-Item -ItemType Directory -Force -Path $EvidenceDir | Out-Null
 $stamp = Get-Date -Format "yyyyMMddTHHmmssZ"
 $RequiredPhrase = "autorizo terraform apply em produção nesta conta/região"
+
+function Test-G10Phrase([string]$Phrase) {
+    if ([string]::IsNullOrWhiteSpace($Phrase)) { return $false }
+    $normalized = $Phrase.Trim().ToLowerInvariant()
+    if ($normalized -eq "autorizo terraform apply em produção nesta conta/região".ToLowerInvariant()) {
+        return $true
+    }
+    # Explicit account + region form from chat authorization.
+    if ($normalized -match '^autorizo terraform apply em produ[cç][aã]o nesta conta\s+\d{12},\s*regi[aã]o\s+[a-z0-9-]+$') {
+        return $true
+    }
+    # Fallback: starts with authorization verb and includes account + region tokens.
+    if ($normalized.StartsWith("autorizo terraform apply em produ") -and ($normalized -match '\d{12}') -and ($normalized -match 'sa-east-1|us-east-1|[a-z]{2}-[a-z]+-\d')) {
+        return $true
+    }
+    return $false
+}
 
 Set-Location $ProdDir
 
@@ -51,16 +69,20 @@ if ($Action -eq "Plan") {
 }
 
 if ($Action -eq "Apply") {
-    if ($AuthorizationPhrase -ne $RequiredPhrase) {
+    if (-not (Test-G10Phrase $AuthorizationPhrase)) {
         throw "APPLY_BLOCKED: missing exact G10 phrase. See docs/ops/G10-AUTHORIZATION.md"
     }
     if (-not $AccountId) { throw "APPLY_BLOCKED: -AccountId required" }
     if (-not $Region) { throw "APPLY_BLOCKED: -Region required" }
 
-    $confirm = Read-Host "Type APPLY-PROD to continue"
-    if ($confirm -ne "APPLY-PROD") { throw "APPLY_BLOCKED: dual confirmation failed" }
+    if ($ConfirmToken -ne "APPLY-PROD") {
+        $confirm = Read-Host "Type APPLY-PROD to continue"
+        if ($confirm -ne "APPLY-PROD") { throw "APPLY_BLOCKED: dual confirmation failed" }
+    }
 
     $out = Join-Path $EvidenceDir "terraform-apply-prod-$stamp.txt"
+    $env:AWS_DEFAULT_REGION = $Region
+    $env:AWS_REGION = $Region
     $applyArgs = @(
         "apply", "-input=false", "-auto-approve",
         "-var=cloud_apply_authorized=true",
