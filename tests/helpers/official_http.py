@@ -248,6 +248,14 @@ SNAPSHOT_URLS = {
     (
         "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
         "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27PIB%20Despesa%20de%20consumo%20das%20fam%C3%ADlias%27"
+        "%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-pib-despesa-familias-anuais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
         "$filter=Indicador%20eq%20%27PIB%20Total%27%20and%20baseCalculo%20eq%201&"
         "$orderby=Data%20desc,DataReferencia%20asc&"
         "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
