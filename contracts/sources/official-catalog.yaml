@@ -3608,7 +3608,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: bcb_olinda_expectativas
-    layout_version: bcb-olinda-expectativas-anuais-v18
+    layout_version: bcb-olinda-expectativas-anuais-v19
     periodicity: as_published
     competence: as_published
     granularity: series
@@ -3631,6 +3631,7 @@ sources:
           PIB Despesa de consumo das famílias,
           PIB Despesa de consumo da administração pública,
           PIB Exportação de bens e serviços,
+          PIB Importação de bens e serviços,
           IGP-M,
           IGP-DI,
           INPC,
@@ -3673,6 +3674,7 @@ sources:
         PIB Despesa de consumo das famílias: PERCENT_PER_YEAR
         PIB Despesa de consumo da administração pública: PERCENT_PER_YEAR
         PIB Exportação de bens e serviços: PERCENT_PER_YEAR
+        PIB Importação de bens e serviços: PERCENT_PER_YEAR
         IGP-M: PERCENT_PER_YEAR
         IGP-DI: PERCENT_PER_YEAR
         INPC: PERCENT_PER_YEAR
@@ -3696,7 +3698,7 @@ sources:
       Selic, Câmbio, PIB Total, PIB Serviços, PIB Agropecuária, PIB Indústria,
       PIB Formação Bruta de Capital Fixo, PIB Despesa de consumo das famílias,
       PIB Despesa de consumo da administração pública, PIB Exportação de bens e
-      serviços, IGP-M, IGP-DI, INPC, Dívida líquida do setor público, Dívida
+      serviços, PIB Importação de bens e serviços, IGP-M, IGP-DI, INPC, Dívida líquida do setor público, Dívida
       bruta do governo geral, Balança comercial/Saldo, Resultado primário, Conta
       corrente, Resultado nominal, Taxa de desocupação, Investimento direto no
       país), com baseCalculo default=1 e override por indicador
@@ -3706,14 +3708,14 @@ sources:
       distintas: PERCENT_OF_GDP (Dívidas, Resultado primário, Resultado
       nominal), USD_BILLION (Balança Saldo, Conta corrente, Investimento
       direto) e PERCENT (Taxa de desocupação). Sem crédito.
-    methodology_version: official-bcb-olinda-expectativas-anuais-v18
+    methodology_version: official-bcb-olinda-expectativas-anuais-v19
     notes: >
       OData OLINDA oficial verificado. Ativação técnica com allowlist
       IPCA+IPCA Livres+IPCA Serviços+IPCA Administrados+IPCA Alimentação no
       domicílio+IPCA Bens industrializados+Selic+Câmbio+PIB Total+PIB
       Serviços+PIB Agropecuária+PIB Indústria+PIB Formação Bruta de Capital
       Fixo+PIB Despesa de consumo das famílias+PIB Despesa de consumo da
-      administração pública+PIB Exportação de bens e serviços+IGP-M+IGP-DI+INPC+
+      administração pública+PIB Exportação de bens e serviços+PIB Importação de bens e serviços+IGP-M+IGP-DI+INPC+
       Dívida líquida do setor público+Dívida bruta do governo geral+Balança
       comercial (Saldo)+Resultado primário+Conta corrente+Resultado
       nominal+Taxa de desocupação+Investimento direto no país, $top/max_rows=8

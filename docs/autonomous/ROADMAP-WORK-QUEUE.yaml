@@ -1,18 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-21T13:00:00-03:00"
+updated_at: "2026-09-21T13:20:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.83"
+implementation_version: "0.3.84"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.83: BCB OLINDA Expectativas Focus anuais expandido com PIB
-  Exportação de bens e serviços (PERCENT_PER_YEAR, baseCalculo=1).
-  Re-probe UF restantes sem ACTIVATE_NOW (herdado 0.3.82). Próximo: UF tabular
-  nova quando publicada; ou OLINDA PIB Importação de bens e serviços.
-  RFB territorial sem carga nacional.
+  Ciclo 0.3.84: BCB OLINDA Expectativas Focus anuais expandido com PIB Importação de bens e serviços
+  (PERCENT_PER_YEAR, baseCalculo=1). Re-probe UF restantes sem ACTIVATE_NOW
+  (herdado 0.3.83). Próximo: UF tabular nova quando publicada; ou OLINDA
+  Produção industrial. RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -662,8 +661,8 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.83/
-    versao: "0.3.83"
+    evidencia: evidence/releases/0.3.84/
+    versao: "0.3.84"
     commit: 5abff4b
     ci: "35622620329"
     motivo_bloqueio: null
@@ -673,7 +672,8 @@ items:
       industrializados+Selic+Câmbio+PIB Total+PIB Serviços+PIB Agropecuária+PIB
       Indústria+PIB Formação Bruta de Capital Fixo+PIB Despesa de consumo das
       famílias+PIB Despesa de consumo da administração pública+PIB Exportação
-      de bens e serviços+IGP-M+IGP-DI+INPC+Dívida líquida do setor público+Dívida
+      de bens e serviços+PIB Importação de bens e
+      serviços+IGP-M+IGP-DI+INPC+Dívida líquida do setor público+Dívida
       bruta do governo geral+Balança comercial/Saldo+Resultado primário+Conta
       corrente+Resultado nominal+Taxa de desocupação+Investimento direto no
       país, max_rows=8 por indicador, multi-fetch, indicator_base_calculo para
@@ -681,7 +681,7 @@ items:
       TECHNICALLY_APPROVED com fixtures mínimas e Gold REFERENCE_QUANTITY.
       Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
-      publicada; ou OLINDA PIB Importação de bens e serviços (demanda Focus)
+      publicada; ou OLINDA Produção industrial
       se priorizado. Commit: 5abff4b.
       CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35622620329.
 
