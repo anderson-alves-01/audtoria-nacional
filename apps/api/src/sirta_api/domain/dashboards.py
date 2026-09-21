@@ -94,6 +94,8 @@ DASHBOARDS = (
             "TESOURO-ROYALTIES-VALORES",
             "TESOURO-LC176-VALORES",
             "TESOURO-IOF-OURO-VALORES",
+            "TESOURO-CIDE-VALORES",
+            "TESOURO-FEX-VALORES",
             "TESOURO-TRANSPARENTE",
             "ESTADO-ICMS-QUOTA",
             "ESTADO-IPVA-QUOTA",

@@ -33,6 +33,16 @@ SNAPSHOT_URLS = {
         "17336152-2728-4368-9ba2-c3f7821e4acf/download/"
         "transferenciamensalmunicipios202609.csv"
     ): "tesouro-fpm-202608.csv",
+    (
+        "https://www.tesourotransparente.gov.br/ckan/dataset/"
+        "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
+        "18820d64-95fd-4475-b391-e07d62a376ae/download/cide-por-municipio.csv"
+    ): "tesouro-cide-por-municipio.csv",
+    (
+        "https://www.tesourotransparente.gov.br/ckan/dataset/"
+        "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
+        "4ca6aad2-fa9d-48e1-a608-5614578d7df2/download/fex-por-municipio.csv"
+    ): "tesouro-fex-por-municipio.csv",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo": "siconfi-rreo.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca": "siconfi-dca.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf": "siconfi-rgf.json",

@@ -51,6 +51,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_rn_xls,
     parse_state_ro_csv,
     parse_state_rs_xls,
+    parse_tesouro_coint_municipio_csv,
     parse_tesouro_monthly_csv,
     parse_tesouro_transfer_types,
     sha256_bytes,
@@ -94,6 +95,7 @@ PARSERS = {
     "siconfi_entes": parse_siconfi_entes,
     "tesouro_transfer_types": parse_tesouro_transfer_types,
     "tesouro_monthly_csv": parse_tesouro_monthly_csv,
+    "tesouro_coint_municipio_csv": parse_tesouro_coint_municipio_csv,
     "siconfi_statement": parse_siconfi_statement,
     "state_pe_csv": parse_state_pe_csv,
     "state_ba_csv": parse_state_ba_csv,
@@ -686,6 +688,16 @@ def _parse(
             transfer_name=(
                 str(parameters.get("transfer_name")) if parameters.get("transfer_name") else None
             ),
+        )
+    if connector == "tesouro_coint_municipio_csv":
+        parameters = catalog.get("parameters") or {}
+        max_rows = parameters.get("max_rows")
+        return parser(
+            fetched.body,
+            ibge_lookup=_ibge_lookup(session, context=context),
+            transfer_name=str(parameters.get("transfer_name") or catalog.get("name") or "TRANSFER"),
+            competence=str(parameters.get("competence") or catalog.get("competence") or ""),
+            max_rows=int(max_rows) if max_rows is not None else None,
         )
     if connector == "state_pe_csv":
         parameters = catalog.get("parameters") or {}

@@ -1,18 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-21T00:45:00-03:00"
+updated_at: "2026-09-21T01:15:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.53"
+implementation_version: "0.3.54"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.53: Tesouro mensal IOF-Ouro via allowlist no CSV CKAN
-  (tesouro_monthly_csv). Probe 202609: 31 linhas IOF; CIDE/FEX ausentes.
-  UFs restantes ainda sem tabular recente (RJ IP-block; PI ICMS vazio; SP HTML;
-  SC ≤2017; RR sem split; AP 404; MT ≤2015; SE/PB PDF; AM/TO). Próximo: UF
-  tabular nova ou fonte alternativa CIDE-FEX. RFB territorial sem carga nacional.
+  Ciclo 0.3.54: CSV COINT Tesouro CIDE/FEX (tesouro_coint_municipio_csv).
+  CSV mensal constitucional segue sem CIDE/FEX. UFs restantes ainda sem
+  tabular recente. Próximo: UF tabular nova ou IPI em RN/AL/CE. RFB
+  territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -262,8 +261,31 @@ items:
     motivo_bloqueio: null
     next_action: >
       ITR/IPI-EXP/Royalties/LC176/IOF-Ouro allowlists ativos. CIDE/FEX ausentes
-      no CSV mensal municipal (probe 0.3.52/0.3.53). CIDE/FEX só com outra fonte
-      oficial PUBLIC_OPEN.
+      no CSV mensal municipal; ativados em F3-TESOURO-COINT-CIDE-FEX.
+
+  - id: F3-TESOURO-COINT-CIDE-FEX
+    fase: F3.2
+    dominio: D9
+    descricao: CSV COINT CIDE e FEX por município (dataset transferências obrigatórias)
+    dependencias: [F3-TESOURO-DICTIONARY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais:
+      - TESOURO-CIDE-VALORES
+      - TESOURO-FEX-VALORES
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.54/
+    versao: "0.3.54"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Conector tesouro_coint_municipio_csv com max_rows=8 e competência 2025-01.
+      Sem carga nacional dos CSV ~12–14 MiB. Homologação humana pendente.
 
   - id: F3-RREO-BACKFILL
     fase: F3.2

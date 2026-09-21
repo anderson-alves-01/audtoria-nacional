@@ -460,7 +460,102 @@ sources:
     methodology_version: official-tesouro-iof-ouro-mensal-v1
     notes: >
       Probe 202609: 31 linhas IOF-Ouro (Item=IOF Ouro; Destino=IOF-Ouro).
-      CIDE e FEX permanecem ausentes neste CSV. Sem crédito.
+      CIDE/FEX deste CSV mensal permanecem ausentes; ver TESOURO-CIDE-VALORES
+      e TESOURO-FEX-VALORES (dataset COINT). Sem crédito.
+
+  - source_id: TESOURO-CIDE-VALORES
+    name: Tesouro Nacional — CIDE-Combustíveis por município (CKAN COINT)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-obrigatorias-da-uniao-por-municipio
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/18820d64-95fd-4475-b391-e07d62a376ae/download/cide-por-municipio.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-obrigatorias-da-uniao-por-municipio
+    dataset: TESOURO-CIDE-COINT
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/a3bee117-d467-4374-aefe-bb29b9698c42/download/metadados---transferencias-obrigatorias-da-uniao---por-municipio.pdf
+    purpose: Valores CIDE-Combustíveis distribuídos aos municípios (série COINT)
+    legal_basis: Dataset CKAN Transferências Obrigatórias da União - por Município (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_coint_municipio_csv
+    layout_version: tesouro-ckan-coint-cide-municipio-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      package_id: 3b5a779d-78f5-4602-a6b7-23ece6d60f27
+      resource_id: 18820d64-95fd-4475-b391-e07d62a376ae
+      file_name: cide-por-municipio.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2025-01"
+      transfer_name: CIDE
+      max_rows: 8
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_cide_received
+    formula: >
+      Valor da coluna do ano da competência, na linha cujo Mês corresponde ao
+      mês da competência, no CSV COINT CIDE por município. Células vazias ou
+      com traço são omitidas. Join município+UF ao IBGE via SICONFI/entes.
+      COD_MUN do arquivo não é IBGE7. Não constitui crédito.
+    methodology_version: official-tesouro-coint-cide-v1
+    notes: >
+      Alternativa ao CSV mensal constitucional (sem CIDE). Probe 2026-09-21:
+      HTTP 200, layout wide anos 2004–2026, latin-1, delimitador ';'.
+      max_rows=8 no ciclo técnico; sem carga nacional ilimitada. Sem crédito.
+
+  - source_id: TESOURO-FEX-VALORES
+    name: Tesouro Nacional — FEX por município (CKAN COINT)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-obrigatorias-da-uniao-por-municipio
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/4ca6aad2-fa9d-48e1-a608-5614578d7df2/download/fex-por-municipio.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-obrigatorias-da-uniao-por-municipio
+    dataset: TESOURO-FEX-COINT
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/a3bee117-d467-4374-aefe-bb29b9698c42/download/metadados---transferencias-obrigatorias-da-uniao---por-municipio.pdf
+    purpose: Valores FEX (Auxílio Financeiro para Fomento das Exportações) por município
+    legal_basis: Dataset CKAN Transferências Obrigatórias da União - por Município (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_coint_municipio_csv
+    layout_version: tesouro-ckan-coint-fex-municipio-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      package_id: 3b5a779d-78f5-4602-a6b7-23ece6d60f27
+      resource_id: 4ca6aad2-fa9d-48e1-a608-5614578d7df2
+      file_name: fex-por-municipio.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2025-01"
+      transfer_name: FEX
+      max_rows: 8
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_fex_received
+    formula: >
+      Valor da coluna do ano da competência, na linha cujo Mês corresponde ao
+      mês da competência, no CSV COINT FEX por município. Células vazias ou
+      com traço são omitidas. Join município+UF ao IBGE via SICONFI/entes.
+      COD_MUN do arquivo não é IBGE7. Não constitui crédito.
+    methodology_version: official-tesouro-coint-fex-v1
+    notes: >
+      Alternativa ao CSV mensal constitucional (sem FEX). Probe 2026-09-21:
+      HTTP 200, mesmo layout wide do CIDE. max_rows=8 no ciclo técnico.
+      Sem crédito.
 
   - source_id: SICONFI-RREO
     name: SICONFI — RREO municipal

@@ -2583,6 +2583,14 @@ def parse_state_ba_csv(
     return silver, quarantined
 
 
+def _tesouro_coint_blank_amount(raw: object) -> bool:
+    text = str(raw or "").strip()
+    if not text:
+        return True
+    compact = re.sub(r"\s+", "", text)
+    return compact in {"-", "–", "—", ".", ".."}
+
+
 def _tesouro_transfer_family(name: str) -> str:
     mapping = {
         "FPM": "FPM",
@@ -2594,6 +2602,10 @@ def _tesouro_transfer_family(name: str) -> str:
         "LC 176/2020 (ADO25)": "LC176",
         "IOF-Ouro": "IOF_OURO",
         "IOF Ouro": "IOF_OURO",
+        "CIDE": "CIDE",
+        "CIDE-Combustíveis": "CIDE",
+        "CIDE-Combustiveis": "CIDE",
+        "FEX": "FEX",
     }
     if name in mapping:
         return mapping[name]
@@ -2692,6 +2704,83 @@ def parse_tesouro_monthly_csv(
             quarantined.append((row, "missing IBGE municipality code"))
             continue
         silver.append(row)
+    return silver, quarantined
+
+
+def parse_tesouro_coint_municipio_csv(
+    body: bytes,
+    *,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    transfer_name: str = "CIDE",
+    competence: str | None = None,
+    max_rows: int | None = None,
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse Tesouro COINT wide CSV (CIDE/FEX por município).
+
+    Layout: COD_MUN;Município;UF;Município - UF;Mês;YYYY... with BR amounts.
+    COD_MUN is not IBGE7 — join municipality+UF via SICONFI/entes. Empty or
+    dash cells are skipped (not published as zero). Explicit 0 is kept.
+    """
+    family_label = str(transfer_name or "TRANSFER").strip() or "TRANSFER"
+    family_key = _tesouro_transfer_family(family_label)
+    competence_key = str(competence or "").strip()[:7]
+    if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
+        raise ValueError("tesouro_coint_municipio_csv requires competence YYYY-MM")
+    year_filter = competence_key[:4]
+    month_filter = str(int(competence_key[5:7]))
+    limit = int(max_rows) if max_rows is not None else None
+    if limit is not None and limit <= 0:
+        raise ValueError("max_rows must be a positive integer when set")
+    text = body.decode("latin-1")
+    reader = csv.DictReader(io.StringIO(text), delimiter=";")
+    if not reader.fieldnames or year_filter not in reader.fieldnames:
+        return [], [({"rowId": "document"}, f"missing year column {year_filter}")]
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    for index, item in enumerate(reader):
+        month_raw = str(item.get("Mês") or item.get("Mes") or "").strip()
+        try:
+            month_num = str(int(month_raw))
+        except ValueError:
+            continue
+        if month_num != month_filter:
+            continue
+        raw_amount = item.get(year_filter)
+        if _tesouro_coint_blank_amount(raw_amount):
+            continue
+        name = str(item.get("Município") or item.get("Municipio") or "").strip()
+        uf = str(item.get("UF") or "").strip()
+        try:
+            value = parse_brazilian_number(raw_amount)
+        except ValueError:
+            quarantined.append(
+                (
+                    {"rowId": f"{family_key.lower()}-{index}", "territoryName": name, "uf": uf},
+                    f"non numeric {family_label} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((normalize_place(name), normalize_place(uf)), "")
+        modality = f"{family_key}_RECEIVED"
+        row = {
+            "rowId": f"{family_key.lower()}-{ibge or index}-{competence_key}-{modality}"[:64],
+            "territoryName": name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence_key,
+            "transferName": family_label,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+            "codMun": str(item.get("COD_MUN") or "").strip(),
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+        if limit is not None and len(silver) >= limit:
+            break
     return silver, quarantined
 
 

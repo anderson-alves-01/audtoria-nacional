@@ -1,0 +1,6 @@
+﻿CIDE_URL=https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/18820d64-95fd-4475-b391-e07d62a376ae/download/cide-por-municipio.csv
+FEX_URL=https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/4ca6aad2-fa9d-48e1-a608-5614578d7df2/download/fex-por-municipio.csv
+PROBE_AT=2026-09-21
+CIDE_HEAD=200 text/csv layout=COD_MUN;Municipio;UF;Mes;YYYY...
+FEX_HEAD=200 text/csv same_layout
+NOTES=latin-1 semicolon wide-year; COD_MUN not IBGE7; join name+UF; monthly constitutional CSV still without CIDE/FEX

@@ -80,6 +80,14 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert iof.status_code == 200
     assert iof.json()["silverCount"] == 2
     assert iof.json()["taxCreditCreated"] is False
+    cide = api_client.post("/v1/data-sources/TESOURO-CIDE-VALORES/ingest", headers=_admin())
+    assert cide.status_code == 200
+    assert cide.json()["silverCount"] == 2
+    assert cide.json()["taxCreditCreated"] is False
+    fex = api_client.post("/v1/data-sources/TESOURO-FEX-VALORES/ingest", headers=_admin())
+    assert fex.status_code == 200
+    assert fex.json()["silverCount"] == 2
+    assert fex.json()["taxCreditCreated"] is False
     pe_icms = api_client.post("/v1/data-sources/ESTADO-ICMS-QUOTA/ingest", headers=_admin())
     assert pe_icms.status_code == 200
     assert pe_icms.json()["silverCount"] == 2
@@ -217,6 +225,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "TESOURO-ROYALTIES-VALORES",
         "TESOURO-LC176-VALORES",
         "TESOURO-IOF-OURO-VALORES",
+        "TESOURO-CIDE-VALORES",
+        "TESOURO-FEX-VALORES",
         "ESTADO-ICMS-QUOTA",
         "ESTADO-IPVA-QUOTA",
         "ESTADO-BA-ICMS-QUOTA",
@@ -264,6 +274,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["TESOURO-ROYALTIES-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-LC176-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-IOF-OURO-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-CIDE-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-FEX-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-BA-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -327,6 +339,10 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["TESOURO-LC176-VALORES"]["ingestAllowed"] is True
     assert by_id["TESOURO-IOF-OURO-VALORES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["TESOURO-IOF-OURO-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-CIDE-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-CIDE-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-FEX-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-FEX-VALORES"]["ingestAllowed"] is True
     assert by_id["ESTADO-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-ICMS-QUOTA"]["ingestAllowed"] is True

@@ -82,6 +82,20 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "TESOURO-CIDE-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores CIDE-Combustíveis publicados pelo Tesouro (COINT). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "TESOURO-FEX-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores FEX publicados pelo Tesouro (COINT). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (

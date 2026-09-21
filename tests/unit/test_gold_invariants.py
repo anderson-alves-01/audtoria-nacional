@@ -26,6 +26,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_rn_xls,
     parse_state_ro_csv,
     parse_state_rs_xls,
+    parse_tesouro_coint_municipio_csv,
     parse_tesouro_monthly_csv,
 )
 from sirta_api.domain.catalog import creates_tax_credit
@@ -215,6 +216,49 @@ def test_tesouro_monthly_csv_iof_ouro_allowlist() -> None:
     assert sum(row["value"] for row in silver) == 21.0
     assert presentation_for("TESOURO-IOF-OURO-VALORES")["createsTaxCredit"] is False
     assert presentation_for("TESOURO-IOF-OURO-VALORES")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+
+
+def test_tesouro_coint_cide_fex_wide_csv() -> None:
+    lookup = {
+        ("ACRELANDIA", "AC"): "1200013",
+        ("ASSIS BRASIL", "AC"): "1200054",
+    }
+    cide_body = Path(
+        "tests/fixtures/official-snapshots/tesouro-cide-por-municipio.csv"
+    ).read_bytes()
+    cide, cide_q = parse_tesouro_coint_municipio_csv(
+        cide_body,
+        ibge_lookup=lookup,
+        transfer_name="CIDE",
+        competence="2025-01",
+    )
+    assert len(cide_q) == 1
+    assert all(row["modality"] == "CIDE_RECEIVED" for row in cide)
+    assert all(row["transferName"] == "CIDE" for row in cide)
+    assert all(row["competence"] == "2025-01" for row in cide)
+    assert {row["ibgeCode"] for row in cide} == {"1200013", "1200054"}
+    assert sum(row["value"] for row in cide) == 11707.50 + 6940.46
+    assert presentation_for("TESOURO-CIDE-VALORES")["createsTaxCredit"] is False
+    assert presentation_for("TESOURO-CIDE-VALORES")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    fex_body = Path(
+        "tests/fixtures/official-snapshots/tesouro-fex-por-municipio.csv"
+    ).read_bytes()
+    fex, fex_q = parse_tesouro_coint_municipio_csv(
+        fex_body,
+        ibge_lookup=lookup,
+        transfer_name="FEX",
+        competence="2025-01",
+    )
+    assert len(fex_q) == 1
+    assert all(row["modality"] == "FEX_RECEIVED" for row in fex)
+    assert {row["ibgeCode"] for row in fex} == {"1200013", "1200054"}
+    assert sum(row["value"] for row in fex) == 668.85 + 668.85
+    assert presentation_for("TESOURO-FEX-VALORES")["createsTaxCredit"] is False
+    assert presentation_for("TESOURO-FEX-VALORES")["valueKind"] == (
         "TRANSFER_AMOUNT_AS_PUBLISHED"
     )
 
