@@ -1053,9 +1053,7 @@ def _bcb_olinda_expectativas_url(
             f"IndicadorDetalhe%20eq%20%27{enc_det}%27%20and%20"
             f"baseCalculo%20eq%20{base}"
         )
-        select = (
-            f"Indicador,IndicadorDetalhe,Data,{horizon},Mediana,Media,baseCalculo"
-        )
+        select = f"Indicador,IndicadorDetalhe,Data,{horizon},Mediana,Media,baseCalculo"
     else:
         filter_clause = f"Indicador%20eq%20%27{encoded}%27%20and%20baseCalculo%20eq%20{base}"
         select = f"Indicador,Data,{horizon},Mediana,Media,baseCalculo"
