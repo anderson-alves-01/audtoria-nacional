@@ -1931,9 +1931,13 @@ def parse_bcb_olinda_expectativas(
         unit = units.get(indicator.upper()) or (
             "BRL_PER_USD" if indicator.upper() == "CÂMBIO" else "PERCENT_PER_YEAR"
         )
+        raw_row_id = f"bcb-olinda-{label_core}-{raw_date}-{horizon}"
+        if len(raw_row_id) > 64:
+            digest = hashlib.sha256(label_core.encode("utf-8")).hexdigest()[:12]
+            raw_row_id = f"bcb-olinda-{digest}-{raw_date}-{horizon}"
         silver.append(
             {
-                "rowId": f"bcb-olinda-{label_core}-{raw_date}-{horizon}"[:64],
+                "rowId": raw_row_id[:64],
                 "territoryName": "Brasil",
                 "uf": "BR",
                 "ibgeCode": "",

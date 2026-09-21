@@ -1,17 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-21T12:15:00-03:00"
+updated_at: "2026-09-21T12:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.81"
+implementation_version: "0.3.82"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.81: BCB OLINDA Expectativas Focus anuais expandido com PIB
-  Despesa de consumo das famílias (PERCENT_PER_YEAR, baseCalculo=1). Re-probe
-  UF restantes sem ACTIVATE_NOW (herdado 0.3.80). Próximo: UF tabular nova
-  quando publicada; ou OLINDA PIB Despesa de consumo da administração pública.
+  Ciclo 0.3.82: BCB OLINDA Expectativas Focus anuais expandido com PIB
+  Despesa de consumo da administração pública (PERCENT_PER_YEAR, baseCalculo=1).
+  Re-probe UF restantes sem ACTIVATE_NOW (herdado 0.3.81). Próximo: UF tabular
+  nova quando publicada; ou OLINDA PIB Exportação de bens e serviços.
   RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -662,27 +662,27 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.81/
-    versao: "0.3.81"
-    commit: 08a3936
-    ci: "35617242745"
+    evidencia: evidence/releases/0.3.82/
+    versao: "0.3.82"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA+IPCA Livres+IPCA
       Serviços+IPCA Administrados+IPCA Alimentação no domicílio+IPCA Bens
       industrializados+Selic+Câmbio+PIB Total+PIB Serviços+PIB Agropecuária+PIB
       Indústria+PIB Formação Bruta de Capital Fixo+PIB Despesa de consumo das
-      famílias+IGP-M+IGP-DI+INPC+Dívida líquida do setor público+Dívida bruta
-      do governo geral+Balança comercial/Saldo+Resultado primário+Conta
-      corrente+Resultado nominal+Taxa de desocupação+Investimento direto no
-      país, max_rows=8 por indicador, multi-fetch, indicator_base_calculo para
-      IGP-DI/INPC/Dívidas=0, indicator_detalhe Balança=Saldo)
+      famílias+PIB Despesa de consumo da administração pública+IGP-M+IGP-DI+INPC+
+      Dívida líquida do setor público+Dívida bruta do governo geral+Balança
+      comercial/Saldo+Resultado primário+Conta corrente+Resultado nominal+Taxa
+      de desocupação+Investimento direto no país, max_rows=8 por indicador,
+      multi-fetch, indicator_base_calculo para IGP-DI/INPC/Dívidas=0,
+      indicator_detalhe Balança=Saldo)
       TECHNICALLY_APPROVED com fixtures mínimas e Gold REFERENCE_QUANTITY.
       Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
-      publicada; ou OLINDA PIB Despesa de consumo da administração pública
-      (demanda Focus) se priorizado. Commit: 08a3936.
-      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35617242745.
+      publicada; ou OLINDA PIB Exportação de bens e serviços (demanda Focus)
+      se priorizado.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
