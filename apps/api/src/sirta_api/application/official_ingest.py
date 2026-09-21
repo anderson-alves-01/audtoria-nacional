@@ -1025,7 +1025,11 @@ def _parse_bcb_olinda_expectativas_allowlist(
     parser,
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
     parameters = catalog.get("parameters") or {}
-    allowlist = [str(item).strip() for item in (parameters.get("indicator_allowlist") or []) if str(item).strip()]
+    allowlist = [
+        str(item).strip()
+        for item in (parameters.get("indicator_allowlist") or [])
+        if str(item).strip()
+    ]
     if not allowlist:
         raise ConflictError("BCB OLINDA Expectativas requires indicator_allowlist")
     max_rows = int(parameters.get("max_rows") or 8)
