@@ -7,7 +7,6 @@ Create Date: 2026-09-21
 
 from alembic import op
 
-
 revision = "0084_bcb_olinda_pib_despesa_fam"
 down_revision = "0083_bcb_olinda_pib_fbcf"
 branch_labels = None
