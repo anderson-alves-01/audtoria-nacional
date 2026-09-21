@@ -1505,6 +1505,26 @@ def test_bcb_olinda_expectativas_parses_pib_despesa_adm_publica() -> None:
     assert len({row["rowId"] for row in silver}) == 8
 
 
+def test_bcb_olinda_expectativas_parses_pib_exportacao_bens_servicos() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/"
+        "bcb-olinda-expectativas-pib-exportacao-bens-servicos-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["PIB Exportação de bens e serviços"],
+        max_rows=8,
+        indicator_units={"PIB Exportação de bens e serviços": "PERCENT_PER_YEAR"},
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "PIB Exportação de bens e serviços"
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["value"] == 4.2676
+    assert len(silver[0]["rowId"]) <= 64
+    assert len({row["rowId"] for row in silver}) == 8
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"

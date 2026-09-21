@@ -1,0 +1,5 @@
+﻿unit: 2 passed (exportacao + adm)
+partial bcb_olinda: see tests-partial.txt
+sectoral: 11 passed
+alembic: 5 passed
+ruff: clean after I001 fix

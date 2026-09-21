@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.82
+implementation_version: 0.3.83
 roadmap_version: "1.2"
-version: 0.3.82
+version: 0.3.83
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -106,6 +106,7 @@ completed:
     - sectoral_bcb_olinda_expectativas_pib_fbcf
     - sectoral_bcb_olinda_expectativas_pib_despesa_familias
     - sectoral_bcb_olinda_expectativas_pib_despesa_adm_publica
+    - sectoral_bcb_olinda_expectativas_pib_exportacao_bens_servicos
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -175,6 +176,7 @@ gates:
   f3_bcb_olinda_pib_fbcf_local: GO
   f3_bcb_olinda_pib_despesa_familias_local: GO
   f3_bcb_olinda_pib_despesa_adm_publica_local: GO
+  f3_bcb_olinda_pib_exportacao_bens_servicos_local: GO
   f3_epe_dados_brutos_local: GO
   f3_anatel_meu_municipio_local: GO
   f3_cnes_demas_local: GO
@@ -217,6 +219,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.82/
-next_action: Prefer remaining UF with downloadable CSV/API (none currently tabular-stable). Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. BCB OLINDA Expectativas inclui PIB Despesa de consumo da administração pública+PIB Despesa de consumo das famílias+PIB Formação Bruta de Capital Fixo+IPCA Bens industrializados+IPCA Administrados+IPCA Alimentação no domicílio+IPCA Livres+IPCA Serviços+Investimento direto no país+Taxa de desocupação+Dívida bruta+Dívida líquida+Resultado nominal+Resultado primário+Conta corrente+IPCA+Selic+Câmbio+PIB setorial+IGP+INPC+Balança Saldo. Próximo OLINDA: PIB Exportação de bens e serviços (demanda). Tesouro COINT municipal package complete. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.83/
+next_action: Prefer remaining UF with downloadable CSV/API (none currently tabular-stable). Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. BCB OLINDA Expectativas inclui PIB Exportação de bens e serviços+PIB Despesa de consumo da administração pública+PIB Despesa de consumo das famílias+PIB Formação Bruta de Capital Fixo+IPCA Bens industrializados+IPCA Administrados+IPCA Alimentação no domicílio+IPCA Livres+IPCA Serviços+Investimento direto no país+Taxa de desocupação+Dívida bruta+Dívida líquida+Resultado nominal+Resultado primário+Conta corrente+IPCA+Selic+Câmbio+PIB setorial+IGP+INPC+Balança Saldo. Próximo OLINDA: PIB Importação de bens e serviços (demanda). Tesouro COINT municipal package complete. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md
