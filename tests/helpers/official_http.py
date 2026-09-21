@@ -190,6 +190,20 @@ SNAPSHOT_URLS = {
     (
         "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
         "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Livres%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-livres-anuais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Servi%C3%A7os%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-servicos-anuais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
         "$filter=Indicador%20eq%20%27Selic%27%20and%20baseCalculo%20eq%201&"
         "$orderby=Data%20desc,DataReferencia%20asc&"
         "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"

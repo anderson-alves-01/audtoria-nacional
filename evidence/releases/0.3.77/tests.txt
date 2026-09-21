@@ -1,0 +1,8 @@
+targeted pytest 2026-09-21 0.3.77
+tests/unit/test_gold_invariants.py::test_bcb_olinda_expectativas_parses_ipca_livres_and_servicos
+tests/unit/test_gold_invariants.py::test_bcb_olinda_expectativas_parses_investimento_direto
+tests/unit/test_sectoral_enrichment.py
+tests/integration/test_sectoral_enrichment.py::test_bcb_olinda_expectativas_ingest_publishes_gold_without_credit
+tests/integration/test_alembic_paths.py
+11 passed, 1 warning
+ruff check/format: ok

@@ -1368,6 +1368,37 @@ def test_bcb_olinda_expectativas_parses_investimento_direto() -> None:
     assert silver[0]["value"] == 80.0
 
 
+def test_bcb_olinda_expectativas_parses_ipca_livres_and_servicos() -> None:
+    body_livres = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-ipca-livres-anuais-top8.json"
+    ).read_bytes()
+    body_servicos = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-ipca-servicos-anuais-top8.json"
+    ).read_bytes()
+    silver_livres, q_livres = parse_bcb_olinda_expectativas(
+        body_livres,
+        indicator_allowlist=["IPCA Livres"],
+        max_rows=8,
+        indicator_units={"IPCA Livres": "PERCENT_PER_YEAR"},
+    )
+    silver_servicos, q_servicos = parse_bcb_olinda_expectativas(
+        body_servicos,
+        indicator_allowlist=["IPCA Serviços"],
+        max_rows=8,
+        indicator_units={"IPCA Serviços": "PERCENT_PER_YEAR"},
+    )
+    assert q_livres == []
+    assert q_servicos == []
+    assert len(silver_livres) == 8
+    assert len(silver_servicos) == 8
+    assert silver_livres[0]["seriesId"] == "IPCA Livres"
+    assert silver_servicos[0]["seriesId"] == "IPCA Serviços"
+    assert silver_livres[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_servicos[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_livres[0]["value"] == 5.1217
+    assert silver_servicos[0]["value"] == 5.4427
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"

@@ -71,6 +71,8 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         "activationGate": "INDICATOR_ALLOWLIST",
         "indicatorAllowlist": [
             "IPCA",
+            "IPCA Livres",
+            "IPCA Serviços",
             "Selic",
             "Câmbio",
             "PIB Total",
