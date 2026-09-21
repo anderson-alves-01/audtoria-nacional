@@ -36,9 +36,7 @@ DASHBOARDS = (
             "ANATEL-DADOS-ABERTOS",
             "CNES-DATASUS",
         ),
-        "emptyReason": (
-            "PIB, população e CEMP não são potencial de ISS nem crédito constituído."
-        ),
+        "emptyReason": ("PIB, população e CEMP não são potencial de ISS nem crédito constituído."),
         "commandsDisabled": True,
     },
     {
