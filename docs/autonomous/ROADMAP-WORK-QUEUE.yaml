@@ -356,7 +356,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.50/
     versao: "0.3.50"
-    commit: null
+    commit: b2cdb01
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -382,7 +382,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.50/
     versao: "0.3.50"
-    commit: null
+    commit: b2cdb01
     ci: null
     motivo_bloqueio: null
     next_action: >
