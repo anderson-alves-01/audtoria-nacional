@@ -663,7 +663,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.77/
     versao: "0.3.77"
-    commit: null
+    commit: 417aa83
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -678,6 +678,7 @@ items:
       Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
       publicada; ou OLINDA IPCA Administrados / IPCA Alimentação se priorizado.
+      Commit: 417aa83.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
