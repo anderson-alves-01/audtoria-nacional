@@ -75,6 +75,7 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
             "IPCA Serviços",
             "IPCA Administrados",
             "IPCA Alimentação no domicílio",
+            "IPCA Bens industrializados",
             "Selic",
             "Câmbio",
             "PIB Total",

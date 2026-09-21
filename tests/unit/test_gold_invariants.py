@@ -1432,6 +1432,24 @@ def test_bcb_olinda_expectativas_parses_ipca_administrados_and_alimentacao() -> 
     assert silver_alim[0]["value"] == 6.9302
 
 
+def test_bcb_olinda_expectativas_parses_ipca_bens_industrializados() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/"
+        "bcb-olinda-expectativas-ipca-bens-industrializados-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["IPCA Bens industrializados"],
+        max_rows=8,
+        indicator_units={"IPCA Bens industrializados": "PERCENT_PER_YEAR"},
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "IPCA Bens industrializados"
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["value"] == 3.4641
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
