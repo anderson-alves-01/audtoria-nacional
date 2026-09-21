@@ -663,7 +663,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.67/
     versao: "0.3.67"
-    commit: null
+    commit: d907e1a
     ci: null
     motivo_bloqueio: null
     next_action: >
