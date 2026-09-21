@@ -25,8 +25,8 @@ def test_upgrade_base_to_head_on_empty_database() -> None:
             impl = connection.execute(
                 text("SELECT value FROM schema_meta WHERE key = 'implementation_version'")
             ).scalar()
-        assert version == "0077_bcb_olinda_divida_bruta"
-        assert impl == "0.3.74"
+        assert version == "0078_bcb_olinda_taxa_desocup"
+        assert impl == "0.3.75"
         with Session(engine) as session:
             seed_synthetic(session)
             session.commit()

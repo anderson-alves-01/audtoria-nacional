@@ -1334,6 +1334,23 @@ def test_bcb_olinda_expectativas_parses_divida_bruta() -> None:
     assert silver[0]["value"] == 83.4
 
 
+def test_bcb_olinda_expectativas_parses_taxa_desocupacao() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-taxa-desocupacao-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["Taxa de desocupação"],
+        max_rows=8,
+        indicator_units={"Taxa de desocupação": "PERCENT"},
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "Taxa de desocupação"
+    assert silver[0]["unit"] == "PERCENT"
+    assert silver[0]["value"] == 5.215
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"

@@ -86,6 +86,7 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
             "Resultado primário",
             "Conta corrente",
             "Resultado nominal",
+            "Taxa de desocupação",
         ],
     },
     {
