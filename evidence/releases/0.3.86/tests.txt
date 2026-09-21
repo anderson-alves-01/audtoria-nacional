@@ -1,0 +1,26 @@
+# Tests 0.3.86
+
+## Targeted (unit + sectoral ingest + alembic)
+
+```
+tests/unit/test_gold_invariants.py::test_bcb_olinda_expectativas_parses_ipca_15
+tests/integration/test_sectoral_enrichment.py::test_bcb_olinda_expectativas_ingest_publishes_gold_without_credit
+tests/integration/test_alembic_paths.py::test_upgrade_base_to_head_on_empty_database
+3 passed
+```
+
+## Broader OLINDA + sectoral
+
+```
+tests/unit/test_gold_invariants.py -k bcb_olinda
+tests/integration/test_sectoral_enrichment.py
+22 passed, 50 deselected
+```
+
+## Lint
+
+```
+ruff check alembic/versions/0089_bcb_olinda_ipca15.py (I001 fixed)
+```
+
+silverCount assert: 240 (30×8). Mediana fixture IPCA-15: 3.79.
