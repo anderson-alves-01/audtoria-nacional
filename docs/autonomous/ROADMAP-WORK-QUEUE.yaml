@@ -663,7 +663,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.68/
     versao: "0.3.68"
-    commit: pending
+    commit: 63cde48
     ci: null
     motivo_bloqueio: null
     next_action: >
