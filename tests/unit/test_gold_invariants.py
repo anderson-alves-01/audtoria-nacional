@@ -1129,6 +1129,37 @@ def test_bcb_olinda_expectativas_parses_selic_and_cambio_units() -> None:
     assert silver_cambio[0]["value"] == 5.2
 
 
+def test_bcb_olinda_expectativas_parses_pib_total_and_servicos() -> None:
+    pib_total = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-pib-total-anuais-top8.json"
+    ).read_bytes()
+    pib_servicos = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-pib-servicos-anuais-top8.json"
+    ).read_bytes()
+    silver_total, q_total = parse_bcb_olinda_expectativas(
+        pib_total,
+        indicator_allowlist=["PIB Total"],
+        max_rows=8,
+        indicator_units={"PIB Total": "PERCENT_PER_YEAR"},
+    )
+    silver_servicos, q_servicos = parse_bcb_olinda_expectativas(
+        pib_servicos,
+        indicator_allowlist=["PIB Serviços"],
+        max_rows=8,
+        indicator_units={"PIB Serviços": "PERCENT_PER_YEAR"},
+    )
+    assert q_total == []
+    assert q_servicos == []
+    assert len(silver_total) == 8
+    assert len(silver_servicos) == 8
+    assert silver_total[0]["seriesId"] == "PIB Total"
+    assert silver_total[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_total[0]["value"] == 1.8564
+    assert silver_servicos[0]["seriesId"] == "PIB Serviços"
+    assert silver_servicos[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_servicos[0]["value"] == 1.7
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
