@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.85/
     versao: "0.3.85"
-    commit: null
+    commit: 8561aeb
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -684,8 +684,7 @@ items:
       na fonte). Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
       publicada; ou OLINDA IPCA-15 (baseCalculo=0; restantes IPC-Fipe/IPA-M/
-      IPA-DI).
-  - id: F3-SECTORAL-CNES
+      IPA-DI). Commit: 8561aeb.  - id: F3-SECTORAL-CNES
     fase: F3.2
     dominio: D3
     descricao: Investigar CNES/DATASUS oficial
