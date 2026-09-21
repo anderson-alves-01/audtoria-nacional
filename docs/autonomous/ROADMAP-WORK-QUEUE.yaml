@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.89/
     versao: "0.3.89"
-    commit: null
+    commit: f888cd2
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -675,7 +675,8 @@ items:
       silverCount=8) TECHNICALLY_APPROVED. Gold REFERENCE_QUANTITY. Sem
       crédito. Homologação humana pendente. Próximo: demais mensais ativos
       (IGP-M, Câmbio, IPCA Livres/Serviços/Administrados) ou
-      ExpectativasMercadoTrimestrais; UF tabular quando publicada.
+      ExpectativasMercadoTrimestrais; UF tabular quando publicada. Commit:
+      f888cd2.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
