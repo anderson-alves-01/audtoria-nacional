@@ -1,18 +1,18 @@
 schema_version: 1
-updated_at: "2026-09-21T16:00:00-03:00"
+updated_at: "2026-09-21T16:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.91"
+implementation_version: "0.3.92"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.91: BCB OLINDA Expectativas mensais IPCA componentes
-  (IPCA Livres/Serviços/Administrados/Alimentação/Bens industrializados)
-  além de IPCA/IGP-M/Câmbio; layout mensais-v3; silverCount 64.
+  Ciclo 0.3.92: BCB OLINDA Expectativas mensais IPA-M/IPA-DI/IGP-DI/INPC
+  (baseCalculo=0) além de IPCA/componentes/IGP-M/Câmbio; layout mensais-v4;
+  silverCount 96. Selic mensal não ativado (congelado 2005-12-14).
   Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS.
-  Próximo: Selic/IPA mensais se ativos, ou trimestrais.
+  Próximo: ExpectativasMercadoTrimestrais.
   RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -663,23 +663,21 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.91/
-    versao: "0.3.91"
-    commit: db30102
-    ci: "35640606510"
+    evidencia: evidence/releases/0.3.92/
+    versao: "0.3.92"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
       até Balança Saldo/Exportações/Importações) TECHNICALLY_APPROVED.
       Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS (ExpectativaMercadoMensais,
-      allowlist IPCA+IPCA Livres+IPCA Serviços+IPCA Administrados+IPCA
-      Alimentação no domicílio+IPCA Bens industrializados+IGP-M+Câmbio
-      baseCalculo=1, max_rows=8, layout mensais-v3, silverCount=64)
-      TECHNICALLY_APPROVED. Gold REFERENCE_QUANTITY. Sem crédito.
-      Homologação humana pendente. Próximo: Selic/IPA-M/IPA-DI mensais se
-      baseCalculo ativo, ou ExpectativasMercadoTrimestrais; UF tabular
-      quando publicada. Commit: db30102. CI verde:
-      https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35640606510.
+      allowlist IPCA+componentes+IGP-M+Câmbio+IPA-M+IPA-DI+IGP-DI+INPC,
+      baseCalculo default=1 com override IPA/IGP-DI/INPC=0, max_rows=8,
+      layout mensais-v4, silverCount=96) TECHNICALLY_APPROVED.
+      Gold REFERENCE_QUANTITY. Sem crédito. Homologação humana pendente.
+      Selic mensal não ativado (congelado 2005-12-14).
+      Próximo: ExpectativasMercadoTrimestrais; UF tabular quando publicada.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2

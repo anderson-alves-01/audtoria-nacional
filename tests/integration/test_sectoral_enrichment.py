@@ -240,7 +240,7 @@ def test_bcb_olinda_expectativas_mensais_ingest_publishes_gold_without_credit(ap
         headers=_admin(),
     )
     assert bcb.status_code == 200
-    assert bcb.json()["silverCount"] == 64
+    assert bcb.json()["silverCount"] == 96
     assert bcb.json()["quarantinedCount"] == 0
     assert bcb.json()["taxCreditCreated"] is False
     gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
@@ -264,6 +264,9 @@ def test_bcb_olinda_expectativas_mensais_ingest_publishes_gold_without_credit(ap
     assert 0.335 in values
     assert 1.38 in values
     assert 0.3 in values
+    assert 0.29 in values
+    assert 0.33 in values
+    assert 0.27 in values
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
