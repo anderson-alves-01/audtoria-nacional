@@ -1,0 +1,6 @@
+CI green for 0.3.75 BCB OLINDA Taxa de desocupacao
+
+push: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35603383959
+pull_request: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35603392091
+
+python/web/containers SUCCESS
