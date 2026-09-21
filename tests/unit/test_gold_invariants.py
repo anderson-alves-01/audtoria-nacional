@@ -173,6 +173,29 @@ def test_tesouro_monthly_csv_itr_ipi_exp_royalties_allowlists() -> None:
     assert presentation_for("TESOURO-ROYALTIES-VALORES")["createsCollection"] is False
 
 
+def test_tesouro_monthly_csv_lc176_allowlist() -> None:
+    body = Path("tests/fixtures/official-snapshots/tesouro-fpm-202608.csv").read_bytes()
+    lookup = {
+        ("COLINAS", "MA"): "2103505",
+        ("CONCEICAO DO LAGO-ACU", "MA"): "2103554",
+    }
+    silver, quarantined = parse_tesouro_monthly_csv(
+        body,
+        ibge_lookup=lookup,
+        item_allowlist=["LC 176/2020 (ADO25)"],
+        transfer_name="LC176",
+    )
+    assert len(quarantined) == 1
+    assert all(row["modality"] == "LC176_RECEIVED" for row in silver)
+    assert all(row["transferName"] == "LC176" for row in silver)
+    assert {row["ibgeCode"] for row in silver} == {"2103505", "2103554"}
+    assert sum(row["value"] for row in silver) == 126.0
+    assert presentation_for("TESOURO-LC176-VALORES")["createsTaxCredit"] is False
+    assert presentation_for("TESOURO-LC176-VALORES")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+
+
 def test_state_pe_csv_joins_ibge_and_publishes_zero_ipva() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/pe-transferencias-municipais-2024.csv"

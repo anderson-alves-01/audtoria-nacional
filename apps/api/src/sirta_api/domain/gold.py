@@ -68,6 +68,13 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "TESOURO-LC176-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores LC 176/2020 (ADO25) publicados pelo Tesouro no CSV mensal. "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (

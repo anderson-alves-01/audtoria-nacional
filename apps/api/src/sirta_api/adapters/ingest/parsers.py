@@ -2590,6 +2590,8 @@ def _tesouro_transfer_family(name: str) -> str:
         "IPI-EXP": "IPI_EXP",
         "IPI-Exp": "IPI_EXP",
         "Royalties": "ROYALTY",
+        "LC176": "LC176",
+        "LC 176/2020 (ADO25)": "LC176",
     }
     if name in mapping:
         return mapping[name]

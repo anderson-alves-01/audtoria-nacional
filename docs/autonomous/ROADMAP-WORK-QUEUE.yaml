@@ -1,19 +1,19 @@
 schema_version: 1
-updated_at: "2026-09-21T00:15:00-03:00"
+updated_at: "2026-09-21T00:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.51"
+implementation_version: "0.3.52"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.51: Tesouro mensal ITR + IPI-EXP + Royalties via allowlist no CSV
-  CKAN já usado pelo FPM (tesouro_monthly_csv). IPI-EXP no arquivo 202609
-  aparece como retenção FUNDEB. UFs restantes ainda sem tabular recente
+  Ciclo 0.3.52: Tesouro mensal LC 176/2020 (ADO25) via allowlist no CSV CKAN
+  (tesouro_monthly_csv). Probe 202609: CIDE e FEX ausentes no CSV municipal;
+  IOF-Ouro presente para ciclo futuro. UFs restantes ainda sem tabular recente
   (RJ IP-block; PI ICMS vazio; SP HTML; SC ≤2017; RR sem split; AP 404;
-  MT ≤2015; SE/PB PDF; AM/TO). Próximo: UF tabular nova ou deepen Tesouro
-  (CIDE/FEX/LC176). RFB territorial sem carga nacional.
+  MT ≤2015; SE/PB PDF; AM/TO). Próximo: UF tabular nova ou IOF-Ouro / fonte
+  alternativa CIDE-FEX. RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -234,14 +234,14 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      Controles de competência e disco presentes. Allowlist ITR/IPI-EXP/Royalties
-      em F3-TESOURO-MONTHLY-ALLOWLIST. Carga nacional multi-mês permanece fora
+      Controles de competência e disco presentes. Allowlist ITR/IPI-EXP/Royalties/
+      LC176 em F3-TESOURO-MONTHLY-ALLOWLIST. Carga nacional multi-mês permanece fora
       sem autorização e espaço; manter join IBGE.
 
   - id: F3-TESOURO-MONTHLY-ALLOWLIST
     fase: F3.2
     dominio: D9
-    descricao: Allowlist ITR, IPI-EXP e Royalties no CSV mensal Tesouro
+    descricao: Allowlist ITR, IPI-EXP, Royalties e LC176 no CSV mensal Tesouro
     dependencias: [F3-FPM-MUNICIPAL]
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
@@ -250,18 +250,20 @@ items:
       - TESOURO-ITR-VALORES
       - TESOURO-IPI-EXP-VALORES
       - TESOURO-ROYALTIES-VALORES
+      - TESOURO-LC176-VALORES
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.51/
-    versao: "0.3.51"
-    commit: 7bff8ec
+    evidencia: evidence/releases/0.3.52/
+    versao: "0.3.52"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
-      ITR item-allowlist; IPI-EXP item-allowlist (FUNDEB no 202609); Royalties
-      destination-allowlist. Sem crédito. Opcional: CIDE/FEX/LC176 em ciclo futuro.
+      ITR/IPI-EXP/Royalties/LC176 allowlists ativos. CIDE/FEX ausentes no CSV
+      mensal municipal (probe 0.3.52). Opcional: IOF-Ouro no mesmo CSV; CIDE/FEX
+      só com outra fonte oficial PUBLIC_OPEN.
 
   - id: F3-RREO-BACKFILL
     fase: F3.2

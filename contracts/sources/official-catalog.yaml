@@ -368,6 +368,53 @@ sources:
       Aria dicionário agrupa como "Royalties : ANP, FEP, PEA, ITAIPU, CFH e CFEM".
       CSV mensal usa Transferência=Royalties e Item por componente. Sem crédito.
 
+  - source_id: TESOURO-LC176-VALORES
+    name: Tesouro Nacional — valores mensais LC 176/2020 (ADO25) por município (CKAN)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-constitucionais-para-municipios
+    dataset: TESOURO-LC176-MENSAL
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    purpose: Valores LC 176/2020 (ADO25) publicados pelo Tesouro no CSV mensal oficial
+    legal_basis: Dataset CKAN Transferências Constitucionais para Municípios (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_monthly_csv
+    layout_version: tesouro-ckan-transferencia-mensal-lc176-v1
+    periodicity: monthly
+    competence: "2026-08"
+    granularity: municipality
+    parameters:
+      package_id: af4e7c47-2132-4d9a-bd7c-34e28a210b03
+      resource_id: 17336152-2728-4368-9ba2-c3f7821e4acf
+      file_name: Transferencia_Mensal_Municipios_202609.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2026-08"
+      transfer_item_allowlist: ["LC 176/2020 (ADO25)"]
+      transfer_name: LC176
+      resource_url_by_competence:
+        "2026-08": https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_lc176_received
+    formula: >
+      Soma dos três decêndios das linhas em que Item transferência=
+      LC 176/2020 (ADO25) e Transferência=LC 176/2020 (ADO25).
+      Join município+UF ao IBGE via SICONFI/entes. Não constitui crédito.
+    methodology_version: official-tesouro-lc176-mensal-v1
+    notes: >
+      Probe 202609 (~79k linhas): Item/Destino LC 176/2020 (ADO25) presentes.
+      CIDE e FEX não aparecem neste CSV mensal municipal. Sem crédito.
+
   - source_id: SICONFI-RREO
     name: SICONFI — RREO municipal
     maintainer: Tesouro Nacional

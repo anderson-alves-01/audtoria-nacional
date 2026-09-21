@@ -1,0 +1,4 @@
+﻿unit: test_tesouro_monthly_csv_* (3 passed)
+integration: test_siconfi_entes_and_ibge_pib_and_planalto_ingest + test_unavailable_sources_stay_empty + test_upgrade_base_to_head_on_empty_database (3 passed)
+alembic head: 0055_tesouro_lc176_allowlist
+implementation_version: 0.3.52
