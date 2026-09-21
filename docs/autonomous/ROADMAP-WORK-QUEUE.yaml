@@ -257,7 +257,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.52/
     versao: "0.3.52"
-    commit: null
+    commit: 4aae4ad
     ci: null
     motivo_bloqueio: null
     next_action: >
