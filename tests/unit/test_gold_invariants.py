@@ -281,9 +281,7 @@ def test_tesouro_coint_remaining_wide_csv() -> None:
         ("ACRELANDIA", "AC"): "1200013",
         ("ASSIS BRASIL", "AC"): "1200054",
     }
-    fpm_body = Path(
-        "tests/fixtures/official-snapshots/tesouro-fpm-por-municipio.csv"
-    ).read_bytes()
+    fpm_body = Path("tests/fixtures/official-snapshots/tesouro-fpm-por-municipio.csv").read_bytes()
     fpm, fpm_q = parse_tesouro_coint_municipio_csv(
         fpm_body,
         ibge_lookup=lookup,
@@ -295,9 +293,7 @@ def test_tesouro_coint_remaining_wide_csv() -> None:
     assert {row["ibgeCode"] for row in fpm} == {"1200013", "1200054"}
     assert sum(row["value"] for row in fpm) == 1408936.79 + 1112480.55
     assert presentation_for("TESOURO-FPM-COINT-VALORES")["createsTaxCredit"] is False
-    itr_body = Path(
-        "tests/fixtures/official-snapshots/tesouro-itr-por-municipio.csv"
-    ).read_bytes()
+    itr_body = Path("tests/fixtures/official-snapshots/tesouro-itr-por-municipio.csv").read_bytes()
     itr, itr_q = parse_tesouro_coint_municipio_csv(
         itr_body,
         ibge_lookup=lookup,
@@ -310,9 +306,7 @@ def test_tesouro_coint_remaining_wide_csv() -> None:
     assert presentation_for("TESOURO-ITR-COINT-VALORES")["valueKind"] == (
         "TRANSFER_AMOUNT_AS_PUBLISHED"
     )
-    iof_body = Path(
-        "tests/fixtures/official-snapshots/tesouro-iof-por-municipio.csv"
-    ).read_bytes()
+    iof_body = Path("tests/fixtures/official-snapshots/tesouro-iof-por-municipio.csv").read_bytes()
     iof, iof_q = parse_tesouro_coint_municipio_csv(
         iof_body,
         ibge_lookup=lookup,
