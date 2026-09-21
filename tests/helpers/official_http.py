@@ -261,6 +261,14 @@ SNAPSHOT_URLS = {
     (
         "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
         "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27D%C3%ADvida%20bruta%20do%20governo%20geral%27"
+        "%20and%20baseCalculo%20eq%200&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-divida-bruta-anuais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
         "$filter=Indicador%20eq%20%27Balan%C3%A7a%20comercial%27%20and%20"
         "IndicadorDetalhe%20eq%20%27Saldo%27%20and%20baseCalculo%20eq%201&"
         "$orderby=Data%20desc,DataReferencia%20asc&"

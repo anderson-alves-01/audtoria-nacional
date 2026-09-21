@@ -1,0 +1,58 @@
+# BCB OLINDA ExpectativasMercadoAnuais distinct indicators (500 rows)
+
+KNOWN	'Balança comercial'	detalhe='Exportações'	base=0	n=10
+KNOWN	'Balança comercial'	detalhe='Exportações'	base=1	n=10
+KNOWN	'Balança comercial'	detalhe='Importações'	base=0	n=10
+KNOWN	'Balança comercial'	detalhe='Importações'	base=1	n=10
+KNOWN	'Balança comercial'	detalhe='Saldo'	base=0	n=10
+KNOWN	'Balança comercial'	detalhe='Saldo'	base=1	n=10
+KNOWN	'Conta corrente'	detalhe=None	base=0	n=10
+KNOWN	'Conta corrente'	detalhe=None	base=1	n=10
+KNOWN	'Câmbio'	detalhe=None	base=0	n=10
+KNOWN	'Câmbio'	detalhe=None	base=1	n=10
+CANDIDATE	'Dívida bruta do governo geral'	detalhe=None	base=0	n=20
+CANDIDATE	'Dívida bruta do governo geral'	detalhe=None	base=1	n=20
+KNOWN	'Dívida líquida do setor público'	detalhe=None	base=0	n=20
+KNOWN	'Dívida líquida do setor público'	detalhe=None	base=1	n=20
+KNOWN	'IGP-M'	detalhe=None	base=0	n=10
+KNOWN	'IGP-M'	detalhe=None	base=1	n=10
+KNOWN	'IPCA'	detalhe=None	base=0	n=10
+KNOWN	'IPCA'	detalhe=None	base=1	n=10
+CANDIDATE	'IPCA Administrados'	detalhe=None	base=0	n=10
+CANDIDATE	'IPCA Administrados'	detalhe=None	base=1	n=10
+CANDIDATE	'IPCA Alimentação no domicílio'	detalhe=None	base=0	n=10
+CANDIDATE	'IPCA Alimentação no domicílio'	detalhe=None	base=1	n=10
+CANDIDATE	'IPCA Bens industrializados'	detalhe=None	base=0	n=10
+CANDIDATE	'IPCA Bens industrializados'	detalhe=None	base=1	n=10
+CANDIDATE	'IPCA Livres'	detalhe=None	base=0	n=10
+CANDIDATE	'IPCA Livres'	detalhe=None	base=1	n=10
+CANDIDATE	'IPCA Serviços'	detalhe=None	base=0	n=10
+CANDIDATE	'IPCA Serviços'	detalhe=None	base=1	n=10
+CANDIDATE	'Investimento direto no país'	detalhe=None	base=0	n=10
+CANDIDATE	'Investimento direto no país'	detalhe=None	base=1	n=10
+KNOWN	'PIB Agropecuária'	detalhe=None	base=0	n=10
+KNOWN	'PIB Agropecuária'	detalhe=None	base=1	n=10
+CANDIDATE	'PIB Despesa de consumo da administração pública'	detalhe=None	base=0	n=5
+CANDIDATE	'PIB Despesa de consumo da administração pública'	detalhe=None	base=1	n=5
+CANDIDATE	'PIB Despesa de consumo das famílias'	detalhe=None	base=0	n=5
+CANDIDATE	'PIB Despesa de consumo das famílias'	detalhe=None	base=1	n=5
+CANDIDATE	'PIB Exportação de bens e serviços'	detalhe=None	base=0	n=5
+CANDIDATE	'PIB Exportação de bens e serviços'	detalhe=None	base=1	n=5
+CANDIDATE	'PIB Formação Bruta de Capital Fixo'	detalhe=None	base=0	n=5
+CANDIDATE	'PIB Formação Bruta de Capital Fixo'	detalhe=None	base=1	n=5
+CANDIDATE	'PIB Importação de bens e serviços'	detalhe=None	base=0	n=5
+CANDIDATE	'PIB Importação de bens e serviços'	detalhe=None	base=1	n=5
+KNOWN	'PIB Indústria'	detalhe=None	base=0	n=5
+KNOWN	'PIB Indústria'	detalhe=None	base=1	n=5
+KNOWN	'PIB Serviços'	detalhe=None	base=0	n=5
+KNOWN	'PIB Serviços'	detalhe=None	base=1	n=5
+KNOWN	'PIB Total'	detalhe=None	base=0	n=5
+KNOWN	'PIB Total'	detalhe=None	base=1	n=5
+KNOWN	'Resultado nominal'	detalhe=None	base=0	n=10
+KNOWN	'Resultado nominal'	detalhe=None	base=1	n=10
+KNOWN	'Resultado primário'	detalhe=None	base=0	n=10
+KNOWN	'Resultado primário'	detalhe=None	base=1	n=10
+KNOWN	'Selic'	detalhe=None	base=0	n=5
+KNOWN	'Selic'	detalhe=None	base=1	n=5
+CANDIDATE	'Taxa de desocupação'	detalhe=None	base=0	n=5
+CANDIDATE	'Taxa de desocupação'	detalhe=None	base=1	n=5

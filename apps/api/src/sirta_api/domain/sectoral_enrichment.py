@@ -81,6 +81,7 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
             "IGP-DI",
             "INPC",
             "Dívida líquida do setor público",
+            "Dívida bruta do governo geral",
             "Balança comercial",
             "Resultado primário",
             "Conta corrente",

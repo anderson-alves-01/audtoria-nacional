@@ -3608,7 +3608,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: bcb_olinda_expectativas
-    layout_version: bcb-olinda-expectativas-anuais-v8
+    layout_version: bcb-olinda-expectativas-anuais-v9
     periodicity: as_published
     competence: as_published
     granularity: series
@@ -3626,6 +3626,7 @@ sources:
           IGP-DI,
           INPC,
           Dívida líquida do setor público,
+          Dívida bruta do governo geral,
           Balança comercial,
           Resultado primário,
           Conta corrente,
@@ -3641,6 +3642,7 @@ sources:
         IGP-DI: 0
         INPC: 0
         Dívida líquida do setor público: 0
+        Dívida bruta do governo geral: 0
       indicator_detalhe:
         Balança comercial: Saldo
       indicator_units:
@@ -3655,6 +3657,7 @@ sources:
         IGP-DI: PERCENT_PER_YEAR
         INPC: PERCENT_PER_YEAR
         Dívida líquida do setor público: PERCENT_OF_GDP
+        Dívida bruta do governo geral: PERCENT_OF_GDP
         Balança comercial: USD_BILLION
         Resultado primário: PERCENT_OF_GDP
         Conta corrente: USD_BILLION
@@ -3668,22 +3671,23 @@ sources:
       Mediana das expectativas anuais Focus (ExpectativasMercadoAnuais) para
       indicadores na allowlist (IPCA, Selic, Câmbio, PIB Total, PIB Serviços,
       PIB Agropecuária, PIB Indústria, IGP-M, IGP-DI, INPC, Dívida líquida do
-      setor público, Balança comercial/Saldo, Resultado primário, Conta
-      corrente, Resultado nominal), com baseCalculo default=1 e override por
-      indicador (IGP-DI/INPC/Dívida=0), IndicadorDetalhe=Saldo para Balança
-      comercial, limitados a max_rows=N por indicador (multi-fetch). Competência
-      = Data de publicação; horizonte = DataReferencia. Unidades distintas:
-      PERCENT_OF_GDP (Dívida, Resultado primário, Resultado nominal) e
+      setor público, Dívida bruta do governo geral, Balança comercial/Saldo,
+      Resultado primário, Conta corrente, Resultado nominal), com baseCalculo
+      default=1 e override por indicador (IGP-DI/INPC/Dívida líquida/Dívida
+      bruta=0), IndicadorDetalhe=Saldo para Balança comercial, limitados a
+      max_rows=N por indicador (multi-fetch). Competência = Data de
+      publicação; horizonte = DataReferencia. Unidades distintas:
+      PERCENT_OF_GDP (Dívidas, Resultado primário, Resultado nominal) e
       USD_BILLION (Balança Saldo, Conta corrente). Sem crédito.
-    methodology_version: official-bcb-olinda-expectativas-anuais-v8
+    methodology_version: official-bcb-olinda-expectativas-anuais-v9
     notes: >
       OData OLINDA oficial verificado. Ativação técnica com allowlist
       IPCA+Selic+Câmbio+PIB Total+PIB Serviços+PIB Agropecuária+PIB Indústria+
-      IGP-M+IGP-DI+INPC+Dívida líquida do setor público+Balança comercial
-      (Saldo)+Resultado primário+Conta corrente+Resultado nominal,
-      $top/max_rows=8 por indicador e fixtures mínimas. Distinto de
-      BCB-SGS-OLINDA (REST SGS). Homologação humana pendente. Não constitui
-      crédito.
+      IGP-M+IGP-DI+INPC+Dívida líquida do setor público+Dívida bruta do
+      governo geral+Balança comercial (Saldo)+Resultado primário+Conta
+      corrente+Resultado nominal, $top/max_rows=8 por indicador e fixtures
+      mínimas. Distinto de BCB-SGS-OLINDA (REST SGS). Homologação humana
+      pendente. Não constitui crédito.
 
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)
