@@ -665,7 +665,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.91/
     versao: "0.3.91"
-    commit: pending
+    commit: db30102
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -678,7 +678,7 @@ items:
       TECHNICALLY_APPROVED. Gold REFERENCE_QUANTITY. Sem crédito.
       Homologação humana pendente. Próximo: Selic/IPA-M/IPA-DI mensais se
       baseCalculo ativo, ou ExpectativasMercadoTrimestrais; UF tabular
-      quando publicada.
+      quando publicada. Commit: db30102.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
