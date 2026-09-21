@@ -663,7 +663,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.72/
     versao: "0.3.72"
-    commit: null
+    commit: 58b3ffc
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -675,7 +675,7 @@ items:
       Balança=Saldo) TECHNICALLY_APPROVED com fixtures mínimas e Gold
       REFERENCE_QUANTITY. Unidades PERCENT_OF_GDP e USD_BILLION. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova, ou OLINDA
-      Resultado nominal se priorizado.
+      Resultado nominal se priorizado. Commit: 58b3ffc.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
