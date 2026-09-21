@@ -1494,9 +1494,7 @@ def test_bcb_olinda_expectativas_parses_pib_despesa_adm_publica() -> None:
         body,
         indicator_allowlist=["PIB Despesa de consumo da administração pública"],
         max_rows=8,
-        indicator_units={
-            "PIB Despesa de consumo da administração pública": "PERCENT_PER_YEAR"
-        },
+        indicator_units={"PIB Despesa de consumo da administração pública": "PERCENT_PER_YEAR"},
     )
     assert quarantined == []
     assert len(silver) == 8
