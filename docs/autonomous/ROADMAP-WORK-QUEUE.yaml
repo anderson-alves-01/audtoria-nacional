@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.79/
     versao: "0.3.79"
-    commit: null
+    commit: 6cb751f
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -680,7 +680,7 @@ items:
       Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
       publicada; ou OLINDA PIB Formação Bruta de Capital Fixo (demanda Focus)
-      se priorizado.
+      se priorizado. Commit: 6cb751f.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
