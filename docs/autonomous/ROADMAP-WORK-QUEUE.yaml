@@ -518,7 +518,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.95/
     versao: "0.3.95"
-    commit: null
+    commit: ed6ad44
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -547,7 +547,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.95/
     versao: "0.3.95"
-    commit: null
+    commit: ed6ad44
     ci: null
     motivo_bloqueio: null
     next_action: >

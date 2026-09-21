@@ -18,3 +18,5 @@ historical quotas via `state_sc_csv`.
 - Gold `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`
 - No national load; fixture-minimized only
 - CKAN SC arrecadação not used as quota
+
+Commit: ed6ad44
