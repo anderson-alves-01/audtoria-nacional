@@ -433,7 +433,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.57/
     versao: "0.3.57"
-    commit: null
+    commit: 5bfec81
     ci: null
     motivo_bloqueio: null
     next_action: >
