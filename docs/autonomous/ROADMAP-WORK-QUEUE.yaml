@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.81/
     versao: "0.3.81"
-    commit: null
+    commit: 08a3936
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -681,7 +681,7 @@ items:
       Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova quando
       publicada; ou OLINDA PIB Despesa de consumo da administração pública
-      (demanda Focus) se priorizado.
+      (demanda Focus) se priorizado. Commit: 08a3936.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
