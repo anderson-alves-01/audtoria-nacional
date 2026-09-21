@@ -663,7 +663,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.74/
     versao: "0.3.74"
-    commit: null
+    commit: 74d4b8d
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -677,6 +677,7 @@ items:
       Unidades PERCENT_OF_GDP e USD_BILLION. Sem crédito. Homologação humana
       pendente. Próximo ciclo: UF tabular nova quando publicada; ou OLINDA
       Taxa de desocupação / Investimento direto / IPCA Livres se priorizado.
+      Commit: 74d4b8d.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
