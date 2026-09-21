@@ -209,6 +209,8 @@ sources:
       delimiter: ";"
       join: siconfi_entes_ibge_by_name_uf
       competence: "2026-08"
+      transfer_item_allowlist: [FPM]
+      transfer_name: FPM
       resource_url_by_competence:
         "2026-08": https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
     authentication: none
@@ -223,6 +225,148 @@ sources:
       Backfill por competência via resource_url_by_competence; gate de disco antes
       da Landing. Sem código IBGE no CSV. Previsto versus realizado somente quando
       ambos existirem.
+
+  - source_id: TESOURO-ITR-VALORES
+    name: Tesouro Nacional — valores mensais de ITR por município (CKAN)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-constitucionais-para-municipios
+    dataset: TESOURO-ITR-MENSAL
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    purpose: Valores de ITR publicados pelo Tesouro no CSV mensal oficial
+    legal_basis: Dataset CKAN Transferências Constitucionais para Municípios (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_monthly_csv
+    layout_version: tesouro-ckan-transferencia-mensal-itr-v1
+    periodicity: monthly
+    competence: "2026-08"
+    granularity: municipality
+    parameters:
+      package_id: af4e7c47-2132-4d9a-bd7c-34e28a210b03
+      resource_id: 17336152-2728-4368-9ba2-c3f7821e4acf
+      file_name: Transferencia_Mensal_Municipios_202609.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2026-08"
+      transfer_item_allowlist: [ITR]
+      transfer_name: ITR
+      resource_url_by_competence:
+        "2026-08": https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_itr_received
+    formula: >
+      Soma dos três decêndios das linhas em que Item transferência=ITR e
+      Transferência=ITR. Join município+UF ao IBGE via SICONFI/entes. Linhas
+      ITR→FUNDEB são retenção publicada, não crédito.
+    methodology_version: official-tesouro-itr-mensal-v1
+    notes: >
+      Mesmo arquivo CKAN do FPM; allowlist Item=ITR. Homologação humana pendente.
+      Não constitui crédito tributário.
+
+  - source_id: TESOURO-IPI-EXP-VALORES
+    name: Tesouro Nacional — valores mensais de IPI-Exportação por município (CKAN)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-constitucionais-para-municipios
+    dataset: TESOURO-IPI-EXP-MENSAL
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    purpose: Valores de IPI-Exportação publicados pelo Tesouro no CSV mensal oficial
+    legal_basis: Dataset CKAN Transferências Constitucionais para Municípios (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_monthly_csv
+    layout_version: tesouro-ckan-transferencia-mensal-ipi-exp-v1
+    periodicity: monthly
+    competence: "2026-08"
+    granularity: municipality
+    parameters:
+      package_id: af4e7c47-2132-4d9a-bd7c-34e28a210b03
+      resource_id: 17336152-2728-4368-9ba2-c3f7821e4acf
+      file_name: Transferencia_Mensal_Municipios_202609.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2026-08"
+      transfer_item_allowlist: [IPI-EXP]
+      transfer_name: IPI-EXP
+      resource_url_by_competence:
+        "2026-08": https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_ipi_exp_published
+    formula: >
+      Soma dos três decêndios das linhas em que Item transferência=IPI-EXP.
+      No arquivo 202609 as linhas IPI-EXP observadas destinam-se a FUNDEB
+      (retenção publicada). Join município+UF ao IBGE via SICONFI/entes.
+      Não constitui crédito.
+    methodology_version: official-tesouro-ipi-exp-mensal-v1
+    notes: >
+      Probe 50k linhas: destino IPI-EXP→FUNDEB apenas. Aria dicionário usa
+      rótulo IPI-Exp (código 9); CSV mensal usa Item=IPI-EXP. Sem crédito.
+
+  - source_id: TESOURO-ROYALTIES-VALORES
+    name: Tesouro Nacional — royalties mensais por município (CKAN)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-constitucionais-para-municipios
+    dataset: TESOURO-ROYALTIES-MENSAL
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-constitucionais-para-municipios
+    purpose: Royalties (FEP/CFEM/ANP/CFH/PEA/ITA) publicados no CSV mensal oficial
+    legal_basis: Dataset CKAN Transferências Constitucionais para Municípios (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_monthly_csv
+    layout_version: tesouro-ckan-transferencia-mensal-royalties-v1
+    periodicity: monthly
+    competence: "2026-08"
+    granularity: municipality
+    parameters:
+      package_id: af4e7c47-2132-4d9a-bd7c-34e28a210b03
+      resource_id: 17336152-2728-4368-9ba2-c3f7821e4acf
+      file_name: Transferencia_Mensal_Municipios_202609.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2026-08"
+      transfer_destination_allowlist: [Royalties]
+      transfer_name: Royalties
+      resource_url_by_competence:
+        "2026-08": https://www.tesourotransparente.gov.br/ckan/dataset/af4e7c47-2132-4d9a-bd7c-34e28a210b03/resource/17336152-2728-4368-9ba2-c3f7821e4acf/download/transferenciamensalmunicipios202609.csv
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_royalties_received
+    formula: >
+      Soma dos três decêndios das linhas em que Transferência=Royalties.
+      Item transferência identifica o componente (FEP, CFEM, ANP, CFH, PEA, ITA).
+      Join município+UF ao IBGE via SICONFI/entes. Não constitui crédito.
+    methodology_version: official-tesouro-royalties-mensal-v1
+    notes: >
+      Aria dicionário agrupa como "Royalties : ANP, FEP, PEA, ITAIPU, CFH e CFEM".
+      CSV mensal usa Transferência=Royalties e Item por componente. Sem crédito.
 
   - source_id: SICONFI-RREO
     name: SICONFI — RREO municipal

@@ -2583,9 +2583,46 @@ def parse_state_ba_csv(
     return silver, quarantined
 
 
+def _tesouro_transfer_family(name: str) -> str:
+    mapping = {
+        "FPM": "FPM",
+        "ITR": "ITR",
+        "IPI-EXP": "IPI_EXP",
+        "IPI-Exp": "IPI_EXP",
+        "Royalties": "ROYALTY",
+    }
+    if name in mapping:
+        return mapping[name]
+    cleaned = "".join(ch if ch.isalnum() else "_" for ch in name).strip("_")
+    return cleaned.upper() or "TRANSFER"
+
+
 def parse_tesouro_monthly_csv(
-    body: bytes, *, ibge_lookup: dict[tuple[str, str], str] | None = None
+    body: bytes,
+    *,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    item_allowlist: list[str] | tuple[str, ...] | None = None,
+    destination_allowlist: list[str] | tuple[str, ...] | None = None,
+    transfer_name: str | None = None,
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse Tesouro CKAN monthly CSV for an allowlisted transfer family.
+
+    Defaults preserve FPM behavior. Royalties match Transferência=Royalties
+    (Item may be FEP/CFEM/ANP/…). IPI-EXP rows in recent files are often
+    FUNDEB retention only; still published as occurrence, never credit.
+    """
+    items = {str(value).strip() for value in (item_allowlist or ()) if str(value).strip()}
+    destinations = {
+        str(value).strip() for value in (destination_allowlist or ()) if str(value).strip()
+    }
+    if not items and not destinations:
+        items = {"FPM"}
+    family_label = (
+        transfer_name
+        or (next(iter(destinations)) if destinations and not items else None)
+        or (next(iter(items)) if items else "TRANSFER")
+    )
+    family_key = _tesouro_transfer_family(family_label)
     text = body.decode("latin-1")
     reader = csv.DictReader(io.StringIO(text), delimiter=";")
     lookup = ibge_lookup or {}
@@ -2600,7 +2637,14 @@ def parse_tesouro_monthly_csv(
             item.get("Item transferência") or item.get("Item transferencia") or ""
         ).strip()
         destination = str(item.get("Transferência") or item.get("Transferencia") or "").strip()
-        if item_name != "FPM" and destination != "FPM":
+        matched = (bool(items) and item_name in items) or (
+            bool(destinations) and destination in destinations
+        )
+        if not matched:
+            # Legacy FPM: also keep rows whose destination is the allowlisted item.
+            if items and destination in items:
+                matched = True
+        if not matched:
             continue
         amounts = []
         for key in item:
@@ -2609,27 +2653,31 @@ def parse_tesouro_monthly_csv(
                     amounts.append(float(str(item[key]).replace(",", ".")))
                 except ValueError:
                     amounts.append(None)
+        prefix = family_key.lower()
         if not amounts or any(value is None for value in amounts):
             quarantined.append(
                 (
-                    {"rowId": f"fpm-{index}", "territoryName": name, "uf": uf},
-                    "non numeric FPM amount",
+                    {"rowId": f"{prefix}-{index}", "territoryName": name, "uf": uf},
+                    f"non numeric {family_label} amount",
                 )
             )
             continue
         total = float(sum(value for value in amounts if value is not None))
         ibge = lookup.get((normalize_place(name), normalize_place(uf)), "")
-        if item_name == "FPM" and destination == "FPM":
-            modality = "FPM_RECEIVED"
+        if destinations and destination in destinations:
+            modality = f"{family_key}_RECEIVED"
+        elif item_name == destination or destination == family_label:
+            modality = f"{family_key}_RECEIVED"
         else:
-            modality = f"FPM_TO_{destination}"
+            dest_key = _tesouro_transfer_family(destination)
+            modality = f"{family_key}_TO_{dest_key}"
         row = {
-            "rowId": f"fpm-{ibge or index}-{year}-{month}-{modality}"[:64],
+            "rowId": f"{prefix}-{ibge or index}-{year}-{month}-{modality}-{item_name}"[:64],
             "territoryName": name,
             "uf": uf,
             "ibgeCode": ibge,
             "competence": f"{year}-{month}"[:7],
-            "transferName": "FPM",
+            "transferName": family_label,
             "modality": modality,
             "itemName": item_name,
             "destination": destination,

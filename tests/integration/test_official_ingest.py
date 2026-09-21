@@ -59,6 +59,19 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     fpm = api_client.post("/v1/data-sources/TESOURO-FPM-VALORES/ingest", headers=_admin())
     assert fpm.status_code == 200
     assert fpm.json()["silverCount"] == 3
+    itr = api_client.post("/v1/data-sources/TESOURO-ITR-VALORES/ingest", headers=_admin())
+    assert itr.status_code == 200
+    assert itr.json()["silverCount"] == 3
+    assert itr.json()["taxCreditCreated"] is False
+    ipi_exp = api_client.post("/v1/data-sources/TESOURO-IPI-EXP-VALORES/ingest", headers=_admin())
+    assert ipi_exp.status_code == 200
+    assert ipi_exp.json()["silverCount"] == 2
+    royalties = api_client.post(
+        "/v1/data-sources/TESOURO-ROYALTIES-VALORES/ingest", headers=_admin()
+    )
+    assert royalties.status_code == 200
+    assert royalties.json()["silverCount"] == 3
+    assert royalties.json()["taxCreditCreated"] is False
     pe_icms = api_client.post("/v1/data-sources/ESTADO-ICMS-QUOTA/ingest", headers=_admin())
     assert pe_icms.status_code == 200
     assert pe_icms.json()["silverCount"] == 2
@@ -191,6 +204,9 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "PLANALTO-LEGISLACAO",
         "PLANALTO-LC-214",
         "TESOURO-FPM-VALORES",
+        "TESOURO-ITR-VALORES",
+        "TESOURO-IPI-EXP-VALORES",
+        "TESOURO-ROYALTIES-VALORES",
         "ESTADO-ICMS-QUOTA",
         "ESTADO-IPVA-QUOTA",
         "ESTADO-BA-ICMS-QUOTA",
@@ -233,6 +249,9 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["PLANALTO-LC-214"]["valueKind"] == "REGULATORY_DOCUMENT"
     assert by_id["SICONFI-ENTES"]["valueKind"] == "COVERAGE_REGISTRY"
     assert by_id["TESOURO-FPM-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-ITR-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-IPI-EXP-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-ROYALTIES-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-BA-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -286,6 +305,12 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     listing = api_client.get("/v1/data-sources", headers=_analyst())
     by_id = {item["sourceId"]: item for item in listing.json()["items"]}
     assert by_id["TESOURO-FPM-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-ITR-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-ITR-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-IPI-EXP-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-IPI-EXP-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-ROYALTIES-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-ROYALTIES-VALORES"]["ingestAllowed"] is True
     assert by_id["ESTADO-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-ICMS-QUOTA"]["ingestAllowed"] is True

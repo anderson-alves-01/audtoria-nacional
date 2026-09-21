@@ -126,7 +126,9 @@ def test_tesouro_monthly_csv_joins_ibge_and_keeps_fundeb_retention() -> None:
         ("COLINAS", "MA"): "2103505",
         ("CONCEICAO DO LAGO-ACU", "MA"): "2103554",
     }
-    silver, quarantined = parse_tesouro_monthly_csv(body, ibge_lookup=lookup)
+    silver, quarantined = parse_tesouro_monthly_csv(
+        body, ibge_lookup=lookup, item_allowlist=["FPM"], transfer_name="FPM"
+    )
     assert len(quarantined) == 1
     modalities = {row["modality"] for row in silver}
     assert "FPM_RECEIVED" in modalities
@@ -134,6 +136,41 @@ def test_tesouro_monthly_csv_joins_ibge_and_keeps_fundeb_retention() -> None:
     received = [row for row in silver if row["modality"] == "FPM_RECEIVED"]
     assert {row["ibgeCode"] for row in received} == {"2103505", "2103554"}
     assert sum(row["value"] for row in received) == 356.0
+
+
+def test_tesouro_monthly_csv_itr_ipi_exp_royalties_allowlists() -> None:
+    body = Path("tests/fixtures/official-snapshots/tesouro-fpm-202608.csv").read_bytes()
+    lookup = {
+        ("COLINAS", "MA"): "2103505",
+        ("CONCEICAO DO LAGO-ACU", "MA"): "2103554",
+    }
+    itr, itr_q = parse_tesouro_monthly_csv(
+        body, ibge_lookup=lookup, item_allowlist=["ITR"], transfer_name="ITR"
+    )
+    assert len(itr_q) == 1
+    assert {row["modality"] for row in itr} == {"ITR_RECEIVED", "ITR_TO_FUNDEB"}
+    assert sum(row["value"] for row in itr if row["modality"] == "ITR_RECEIVED") == 39.0
+    ipi, ipi_q = parse_tesouro_monthly_csv(
+        body, ibge_lookup=lookup, item_allowlist=["IPI-EXP"], transfer_name="IPI-EXP"
+    )
+    assert ipi_q == []
+    assert all(row["modality"] == "IPI_EXP_TO_FUNDEB" for row in ipi)
+    assert sum(row["value"] for row in ipi) == 81.0
+    roy, roy_q = parse_tesouro_monthly_csv(
+        body,
+        ibge_lookup=lookup,
+        destination_allowlist=["Royalties"],
+        transfer_name="Royalties",
+    )
+    assert roy_q == []
+    assert all(row["modality"] == "ROYALTY_RECEIVED" for row in roy)
+    assert {row["itemName"] for row in roy} == {"FEP", "CFEM", "ANP"}
+    assert sum(row["value"] for row in roy) == 170.0
+    assert presentation_for("TESOURO-ITR-VALORES")["createsTaxCredit"] is False
+    assert presentation_for("TESOURO-IPI-EXP-VALORES")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    assert presentation_for("TESOURO-ROYALTIES-VALORES")["createsCollection"] is False
 
 
 def test_state_pe_csv_joins_ibge_and_publishes_zero_ipva() -> None:

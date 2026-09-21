@@ -385,6 +385,9 @@ def ingest_official_source(
         in {
             None,
             "FPM_RECEIVED",
+            "ITR_RECEIVED",
+            "IPI_EXP_RECEIVED",
+            "ROYALTY_RECEIVED",
             "ICMS_QUOTA",
             "IPVA_QUOTA",
             "IPI_QUOTA",
@@ -672,7 +675,18 @@ def _parse(
     if parser is None:
         raise ConflictError("Official connector is not implemented")
     if connector == "tesouro_monthly_csv":
-        return parser(fetched.body, ibge_lookup=_ibge_lookup(session, context=context))
+        parameters = catalog.get("parameters") or {}
+        item_allowlist = parameters.get("transfer_item_allowlist")
+        destination_allowlist = parameters.get("transfer_destination_allowlist")
+        return parser(
+            fetched.body,
+            ibge_lookup=_ibge_lookup(session, context=context),
+            item_allowlist=list(item_allowlist) if item_allowlist else None,
+            destination_allowlist=(list(destination_allowlist) if destination_allowlist else None),
+            transfer_name=(
+                str(parameters.get("transfer_name")) if parameters.get("transfer_name") else None
+            ),
+        )
     if connector == "state_pe_csv":
         parameters = catalog.get("parameters") or {}
         return parser(

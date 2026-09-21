@@ -46,6 +46,28 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "TESOURO-ITR-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores de ITR publicados pelo Tesouro no CSV mensal. "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "TESOURO-IPI-EXP-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores de IPI-Exportação publicados pelo Tesouro no CSV mensal "
+            "(frequentemente retenção FUNDEB). Ocorrência para análise, "
+            "não crédito nem cobrança."
+        ),
+    },
+    "TESOURO-ROYALTIES-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Royalties publicados pelo Tesouro (FEP/CFEM/ANP/CFH/PEA/ITA). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (

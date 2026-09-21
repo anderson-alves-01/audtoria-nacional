@@ -89,6 +89,9 @@ DASHBOARDS = (
         "title": "Transferências",
         "goldSourceIds": (
             "TESOURO-FPM-VALORES",
+            "TESOURO-ITR-VALORES",
+            "TESOURO-IPI-EXP-VALORES",
+            "TESOURO-ROYALTIES-VALORES",
             "TESOURO-TRANSPARENTE",
             "ESTADO-ICMS-QUOTA",
             "ESTADO-IPVA-QUOTA",
