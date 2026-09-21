@@ -1,0 +1,6 @@
+CI green for 0.3.72 (BCB OLINDA Resultado primário + Conta corrente)
+
+run: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35596287658
+head: 2172d6afec327c67e36abab069cc23148b8aadfd
+jobs: python=success web=success containers=success
+pr: https://github.com/anderson-alves-01/audtoria-nacional/pull/2

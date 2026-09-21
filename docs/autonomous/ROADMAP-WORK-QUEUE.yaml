@@ -664,7 +664,7 @@ items:
     evidencia: evidence/releases/0.3.72/
     versao: "0.3.72"
     commit: 58b3ffc
-    ci: null
+    ci: "35596287658"
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA+Selic+Câmbio+
@@ -675,7 +675,8 @@ items:
       Balança=Saldo) TECHNICALLY_APPROVED com fixtures mínimas e Gold
       REFERENCE_QUANTITY. Unidades PERCENT_OF_GDP e USD_BILLION. Sem crédito.
       Homologação humana pendente. Próximo ciclo: UF tabular nova, ou OLINDA
-      Resultado nominal se priorizado. Commit: 58b3ffc.
+      Resultado nominal se priorizado. Commit: 58b3ffc. CI verde:
+      https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35596287658.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
