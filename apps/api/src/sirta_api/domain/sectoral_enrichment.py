@@ -164,6 +164,33 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         "indicatorAllowlist": ["Selic"],
     },
     {
+        "sourceId": "BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M",
+        "maintainer": "Banco Central",
+        "connector": "bcb_olinda_expectativas",
+        "structuredOfficialSource": "olinda_odata_expectativas_inflacao_12m",
+        "status": "TECHNICALLY_APPROVED",
+        "ingestAllowed": True,
+        "personalDataRisk": "none",
+        "activationGate": "INDICATOR_ALLOWLIST",
+        "indicatorAllowlist": ["IPCA", "IGP-M", "IPCA Livres", "IPCA Serviços"],
+    },
+    {
+        "sourceId": "BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M",
+        "maintainer": "Banco Central",
+        "connector": "bcb_olinda_expectativas",
+        "structuredOfficialSource": "olinda_odata_expectativas_inflacao_24m",
+        "status": "TECHNICALLY_APPROVED",
+        "ingestAllowed": True,
+        "personalDataRisk": "none",
+        "activationGate": "INDICATOR_ALLOWLIST",
+        "indicatorAllowlist": [
+            "IPCA",
+            "IPCA Livres",
+            "IPCA Serviços",
+            "IPCA Bens industrializados",
+        ],
+    },
+    {
         "sourceId": "CNES-DATASUS",
         "maintainer": "Ministério da Saúde / DATASUS",
         "connector": "cnes_datasus_open",
@@ -181,8 +208,9 @@ DISCLAIMER = (
     "ANP, ANEEL, EPE, Anatel e CNES ativadas com escopo UF; BCB com allowlist SGS "
     "432/433 e OLINDA Expectativas Focus anuais (IPCA/Selic/Câmbio/PIB Total/PIB Serviços/"
     "IGP-M/IGP-DI/INPC), mensais (IPCA/componentes/IGP-M/Câmbio/IPA-M/IPA-DI/"
-    "IGP-DI/INPC) e trimestrais (IPCA/componentes/Câmbio/PIB Total/"
-    "PIB Serviços/Agropecuária/Indústria). "
+    "IGP-DI/INPC), trimestrais (IPCA/componentes/Câmbio/PIB Total/"
+    "PIB Serviços/Agropecuária/Indústria), Selic por reunião Copom e inflação "
+    "12/24 meses (Suavizada). "
     "REFERENCE_ENRICHMENT apenas. Não constitui crédito tributário."
 )
 

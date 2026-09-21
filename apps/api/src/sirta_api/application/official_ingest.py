@@ -1023,6 +1023,8 @@ _BCB_OLINDA_FOCUS_LABELS = {
     "ExpectativaMercadoMensais": "FOCUS_MENSAL",
     "ExpectativasMercadoTrimestrais": "FOCUS_TRIMESTRAL",
     "ExpectativasMercadoSelic": "FOCUS_SELIC",
+    "ExpectativasMercadoInflacao12Meses": "FOCUS_INFLACAO_12M",
+    "ExpectativasMercadoInflacao24Meses": "FOCUS_INFLACAO_24M",
 }
 
 

@@ -596,6 +596,23 @@ PRESENTATION = {
             "Contexto setorial; não constitui crédito tributário."
         ),
     },
+    "BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Expectativas Focus de inflação em 12 meses OLINDA do Banco Central "
+            "(allowlist IPCA/IGP-M/IPCA Livres/IPCA Serviços; horizonte Suavizada). "
+            "Contexto setorial; não constitui crédito tributário."
+        ),
+    },
+    "BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Expectativas Focus de inflação em 24 meses OLINDA do Banco Central "
+            "(allowlist IPCA/IPCA Livres/IPCA Serviços/IPCA Bens industrializados; "
+            "horizonte Suavizada). "
+            "Contexto setorial; não constitui crédito tributário."
+        ),
+    },
     "EPE-DADOS-ABERTOS": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

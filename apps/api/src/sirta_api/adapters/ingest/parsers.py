@@ -1854,7 +1854,7 @@ def parse_bcb_olinda_expectativas(
     focus_label: str = "FOCUS_ANUAL",
     horizon_field: str = "DataReferencia",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse BCB OLINDA Expectativas OData (anuais/mensais/trimestrais/Selic); never tax credit."""
+    """Parse BCB OLINDA Expectativas OData (anuais/mensais/trimestrais/Selic/inflação); never tax credit."""
     allowed = {
         str(item).strip().upper() for item in (indicator_allowlist or ()) if str(item).strip()
     }

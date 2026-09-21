@@ -631,6 +631,10 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["ingestAllowed"] is True
     assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["ingestAllowed"] is True
     assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["ANATEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"

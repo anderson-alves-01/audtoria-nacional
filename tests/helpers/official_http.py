@@ -617,6 +617,62 @@ SNAPSHOT_URLS = {
         "$select=Indicador,Data,Reuniao,Mediana,Media,baseCalculo"
     ): "bcb-olinda-expectativas-selic-reuniao-top8.json",
     (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoInflacao12Meses?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,Suavizada%20asc&"
+        "$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-inflacao12m-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoInflacao12Meses?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IGP-M%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,Suavizada%20asc&"
+        "$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-igp-m-inflacao12m-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoInflacao12Meses?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Livres%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,Suavizada%20asc&"
+        "$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-livres-inflacao12m-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoInflacao12Meses?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Servi%C3%A7os%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,Suavizada%20asc&"
+        "$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-servicos-inflacao12m-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoInflacao24Meses?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,Suavizada%20asc&"
+        "$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-inflacao24m-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoInflacao24Meses?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Livres%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,Suavizada%20asc&"
+        "$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-livres-inflacao24m-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoInflacao24Meses?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Servi%C3%A7os%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,Suavizada%20asc&"
+        "$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-servicos-inflacao24m-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoInflacao24Meses?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IPCA%20Bens%20industrializados%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,Suavizada%20asc&"
+        "$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-ipca-bens-industrializados-inflacao24m-top8.json",
+    (
         "https://www.epe.gov.br/sites-pt/publicacoes-dados-abertos/dados-abertos/"
         "Documents/Dados%20brutos.xlsx"
     ): "epe-anuario-dados-brutos-ms-2024.csv",

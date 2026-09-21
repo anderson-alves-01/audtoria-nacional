@@ -4073,6 +4073,112 @@ sources:
       ExpectativasMercadoSelic. Publicação Focus observada em 2026-09-18.
       Homologação humana pendente. Não constitui crédito.
 
+  - source_id: BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M
+    name: Banco Central — OLINDA Expectativas Focus Inflação 12 meses
+    maintainer: Banco Central do Brasil
+    official_domain: bcb.gov.br
+    official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    endpoint: >-
+      https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoInflacao12Meses?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,Suavizada%20asc&$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo
+    documentation_url: https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/swagger-ui3#/
+    dataset: BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M
+    dictionary_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    purpose: Expectativas de mercado Focus de inflação acumulada em 12 meses (mediana) como referência; nunca crédito tributário
+    legal_basis: API OLINDA pública do Banco Central
+    license_terms: termos de uso do Banco Central para dados abertos
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: bcb_olinda_expectativas
+    layout_version: bcb-olinda-expectativas-inflacao12m-v1
+    periodicity: as_published
+    competence: as_published
+    granularity: series
+    parameters:
+      indicator_allowlist:
+        [IPCA, IGP-M, IPCA Livres, IPCA Serviços]
+      primary_indicator: IPCA
+      max_rows: 8
+      value_field: Mediana
+      scrape_forbidden: true
+      entity_set: ExpectativasMercadoInflacao12Meses
+      focus_label: FOCUS_INFLACAO_12M
+      horizon_field: Suavizada
+      base_calculo: 1
+      indicator_units:
+        IPCA: PERCENT_PER_YEAR
+        IGP-M: PERCENT_PER_YEAR
+        IPCA Livres: PERCENT_PER_YEAR
+        IPCA Serviços: PERCENT_PER_YEAR
+    indicator: bcb_olinda_expectativas_focus_inflacao_12m
+    formula: >
+      Mediana das expectativas Focus de inflação em 12 meses
+      (ExpectativasMercadoInflacao12Meses) com baseCalculo=1 e max_rows=N por
+      indicador. Competência = Data de publicação; horizonte = Suavizada (N/S).
+      Unidade PERCENT_PER_YEAR. Distinto de anuais/mensais/trimestrais/Selic e
+      de Inflacao24Meses. Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-inflacao12m-v1
+    notes: >
+      OData OLINDA oficial verificado. Ativação técnica com allowlist
+      IPCA/IGP-M/IPCA Livres/IPCA Serviços, $top/max_rows=8, horizon_field=Suavizada
+      e fixtures mínimas. Entity set ExpectativasMercadoInflacao12Meses.
+      Publicação Focus observada em 2026-09-18. Homologação humana pendente.
+      Não constitui crédito.
+
+  - source_id: BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M
+    name: Banco Central — OLINDA Expectativas Focus Inflação 24 meses
+    maintainer: Banco Central do Brasil
+    official_domain: bcb.gov.br
+    official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    endpoint: >-
+      https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoInflacao24Meses?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,Suavizada%20asc&$select=Indicador,Data,Suavizada,Mediana,Media,baseCalculo
+    documentation_url: https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/swagger-ui3#/
+    dataset: BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M
+    dictionary_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    purpose: Expectativas de mercado Focus de inflação acumulada em 24 meses (mediana) como referência; nunca crédito tributário
+    legal_basis: API OLINDA pública do Banco Central
+    license_terms: termos de uso do Banco Central para dados abertos
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: bcb_olinda_expectativas
+    layout_version: bcb-olinda-expectativas-inflacao24m-v1
+    periodicity: as_published
+    competence: as_published
+    granularity: series
+    parameters:
+      indicator_allowlist:
+        [IPCA, IPCA Livres, IPCA Serviços, IPCA Bens industrializados]
+      primary_indicator: IPCA
+      max_rows: 8
+      value_field: Mediana
+      scrape_forbidden: true
+      entity_set: ExpectativasMercadoInflacao24Meses
+      focus_label: FOCUS_INFLACAO_24M
+      horizon_field: Suavizada
+      base_calculo: 1
+      indicator_units:
+        IPCA: PERCENT_PER_YEAR
+        IPCA Livres: PERCENT_PER_YEAR
+        IPCA Serviços: PERCENT_PER_YEAR
+        IPCA Bens industrializados: PERCENT_PER_YEAR
+    indicator: bcb_olinda_expectativas_focus_inflacao_24m
+    formula: >
+      Mediana das expectativas Focus de inflação em 24 meses
+      (ExpectativasMercadoInflacao24Meses) com baseCalculo=1 e max_rows=N por
+      indicador. Competência = Data de publicação; horizonte = Suavizada (N/S).
+      Unidade PERCENT_PER_YEAR. Distinto de anuais/mensais/trimestrais/Selic e
+      de Inflacao12Meses. Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-inflacao24m-v1
+    notes: >
+      OData OLINDA oficial verificado. Ativação técnica com allowlist
+      IPCA/IPCA Livres/IPCA Serviços/IPCA Bens industrializados, $top/max_rows=8,
+      horizon_field=Suavizada e fixtures mínimas. Entity set
+      ExpectativasMercadoInflacao24Meses. Publicação Focus observada em
+      2026-09-18. Homologação humana pendente. Não constitui crédito.
+
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)
     maintainer: Ministério da Saúde / DATASUS

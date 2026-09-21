@@ -1,16 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-21T18:00:00-03:00"
+updated_at: "2026-09-21T18:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.96"
+implementation_version: "0.3.97"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.96: BCB OLINDA ExpectativasMercadoSelic (FOCUS_SELIC, horizonte
-  Reuniao, silverCount 8). Distinto de Selic anual e de Selic trimestral vazio.
-  Próximo: UF tabular PUBLIC_OPEN restante ou Inflacao12/24m OLINDA.
+  Ciclo 0.3.97: BCB OLINDA ExpectativasMercadoInflacao12Meses +
+  ExpectativasMercadoInflacao24Meses (FOCUS_INFLACAO_12M/24M, horizonte
+  Suavizada, silverCount 8 cada). Distinto de anuais/mensais/trimestrais/Selic.
+  Próximo: UF tabular PUBLIC_OPEN restante ou Top5 OLINDA.
   RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -656,15 +657,15 @@ items:
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
-    fontes_oficiais: [BCB-SGS-OLINDA, BCB-OLINDA-EXPECTATIVAS, BCB-OLINDA-EXPECTATIVAS-MENSAIS, BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS, BCB-OLINDA-EXPECTATIVAS-SELIC]
+    fontes_oficiais: [BCB-SGS-OLINDA, BCB-OLINDA-EXPECTATIVAS, BCB-OLINDA-EXPECTATIVAS-MENSAIS, BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS, BCB-OLINDA-EXPECTATIVAS-SELIC, BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M, BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M]
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.96/
-    versao: "0.3.96"
-    commit: 8b8892a
-    ci: "35654717874"
+    evidencia: evidence/releases/0.3.97/
+    versao: "0.3.97"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
@@ -681,11 +682,13 @@ items:
       Fonte BCB-OLINDA-EXPECTATIVAS-SELIC (ExpectativasMercadoSelic,
       allowlist Selic, horizon_field=Reuniao, baseCalculo=1, max_rows=8,
       layout selic-v1, silverCount=8) TECHNICALLY_APPROVED.
+      Fontes BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M/24M
+      (ExpectativasMercadoInflacao12Meses/24Meses, horizon_field=Suavizada,
+      baseCalculo=1, max_rows=8, silverCount=8 cada) TECHNICALLY_APPROVED.
       Gold REFERENCE_QUANTITY. Sem crédito. Homologação humana pendente.
       IGP/IPA/INPC trimestrais vazios na fonte.
-      Próximo: Inflacao12/24m OLINDA ou UF tabular PUBLIC_OPEN restante.
-      Commit: 8b8892a.
-      Ciclo 0.3.96.
+      Próximo: Top5 OLINDA ou UF tabular PUBLIC_OPEN restante.
+      Ciclo 0.3.97.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2

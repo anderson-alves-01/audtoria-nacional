@@ -1414,6 +1414,60 @@ def test_bcb_olinda_expectativas_parses_selic_reuniao() -> None:
     assert presentation_for("BCB-OLINDA-EXPECTATIVAS-SELIC")["createsTaxCredit"] is False
 
 
+def test_bcb_olinda_expectativas_parses_inflacao_12m_suavizada() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-ipca-inflacao12m-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["IPCA"],
+        max_rows=8,
+        indicator_units={"IPCA": "PERCENT_PER_YEAR"},
+        focus_label="FOCUS_INFLACAO_12M",
+        horizon_field="Suavizada",
+    )
+    assert quarantined == []
+    assert len(silver) == 2
+    assert silver[0]["seriesId"] == "IPCA"
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["value"] == 4.8016
+    assert silver[0]["horizonYear"] == "N"
+    assert silver[1]["value"] == 4.7316
+    assert silver[1]["horizonYear"] == "S"
+    assert "FOCUS_INFLACAO_12M" in silver[0]["transferName"]
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M")["valueKind"] == (
+        "REFERENCE_QUANTITY"
+    )
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M")["createsTaxCredit"] is False
+
+
+def test_bcb_olinda_expectativas_parses_inflacao_24m_suavizada() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-ipca-inflacao24m-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["IPCA"],
+        max_rows=8,
+        indicator_units={"IPCA": "PERCENT_PER_YEAR"},
+        focus_label="FOCUS_INFLACAO_24M",
+        horizon_field="Suavizada",
+    )
+    assert quarantined == []
+    assert len(silver) == 2
+    assert silver[0]["seriesId"] == "IPCA"
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["value"] == 3.9081
+    assert silver[0]["horizonYear"] == "N"
+    assert silver[1]["value"] == 3.9204
+    assert silver[1]["horizonYear"] == "S"
+    assert "FOCUS_INFLACAO_24M" in silver[0]["transferName"]
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M")["valueKind"] == (
+        "REFERENCE_QUANTITY"
+    )
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M")["createsTaxCredit"] is False
+
+
 def test_bcb_olinda_expectativas_parses_selic_and_cambio_units() -> None:
     selic = Path(
         "tests/fixtures/official-snapshots/bcb-olinda-expectativas-selic-anuais-top8.json"
