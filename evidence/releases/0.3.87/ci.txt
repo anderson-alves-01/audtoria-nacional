@@ -1,0 +1,9 @@
+# CI 0.3.87
+
+Local gates before push:
+- unit OLINDA ipc_fipe/ipa_m/ipa_di/ipca_15: 4 passed
+- unit+alembic bcb_olinda filter: 24 passed
+- integration sectoral enrichment: 11 passed
+- silverCount BCB-OLINDA-EXPECTATIVAS: 264
+
+CI GitHub Actions: pending after push to PR #2.

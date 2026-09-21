@@ -182,7 +182,7 @@ def test_bcb_ingest_publishes_gold_without_credit(api_client) -> None:
 def test_bcb_olinda_expectativas_ingest_publishes_gold_without_credit(api_client) -> None:
     bcb = api_client.post("/v1/data-sources/BCB-OLINDA-EXPECTATIVAS/ingest", headers=_admin())
     assert bcb.status_code == 200
-    assert bcb.json()["silverCount"] == 240
+    assert bcb.json()["silverCount"] == 264
     assert bcb.json()["quarantinedCount"] == 0
     assert bcb.json()["taxCreditCreated"] is False
     gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())

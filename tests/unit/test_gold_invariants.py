@@ -1584,6 +1584,63 @@ def test_bcb_olinda_expectativas_parses_ipca_15() -> None:
     assert len({row["rowId"] for row in silver}) == 8
 
 
+def test_bcb_olinda_expectativas_parses_ipc_fipe() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-ipc-fipe-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["IPC-Fipe"],
+        max_rows=8,
+        indicator_units={"IPC-Fipe": "PERCENT_PER_YEAR"},
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "IPC-Fipe"
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["value"] == 3.88
+    assert len(silver[0]["rowId"]) <= 64
+    assert len({row["rowId"] for row in silver}) == 8
+
+
+def test_bcb_olinda_expectativas_parses_ipa_m() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-ipa-m-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["IPA-M"],
+        max_rows=8,
+        indicator_units={"IPA-M": "PERCENT_PER_YEAR"},
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "IPA-M"
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["value"] == 8.76
+    assert len(silver[0]["rowId"]) <= 64
+    assert len({row["rowId"] for row in silver}) == 8
+
+
+def test_bcb_olinda_expectativas_parses_ipa_di() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-ipa-di-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["IPA-DI"],
+        max_rows=8,
+        indicator_units={"IPA-DI": "PERCENT_PER_YEAR"},
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "IPA-DI"
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["value"] == 8.87
+    assert len(silver[0]["rowId"]) <= 64
+    assert len({row["rowId"] for row in silver}) == 8
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
