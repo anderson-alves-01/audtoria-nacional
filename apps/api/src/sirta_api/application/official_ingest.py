@@ -1070,9 +1070,7 @@ def _parse_bcb_olinda_expectativas_allowlist(
                 body = fetched.body
             else:
                 if http_client is None:
-                    raise ConflictError(
-                        "BCB Expectativas secondary indicators require HTTP client"
-                    )
+                    raise ConflictError("BCB Expectativas secondary indicators require HTTP client")
                 url = _bcb_olinda_expectativas_url(
                     indicator=indicator,
                     max_rows=max_rows,
