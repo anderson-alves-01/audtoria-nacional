@@ -32,6 +32,7 @@ DASHBOARDS = (
             "ANP-REVENDEDORES",
             "ANEEL-DADOS-ABERTOS",
             "BCB-SGS-OLINDA",
+            "BCB-OLINDA-EXPECTATIVAS",
             "EPE-DADOS-ABERTOS",
             "ANATEL-DADOS-ABERTOS",
             "CNES-DATASUS",

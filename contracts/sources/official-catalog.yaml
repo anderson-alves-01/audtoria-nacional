@@ -3590,6 +3590,50 @@ sources:
       SGS JSON oficial verificado. Ativação técnica com allowlist 432+433 e
       fixture mínima (ultimos=3). Homologação humana pendente. Não constitui crédito.
 
+  - source_id: BCB-OLINDA-EXPECTATIVAS
+    name: Banco Central — OLINDA Expectativas Focus anuais (IPCA)
+    maintainer: Banco Central do Brasil
+    official_domain: bcb.gov.br
+    official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    endpoint: >-
+      https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo
+    documentation_url: https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/swagger-ui3#/
+    dataset: BCB-OLINDA-EXPECTATIVAS
+    dictionary_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    purpose: Expectativas de mercado Focus (mediana anual) como referência; nunca crédito tributário
+    legal_basis: API OLINDA pública do Banco Central
+    license_terms: termos de uso do Banco Central para dados abertos
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: bcb_olinda_expectativas
+    layout_version: bcb-olinda-expectativas-anuais-v1
+    periodicity: as_published
+    competence: as_published
+    granularity: series
+    parameters:
+      indicator_allowlist: [IPCA]
+      max_rows: 8
+      value_field: Mediana
+      scrape_forbidden: true
+      entity_set: ExpectativasMercadoAnuais
+      base_calculo: 1
+    authentication: none
+    rate_limit: http_429_possible
+    personal_data: false
+    retention: bronze_immutable
+    indicator: bcb_olinda_expectativas_focus_anuais
+    formula: >
+      Mediana das expectativas anuais Focus (ExpectativasMercadoAnuais) para
+      indicadores na allowlist (IPCA), baseCalculo=1, limitados a max_rows=N.
+      Competência = Data de publicação; horizonte = DataReferencia. Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-anuais-v1
+    notes: >
+      OData OLINDA oficial verificado. Ativação técnica com allowlist IPCA,
+      $top/max_rows=8 e fixture mínima. Distinto de BCB-SGS-OLINDA (REST SGS).
+      Homologação humana pendente. Não constitui crédito.
+
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)
     maintainer: Ministério da Saúde / DATASUS

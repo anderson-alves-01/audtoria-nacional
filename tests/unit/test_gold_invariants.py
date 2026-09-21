@@ -4,6 +4,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_anatel_dados_gov,
     parse_aneel_ckan_open,
     parse_anp_revendedores_api,
+    parse_bcb_olinda_expectativas,
     parse_bcb_sgs_olinda,
     parse_cnes_datasus_open,
     parse_epe_open_files,
@@ -1072,6 +1073,28 @@ def test_bcb_sgs_allowlist_parses_points() -> None:
     assert silver[0]["uf"] == "BR"
     assert presentation_for("BCB-SGS-OLINDA")["valueKind"] == "REFERENCE_QUANTITY"
     assert presentation_for("BCB-SGS-OLINDA")["createsTaxCredit"] is False
+
+
+def test_bcb_olinda_expectativas_parses_odata_points() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-ipca-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["IPCA"],
+        max_rows=8,
+        value_field="Mediana",
+    )
+    assert len(silver) == 8
+    assert quarantined == []
+    assert silver[0]["transferName"] == "IPCA_FOCUS_ANUAL_2026"
+    assert silver[0]["value"] == 4.9488
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["seriesId"] == "IPCA"
+    assert silver[0]["competence"] == "2026-09-11"
+    assert silver[0]["uf"] == "BR"
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS")["valueKind"] == "REFERENCE_QUANTITY"
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS")["createsTaxCredit"] is False
 
 
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:

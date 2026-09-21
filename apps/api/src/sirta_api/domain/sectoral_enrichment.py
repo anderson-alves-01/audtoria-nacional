@@ -61,6 +61,17 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
         "seriesAllowlist": [432, 433],
     },
     {
+        "sourceId": "BCB-OLINDA-EXPECTATIVAS",
+        "maintainer": "Banco Central",
+        "connector": "bcb_olinda_expectativas",
+        "structuredOfficialSource": "olinda_odata_expectativas_anuais",
+        "status": "TECHNICALLY_APPROVED",
+        "ingestAllowed": True,
+        "personalDataRisk": "none",
+        "activationGate": "INDICATOR_ALLOWLIST",
+        "indicatorAllowlist": ["IPCA"],
+    },
+    {
         "sourceId": "CNES-DATASUS",
         "maintainer": "Ministério da Saúde / DATASUS",
         "connector": "cnes_datasus_open",
@@ -75,7 +86,8 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
 
 DISCLAIMER = (
     "Fontes setoriais oficiais catalogadas (ANP, ANEEL, EPE, Anatel, BCB, CNES). "
-    "ANP, ANEEL, EPE, Anatel e CNES ativadas com escopo UF; BCB com allowlist SGS 432/433. "
+    "ANP, ANEEL, EPE, Anatel e CNES ativadas com escopo UF; BCB com allowlist SGS "
+    "432/433 e OLINDA Expectativas Focus (IPCA). "
     "REFERENCE_ENRICHMENT apenas. Não constitui crédito tributário."
 )
 

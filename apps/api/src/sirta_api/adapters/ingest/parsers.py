@@ -1844,6 +1844,99 @@ def parse_bcb_sgs_olinda(
     return silver, quarantined
 
 
+def parse_bcb_olinda_expectativas(
+    body: bytes,
+    *,
+    indicator_allowlist: list[str] | tuple[str, ...] | None = None,
+    max_rows: int = 8,
+    value_field: str = "Mediana",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse BCB OLINDA ExpectativasMercadoAnuais OData; never tax credit."""
+    allowed = {
+        str(item).strip().upper() for item in (indicator_allowlist or ()) if str(item).strip()
+    }
+    if not allowed:
+        raise ValueError("BCB OLINDA Expectativas requires a non-empty indicator_allowlist")
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return [], [({"rowId": "bcb-olinda-document"}, "invalid JSON")]
+    if not isinstance(payload, dict) or not isinstance(payload.get("value"), list):
+        return [], [({"rowId": "bcb-olinda-document"}, "unexpected OData envelope")]
+    field = str(value_field or "Mediana").strip() or "Mediana"
+    limit = max(1, int(max_rows or 8))
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    for index, item in enumerate(payload["value"]):
+        if len(silver) >= limit:
+            break
+        if not isinstance(item, dict):
+            continue
+        indicator = str(item.get("Indicador") or "").strip()
+        if indicator.upper() not in allowed:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"bcb-olinda-{index}",
+                        "territoryName": "Brasil",
+                        "uf": "BR",
+                        "competence": str(item.get("Data") or "unknown"),
+                        "value": item.get(field),
+                    },
+                    "indicator outside allowlist",
+                )
+            )
+            continue
+        raw_date = str(item.get("Data") or "").strip()
+        horizon = str(item.get("DataReferencia") or "").strip() or "na"
+        raw_value = item.get(field)
+        try:
+            value = float(str(raw_value).replace(",", "."))
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"bcb-olinda-{indicator}-{index}",
+                        "territoryName": "Brasil",
+                        "uf": "BR",
+                        "competence": raw_date or "unknown",
+                        "value": raw_value,
+                    },
+                    "invalid numeric value",
+                )
+            )
+            continue
+        if not raw_date:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"bcb-olinda-{indicator}-{index}",
+                        "territoryName": "Brasil",
+                        "uf": "BR",
+                        "value": value,
+                    },
+                    "missing publication date",
+                )
+            )
+            continue
+        label = f"{indicator}_FOCUS_ANUAL_{horizon}"
+        silver.append(
+            {
+                "rowId": f"bcb-olinda-{indicator}-{raw_date}-{horizon}"[:64],
+                "territoryName": "Brasil",
+                "uf": "BR",
+                "ibgeCode": "",
+                "competence": raw_date,
+                "transferName": label,
+                "value": value,
+                "unit": "PERCENT_PER_YEAR",
+                "seriesId": indicator,
+                "horizonYear": horizon,
+            }
+        )
+    return silver, quarantined
+
+
 def ibge7_from_municipio6(codigo_municipio: str | int) -> str | None:
     """Derive IBGE7 municipality code from CNES/DATASUS 6-digit municipio + check digit."""
     digits = str(codigo_municipio or "").strip()

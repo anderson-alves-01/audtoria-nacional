@@ -43,6 +43,13 @@ describe('SectoralEnrichmentPageComponent', () => {
           structuredOfficialSource: 'sgs_json_allowlist',
         },
         {
+          sourceId: 'BCB-OLINDA-EXPECTATIVAS',
+          maintainer: 'Banco Central',
+          status: 'TECHNICALLY_APPROVED',
+          ingestAllowed: true,
+          structuredOfficialSource: 'olinda_odata_expectativas_anuais',
+        },
+        {
           sourceId: 'EPE-DADOS-ABERTOS',
           maintainer: 'EPE',
           status: 'TECHNICALLY_APPROVED',
@@ -75,6 +82,7 @@ describe('SectoralEnrichmentPageComponent', () => {
     expect(text).toContain('ANP-REVENDEDORES');
     expect(text).toContain('ANEEL-DADOS-ABERTOS');
     expect(text).toContain('BCB-SGS-OLINDA');
+    expect(text).toContain('BCB-OLINDA-EXPECTATIVAS');
     expect(text).toContain('EPE-DADOS-ABERTOS');
     expect(text).toContain('ANATEL-DADOS-ABERTOS');
     expect(text).toContain('CNES-DATASUS');

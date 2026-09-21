@@ -26,6 +26,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_anatel_dados_gov,
     parse_aneel_ckan_open,
     parse_anp_revendedores_api,
+    parse_bcb_olinda_expectativas,
     parse_bcb_sgs_olinda,
     parse_cnes_datasus_open,
     parse_epe_open_files,
@@ -119,6 +120,7 @@ PARSERS = {
     "aneel_ckan_open": parse_aneel_ckan_open,
     "anatel_dados_gov": parse_anatel_dados_gov,
     "bcb_sgs_olinda": parse_bcb_sgs_olinda,
+    "bcb_olinda_expectativas": parse_bcb_olinda_expectativas,
     "epe_open_files": parse_epe_open_files,
     "cnes_datasus_open": parse_cnes_datasus_open,
 }
@@ -914,6 +916,14 @@ def _parse(
             catalog=catalog,
             http_client=http_client,
             parser=parser,
+        )
+    if connector == "bcb_olinda_expectativas":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            indicator_allowlist=list(parameters.get("indicator_allowlist") or ["IPCA"]),
+            max_rows=int(parameters.get("max_rows") or 8),
+            value_field=str(parameters.get("value_field") or "Mediana"),
         )
     if connector == "epe_open_files":
         parameters = catalog.get("parameters") or {}

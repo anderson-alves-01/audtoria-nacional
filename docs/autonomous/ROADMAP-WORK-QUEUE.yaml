@@ -1,17 +1,16 @@
 schema_version: 1
-updated_at: "2026-09-21T14:00:00-03:00"
+updated_at: "2026-09-21T18:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.65"
+implementation_version: "0.3.66"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.65: Tesouro COINT restante FPM/ITR/IOF-Ouro/LC176 por município
-  (distintos dos CSV mensais). Pacote COINT municipal completo. UFs restantes
-  ainda sem tabular recente. Próximo: UF tabular nova quando publicada. RFB
-  territorial sem carga nacional.
+  Ciclo 0.3.66: BCB OLINDA Expectativas Focus anuais (IPCA) ativado, distinto
+  do SGS REST. UFs restantes ainda sem tabular recente. Próximo: UF tabular
+  nova quando publicada. RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -656,19 +655,20 @@ items:
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
-    fontes_oficiais: [BCB-SGS-OLINDA]
+    fontes_oficiais: [BCB-SGS-OLINDA, BCB-OLINDA-EXPECTATIVAS]
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.33/
-    versao: "0.3.33"
+    evidencia: evidence/releases/0.3.66/
+    versao: "0.3.66"
     commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
-      SGS 432 (Meta Selic) e 433 (IPCA) TECHNICALLY_APPROVED com fixture mínima
-      e Gold REFERENCE_QUANTITY. OLINDA OData permanece DISCOVERED. Sem crédito.
+      SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA, max_rows=8)
+      TECHNICALLY_APPROVED com fixtures mínimas e Gold REFERENCE_QUANTITY.
+      Sem crédito. Homologação humana pendente.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2

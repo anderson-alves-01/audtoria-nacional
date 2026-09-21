@@ -604,6 +604,8 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["ANEEL-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["BCB-SGS-OLINDA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["BCB-SGS-OLINDA"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["ingestAllowed"] is True
     assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["ANATEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"

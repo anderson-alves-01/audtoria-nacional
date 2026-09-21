@@ -539,6 +539,13 @@ PRESENTATION = {
             "Contexto setorial; não constitui crédito tributário."
         ),
     },
+    "BCB-OLINDA-EXPECTATIVAS": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Expectativas Focus anuais OLINDA do Banco Central (allowlist IPCA). "
+            "Contexto setorial; não constitui crédito tributário."
+        ),
+    },
     "EPE-DADOS-ABERTOS": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (
