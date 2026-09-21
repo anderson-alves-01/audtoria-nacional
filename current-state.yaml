@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.49
+implementation_version: 0.3.50
 roadmap_version: "1.2"
-version: 0.3.49
+version: 0.3.50
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -51,6 +51,8 @@ completed:
     - state_es_icms_ipva_csv_activation
     - state_go_ipva_datastore_activation
     - state_go_icms_economia_xlsx_activation
+    - state_es_ipi_cide_csv_activation
+    - state_go_ipi_economia_xlsx_activation
     - state_ms_icms_ipva_datastore_activation
     - anp_revendedores_uf_scoped_activation
     - aneel_indqual_municipio_uf_scoped_activation
@@ -116,6 +118,8 @@ gates:
   f3_state_es_activation_local: GO
   f3_state_go_ipva_activation_local: GO
   f3_state_go_icms_economia_local: GO
+  f3_state_es_ipi_cide_local: GO
+  f3_state_go_ipi_economia_local: GO
   f3_state_ms_activation_local: GO
   f3_anp_revendedores_local: GO
   f3_aneel_indqual_local: GO
@@ -146,6 +150,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.49/
-next_action: Prefer remaining UF with downloadable CSV/API. Cycle 0.3.49 activated GO ICMS via Economia XLSX (Bruto; MM-YYYY). IPVA GO DataStore intact. Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.50/
+next_action: Prefer remaining UF with downloadable CSV/API, or Tesouro monthly CSV ITR/IPI-EXP/royalties allowlist. Cycle 0.3.50 activated ES IPI+CIDE and GO IPI-Exportação on existing PUBLIC_OPEN files. Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

@@ -102,6 +102,20 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-ES-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI estadual publicada (ES ativado). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-ES-CIDE-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Cota-parte CIDE publicada (ES ativado). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-GO-IPVA-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
@@ -113,6 +127,14 @@ PRESENTATION = {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
             "Quota-parte de ICMS estadual publicada "
+            "(GO ativado via XLSX Secretaria da Economia). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-GO-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI-Exportação estadual publicada "
             "(GO ativado via XLSX Secretaria da Economia). "
             "Ocorrência para análise, não crédito nem cobrança."
         ),

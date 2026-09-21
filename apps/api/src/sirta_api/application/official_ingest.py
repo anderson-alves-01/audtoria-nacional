@@ -381,7 +381,15 @@ def ingest_official_source(
         and presentation_for(source.source_id)["valueKind"]
         in {"REFERENCE_QUANTITY", "TRANSFER_AMOUNT_AS_PUBLISHED"}
         and str(row.get("variableId") or "") != "6575"
-        and row.get("modality") in {None, "FPM_RECEIVED", "ICMS_QUOTA", "IPVA_QUOTA"}
+        and row.get("modality")
+        in {
+            None,
+            "FPM_RECEIVED",
+            "ICMS_QUOTA",
+            "IPVA_QUOTA",
+            "IPI_QUOTA",
+            "CIDE_QUOTA",
+        }
     ]
     presentation = presentation_for(source.source_id)
     gold = GoldOfficial(

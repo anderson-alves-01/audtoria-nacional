@@ -90,6 +90,15 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert go_icms.status_code == 200
     assert go_icms.json()["silverCount"] == 2
     assert go_icms.json()["quarantinedCount"] == 1
+    go_ipi = api_client.post("/v1/data-sources/ESTADO-GO-IPI-QUOTA/ingest", headers=_admin())
+    assert go_ipi.status_code == 200
+    assert go_ipi.json()["silverCount"] == 2
+    es_ipi = api_client.post("/v1/data-sources/ESTADO-ES-IPI-QUOTA/ingest", headers=_admin())
+    assert es_ipi.status_code == 200
+    assert es_ipi.json()["silverCount"] == 2
+    es_cide = api_client.post("/v1/data-sources/ESTADO-ES-CIDE-QUOTA/ingest", headers=_admin())
+    assert es_cide.status_code == 200
+    assert es_cide.json()["silverCount"] == 2
     ms_icms = api_client.post("/v1/data-sources/ESTADO-MS-ICMS-QUOTA/ingest", headers=_admin())
     assert ms_icms.status_code == 200
     assert ms_icms.json()["silverCount"] == 2
@@ -190,8 +199,11 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "ESTADO-MG-IPVA-QUOTA",
         "ESTADO-ES-ICMS-QUOTA",
         "ESTADO-ES-IPVA-QUOTA",
+        "ESTADO-ES-IPI-QUOTA",
+        "ESTADO-ES-CIDE-QUOTA",
         "ESTADO-GO-IPVA-QUOTA",
         "ESTADO-GO-ICMS-QUOTA",
+        "ESTADO-GO-IPI-QUOTA",
         "ESTADO-MS-ICMS-QUOTA",
         "ESTADO-MS-IPVA-QUOTA",
         "ESTADO-RO-ICMS-QUOTA",
@@ -229,8 +241,11 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["ESTADO-MG-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ES-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ES-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-ES-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-ES-CIDE-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-GO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-GO-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MS-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-RO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -282,11 +297,16 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["ESTADO-MG-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-ES-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-ES-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-ES-IPI-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-ES-CIDE-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-ES-ICMS-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-ES-IPI-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-GO-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-GO-ICMS-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-GO-IPI-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-GO-IPI-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-MS-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["ingestAllowed"] is True

@@ -1,18 +1,19 @@
 schema_version: 1
-updated_at: "2026-09-20T23:05:00-03:00"
+updated_at: "2026-09-20T23:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.49"
+implementation_version: "0.3.50"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.49: GO ICMS ativado via XLSX Secretaria da Economia
-  (state_go_economia_xlsx; Bruto; aba MM-YYYY); IPVA GO DataStore intacto.
-  IBGE SIDRA 9509 CEMP permanece. UFs restantes ainda sem tabular recente
-  (RJ IP-block; PI ICMS vazio; SP HTML; SC ≤2017; RR sem split; AP 404;
-  MT ≤2015; SE/PB PDF; AM/TO). RFB territorial sem carga nacional.
+  Ciclo 0.3.50: ES IPI+CIDE (state_es_csv) e GO IPI-Exportação
+  (state_go_economia_xlsx) nos arquivos PUBLIC_OPEN já aprovados.
+  UFs restantes ainda sem tabular recente (RJ IP-block; PI ICMS vazio;
+  SP HTML; SC ≤2017; RR sem split; AP 404; MT ≤2015; SE/PB PDF; AM/TO).
+  Próximo: Tesouro mensal ITR/IPI-EXP/royalties ou UF tabular nova.
+  RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -353,17 +354,18 @@ items:
     frontend: true
     pipeline: false
     testes: true
-    evidencia: evidence/releases/0.3.49/
-    versao: "0.3.49"
-    commit: 9c179af
-    ci: "35552948068"
+    evidencia: evidence/releases/0.3.50/
+    versao: "0.3.50"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA e PR
-      TECHNICALLY_APPROVED (GO ICMS via Economia XLSX + IPVA DataStore; PI só
-      IPVA; PR via HTML SEFA; PA parcial via ICMS Verde SEMAS; SE/PB/AM/AP/RR/DF
-      PROVENANCE_VERIFIED; MT XLSX ≤2015; TO PROVENANCE_VERIFIED PDF/índices;
-      SC CSV ≤2017; SP HTML-only; RJ IP-blocked). Sem agregador privado.
+      TECHNICALLY_APPROVED (GO ICMS/IPI via Economia XLSX + IPVA DataStore;
+      ES ICMS/IPVA/IPI/CIDE; PI só IPVA; PR via HTML SEFA; PA parcial via ICMS
+      Verde SEMAS; SE/PB/AM/AP/RR/DF PROVENANCE_VERIFIED; MT XLSX ≤2015; TO
+      PROVENANCE_VERIFIED PDF/índices; SC CSV ≤2017; SP HTML-only; RJ
+      IP-blocked). Sem agregador privado.
 
   - id: F3-STATE-ICMS-ACTIVATION
     fase: F3.2
@@ -378,18 +380,19 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.49/
-    versao: "0.3.49"
-    commit: 9c179af
-    ci: "35552948068"
+    evidencia: evidence/releases/0.3.50/
+    versao: "0.3.50"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA, PR e GO ICMS (+IPVA onde
-      publicado) + PI IPVA + PA ICMS Verde ativados. GO ICMS via Economia XLSX
-      (Bruto). PI ICMS não publicado no Repasse WEB. PA cota plena ainda DOE PDF.
-      MT XLSX Transparency congelado ≤2015. SC arrecadação não quota. SP HTML-only.
-      PB/SE/AM/AP/RR/DF PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ permanece
-      IP-blocked. Sem agregador privado.
+      PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA, PR e GO ICMS (+IPVA/IPI
+      onde publicado) + ES IPI/CIDE + PI IPVA + PA ICMS Verde ativados. GO IPI
+      via Economia XLSX (IPI-Exportação Bruto). PI ICMS não publicado no Repasse
+      WEB. PA cota plena ainda DOE PDF. MT XLSX Transparency congelado ≤2015.
+      SC arrecadação não quota. SP HTML-only. PB/SE/AM/AP/RR/DF
+      PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ permanece IP-blocked.
+      Sem agregador privado.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2

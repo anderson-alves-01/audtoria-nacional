@@ -13,10 +13,11 @@ notes: >
   state_rn_xls / state_ma_xls / state_pr_html).
   PA parcial TECHNICALLY_APPROVED via ICMS Verde SEMAS XLSX
   (state_pa_icms_verde_xlsx; componente ecológico ≤8%, não cota ICMS total).
-  Ciclo 0.3.49: GO ICMS ativado via XLSX Secretaria da Economia (Bruto; aba MM-YYYY);
-  IPVA permanece no DataStore. UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB
-  vazio; SP HTML-per-muni; SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404;
-  MT XLSX ≤2015 / PDF; SE/PB PDF; AM HTML-per-município; TO índices PDF.
+  Ciclo 0.3.50: ES IPI+CIDE e GO IPI-Exportação ativados nos mesmos arquivos
+  PUBLIC_OPEN já usados para ICMS/IPVA (state_es_csv / state_go_economia_xlsx).
+  UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
+  SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
+  SE/PB PDF; AM HTML-per-município; TO índices PDF.
   MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
   CKAN DataStore dump (CSV upload 500). MS ICMS/IPVA via CKAN DataStore mensal.
   AC ICMS anual SEPLAG; AC IPVA Transparência POST+CSRF JSON. CE/RS/AL/RN/MA XLS;
@@ -156,18 +157,21 @@ states:
     dataset_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
     official_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
     endpoint: https://dados.es.gov.br/dataset/d85497f8-3dc4-4104-8e18-f242ae82b6ee/resource/f76f120c-ee95-440c-a77a-2fdace48b1bc/download/transfestadomunicipios-2024.csv
-    taxes: [ICMS, IPVA, IPI]
+    taxes: [ICMS, IPVA, IPI, CIDE]
     format: CSV
     columns: [Id, CodMunicipio, NomeMunicipio, IndiceImposto, Icms, IcmsLei2508, IcmsTotal, Ipi, Ipva, IndiceFundo, FundoReducaoDesigualdades, CotaParteCide, CompensacaoFinanceira, Ano, Mes]
     ibge_field: CodMunicipio
     layout_version_icms: state-es-icms-v1
     layout_version_ipva: state-es-ipva-v1
+    layout_version_ipi: state-es-ipi-v1
+    layout_version_cide: state-es-cide-v1
     connector: state_es_csv
     download_probe_2026_09_19: csv_bytes_ok_ibge7_native
     reason: >
       CSV anual TransfEstadoMunicipios-2024 ativado com connector state_es_csv
-      (`;`, UTF-8, número BR). ICMS via IcmsTotal; IPVA via Ipva. IBGE7 nativo
-      em CodMunicipio. Fixture mínima. Sem crédito.
+      (`;`, UTF-8, número BR). ICMS via IcmsTotal; IPVA via Ipva; IPI via Ipi;
+      CIDE via CotaParteCide. IBGE7 nativo em CodMunicipio. Fixture mínima.
+      Sem crédito.
   - uf: GO
     name: Goiás
     status: TECHNICALLY_APPROVED
@@ -177,22 +181,25 @@ states:
     official_url: https://goias.gov.br/economia/repasse-aos-municipios/
     endpoint: https://dadosabertos.go.gov.br/datastore/dump/343d1fb0-a182-4005-9203-dce168d2ad60
     icms_endpoint: https://goias.gov.br/economia/wp-content/uploads/sites/45/2024/12/transf-municipios_2024_11.xlsx
-    taxes: [ICMS, IPVA]
+    taxes: [ICMS, IPVA, IPI]
     format: CSV+XLSX
     columns: [VALR_IPVA, VALOR_TOTAL, VALR_IPVA_FUNDEB, DATA_COMPLETA_CREDITO, NUMR_ANO_MES, DATA_COMPLETA_REPASSE, DESC_MUN]
     columns_icms: [Ordem, MUNICÍPIOS, ÍNDICE IPM, IPVA Bruto.., IPI Bruto.., ICMS Bruto, ICMS FUNDEB, ICMS Creditado Líquido]
     ibge_field: name_only
     layout_version_ipva: state-go-ipva-v1
     layout_version_icms: state-go-icms-economia-v1
+    layout_version_ipi: state-go-ipi-economia-v1
     connector: state_go_csv
     icms_connector: state_go_economia_xlsx
+    ipi_connector: state_go_economia_xlsx
     download_probe_2026_09_19: datastore_dump_ok_csv_download_500
     download_probe_2026_09_20: economia_xlsx_200_icms_bruto_sheet_mm_yyyy
     reason: >
       IPVA via dump oficial CKAN DataStore (CSV upload 500; schema sem ICMS 2026).
-      ICMS ativado via XLSX mensal Secretaria da Economia (transf-municipios,
-      aba MM-YYYY, coluna ICMS Bruto) com connector state_go_economia_xlsx +
-      join IBGE7 por nome+UF. Competência 2024-11. Fixture mínima. Sem crédito.
+      ICMS e IPI-Exportação ativados via XLSX mensal Secretaria da Economia
+      (transf-municipios, aba MM-YYYY, colunas Bruto) com connector
+      state_go_economia_xlsx + join IBGE7 por nome+UF. Competência 2024-11.
+      Fixture mínima. Sem crédito.
   - uf: MA
     name: Maranhão
     status: TECHNICALLY_APPROVED

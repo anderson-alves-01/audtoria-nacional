@@ -235,6 +235,20 @@ def test_state_es_csv_joins_native_ibge_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-ES-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-ES-IPVA-QUOTA")["createsTaxCredit"] is False
+    ipi, quarantined_ipi = parse_state_es_csv(body, tax="IPI")
+    assert len(ipi) == 2
+    afonso_ipi = next(row for row in ipi if row["ibgeCode"] == "3200102")
+    assert afonso_ipi["value"] == 29837.91
+    assert afonso_ipi["modality"] == "IPI_QUOTA"
+    assert len(quarantined_ipi) == 1
+    cide, quarantined_cide = parse_state_es_csv(body, tax="CIDE")
+    assert len(cide) == 2
+    vitoria_cide = next(row for row in cide if row["ibgeCode"] == "3205309")
+    assert vitoria_cide["value"] == 109492.91
+    assert vitoria_cide["modality"] == "CIDE_QUOTA"
+    assert len(quarantined_cide) == 1
+    assert presentation_for("ESTADO-ES-IPI-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-ES-CIDE-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_go_csv_joins_name_uf_and_quarantines_territory() -> None:
@@ -281,6 +295,18 @@ def test_state_go_economia_xlsx_joins_name_and_quarantines_territory() -> None:
     assert quarantined[0][1] == "missing IBGE municipality code"
     assert presentation_for("ESTADO-GO-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-GO-ICMS-QUOTA")["createsTaxCredit"] is False
+    ipi, quarantined_ipi = parse_state_go_economia_xlsx(
+        body, tax="IPI", competence="2024-11", ibge_lookup=lookup
+    )
+    assert len(ipi) == 2
+    assert all(row["modality"] == "IPI_QUOTA" for row in ipi)
+    abadia_ipi = next(row for row in ipi if row["ibgeCode"] == "5200050")
+    assert abadia_ipi["value"] == 4405.34
+    goiania_ipi = next(row for row in ipi if row["ibgeCode"] == "5208707")
+    assert goiania_ipi["value"] == 1000.0
+    assert len(quarantined_ipi) == 1
+    assert presentation_for("ESTADO-GO-IPI-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-GO-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ms_csv_joins_name_uf_and_quarantines_territory() -> None:

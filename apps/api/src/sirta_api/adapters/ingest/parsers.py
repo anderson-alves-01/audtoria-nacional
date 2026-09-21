@@ -1270,6 +1270,16 @@ def _compact_header(value: str) -> str:
     return normalize_place(value).replace(" ", "")
 
 
+def _go_economia_tax_column(compacted: list[str], tax_key: str) -> int | None:
+    """Locate tax group column; IPI may appear as IPI-EXPORTACAO."""
+    if tax_key in compacted:
+        return compacted.index(tax_key)
+    for index, label in enumerate(compacted):
+        if label.startswith(tax_key):
+            return index
+    return None
+
+
 def parse_state_go_economia_xlsx(
     body: bytes,
     *,
@@ -1278,13 +1288,14 @@ def parse_state_go_economia_xlsx(
     uf: str = "GO",
     competence: str = "2024-11",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse Secretaria da Economia/GO monthly XLSX (ICMS/IPVA Bruto); join IBGE7 by name+UF.
+    """Parse Secretaria da Economia/GO monthly XLSX (ICMS/IPVA/IPI Bruto); join IBGE7 by name+UF.
 
     Sheet tabs are ``MM-YYYY``. Amount is the tax-group ``Bruto`` column (constitutional
-    quota before FUNDEB retention). Does not create tax credit.
+    quota before FUNDEB retention). IPI is published as IPI-Exportação. Does not create
+    tax credit.
     """
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    if tax_key not in {"ICMS", "IPVA", "IPI"}:
         raise ValueError(f"unsupported state GO Economia tax filter: {tax}")
     competence_key = str(competence or "2024-11").strip()[:7]
     if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
@@ -1306,11 +1317,12 @@ def parse_state_go_economia_xlsx(
         compacted = [_compact_header(cell) for cell in row]
         if "MUNICIPIOS" not in compacted:
             continue
-        if tax_key not in compacted:
+        found = _go_economia_tax_column(compacted, tax_key)
+        if found is None:
             continue
         group_row_index = index
         name_col = compacted.index("MUNICIPIOS")
-        tax_col = compacted.index(tax_key)
+        tax_col = found
         break
     if group_row_index is None or tax_col is None or name_col is None:
         return [], [({"rowId": "go-economia-header"}, f"missing {tax_key}/MUNICIPIOS header")]
@@ -1641,9 +1653,15 @@ def parse_state_es_csv(
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
     """Parse ES TransfEstadoMunicipios CSV; native IBGE7 in CodMunicipio; no credit."""
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA"}:
+    amount_fields = {
+        "ICMS": "IcmsTotal",
+        "IPVA": "Ipva",
+        "IPI": "Ipi",
+        "CIDE": "CotaParteCide",
+    }
+    if tax_key not in amount_fields:
         raise ValueError(f"unsupported state ES tax filter: {tax}")
-    amount_field = "IcmsTotal" if tax_key == "ICMS" else "Ipva"
+    amount_field = amount_fields[tax_key]
     year = str(competence_year or "2024").strip()[:4]
     reader = csv.DictReader(io.StringIO(_decode_csv_bytes(body)), delimiter=";")
     silver: list[dict] = []

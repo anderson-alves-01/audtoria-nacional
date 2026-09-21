@@ -204,6 +204,28 @@ def test_state_es_ingest_publishes_gold_without_credit(api_client) -> None:
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
     )
+    ipi = api_client.post("/v1/data-sources/ESTADO-ES-IPI-QUOTA/ingest", headers=_admin())
+    assert ipi.status_code == 200
+    assert ipi.json()["silverCount"] == 2
+    assert ipi.json()["taxCreditCreated"] is False
+    cide = api_client.post("/v1/data-sources/ESTADO-ES-CIDE-QUOTA/ingest", headers=_admin())
+    assert cide.status_code == 200
+    assert cide.json()["silverCount"] == 2
+    assert cide.json()["taxCreditCreated"] is False
+    gold_ext = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_ext = {item["sourceId"]: item for item in gold_ext.json()["items"]}
+    assert by_ext["ESTADO-ES-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_ext["ESTADO-ES-CIDE-QUOTA"]["createsTaxCredit"] is False
+    ipi_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-ES-IPI-QUOTA",
+        headers=_analyst(),
+    )
+    assert any(item["value"] == 29837.91 for item in ipi_lines.json()["items"])
+    cide_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-ES-CIDE-QUOTA",
+        headers=_analyst(),
+    )
+    assert any(item["value"] == 109492.91 for item in cide_lines.json()["items"])
 
 
 def test_state_go_ipva_ingest_publishes_gold_without_credit(api_client) -> None:
@@ -262,6 +284,21 @@ def test_state_go_icms_economia_ingest_publishes_gold_without_credit(api_client)
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
     )
+    ipi = api_client.post("/v1/data-sources/ESTADO-GO-IPI-QUOTA/ingest", headers=_admin())
+    assert ipi.status_code == 200
+    assert ipi.json()["silverCount"] == 2
+    assert ipi.json()["quarantinedCount"] == 1
+    assert ipi.json()["taxCreditCreated"] is False
+    gold_ipi = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_ipi = {item["sourceId"]: item for item in gold_ipi.json()["items"]}
+    assert by_ipi["ESTADO-GO-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_ipi["ESTADO-GO-IPI-QUOTA"]["createsTaxCredit"] is False
+    ipi_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-GO-IPI-QUOTA",
+        headers=_analyst(),
+    )
+    assert any(item["value"] == 4405.34 for item in ipi_lines.json()["items"])
+    assert any(item["value"] == 1000.0 for item in ipi_lines.json()["items"])
 
 
 def test_state_ms_ingest_publishes_gold_without_credit(api_client) -> None:
