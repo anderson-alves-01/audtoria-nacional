@@ -187,6 +187,20 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-ES-FRD-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Fundo de Redução das Desigualdades publicado (ES ativado). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-ES-COMPENSACAO-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Compensação Financeira publicada (ES ativado). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-GO-IPVA-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (

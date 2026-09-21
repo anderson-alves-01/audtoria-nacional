@@ -1671,6 +1671,8 @@ def parse_state_es_csv(
         "IPVA": "Ipva",
         "IPI": "Ipi",
         "CIDE": "CotaParteCide",
+        "FRD": "FundoReducaoDesigualdades",
+        "COMPENSACAO": "CompensacaoFinanceira",
     }
     if tax_key not in amount_fields:
         raise ValueError(f"unsupported state ES tax filter: {tax}")

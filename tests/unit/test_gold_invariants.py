@@ -399,6 +399,20 @@ def test_state_es_csv_joins_native_ibge_and_quarantines_territory() -> None:
     assert len(quarantined_cide) == 1
     assert presentation_for("ESTADO-ES-IPI-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-ES-CIDE-QUOTA")["createsTaxCredit"] is False
+    frd, quarantined_frd = parse_state_es_csv(body, tax="FRD")
+    assert len(frd) == 2
+    vitoria_frd = next(row for row in frd if row["ibgeCode"] == "3205309")
+    assert vitoria_frd["value"] == 942598.84
+    assert vitoria_frd["modality"] == "FRD_QUOTA"
+    assert len(quarantined_frd) == 1
+    compensacao, quarantined_compensacao = parse_state_es_csv(body, tax="COMPENSACAO")
+    assert len(compensacao) == 2
+    afonso_comp = next(row for row in compensacao if row["ibgeCode"] == "3200102")
+    assert afonso_comp["value"] == 21175.03
+    assert afonso_comp["modality"] == "COMPENSACAO_QUOTA"
+    assert len(quarantined_compensacao) == 1
+    assert presentation_for("ESTADO-ES-FRD-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-ES-COMPENSACAO-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_go_csv_joins_name_uf_and_quarantines_territory() -> None:

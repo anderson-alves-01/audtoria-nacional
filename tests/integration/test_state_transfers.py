@@ -46,7 +46,7 @@ def test_state_transfers_endpoint_is_empty_shell(api_client) -> None:
     assert by_uf["MG"]["ingestAllowed"] is True
     assert by_uf["ES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["ES"]["ingestAllowed"] is True
-    assert by_uf["ES"]["taxes"] == ["ICMS", "IPVA", "IPI", "CIDE"]
+    assert by_uf["ES"]["taxes"] == ["ICMS", "IPVA", "IPI", "CIDE", "FRD", "COMPENSACAO"]
     assert by_uf["GO"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["GO"]["ingestAllowed"] is True
     assert by_uf["GO"]["taxes"] == ["ICMS", "IPVA", "IPI"]
@@ -248,6 +248,30 @@ def test_state_es_ingest_publishes_gold_without_credit(api_client) -> None:
         headers=_analyst(),
     )
     assert any(item["value"] == 109492.91 for item in cide_lines.json()["items"])
+    frd = api_client.post("/v1/data-sources/ESTADO-ES-FRD-QUOTA/ingest", headers=_admin())
+    assert frd.status_code == 200
+    assert frd.json()["silverCount"] == 2
+    assert frd.json()["taxCreditCreated"] is False
+    compensacao = api_client.post(
+        "/v1/data-sources/ESTADO-ES-COMPENSACAO-QUOTA/ingest", headers=_admin()
+    )
+    assert compensacao.status_code == 200
+    assert compensacao.json()["silverCount"] == 2
+    assert compensacao.json()["taxCreditCreated"] is False
+    gold_frd = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_frd = {item["sourceId"]: item for item in gold_frd.json()["items"]}
+    assert by_frd["ESTADO-ES-FRD-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_frd["ESTADO-ES-COMPENSACAO-QUOTA"]["createsTaxCredit"] is False
+    frd_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-ES-FRD-QUOTA",
+        headers=_analyst(),
+    )
+    assert any(item["value"] == 942598.84 for item in frd_lines.json()["items"])
+    compensacao_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-ES-COMPENSACAO-QUOTA",
+        headers=_analyst(),
+    )
+    assert any(item["value"] == 21175.03 for item in compensacao_lines.json()["items"])
 
 
 def test_state_go_ipva_ingest_publishes_gold_without_credit(api_client) -> None:

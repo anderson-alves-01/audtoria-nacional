@@ -24,6 +24,8 @@ notes: >
   EXPORTAÇÃO e CIDE ativados no mesmo DataStore já aprovado (state_ms_csv).
   Ciclo 0.3.58: AL Royalties Total e PR Royalties Petróleo ativados nos mesmos
   arquivos já aprovados (state_al_xls / state_pr_html).
+  Ciclo 0.3.59: ES FRD (FundoReducaoDesigualdades) e CompensacaoFinanceira
+  ativados no mesmo CSV TransfEstadoMunicipios já aprovado (state_es_csv).
   UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
   SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
   SE/PB PDF; AM HTML-per-município; TO índices PDF.
@@ -171,7 +173,7 @@ states:
     dataset_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
     official_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
     endpoint: https://dados.es.gov.br/dataset/d85497f8-3dc4-4104-8e18-f242ae82b6ee/resource/f76f120c-ee95-440c-a77a-2fdace48b1bc/download/transfestadomunicipios-2024.csv
-    taxes: [ICMS, IPVA, IPI, CIDE]
+    taxes: [ICMS, IPVA, IPI, CIDE, FRD, COMPENSACAO]
     format: CSV
     columns: [Id, CodMunicipio, NomeMunicipio, IndiceImposto, Icms, IcmsLei2508, IcmsTotal, Ipi, Ipva, IndiceFundo, FundoReducaoDesigualdades, CotaParteCide, CompensacaoFinanceira, Ano, Mes]
     ibge_field: CodMunicipio
@@ -179,12 +181,15 @@ states:
     layout_version_ipva: state-es-ipva-v1
     layout_version_ipi: state-es-ipi-v1
     layout_version_cide: state-es-cide-v1
+    layout_version_frd: state-es-frd-v1
+    layout_version_compensacao: state-es-compensacao-v1
     connector: state_es_csv
     download_probe_2026_09_19: csv_bytes_ok_ibge7_native
     reason: >
       CSV anual TransfEstadoMunicipios-2024 ativado com connector state_es_csv
       (`;`, UTF-8, número BR). ICMS via IcmsTotal; IPVA via Ipva; IPI via Ipi;
-      CIDE via CotaParteCide. IBGE7 nativo em CodMunicipio. Fixture mínima.
+      CIDE via CotaParteCide; FRD via FundoReducaoDesigualdades; Compensação
+      via CompensacaoFinanceira. IBGE7 nativo em CodMunicipio. Fixture mínima.
       Sem crédito.
   - uf: GO
     name: Goiás

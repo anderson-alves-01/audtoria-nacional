@@ -1476,6 +1476,85 @@ sources:
     notes: >
       Mesmo endpoint CSV do ICMS/IPVA/IPI ES. Homologação humana pendente.
 
+  - source_id: ESTADO-ES-FRD-QUOTA
+    name: Fundo de Redução das Desigualdades (ES)
+    maintainer: SEFAZ-ES / dados.es.gov.br
+    official_domain: dados.es.gov.br
+    official_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    endpoint: https://dados.es.gov.br/dataset/d85497f8-3dc4-4104-8e18-f242ae82b6ee/resource/f76f120c-ee95-440c-a77a-2fdace48b1bc/download/transfestadomunicipios-2024.csv
+    documentation_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    dataset: ESTADO-ES-FRD-2024
+    dictionary_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    purpose: Transferência estadual FRD — valores publicados por município
+    legal_basis: Dados abertos oficiais do Espírito Santo (Fundo de Redução das Desigualdades)
+    license_terms: Creative Commons Attribution / termos do portal dados.es.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_es_csv
+    layout_version: state-es-frd-v1
+    periodicity: monthly
+    competence: "2024"
+    granularity: municipality
+    parameters:
+      tax: FRD
+      uf: ES
+      competence_year: "2024"
+      normalize: ibge7_native
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_es_frd_quota
+    formula: >
+      Valor FundoReducaoDesigualdades do mesmo CSV oficial ES
+      TransfEstadoMunicipios, competência Ano-Mes, município com CodMunicipio
+      IBGE7 nativo. Territórios sem IBGE7 vão para quarentena. Sem ajuste.
+      Não constitui crédito.
+    methodology_version: official-state-es-frd-v1
+    notes: >
+      Mesmo endpoint CSV do ICMS/IPVA/IPI/CIDE ES. Homologação humana pendente.
+
+  - source_id: ESTADO-ES-COMPENSACAO-QUOTA
+    name: Compensação Financeira estadual (ES)
+    maintainer: SEFAZ-ES / dados.es.gov.br
+    official_domain: dados.es.gov.br
+    official_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    endpoint: https://dados.es.gov.br/dataset/d85497f8-3dc4-4104-8e18-f242ae82b6ee/resource/f76f120c-ee95-440c-a77a-2fdace48b1bc/download/transfestadomunicipios-2024.csv
+    documentation_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    dataset: ESTADO-ES-COMPENSACAO-2024
+    dictionary_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    purpose: Transferência estadual de Compensação Financeira — valores publicados por município
+    legal_basis: Dados abertos oficiais do Espírito Santo (Compensação Financeira)
+    license_terms: Creative Commons Attribution / termos do portal dados.es.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_es_csv
+    layout_version: state-es-compensacao-v1
+    periodicity: monthly
+    competence: "2024"
+    granularity: municipality
+    parameters:
+      tax: COMPENSACAO
+      uf: ES
+      competence_year: "2024"
+      normalize: ibge7_native
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_es_compensacao_quota
+    formula: >
+      Valor CompensacaoFinanceira do mesmo CSV oficial ES TransfEstadoMunicipios,
+      competência Ano-Mes, município com CodMunicipio IBGE7 nativo. Territórios
+      sem IBGE7 vão para quarentena. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-es-compensacao-v1
+    notes: >
+      Mesmo endpoint CSV do ICMS/IPVA/IPI/CIDE/FRD ES. Homologação humana pendente.
+
   - source_id: ESTADO-GO-IPVA-QUOTA
     name: Quota-parte de IPVA estadual (GO)
     maintainer: Secretaria da Economia de Goiás / dadosabertos.go.gov.br

@@ -137,6 +137,14 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     es_cide = api_client.post("/v1/data-sources/ESTADO-ES-CIDE-QUOTA/ingest", headers=_admin())
     assert es_cide.status_code == 200
     assert es_cide.json()["silverCount"] == 2
+    es_frd = api_client.post("/v1/data-sources/ESTADO-ES-FRD-QUOTA/ingest", headers=_admin())
+    assert es_frd.status_code == 200
+    assert es_frd.json()["silverCount"] == 2
+    es_compensacao = api_client.post(
+        "/v1/data-sources/ESTADO-ES-COMPENSACAO-QUOTA/ingest", headers=_admin()
+    )
+    assert es_compensacao.status_code == 200
+    assert es_compensacao.json()["silverCount"] == 2
     ms_icms = api_client.post("/v1/data-sources/ESTADO-MS-ICMS-QUOTA/ingest", headers=_admin())
     assert ms_icms.status_code == 200
     assert ms_icms.json()["silverCount"] == 2
@@ -280,6 +288,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "ESTADO-ES-IPVA-QUOTA",
         "ESTADO-ES-IPI-QUOTA",
         "ESTADO-ES-CIDE-QUOTA",
+        "ESTADO-ES-FRD-QUOTA",
+        "ESTADO-ES-COMPENSACAO-QUOTA",
         "ESTADO-GO-IPVA-QUOTA",
         "ESTADO-GO-ICMS-QUOTA",
         "ESTADO-GO-IPI-QUOTA",
@@ -341,6 +351,8 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["ESTADO-ES-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ES-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ES-CIDE-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-ES-FRD-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-ES-COMPENSACAO-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-GO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-GO-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -426,8 +438,12 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["ESTADO-ES-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-ES-IPI-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-ES-CIDE-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-ES-FRD-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-ES-COMPENSACAO-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-ES-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-ES-IPI-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-ES-FRD-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-ES-COMPENSACAO-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-GO-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
