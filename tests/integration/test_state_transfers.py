@@ -48,7 +48,7 @@ def test_state_transfers_endpoint_is_empty_shell(api_client) -> None:
     assert by_uf["ES"]["ingestAllowed"] is True
     assert by_uf["GO"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["GO"]["ingestAllowed"] is True
-    assert by_uf["GO"]["taxes"] == ["IPVA"]
+    assert by_uf["GO"]["taxes"] == ["ICMS", "IPVA"]
     assert by_uf["MS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["MS"]["ingestAllowed"] is True
     assert by_uf["RO"]["status"] == "TECHNICALLY_APPROVED"
@@ -229,6 +229,35 @@ def test_state_go_ipva_ingest_publishes_gold_without_credit(api_client) -> None:
     assert lines.status_code == 200
     assert any(item["value"] == 13397.86 for item in lines.json()["items"])
     assert any(item["value"] == 3513965.9 for item in lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_state_go_icms_economia_ingest_publishes_gold_without_credit(api_client) -> None:
+    siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
+    assert siconfi.status_code == 200
+    assert siconfi.json()["silverCount"] == 28
+    icms = api_client.post("/v1/data-sources/ESTADO-GO-ICMS-QUOTA/ingest", headers=_admin())
+    assert icms.status_code == 200
+    assert icms.json()["silverCount"] == 2
+    assert icms.json()["quarantinedCount"] == 1
+    assert icms.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["ESTADO-GO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-GO-ICMS-QUOTA"]["createsTaxCredit"] is False
+    assert by_id["ESTADO-GO-ICMS-QUOTA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-GO-ICMS-QUOTA",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(item["value"] == 800205.0 for item in lines.json()["items"])
+    assert any(item["value"] == 12500000.0 for item in lines.json()["items"])
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]

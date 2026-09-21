@@ -1194,12 +1194,17 @@ _PA_VERDE_MONTHS = {
 }
 
 
-def _iter_xlsx_matrix(body: bytes) -> list[list[str]]:
-    """Read first worksheet as a matrix without treating row 0 as a dict header."""
+def _iter_xlsx_matrix(body: bytes, *, sheet_name: str | None = None) -> list[list[str]]:
+    """Read a worksheet as a matrix without treating row 0 as a dict header.
+
+    When sheet_name is set, select that workbook tab (e.g. GO Economia ``11-2024``).
+    Otherwise use the first worksheet / ``sheet1.xml``.
+    """
     import zipfile
     from xml.etree import ElementTree as ET
 
     ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    rel_ns = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
     with zipfile.ZipFile(io.BytesIO(body)) as archive:
         shared: list[str] = []
         if "xl/sharedStrings.xml" in archive.namelist():
@@ -1212,10 +1217,30 @@ def _iter_xlsx_matrix(body: bytes) -> list[list[str]]:
                     )
                 ]
                 shared.append("".join(texts))
-        sheet_name = "xl/worksheets/sheet1.xml"
-        if sheet_name not in archive.namelist():
+        sheet_path = "xl/worksheets/sheet1.xml"
+        if sheet_name:
+            workbook = ET.fromstring(archive.read("xl/workbook.xml"))
+            rels = ET.fromstring(archive.read("xl/_rels/workbook.xml.rels"))
+            rid_to_target = {
+                rel.get("Id"): rel.get("Target")
+                for rel in rels
+                if rel.get("Id") and rel.get("Target")
+            }
+            resolved = None
+            for sheet in workbook.findall("m:sheets/m:sheet", ns):
+                if sheet.get("name") != sheet_name:
+                    continue
+                rid = sheet.get(f"{rel_ns}id")
+                target = rid_to_target.get(rid or "")
+                if target:
+                    resolved = "xl/" + str(target).lstrip("/")
+                break
+            if not resolved or resolved not in archive.namelist():
+                raise ValueError(f"missing XLSX sheet: {sheet_name}")
+            sheet_path = resolved
+        elif sheet_path not in archive.namelist():
             return []
-        xml = archive.read(sheet_name)
+        xml = archive.read(sheet_path)
     rows: list[list[str]] = []
     for row_xml in re.findall(rb"<row[^>]*>.*?</row>", xml, flags=re.S):
         cells: dict[int, str] = {}
@@ -1239,6 +1264,111 @@ def _iter_xlsx_matrix(body: bytes) -> list[list[str]]:
         width = max(cells) + 1
         rows.append([cells.get(i, "") for i in range(width)])
     return rows
+
+
+def _compact_header(value: str) -> str:
+    return normalize_place(value).replace(" ", "")
+
+
+def parse_state_go_economia_xlsx(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "GO",
+    competence: str = "2024-11",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse Secretaria da Economia/GO monthly XLSX (ICMS/IPVA Bruto); join IBGE7 by name+UF.
+
+    Sheet tabs are ``MM-YYYY``. Amount is the tax-group ``Bruto`` column (constitutional
+    quota before FUNDEB retention). Does not create tax credit.
+    """
+    tax_key = str(tax or "").strip().upper()
+    if tax_key not in {"ICMS", "IPVA"}:
+        raise ValueError(f"unsupported state GO Economia tax filter: {tax}")
+    competence_key = str(competence or "2024-11").strip()[:7]
+    if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
+        raise ValueError(f"invalid GO Economia competence: {competence}")
+    year, month = competence_key.split("-")
+    sheet_label = f"{month}-{year}"
+    try:
+        matrix = _iter_xlsx_matrix(body, sheet_name=sheet_label)
+    except ValueError as exc:
+        return [], [({"rowId": "go-economia-document"}, str(exc))]
+    except Exception as exc:  # noqa: BLE001 — invalid OOXML surfaces as quarantine
+        return [], [({"rowId": "go-economia-document"}, f"invalid XLSX: {exc}")]
+    if len(matrix) < 3:
+        return [], [({"rowId": "go-economia-document"}, "missing Economia rows")]
+    group_row_index = None
+    tax_col = None
+    name_col = None
+    for index, row in enumerate(matrix[:20]):
+        compacted = [_compact_header(cell) for cell in row]
+        if "MUNICIPIOS" not in compacted:
+            continue
+        if tax_key not in compacted:
+            continue
+        group_row_index = index
+        name_col = compacted.index("MUNICIPIOS")
+        tax_col = compacted.index(tax_key)
+        break
+    if group_row_index is None or tax_col is None or name_col is None:
+        return [], [({"rowId": "go-economia-header"}, f"missing {tax_key}/MUNICIPIOS header")]
+    if group_row_index + 1 >= len(matrix):
+        return [], [({"rowId": "go-economia-header"}, "missing Bruto subheader row")]
+    sub = [_compact_header(cell) for cell in matrix[group_row_index + 1]]
+    amount_col = tax_col
+    if amount_col >= len(sub) or sub[amount_col] != "BRUTO":
+        for col, label in enumerate(sub):
+            if label == "BRUTO" and col >= tax_col:
+                amount_col = col
+                break
+        else:
+            return [], [({"rowId": "go-economia-header"}, f"missing {tax_key} Bruto column")]
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    for index, row in enumerate(matrix[group_row_index + 2 :], start=group_row_index + 2):
+        if name_col >= len(row):
+            continue
+        raw_name = str(row[name_col] or "").strip()
+        place = normalize_place(raw_name)
+        if not place or place in {"MUNICIPIOS", "TOTAL", "TOTAIS"} or place.startswith("TOTAL"):
+            continue
+        raw_amount = row[amount_col] if amount_col < len(row) else ""
+        try:
+            value = float(str(raw_amount).strip().replace(",", "."))
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"go-eco-{tax_key.lower()}-{place or index}-{competence_key}"[:64],
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": raw_amount,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((place, normalize_place(uf)), "")
+        out = {
+            "rowId": f"go-eco-{tax_key.lower()}-{ibge or place}-{competence_key}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence_key,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((out, "missing IBGE municipality code"))
+            continue
+        silver.append(out)
+    return silver, quarantined
 
 
 def parse_state_pa_icms_verde_xlsx(

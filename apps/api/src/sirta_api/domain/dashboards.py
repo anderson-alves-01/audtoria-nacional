@@ -99,6 +99,7 @@ DASHBOARDS = (
             "ESTADO-ES-ICMS-QUOTA",
             "ESTADO-ES-IPVA-QUOTA",
             "ESTADO-GO-IPVA-QUOTA",
+            "ESTADO-GO-ICMS-QUOTA",
             "ESTADO-MS-ICMS-QUOTA",
             "ESTADO-MS-IPVA-QUOTA",
             "ESTADO-RO-ICMS-QUOTA",

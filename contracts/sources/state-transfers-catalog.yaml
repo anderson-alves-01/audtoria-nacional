@@ -7,30 +7,20 @@ normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
   PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA e PR TECHNICALLY_APPROVED
-  (state_pe_csv / state_ba_csv / state_mg_csv / state_es_csv / state_go_csv /
-  state_ms_csv / state_ro_csv / state_ac_csv+state_ac_transparencia_json /
+  (state_pe_csv / state_ba_csv / state_mg_csv / state_es_csv / state_go_csv +
+  state_go_economia_xlsx / state_ms_csv / state_ro_csv / state_ac_csv+state_ac_transparencia_json /
   state_ce_xls / state_rs_xls / state_al_xls / state_pi_repasseweb_html /
   state_rn_xls / state_ma_xls / state_pr_html).
   PA parcial TECHNICALLY_APPROVED via ICMS Verde SEMAS XLSX
   (state_pa_icms_verde_xlsx; componente ecológico ≤8%, não cota ICMS total).
-  Ciclo 0.3.48 re-sondou sem nova ativação estadual: RJ IP HTML block; GO ZIP
-  download 500 e datastore só IPVA; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
-  SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF.
+  Ciclo 0.3.49: GO ICMS ativado via XLSX Secretaria da Economia (Bruto; aba MM-YYYY);
+  IPVA permanece no DataStore. UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB
+  vazio; SP HTML-per-muni; SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404;
+  MT XLSX ≤2015 / PDF; SE/PB PDF; AM HTML-per-município; TO índices PDF.
   MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
-  CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS ICMS/IPVA via
-  CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG ativado; AC IPVA
-  mensal via Transparência POST+CSRF JSON (state_ac_transparencia_json). CE
-  ICMS/IPVA via XLS mensal SEFAZ (Portaria). RS ICMS/IPVA via MontaArquivo XLS
-  mensal SEFAZ (TOTAL mês / Total Mês). AL ICMS/IPVA via XLS anual dados.al.gov.br
-  (série 2015-2021; corrente SEFAZ-AL é PDF semanal). PI IPVA via Repasse WEB
-  HTML (PrimeFaces; ICMS sem linhas no UI sondado). RN ICMS/IPVA via Nextcloud
-  XLS Repasses Prefeituras (abas). MA ICMS/IPVA via SEFAZ SGC XLS semestral
-  (Repasses Municipais valores nominais). PR ICMS/IPVA via HTML mensal SEFA
-  (líquido pós-FUNDEB + IPVA). RJ IP-blocked. SC PROVENANCE_ONLY (SEF CSV ≤2017).
-  PB/SE PROVENANCE_VERIFIED PDF. AM HTML-per-município. MT XLSX Transparency
-  congelado ≤2015; corrente PDF. TO/RR/AP/SP sem CSV/API estruturado estável
-  neste ciclo (RR painel HTML sem split ICMS/IPVA; AP link sefaz detalhes/17
-  404). Sem agregador privado.
+  CKAN DataStore dump (CSV upload 500). MS ICMS/IPVA via CKAN DataStore mensal.
+  AC ICMS anual SEPLAG; AC IPVA Transparência POST+CSRF JSON. CE/RS/AL/RN/MA XLS;
+  PI IPVA Repasse WEB; PR HTML SEFA. Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -182,22 +172,27 @@ states:
     name: Goiás
     status: TECHNICALLY_APPROVED
     ingest_allowed: true
-    structured_official_source: ckan_datastore_dump
+    structured_official_source: ckan_datastore_ipva_and_economia_xlsx_icms
     dataset_url: https://dadosabertos.go.gov.br/dataset/repasses
-    official_url: https://dadosabertos.go.gov.br/dataset/repasses
+    official_url: https://goias.gov.br/economia/repasse-aos-municipios/
     endpoint: https://dadosabertos.go.gov.br/datastore/dump/343d1fb0-a182-4005-9203-dce168d2ad60
-    taxes: [IPVA]
-    format: CSV
+    icms_endpoint: https://goias.gov.br/economia/wp-content/uploads/sites/45/2024/12/transf-municipios_2024_11.xlsx
+    taxes: [ICMS, IPVA]
+    format: CSV+XLSX
     columns: [VALR_IPVA, VALOR_TOTAL, VALR_IPVA_FUNDEB, DATA_COMPLETA_CREDITO, NUMR_ANO_MES, DATA_COMPLETA_REPASSE, DESC_MUN]
+    columns_icms: [Ordem, MUNICÍPIOS, ÍNDICE IPM, IPVA Bruto.., IPI Bruto.., ICMS Bruto, ICMS FUNDEB, ICMS Creditado Líquido]
     ibge_field: name_only
     layout_version_ipva: state-go-ipva-v1
+    layout_version_icms: state-go-icms-economia-v1
     connector: state_go_csv
+    icms_connector: state_go_economia_xlsx
     download_probe_2026_09_19: datastore_dump_ok_csv_download_500
+    download_probe_2026_09_20: economia_xlsx_200_icms_bruto_sheet_mm_yyyy
     reason: >
-      CSV upload retorna HTTP 500; dump oficial CKAN DataStore 200 OK com
-      schema mensal apenas IPVA (VALR_IPVA). Connector state_go_csv + join
-      IBGE7 por nome+UF. ICMS ausente no datastore 2026 publicado. Fixture
-      mínima. Sem crédito.
+      IPVA via dump oficial CKAN DataStore (CSV upload 500; schema sem ICMS 2026).
+      ICMS ativado via XLSX mensal Secretaria da Economia (transf-municipios,
+      aba MM-YYYY, coluna ICMS Bruto) com connector state_go_economia_xlsx +
+      join IBGE7 por nome+UF. Competência 2024-11. Fixture mínima. Sem crédito.
   - uf: MA
     name: Maranhão
     status: TECHNICALLY_APPROVED

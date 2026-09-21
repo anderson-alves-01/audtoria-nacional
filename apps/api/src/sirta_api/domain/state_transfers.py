@@ -14,11 +14,11 @@ STATE_CATALOG_RELATIVE = Path("contracts/sources/state-transfers-catalog.yaml")
 
 DISCLAIMER = (
     "Catálogo estadual ICMS/IPVA. PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA e PR "
-    "ativados com fonte PUBLIC_OPEN (MG/ES/AL IBGE7 nativo; RO IPVA IBGE6→7; GO/MS DataStore; "
-    "RO/AC CSV; CE/RS/AL/RN/MA XLS; PI Repasse WEB HTML; PR HTML SEFA). PA parcial via ICMS "
-    "Verde SEMAS XLSX (componente ecológico, não cota total). Demais UFs só avançam com fonte "
-    "estruturada comprovada; portais HTML e agregadores privados são recusados. Diferença "
-    "gera ocorrência, nunca crédito."
+    "ativados com fonte PUBLIC_OPEN (MG/ES/AL IBGE7 nativo; RO IPVA IBGE6→7; GO IPVA DataStore "
+    "+ GO ICMS XLSX Economia; MS DataStore; RO/AC CSV; CE/RS/AL/RN/MA XLS; PI Repasse WEB HTML; "
+    "PR HTML SEFA). PA parcial via ICMS Verde SEMAS XLSX (componente ecológico, não cota total). "
+    "Demais UFs só avançam com fonte estruturada comprovada; portais HTML e agregadores "
+    "privados são recusados. Diferença gera ocorrência, nunca crédito."
 )
 
 

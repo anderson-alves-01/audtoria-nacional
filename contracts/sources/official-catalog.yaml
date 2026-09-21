@@ -989,6 +989,49 @@ sources:
       CSV upload HTTP 500; dump DataStore 200 OK em 2026-09-19. Schema mensal
       2026 sem colunas ICMS. Homologação humana pendente.
 
+  - source_id: ESTADO-GO-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (GO)
+    maintainer: Secretaria da Economia de Goiás
+    official_domain: goias.gov.br
+    official_url: https://goias.gov.br/economia/repasse-aos-municipios/
+    endpoint: https://goias.gov.br/economia/wp-content/uploads/sites/45/2024/12/transf-municipios_2024_11.xlsx
+    documentation_url: https://goias.gov.br/economia/repasse-aos-municipios/
+    dataset: ESTADO-GO-ICMS-2024-11
+    dictionary_url: https://goias.gov.br/economia/repasse-aos-municipios/
+    purpose: Transferência estadual de ICMS — valores Bruto publicados por município
+    legal_basis: Demonstrativo oficial de repasses da Secretaria da Economia de Goiás
+    license_terms: publicação oficial goias.gov.br/economia
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_go_economia_xlsx
+    layout_version: state-go-icms-economia-v1
+    periodicity: monthly
+    competence: "2024-11"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: GO
+      competence: "2024-11"
+      normalize: ibge7_name_uf
+      amount_column: Bruto
+      sheet_naming: MM-YYYY
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_go_icms_quota
+    formula: >
+      Valor Bruto da coluna ICMS na aba MM-YYYY do XLSX mensal “transf-municipios”
+      publicado em goias.gov.br/economia/repasse-aos-municipios/, competência
+      YYYY-MM, município com join IBGE7 por nome+UF. Bruto é a quota antes da
+      retenção FUNDEB 20%. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-go-icms-economia-v1
+    notes: >
+      CKAN DataStore 2026 não publica ICMS; ZIP anual retorna HTTP 500. XLSX
+      Economia PUBLIC_OPEN verificado em 2026-09-20. Homologação humana pendente.
+
   - source_id: ESTADO-MS-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (MS)
     maintainer: Governo de Mato Grosso do Sul / dados.ms.gov.br

@@ -86,6 +86,10 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     go_ipva = api_client.post("/v1/data-sources/ESTADO-GO-IPVA-QUOTA/ingest", headers=_admin())
     assert go_ipva.status_code == 200
     assert go_ipva.json()["silverCount"] == 2
+    go_icms = api_client.post("/v1/data-sources/ESTADO-GO-ICMS-QUOTA/ingest", headers=_admin())
+    assert go_icms.status_code == 200
+    assert go_icms.json()["silverCount"] == 2
+    assert go_icms.json()["quarantinedCount"] == 1
     ms_icms = api_client.post("/v1/data-sources/ESTADO-MS-ICMS-QUOTA/ingest", headers=_admin())
     assert ms_icms.status_code == 200
     assert ms_icms.json()["silverCount"] == 2
@@ -187,6 +191,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "ESTADO-ES-ICMS-QUOTA",
         "ESTADO-ES-IPVA-QUOTA",
         "ESTADO-GO-IPVA-QUOTA",
+        "ESTADO-GO-ICMS-QUOTA",
         "ESTADO-MS-ICMS-QUOTA",
         "ESTADO-MS-IPVA-QUOTA",
         "ESTADO-RO-ICMS-QUOTA",
@@ -225,6 +230,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["ESTADO-ES-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ES-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-GO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MS-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-RO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -279,6 +285,8 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["ESTADO-ES-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-GO-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-GO-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-MS-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["ingestAllowed"] is True

@@ -66,6 +66,10 @@ SNAPSHOT_URLS = {
         "https://dadosabertos.go.gov.br/datastore/dump/343d1fb0-a182-4005-9203-dce168d2ad60"
     ): "go-repasses-municipios-202608.csv",
     (
+        "https://goias.gov.br/economia/wp-content/uploads/sites/45/2024/12/"
+        "transf-municipios_2024_11.xlsx"
+    ): "go-economia-repasses-2024-11.xlsx",
+    (
         "https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026"
     ): "ms-repasses-municipios-202601.csv",
     (

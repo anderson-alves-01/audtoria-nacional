@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.48
+implementation_version: 0.3.49
 roadmap_version: "1.2"
-version: 0.3.48
+version: 0.3.49
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -50,6 +50,7 @@ completed:
     - state_mg_icms_ipva_csv_gz_activation
     - state_es_icms_ipva_csv_activation
     - state_go_ipva_datastore_activation
+    - state_go_icms_economia_xlsx_activation
     - state_ms_icms_ipva_datastore_activation
     - anp_revendedores_uf_scoped_activation
     - aneel_indqual_municipio_uf_scoped_activation
@@ -75,7 +76,6 @@ pending:
     - specialist_homologation_g4
     - official_tesouro_national_backfill
     - state_other_uf_activation_followup
-    - state_go_icms_when_columns_published
     - state_pi_icms_when_repasseweb_publishes
     - state_mt_when_recent_tabular_published
     - state_pa_full_icms_ipva_when_tabular_published
@@ -115,6 +115,7 @@ gates:
   f3_state_mg_activation_local: GO
   f3_state_es_activation_local: GO
   f3_state_go_ipva_activation_local: GO
+  f3_state_go_icms_economia_local: GO
   f3_state_ms_activation_local: GO
   f3_anp_revendedores_local: GO
   f3_aneel_indqual_local: GO
@@ -145,6 +146,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.48/
-next_action: Prefer remaining UF with downloadable CSV/API. Cycle 0.3.48 re-probed RJ (IP HTML block), GO (ZIP download 500; datastore IPVA-only), PI ICMS (empty Repasse WEB), SP (per-muni HTML), SC (CSV ≤2017), RR (total without ICMS/IPVA split). Activated IBGE SIDRA 9509 CEMP. PA full ICMS/IPVA still DOE PDF; AP 404; MT XLSX ≤2015; SE/PB PDF; AM HTML-per-município; TO indices. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.49/
+next_action: Prefer remaining UF with downloadable CSV/API. Cycle 0.3.49 activated GO ICMS via Economia XLSX (Bruto; MM-YYYY). IPVA GO DataStore intact. Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

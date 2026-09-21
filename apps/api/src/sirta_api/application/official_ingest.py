@@ -40,6 +40,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_ce_xls,
     parse_state_es_csv,
     parse_state_go_csv,
+    parse_state_go_economia_xlsx,
     parse_state_ma_xls,
     parse_state_mg_csv,
     parse_state_ms_csv,
@@ -99,6 +100,7 @@ PARSERS = {
     "state_mg_csv": parse_state_mg_csv,
     "state_es_csv": parse_state_es_csv,
     "state_go_csv": parse_state_go_csv,
+    "state_go_economia_xlsx": parse_state_go_economia_xlsx,
     "state_ms_csv": parse_state_ms_csv,
     "state_ro_csv": parse_state_ro_csv,
     "state_ac_csv": parse_state_ac_csv,
@@ -713,6 +715,17 @@ def _parse(
             fetched.body,
             tax=str(parameters.get("tax") or "IPVA"),
             uf=str(parameters.get("uf") or "GO"),
+            ibge_lookup=_ibge_lookup(session, context=context),
+        )
+    if connector == "state_go_economia_xlsx":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "ICMS"),
+            uf=str(parameters.get("uf") or "GO"),
+            competence=str(parameters.get("competence") or catalog.get("competence") or "2024-11")[
+                :7
+            ],
             ibge_lookup=_ibge_lookup(session, context=context),
         )
     if connector == "state_ms_csv":

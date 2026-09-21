@@ -15,6 +15,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_ce_xls,
     parse_state_es_csv,
     parse_state_go_csv,
+    parse_state_go_economia_xlsx,
     parse_state_ma_xls,
     parse_state_mg_csv,
     parse_state_ms_csv,
@@ -256,6 +257,30 @@ def test_state_go_csv_joins_name_uf_and_quarantines_territory() -> None:
     assert quarantined[0][1] == "missing IBGE municipality code"
     assert presentation_for("ESTADO-GO-IPVA-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-GO-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_go_economia_xlsx_joins_name_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/go-economia-repasses-2024-11.xlsx").read_bytes()
+    lookup = {
+        ("ABADIA DE GOIAS", "GO"): "5200050",
+        ("GOIANIA", "GO"): "5208707",
+    }
+    icms, quarantined = parse_state_go_economia_xlsx(
+        body, tax="ICMS", competence="2024-11", ibge_lookup=lookup
+    )
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"5200050", "5208707"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "GO" for row in icms)
+    assert all(row["competence"] == "2024-11" for row in icms)
+    abadia = next(row for row in icms if row["ibgeCode"] == "5200050")
+    assert abadia["value"] == 800205.0
+    goiania = next(row for row in icms if row["ibgeCode"] == "5208707")
+    assert goiania["value"] == 12500000.0
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "missing IBGE municipality code"
+    assert presentation_for("ESTADO-GO-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-GO-ICMS-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ms_csv_joins_name_uf_and_quarantines_territory() -> None:
