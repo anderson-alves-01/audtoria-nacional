@@ -18,3 +18,5 @@ Activate BCB OLINDA ExpectativasMercadoSelic (FOCUS_SELIC / Reuniao) PUBLIC_OPEN
 - Gold `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`
 - No national load; fixture-minimized only
 - Distinct from annual Selic and empty trimestral Selic
+
+Commit: 8b8892a
