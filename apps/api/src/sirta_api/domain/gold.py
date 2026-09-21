@@ -121,6 +121,38 @@ PRESENTATION = {
             "não crédito nem cobrança."
         ),
     },
+    "TESOURO-FPM-COINT-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores FPM distribuídos aos municípios publicados pelo Tesouro "
+            "(COINT). Distinto do CSV mensal TESOURO-FPM-VALORES. "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "TESOURO-ITR-COINT-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores ITR distribuídos aos municípios publicados pelo Tesouro "
+            "(COINT). Distinto do CSV mensal TESOURO-ITR-VALORES. "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "TESOURO-IOF-OURO-COINT-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores IOF-Ouro distribuídos aos municípios publicados pelo Tesouro "
+            "(COINT). Distinto do CSV mensal TESOURO-IOF-OURO-VALORES. Série "
+            "esparsa por município. Ocorrência para análise, não crédito."
+        ),
+    },
+    "TESOURO-LC176-COINT-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores LC 176/2020 (ADO25) distribuídos aos municípios publicados "
+            "pelo Tesouro (COINT). Distinto do CSV mensal TESOURO-LC176-VALORES. "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (

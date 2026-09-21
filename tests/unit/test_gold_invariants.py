@@ -276,6 +276,72 @@ def test_tesouro_coint_lc87_wide_csv() -> None:
     assert presentation_for("TESOURO-LC87-VALORES")["valueKind"] == ("TRANSFER_AMOUNT_AS_PUBLISHED")
 
 
+def test_tesouro_coint_remaining_wide_csv() -> None:
+    lookup = {
+        ("ACRELANDIA", "AC"): "1200013",
+        ("ASSIS BRASIL", "AC"): "1200054",
+    }
+    fpm_body = Path(
+        "tests/fixtures/official-snapshots/tesouro-fpm-por-municipio.csv"
+    ).read_bytes()
+    fpm, fpm_q = parse_tesouro_coint_municipio_csv(
+        fpm_body,
+        ibge_lookup=lookup,
+        transfer_name="FPM",
+        competence="2025-01",
+    )
+    assert len(fpm_q) == 1
+    assert all(row["modality"] == "FPM_RECEIVED" for row in fpm)
+    assert {row["ibgeCode"] for row in fpm} == {"1200013", "1200054"}
+    assert sum(row["value"] for row in fpm) == 1408936.79 + 1112480.55
+    assert presentation_for("TESOURO-FPM-COINT-VALORES")["createsTaxCredit"] is False
+    itr_body = Path(
+        "tests/fixtures/official-snapshots/tesouro-itr-por-municipio.csv"
+    ).read_bytes()
+    itr, itr_q = parse_tesouro_coint_municipio_csv(
+        itr_body,
+        ibge_lookup=lookup,
+        transfer_name="ITR",
+        competence="2025-01",
+    )
+    assert len(itr_q) == 1
+    assert all(row["modality"] == "ITR_RECEIVED" for row in itr)
+    assert sum(row["value"] for row in itr) == 77.05 + 61.20
+    assert presentation_for("TESOURO-ITR-COINT-VALORES")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    iof_body = Path(
+        "tests/fixtures/official-snapshots/tesouro-iof-por-municipio.csv"
+    ).read_bytes()
+    iof, iof_q = parse_tesouro_coint_municipio_csv(
+        iof_body,
+        ibge_lookup=lookup,
+        transfer_name="IOF-Ouro",
+        competence="2014-07",
+    )
+    assert len(iof_q) == 1
+    assert all(row["modality"] == "IOF_OURO_RECEIVED" for row in iof)
+    assert {row["ibgeCode"] for row in iof} == {"1200013", "1200054"}
+    assert sum(row["value"] for row in iof) == 72.98 + 55.40
+    assert presentation_for("TESOURO-IOF-OURO-COINT-VALORES")["createsTaxCredit"] is False
+    lc176_body = Path(
+        "tests/fixtures/official-snapshots/tesouro-lc176-por-municipio.csv"
+    ).read_bytes()
+    lc176, lc176_q = parse_tesouro_coint_municipio_csv(
+        lc176_body,
+        ibge_lookup=lookup,
+        transfer_name="LC 176/2020",
+        competence="2025-01",
+    )
+    assert len(lc176_q) == 1
+    assert all(row["modality"] == "LC176_RECEIVED" for row in lc176)
+    assert all(row["transferName"] == "LC 176/2020" for row in lc176)
+    assert sum(row["value"] for row in lc176) == 962.01 + 720.00
+    assert presentation_for("TESOURO-LC176-COINT-VALORES")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+
+
 def test_tesouro_coint_fundeb_wide_csv() -> None:
     lookup = {
         ("ACRELANDIA", "AC"): "1200013",

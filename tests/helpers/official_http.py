@@ -53,6 +53,26 @@ SNAPSHOT_URLS = {
         "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
         "06aed495-8f46-4852-97f1-ae49822aa179/download/lc-8796-por-municipio.csv"
     ): "tesouro-lc8796-por-municipio.csv",
+    (
+        "https://www.tesourotransparente.gov.br/ckan/dataset/"
+        "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
+        "d69ff32a-6681-4114-81f0-233bb6b17f58/download/fpm-por-municipio.csv"
+    ): "tesouro-fpm-por-municipio.csv",
+    (
+        "https://www.tesourotransparente.gov.br/ckan/dataset/"
+        "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
+        "f6ad4e51-fc7e-40bb-b35a-3686da7fde2d/download/itr-por-municipio.csv"
+    ): "tesouro-itr-por-municipio.csv",
+    (
+        "https://www.tesourotransparente.gov.br/ckan/dataset/"
+        "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
+        "4248cd95-6d79-4520-9e17-48322eab6259/download/iof-por-municipio.csv"
+    ): "tesouro-iof-por-municipio.csv",
+    (
+        "https://www.tesourotransparente.gov.br/ckan/dataset/"
+        "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
+        "c833631a-0933-4e43-a0a5-f77c2fa2267d/download/lc-176-por-municipio.csv"
+    ): "tesouro-lc176-por-municipio.csv",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo": "siconfi-rreo.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/dca": "siconfi-dca.json",
     "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rgf": "siconfi-rgf.json",

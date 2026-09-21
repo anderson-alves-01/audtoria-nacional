@@ -1,16 +1,16 @@
 schema_version: 1
-updated_at: "2026-09-21T12:30:00-03:00"
+updated_at: "2026-09-21T14:00:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.64"
+implementation_version: "0.3.65"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.64: Tesouro LC 87/96 por município (COINT CSV histórico ≤2018)
-  como TESOURO-LC87-VALORES, distinto de LC176 mensal. UFs restantes ainda
-  sem tabular recente. Próximo: UF tabular nova quando publicada. RFB
+  Ciclo 0.3.65: Tesouro COINT restante FPM/ITR/IOF-Ouro/LC176 por município
+  (distintos dos CSV mensais). Pacote COINT municipal completo. UFs restantes
+  ainda sem tabular recente. Próximo: UF tabular nova quando publicada. RFB
   territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -317,6 +317,35 @@ items:
       TESOURO-LC176-VALORES. Sem carga nacional do CSV ~17 MiB. Homologação
       humana pendente.
       CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35577286713.
+
+  - id: F3-TESOURO-COINT-REMAINING
+    fase: F3.2
+    dominio: D9
+    descricao: CSV COINT FPM/ITR/IOF-Ouro/LC176 por município (restantes do dataset)
+    dependencias: [F3-TESOURO-DICTIONARY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais:
+      - TESOURO-FPM-COINT-VALORES
+      - TESOURO-ITR-COINT-VALORES
+      - TESOURO-IOF-OURO-COINT-VALORES
+      - TESOURO-LC176-COINT-VALORES
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.65/
+    versao: "0.3.65"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Conector tesouro_coint_municipio_csv com max_rows=8. FPM/ITR/LC176
+      competência 2025-01; IOF-Ouro 2014-07 (série esparsa). Distintos dos
+      CSV mensais TESOURO-*-VALORES. Pacote COINT municipal do dataset
+      Transferências Obrigatórias completo. Sem carga nacional. Homologação
+      humana pendente.
 
   - id: F3-TESOURO-COINT-CIDE-FEX
     fase: F3.2

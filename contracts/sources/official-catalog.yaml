@@ -620,6 +620,203 @@ sources:
       2018-01. Distinto de TESOURO-LC176-VALORES (CSV mensal). max_rows=8
       no ciclo técnico; sem carga nacional ilimitada. Sem crédito.
 
+  - source_id: TESOURO-FPM-COINT-VALORES
+    name: Tesouro Nacional — FPM por município (CKAN COINT)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-obrigatorias-da-uniao-por-municipio
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/d69ff32a-6681-4114-81f0-233bb6b17f58/download/fpm-por-municipio.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-obrigatorias-da-uniao-por-municipio
+    dataset: TESOURO-FPM-COINT
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/a3bee117-d467-4374-aefe-bb29b9698c42/download/metadados---transferencias-obrigatorias-da-uniao---por-municipio.pdf
+    purpose: >
+      Valores do FPM distribuídos aos municípios (série COINT), distintos do
+      CSV mensal constitucional TESOURO-FPM-VALORES
+    legal_basis: Dataset CKAN Transferências Obrigatórias da União - por Município (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_coint_municipio_csv
+    layout_version: tesouro-ckan-coint-fpm-municipio-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      package_id: 3b5a779d-78f5-4602-a6b7-23ece6d60f27
+      resource_id: d69ff32a-6681-4114-81f0-233bb6b17f58
+      file_name: fpm-por-municipio.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2025-01"
+      transfer_name: FPM
+      max_rows: 8
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_fpm_coint_received
+    formula: >
+      Valor da coluna do ano da competência, na linha cujo Mês corresponde ao
+      mês da competência, no CSV COINT FPM por município. Células vazias ou
+      com traço são omitidas. Join município+UF ao IBGE via SICONFI/entes.
+      COD_MUN do arquivo não é IBGE7. Não constitui crédito.
+    methodology_version: official-tesouro-coint-fpm-v1
+    notes: >
+      Probe 2026-09-21: HTTP 200, layout wide 1996–2026, competência 2025-01
+      com valores. Distinto de TESOURO-FPM-VALORES (CSV mensal). max_rows=8.
+      Sem carga nacional. Sem crédito.
+
+  - source_id: TESOURO-ITR-COINT-VALORES
+    name: Tesouro Nacional — ITR por município (CKAN COINT)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-obrigatorias-da-uniao-por-municipio
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/f6ad4e51-fc7e-40bb-b35a-3686da7fde2d/download/itr-por-municipio.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-obrigatorias-da-uniao-por-municipio
+    dataset: TESOURO-ITR-COINT
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/a3bee117-d467-4374-aefe-bb29b9698c42/download/metadados---transferencias-obrigatorias-da-uniao---por-municipio.pdf
+    purpose: >
+      Valores do ITR distribuídos aos municípios (série COINT), distintos do
+      CSV mensal constitucional TESOURO-ITR-VALORES
+    legal_basis: Dataset CKAN Transferências Obrigatórias da União - por Município (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_coint_municipio_csv
+    layout_version: tesouro-ckan-coint-itr-municipio-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      package_id: 3b5a779d-78f5-4602-a6b7-23ece6d60f27
+      resource_id: f6ad4e51-fc7e-40bb-b35a-3686da7fde2d
+      file_name: itr-por-municipio.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2025-01"
+      transfer_name: ITR
+      max_rows: 8
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_itr_coint_received
+    formula: >
+      Valor da coluna do ano da competência, na linha cujo Mês corresponde ao
+      mês da competência, no CSV COINT ITR por município. Células vazias ou
+      com traço são omitidas. Join município+UF ao IBGE via SICONFI/entes.
+      COD_MUN do arquivo não é IBGE7. Não constitui crédito.
+    methodology_version: official-tesouro-coint-itr-v1
+    notes: >
+      Probe 2026-09-21: HTTP 200, layout wide 1996–2026. Distinto de
+      TESOURO-ITR-VALORES (CSV mensal). max_rows=8. Sem carga nacional.
+      Sem crédito.
+
+  - source_id: TESOURO-IOF-OURO-COINT-VALORES
+    name: Tesouro Nacional — IOF-Ouro por município (CKAN COINT)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-obrigatorias-da-uniao-por-municipio
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/4248cd95-6d79-4520-9e17-48322eab6259/download/iof-por-municipio.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-obrigatorias-da-uniao-por-municipio
+    dataset: TESOURO-IOF-OURO-COINT
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/a3bee117-d467-4374-aefe-bb29b9698c42/download/metadados---transferencias-obrigatorias-da-uniao---por-municipio.pdf
+    purpose: >
+      Valores do IOF-Ouro distribuídos aos municípios (série COINT), distintos
+      do CSV mensal constitucional TESOURO-IOF-OURO-VALORES
+    legal_basis: Dataset CKAN Transferências Obrigatórias da União - por Município (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_coint_municipio_csv
+    layout_version: tesouro-ckan-coint-iof-ouro-municipio-v1
+    periodicity: monthly
+    competence: "2014-07"
+    granularity: municipality
+    parameters:
+      package_id: 3b5a779d-78f5-4602-a6b7-23ece6d60f27
+      resource_id: 4248cd95-6d79-4520-9e17-48322eab6259
+      file_name: iof-por-municipio.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2014-07"
+      transfer_name: IOF-Ouro
+      max_rows: 8
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_iof_ouro_coint_received
+    formula: >
+      Valor da coluna do ano da competência, na linha cujo Mês corresponde ao
+      mês da competência, no CSV COINT IOF-Ouro por município. Células vazias
+      ou com traço são omitidas. Join município+UF ao IBGE via SICONFI/entes.
+      COD_MUN do arquivo não é IBGE7. Série esparsa. Não constitui crédito.
+    methodology_version: official-tesouro-coint-iof-ouro-v1
+    notes: >
+      Probe 2026-09-21: HTTP 200, layout wide 1998–2026; muitos municípios sem
+      valores. Competência técnica 2014-07 com valores observados (ex.
+      Brasiléia/AC). Distinto de TESOURO-IOF-OURO-VALORES (CSV mensal).
+      max_rows=8. Sem carga nacional. Sem crédito.
+
+  - source_id: TESOURO-LC176-COINT-VALORES
+    name: Tesouro Nacional — LC 176/2020 por município (CKAN COINT)
+    maintainer: Tesouro Nacional
+    official_domain: tesourotransparente.gov.br
+    official_url: https://www.tesourotransparente.gov.br/ckan/dataset/transferencias-obrigatorias-da-uniao-por-municipio
+    endpoint: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/c833631a-0933-4e43-a0a5-f77c2fa2267d/download/lc-176-por-municipio.csv
+    documentation_url: https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=transferencias-obrigatorias-da-uniao-por-municipio
+    dataset: TESOURO-LC176-COINT
+    dictionary_url: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/a3bee117-d467-4374-aefe-bb29b9698c42/download/metadados---transferencias-obrigatorias-da-uniao---por-municipio.pdf
+    purpose: >
+      Valores LC 176/2020 (ADO25) distribuídos aos municípios (série COINT),
+      distintos do CSV mensal constitucional TESOURO-LC176-VALORES
+    legal_basis: Dataset CKAN Transferências Obrigatórias da União - por Município (ODbL)
+    license_terms: Licença Aberta para Bases de Dados (ODbL)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: tesouro_coint_municipio_csv
+    layout_version: tesouro-ckan-coint-lc176-municipio-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      package_id: 3b5a779d-78f5-4602-a6b7-23ece6d60f27
+      resource_id: c833631a-0933-4e43-a0a5-f77c2fa2267d
+      file_name: lc-176-por-municipio.csv
+      encoding: latin-1
+      delimiter: ";"
+      join: siconfi_entes_ibge_by_name_uf
+      competence: "2025-01"
+      transfer_name: "LC 176/2020"
+      max_rows: 8
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: tesouro_lc176_coint_received
+    formula: >
+      Valor da coluna do ano da competência, na linha cujo Mês corresponde ao
+      mês da competência, no CSV COINT LC 176/2020 por município. Células
+      vazias ou com traço são omitidas. Join município+UF ao IBGE via
+      SICONFI/entes. COD_MUN do arquivo não é IBGE7. Não constitui crédito.
+    methodology_version: official-tesouro-coint-lc176-v1
+    notes: >
+      Probe 2026-09-21: HTTP 200, layout wide 2020–2026. Distinto de
+      TESOURO-LC176-VALORES (CSV mensal) e de TESOURO-LC87-VALORES.
+      max_rows=8. Sem carga nacional. Sem crédito.
+
   - source_id: TESOURO-CIDE-VALORES
     name: Tesouro Nacional — CIDE-Combustíveis por município (CKAN COINT)
     maintainer: Tesouro Nacional

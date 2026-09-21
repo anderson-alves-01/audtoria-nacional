@@ -102,6 +102,29 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert lc87.status_code == 200
     assert lc87.json()["silverCount"] == 2
     assert lc87.json()["taxCreditCreated"] is False
+    fpm_coint = api_client.post(
+        "/v1/data-sources/TESOURO-FPM-COINT-VALORES/ingest", headers=_admin()
+    )
+    assert fpm_coint.status_code == 200
+    assert fpm_coint.json()["silverCount"] == 2
+    assert fpm_coint.json()["taxCreditCreated"] is False
+    itr_coint = api_client.post(
+        "/v1/data-sources/TESOURO-ITR-COINT-VALORES/ingest", headers=_admin()
+    )
+    assert itr_coint.status_code == 200
+    assert itr_coint.json()["silverCount"] == 2
+    iof_coint = api_client.post(
+        "/v1/data-sources/TESOURO-IOF-OURO-COINT-VALORES/ingest", headers=_admin()
+    )
+    assert iof_coint.status_code == 200
+    assert iof_coint.json()["silverCount"] == 2
+    assert iof_coint.json()["taxCreditCreated"] is False
+    lc176_coint = api_client.post(
+        "/v1/data-sources/TESOURO-LC176-COINT-VALORES/ingest", headers=_admin()
+    )
+    assert lc176_coint.status_code == 200
+    assert lc176_coint.json()["silverCount"] == 2
+    assert lc176_coint.json()["taxCreditCreated"] is False
     pe_icms = api_client.post("/v1/data-sources/ESTADO-ICMS-QUOTA/ingest", headers=_admin())
     assert pe_icms.status_code == 200
     assert pe_icms.json()["silverCount"] == 2
@@ -307,6 +330,10 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "TESOURO-CIDE-VALORES",
         "TESOURO-FEX-VALORES",
         "TESOURO-LC87-VALORES",
+        "TESOURO-FPM-COINT-VALORES",
+        "TESOURO-ITR-COINT-VALORES",
+        "TESOURO-IOF-OURO-COINT-VALORES",
+        "TESOURO-LC176-COINT-VALORES",
         "ESTADO-ICMS-QUOTA",
         "ESTADO-IPVA-QUOTA",
         "ESTADO-PE-IPI-QUOTA",
@@ -376,6 +403,10 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["TESOURO-CIDE-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-FEX-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-LC87-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-FPM-COINT-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-ITR-COINT-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-IOF-OURO-COINT-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-LC176-COINT-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-PE-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -472,6 +503,14 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["TESOURO-FEX-VALORES"]["ingestAllowed"] is True
     assert by_id["TESOURO-LC87-VALORES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["TESOURO-LC87-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-FPM-COINT-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-FPM-COINT-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-ITR-COINT-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-ITR-COINT-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-IOF-OURO-COINT-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-IOF-OURO-COINT-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-LC176-COINT-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-LC176-COINT-VALORES"]["ingestAllowed"] is True
     assert by_id["ESTADO-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-PE-IPI-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
