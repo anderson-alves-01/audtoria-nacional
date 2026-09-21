@@ -246,6 +246,13 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-CE-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI estadual publicada (CE ativado via SEFAZ XLS). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-RS-ICMS-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
@@ -274,6 +281,13 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-AL-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI estadual publicada (AL ativado via dados.al.gov.br). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-PI-IPVA-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
@@ -293,6 +307,13 @@ PRESENTATION = {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
             "Quota-parte de IPVA estadual publicada (RN ativado via SEFAZ Nextcloud XLS). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-RN-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI estadual publicada (RN ativado via SEFAZ Nextcloud XLS). "
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },

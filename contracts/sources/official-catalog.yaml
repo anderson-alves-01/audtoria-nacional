@@ -1807,6 +1807,46 @@ sources:
     notes: >
       Mesmo XLS jan/2025 do ICMS. Homologação humana pendente.
 
+  - source_id: ESTADO-CE-IPI-QUOTA
+    name: Quota-parte de IPI estadual (CE)
+    maintainer: SEFAZ-CE
+    official_domain: sefaz.ce.gov.br
+    official_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    endpoint: https://www.ce.gov.br/sefaz/wp-content/uploads/sites/46/2020/08/1.Portaria-jan-25-ANEXO-UNICO.xls
+    documentation_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    dataset: ESTADO-CE-IPI-2025-01
+    dictionary_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    purpose: Transferência estadual de IPI — valores publicados por município
+    legal_basis: Portaria SEFAZ-CE de distribuição das cotas-partes (anexo XLS)
+    license_terms: publicação oficial SEFAZ-CE
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_ce_xls
+    layout_version: state-ce-ipi-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: CE
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_ce_ipi_quota
+    formula: >
+      Valor da coluna Total IPI EXPORTAÇÃO (25%) do XLS mensal SEFAZ Portaria,
+      competência parametrizada, município via join IBGE7 por nome+UF.
+      layout_version distinto evita colisão de checksum com ICMS/IPVA. Não
+      constitui crédito.
+    methodology_version: official-state-ce-ipi-v1
+    notes: >
+      Mesmo XLS jan/2025 do ICMS/IPVA. Homologação humana pendente.
+
   - source_id: ESTADO-RS-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (RS)
     maintainer: SEFAZ-RS
@@ -2008,6 +2048,45 @@ sources:
     notes: >
       Mesmo XLS 2015-2021 do ICMS. Homologação humana pendente.
 
+  - source_id: ESTADO-AL-IPI-QUOTA
+    name: Quota-parte de IPI estadual (AL)
+    maintainer: SEPLAG-AL / dados.al.gov.br
+    official_domain: dados.al.gov.br
+    official_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    endpoint: https://dados.al.gov.br/catalogo/dataset/58cf0b6f-4026-449e-8be8-17a9af3670c6/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b/download/repasses_estaduais.xls
+    documentation_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b
+    dataset: ESTADO-AL-IPI-2021
+    dictionary_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    purpose: Transferência estadual de IPI — valores publicados por município
+    legal_basis: Dados abertos oficiais de Alagoas (repasses estaduais)
+    license_terms: Creative Commons Atribuição (portal dados.al.gov.br)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_al_xls
+    layout_version: state-al-ipi-v1
+    periodicity: annual
+    competence: "2021"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: AL
+      competence_year: "2021"
+      normalize: ibge7_native
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_al_ipi_quota
+    formula: >
+      Valor da coluna IPI Total do ano no XLS Repasses Estaduais, competência
+      filtrada por ano, município com Código IBGE7 nativo. layout_version
+      distinto evita colisão de checksum com ICMS/IPVA. Não constitui crédito.
+    methodology_version: official-state-al-ipi-v1
+    notes: >
+      Mesmo XLS 2015-2021 do ICMS/IPVA. Homologação humana pendente.
+
   - source_id: ESTADO-RN-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (RN)
     maintainer: SEFAZ-RN
@@ -2087,6 +2166,46 @@ sources:
     methodology_version: official-state-rn-ipva-v1
     notes: >
       Mesmo XLS do ICMS (abas distintas). Homologação humana pendente.
+
+  - source_id: ESTADO-RN-IPI-QUOTA
+    name: Quota-parte de IPI estadual (RN)
+    maintainer: SEFAZ-RN
+    official_domain: sefaz.rn.gov.br
+    official_url: https://www.sefaz.rn.gov.br/documentos/Transpar%C3%AAncia/Transfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN/2026/
+    endpoint: https://www.sefaz.rn.gov.br/wp-json/nextcloud/v1/download?filePath=SEFAZ-GOVRN%2FTranspar%C3%AAncia%2FTransfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN%2F2026%2FRepasses%20Prefeituras%202026%20-%20Valores%20Repassados%20at%C3%A9%20o%20dia%2031-05-2026.xls
+    documentation_url: https://www.transparencia.rn.gov.br/transferencia-para-municipios
+    dataset: ESTADO-RN-IPI-2026-01
+    dictionary_url: https://www.sefaz.rn.gov.br/documentos/Transpar%C3%AAncia/Transfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN/
+    purpose: Transferência estadual de IPI — valores publicados por município
+    legal_basis: Publicação SEFAZ-RN de repasses às prefeituras (Nextcloud)
+    license_terms: publicação oficial SEFAZ-RN
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_rn_xls
+    layout_version: state-rn-ipi-v1
+    periodicity: monthly
+    competence: "2026-01"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: RN
+      competence: "2026-01"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_rn_ipi_quota
+    formula: >
+      Valor da coluna do mês na planilha IPI do XLS Repasses Prefeituras
+      SEFAZ-RN, competência parametrizada, município via join IBGE7 por
+      nome+UF. layout_version distinto evita colisão de checksum com
+      ICMS/IPVA. Não constitui crédito.
+    methodology_version: official-state-rn-ipi-v1
+    notes: >
+      Mesmo XLS do ICMS/IPVA (aba IPI). Homologação humana pendente.
 
   - source_id: ESTADO-MA-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (MA)

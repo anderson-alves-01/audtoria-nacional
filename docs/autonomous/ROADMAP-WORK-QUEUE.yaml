@@ -1,16 +1,16 @@
 schema_version: 1
-updated_at: "2026-09-21T01:15:00-03:00"
+updated_at: "2026-09-21T01:35:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.54"
+implementation_version: "0.3.55"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.54: CSV COINT Tesouro CIDE/FEX (tesouro_coint_municipio_csv).
-  CSV mensal constitucional segue sem CIDE/FEX. UFs restantes ainda sem
-  tabular recente. Próximo: UF tabular nova ou IPI em RN/AL/CE. RFB
+  Ciclo 0.3.55: IPI estadual CE/AL/RN nos arquivos já aprovados
+  (state_ce_xls / state_al_xls / state_rn_xls). UFs restantes ainda sem
+  tabular recente. Próximo: UF tabular nova quando publicada. RFB
   territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -437,10 +437,10 @@ items:
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA, PR e GO ICMS (+IPVA/IPI
-      onde publicado) + ES IPI/CIDE + PI IPVA + PA ICMS Verde ativados. GO IPI
-      via Economia XLSX (IPI-Exportação Bruto). PI ICMS não publicado no Repasse
-      WEB. PA cota plena ainda DOE PDF. MT XLSX Transparency congelado ≤2015.
-      SC arrecadação não quota. SP HTML-only. PB/SE/AM/AP/RR/DF
+      onde publicado) + ES IPI/CIDE + CE/AL/RN IPI + PI IPVA + PA ICMS Verde
+      ativados. GO IPI via Economia XLSX (IPI-Exportação Bruto). PI ICMS não
+      publicado no Repasse WEB. PA cota plena ainda DOE PDF. MT XLSX Transparency
+      congelado ≤2015. SC arrecadação não quota. SP HTML-only. PB/SE/AM/AP/RR/DF
       PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ permanece IP-blocked.
       Sem agregador privado.
 

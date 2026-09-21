@@ -15,6 +15,8 @@ notes: >
   (state_pa_icms_verde_xlsx; componente ecológico ≤8%, não cota ICMS total).
   Ciclo 0.3.50: ES IPI+CIDE e GO IPI-Exportação ativados nos mesmos arquivos
   PUBLIC_OPEN já usados para ICMS/IPVA (state_es_csv / state_go_economia_xlsx).
+  Ciclo 0.3.55: CE/AL/RN IPI ativados nos mesmos arquivos já aprovados
+  (state_ce_xls / state_al_xls / state_rn_xls).
   UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
   SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
   SE/PB PDF; AM HTML-per-município; TO índices PDF.
@@ -64,13 +66,14 @@ states:
     ibge_field: Código
     layout_version_icms: state-al-icms-v1
     layout_version_ipva: state-al-ipva-v1
+    layout_version_ipi: state-al-ipi-v1
     connector: state_al_xls
     download_probe_2026_09_20: xls_bytes_ok_ibge7_native_annual_2021
     reason: >
       XLS anual Repasses Estaduais (dados.al.gov.br) ativado com connector
       state_al_xls (xlrd). IBGE7 nativo em Código; competência anual filtrada
-      (2021). Série publicada 2015-2021; SEFAZ-AL corrente é PDF semanal sem
-      CSV/API. Fixture mínima. Sem crédito.
+      (2021). ICMS/IPVA/IPI via colunas Total YYYY. Série publicada 2015-2021;
+      SEFAZ-AL corrente é PDF semanal sem CSV/API. Fixture mínima. Sem crédito.
   - uf: AP
     name: Amapá
     status: PROVENANCE_VERIFIED
@@ -135,6 +138,7 @@ states:
     ibge_field: name_only
     layout_version_icms: state-ce-icms-v1
     layout_version_ipva: state-ce-ipva-v1
+    layout_version_ipi: state-ce-ipi-v1
     connector: state_ce_xls
     download_probe_2026_09_19: xls_bytes_ok_name_uf_join
     reason: >
@@ -404,6 +408,7 @@ states:
     ibge_field: name_only
     layout_version_icms: state-rn-icms-v1
     layout_version_ipva: state-rn-ipva-v1
+    layout_version_ipi: state-rn-ipi-v1
     connector: state_rn_xls
     download_probe_2026_09_20: nextcloud_xls_200_sheets_icms_ipva
     reason: >

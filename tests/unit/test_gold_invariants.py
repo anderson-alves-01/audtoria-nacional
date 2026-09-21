@@ -576,8 +576,15 @@ def test_state_rn_xls_joins_name_and_quarantines_territory() -> None:
     assert natal_ipva["value"] == 6416335.88
     assert natal_ipva["modality"] == "IPVA_QUOTA"
     assert len(quarantined_ipva) == 1
+    ipi, quarantined_ipi = parse_state_rn_xls(body, tax="IPI", ibge_lookup=lookup)
+    assert len(ipi) == 2
+    natal_ipi = next(row for row in ipi if row["ibgeCode"] == "2408102")
+    assert natal_ipi["value"] == 987654.32
+    assert natal_ipi["modality"] == "IPI_QUOTA"
+    assert len(quarantined_ipi) == 1
     assert presentation_for("ESTADO-RN-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-RN-IPVA-QUOTA")["createsTaxCredit"] is False
+    assert presentation_for("ESTADO-RN-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ma_xls_joins_name_and_quarantines_territory() -> None:
@@ -683,8 +690,17 @@ def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:
     assert fortaleza["value"] == 8000000.0
     assert fortaleza["modality"] == "IPVA_QUOTA"
     assert len(quarantined_ipva) == 1
+    ipi, quarantined_ipi = parse_state_ce_xls(body, tax="IPI", ibge_lookup=lookup)
+    assert len(ipi) == 2
+    abaiara_ipi = next(row for row in ipi if row["ibgeCode"] == "2300101")
+    assert abaiara_ipi["value"] == 1200.5
+    assert abaiara_ipi["modality"] == "IPI_QUOTA"
+    fortaleza_ipi = next(row for row in ipi if row["ibgeCode"] == "2304400")
+    assert fortaleza_ipi["value"] == 900000.0
+    assert len(quarantined_ipi) == 1
     assert presentation_for("ESTADO-CE-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-CE-IPVA-QUOTA")["createsTaxCredit"] is False
+    assert presentation_for("ESTADO-CE-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_rs_xls_joins_name_and_quarantines_territory() -> None:
@@ -732,8 +748,17 @@ def test_state_al_xls_native_ibge_and_quarantines_territory() -> None:
     assert arapiraca["value"] == 8000000.0
     assert arapiraca["modality"] == "IPVA_QUOTA"
     assert len(quarantined_ipva) == 1
+    ipi, quarantined_ipi = parse_state_al_xls(body, tax="IPI", competence_year="2021")
+    assert len(ipi) == 2
+    agua_ipi = next(row for row in ipi if row["ibgeCode"] == "2700102")
+    assert agua_ipi["value"] == 1533.01
+    assert agua_ipi["modality"] == "IPI_QUOTA"
+    arapiraca_ipi = next(row for row in ipi if row["ibgeCode"] == "2700300")
+    assert arapiraca_ipi["value"] == 23299.08
+    assert len(quarantined_ipi) == 1
     assert presentation_for("ESTADO-AL-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-AL-IPVA-QUOTA")["createsTaxCredit"] is False
+    assert presentation_for("ESTADO-AL-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_aneel_indqual_aggregates_by_ibge7() -> None:
