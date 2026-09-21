@@ -1079,7 +1079,7 @@ items:
     testes: false
     evidencia: docs/delivery/HUMAN_VALIDATION_PACKAGE.md
     versao: "0.3.98"
-    commit: pending
+    commit: 6f58c5d
     ci: null
     motivo_bloqueio: null
     next_action: Pacote técnico consolidado; não solicitar aceite Gold agora. Deploy AWS PROD permanece no gate G10.
