@@ -216,6 +216,27 @@ SNAPSHOT_URLS = {
         "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
     ): "bcb-olinda-expectativas-pib-servicos-anuais-top8.json",
     (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IGP-M%27%20and%20baseCalculo%20eq%201&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-igp-m-anuais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27IGP-DI%27%20and%20baseCalculo%20eq%200&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-igp-di-anuais-top8.json",
+    (
+        "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+        "ExpectativasMercadoAnuais?$top=8&$format=json&"
+        "$filter=Indicador%20eq%20%27INPC%27%20and%20baseCalculo%20eq%200&"
+        "$orderby=Data%20desc,DataReferencia%20asc&"
+        "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+    ): "bcb-olinda-expectativas-inpc-anuais-top8.json",
+    (
         "https://www.epe.gov.br/sites-pt/publicacoes-dados-abertos/dados-abertos/"
         "Documents/Dados%20brutos.xlsx"
     ): "epe-anuario-dados-brutos-ms-2024.csv",

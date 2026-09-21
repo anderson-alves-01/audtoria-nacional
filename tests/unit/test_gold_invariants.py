@@ -1160,6 +1160,51 @@ def test_bcb_olinda_expectativas_parses_pib_total_and_servicos() -> None:
     assert silver_servicos[0]["value"] == 1.7
 
 
+def test_bcb_olinda_expectativas_parses_igp_m_igp_di_and_inpc() -> None:
+    igp_m = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-igp-m-anuais-top8.json"
+    ).read_bytes()
+    igp_di = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-igp-di-anuais-top8.json"
+    ).read_bytes()
+    inpc = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-inpc-anuais-top8.json"
+    ).read_bytes()
+    silver_m, q_m = parse_bcb_olinda_expectativas(
+        igp_m,
+        indicator_allowlist=["IGP-M"],
+        max_rows=8,
+        indicator_units={"IGP-M": "PERCENT_PER_YEAR"},
+    )
+    silver_di, q_di = parse_bcb_olinda_expectativas(
+        igp_di,
+        indicator_allowlist=["IGP-DI"],
+        max_rows=8,
+        indicator_units={"IGP-DI": "PERCENT_PER_YEAR"},
+    )
+    silver_inpc, q_inpc = parse_bcb_olinda_expectativas(
+        inpc,
+        indicator_allowlist=["INPC"],
+        max_rows=8,
+        indicator_units={"INPC": "PERCENT_PER_YEAR"},
+    )
+    assert q_m == []
+    assert q_di == []
+    assert q_inpc == []
+    assert len(silver_m) == 8
+    assert len(silver_di) == 8
+    assert len(silver_inpc) == 8
+    assert silver_m[0]["seriesId"] == "IGP-M"
+    assert silver_m[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_m[0]["value"] == 4.833
+    assert silver_di[0]["seriesId"] == "IGP-DI"
+    assert silver_di[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_di[0]["value"] == 3.73
+    assert silver_inpc[0]["seriesId"] == "INPC"
+    assert silver_inpc[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_inpc[0]["value"] == 3.34
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"

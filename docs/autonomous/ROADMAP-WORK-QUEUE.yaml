@@ -1,17 +1,16 @@
 schema_version: 1
-updated_at: "2026-09-21T07:15:00-03:00"
+updated_at: "2026-09-21T07:45:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.68"
+implementation_version: "0.3.69"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.68: BCB OLINDA Expectativas Focus anuais expandido (IPCA+Selic+
-  Câmbio+PIB Total+PIB Serviços) com multi-fetch. Re-probe UF restantes sem
-  tabular recente. Próximo: UF tabular nova quando publicada. RFB territorial
-  sem carga nacional.
+  Ciclo 0.3.69: BCB OLINDA Expectativas Focus anuais expandido com IGP-M +
+  IGP-DI + INPC e indicator_base_calculo. Re-probe UF restantes. Próximo: UF
+  tabular nova quando publicada. RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -661,17 +660,17 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.68/
-    versao: "0.3.68"
-    commit: 63cde48
-    ci: "35586668304"
+    evidencia: evidence/releases/0.3.69/
+    versao: "0.3.69"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA+Selic+Câmbio+
-      PIB Total+PIB Serviços, max_rows=8 por indicador, multi-fetch)
+      PIB Total+PIB Serviços+IGP-M+IGP-DI+INPC, max_rows=8 por indicador,
+      multi-fetch, indicator_base_calculo para IGP-DI/INPC=0)
       TECHNICALLY_APPROVED com fixtures mínimas e Gold REFERENCE_QUANTITY.
       Sem crédito. Homologação humana pendente.
-      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35586668304.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2

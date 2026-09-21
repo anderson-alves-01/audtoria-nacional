@@ -1,0 +1,7 @@
+﻿status=200
+bytes=1605
+content-type=text/html
+sample:
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<br><body>SECRETARIA DE ESTADO DE FAZENDA DO RIO DE JANEIRO<br />
+<br> As operadoras de telecomunicaÃ§Ã£o do Brasil possuem alguns de seus endereÃ§os IP usados por serviÃ§os residenciais que estÃ£o listados em catÃ¡logos internacionais devido ao uso indevido por indivÃ­duos envolvidos em crimes cibernÃ©ticos atravÃ©s de conexÃµes

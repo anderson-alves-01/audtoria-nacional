@@ -75,6 +75,9 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
             "Câmbio",
             "PIB Total",
             "PIB Serviços",
+            "IGP-M",
+            "IGP-DI",
+            "INPC",
         ],
     },
     {
@@ -93,7 +96,8 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
 DISCLAIMER = (
     "Fontes setoriais oficiais catalogadas (ANP, ANEEL, EPE, Anatel, BCB, CNES). "
     "ANP, ANEEL, EPE, Anatel e CNES ativadas com escopo UF; BCB com allowlist SGS "
-    "432/433 e OLINDA Expectativas Focus (IPCA/Selic/Câmbio/PIB Total/PIB Serviços). "
+    "432/433 e OLINDA Expectativas Focus (IPCA/Selic/Câmbio/PIB Total/PIB Serviços/"
+    "IGP-M/IGP-DI/INPC). "
     "REFERENCE_ENRICHMENT apenas. Não constitui crédito tributário."
 )
 

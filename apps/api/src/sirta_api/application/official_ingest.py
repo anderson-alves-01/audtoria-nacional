@@ -1005,13 +1005,16 @@ def _parse_bcb_sgs_allowlist(
     return silver, quarantined
 
 
-def _bcb_olinda_expectativas_url(*, indicator: str, max_rows: int) -> str:
+def _bcb_olinda_expectativas_url(
+    *, indicator: str, max_rows: int, base_calculo: int = 1
+) -> str:
     encoded = quote(str(indicator).strip(), safe="")
     top = max(1, int(max_rows or 8))
+    base = int(base_calculo)
     return (
         "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
         f"ExpectativasMercadoAnuais?$top={top}&$format=json&"
-        f"$filter=Indicador%20eq%20%27{encoded}%27%20and%20baseCalculo%20eq%201&"
+        f"$filter=Indicador%20eq%20%27{encoded}%27%20and%20baseCalculo%20eq%20{base}&"
         "$orderby=Data%20desc,DataReferencia%20asc&"
         "$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
     )
@@ -1035,17 +1038,22 @@ def _parse_bcb_olinda_expectativas_allowlist(
     max_rows = int(parameters.get("max_rows") or 8)
     value_field = str(parameters.get("value_field") or "Mediana")
     indicator_units = parameters.get("indicator_units") or {}
+    default_base = int(parameters.get("base_calculo") or 1)
+    indicator_base_calculo = parameters.get("indicator_base_calculo") or {}
     primary = str(parameters.get("primary_indicator") or allowlist[0]).strip()
     silver: list[dict] = []
     quarantined: list[tuple[dict, str]] = []
     timeout = get_settings().official_http_timeout_seconds
     for indicator in allowlist:
+        base_calculo = int(indicator_base_calculo.get(indicator, default_base))
         if indicator == primary:
             body = fetched.body
         else:
             if http_client is None:
                 raise ConflictError("BCB Expectativas secondary indicators require HTTP client")
-            url = _bcb_olinda_expectativas_url(indicator=indicator, max_rows=max_rows)
+            url = _bcb_olinda_expectativas_url(
+                indicator=indicator, max_rows=max_rows, base_calculo=base_calculo
+            )
             secondary = http_client.fetch(url, timeout=timeout)
             if secondary.status_code >= 400 or not secondary.body:
                 raise ConflictError(f"BCB Expectativas indicator {indicator} download failed")
