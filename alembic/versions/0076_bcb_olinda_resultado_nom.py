@@ -7,7 +7,6 @@ Create Date: 2026-09-21
 
 from alembic import op
 
-
 revision = "0076_bcb_olinda_resultado_nom"
 down_revision = "0075_bcb_olinda_resultado_conta"
 branch_labels = None
