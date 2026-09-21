@@ -20,7 +20,7 @@ def test_ibge_snapshot_quarantines_invalid_municipality_code() -> None:
 def test_siconfi_snapshot_keeps_municipal_ibge_codes() -> None:
     body = Path("tests/fixtures/official-snapshots/siconfi-entes.json").read_bytes()
     silver, quarantined = parse_siconfi_entes(body)
-    assert len(silver) == 26
+    assert len(silver) == 28
     assert all(row["ibgeCode"].isdigit() and len(row["ibgeCode"]) == 7 for row in silver)
     assert {row["ibgeCode"] for row in silver} >= {
         "2100055",
@@ -49,6 +49,8 @@ def test_siconfi_snapshot_keeps_municipal_ibge_codes() -> None:
         "2200103",
         "4104808",
         "4106902",
+        "1501402",
+        "1500800",
     }
     assert "cnpj" not in silver[0]
     assert len(quarantined) == 1

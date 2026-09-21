@@ -1,4 +1,4 @@
-# Conteúdo do kit e da implementação 0.3.46
+# Conteúdo do kit e da implementação 0.3.47
 
 - `README.md`: visão e execução local.
 - `AGENTS.md`: constituição operacional dos agentes.
@@ -10,7 +10,7 @@
 - `docs/delivery/HUMAN-GATES.md` e `docs/delivery/HUMAN_DECISIONS_REQUIRED.md`: G0/G1/G4/G7 oficial/G8 oficial/G9/G10 bloqueados.
 - `docs/delivery/HUMAN_VALIDATION_PACKAGE.md`: pacote da onda 1 — não encerra o ROADMAP.
 - `docs/delivery/ROADMAP-SIRTA-2026.md`: roadmap 1.2 em progresso.
-- `docs/delivery/RELEASE_NOTES_0.3.46.md`: notas desta fatia.
+- `docs/delivery/RELEASE_NOTES_0.3.47.md`: notas desta fatia.
 - `docs/autonomous/AUTONOMOUS-EXECUTION.md` e `docs/autonomous/ROADMAP-WORK-QUEUE.yaml`: orquestrador persistente do roadmap.
 - `tools/autonomous/run-roadmap-autonomous.ps1` e `verify-roadmap.ps1`.
 - `contracts/openapi/sirta-v1.yaml`: **única OpenAPI ativa**.
@@ -19,6 +19,6 @@
 - `apps/api`, `apps/web`, `apps/workers`: código executável local.
 - `compose.yaml`: PostgreSQL, Redis, Keycloak, MinIO, API, worker, web.
 - `tests/`: unitário, integração, contrato e isolamento. Snapshots oficiais minimizados somente em testes.
-- `evidence/releases/0.3.46/`: evidências desta fatia.
+- `evidence/releases/0.3.47/`: evidências desta fatia.
 - `backlog/SIRTA-v0.3.yaml`: backlog com critérios e fixtures.
 - `infra/terraform/modules/documentation_stack` e `infra/terraform/environments/*`: documentation-only; não aplicar.

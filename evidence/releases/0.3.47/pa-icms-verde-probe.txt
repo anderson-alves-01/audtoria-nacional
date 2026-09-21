@@ -1,0 +1,7 @@
+﻿=== PA ICMS Verde probe 2026-09-20 ===
+page=https://icmsverde.semas.pa.gov.br/valores_de_repasses.php status=200
+xlsx=https://icmsverde.semas.pa.gov.br/Valores_de_Repasses/Valores-de-repasses-ICMS-Verde-2024.xlsx
+bytes=62461 sheet1 monthly columns JANEIRO..DEZEMBRO + TOTAL
+sample Belém 2024 TOTAL~2439932.64 Jan~126030.92 (fixture); Ananindeua present
+modality=ICMS_VERDE_QUOTA component_only<=8pct not_full_ICMS_QUOTA
+RJ CSV still IP-blocked HTML 1605 bytes; GO ICMS columns still absent; PI ICMS empty

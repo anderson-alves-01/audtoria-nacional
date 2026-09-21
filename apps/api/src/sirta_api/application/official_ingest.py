@@ -45,6 +45,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_ms_csv,
     parse_state_pe_csv,
     parse_state_pi_repasseweb_html,
+    parse_state_pa_icms_verde_xlsx,
     parse_state_pr_html,
     parse_state_rn_xls,
     parse_state_ro_csv,
@@ -104,6 +105,7 @@ PARSERS = {
     "state_ac_transparencia_json": parse_state_ac_transparencia_json,
     "state_pi_repasseweb_html": parse_state_pi_repasseweb_html,
     "state_pr_html": parse_state_pr_html,
+    "state_pa_icms_verde_xlsx": parse_state_pa_icms_verde_xlsx,
     "state_al_xls": parse_state_al_xls,
     "state_ce_xls": parse_state_ce_xls,
     "state_ma_xls": parse_state_ma_xls,
@@ -771,6 +773,16 @@ def _parse(
             tax=str(parameters.get("tax") or "ICMS"),
             uf=str(parameters.get("uf") or "PR"),
             competence=str(parameters.get("competence") or catalog.get("competence") or "2025-01")[
+                :7
+            ],
+            ibge_lookup=_ibge_lookup(session, context=context),
+        )
+    if connector == "state_pa_icms_verde_xlsx":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            uf=str(parameters.get("uf") or "PA"),
+            competence=str(parameters.get("competence") or catalog.get("competence") or "2024-01")[
                 :7
             ],
             ibge_lookup=_ibge_lookup(session, context=context),

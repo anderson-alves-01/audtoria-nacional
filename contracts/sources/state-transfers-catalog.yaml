@@ -11,6 +11,8 @@ notes: >
   state_ms_csv / state_ro_csv / state_ac_csv+state_ac_transparencia_json /
   state_ce_xls / state_rs_xls / state_al_xls / state_pi_repasseweb_html /
   state_rn_xls / state_ma_xls / state_pr_html).
+  PA parcial TECHNICALLY_APPROVED via ICMS Verde SEMAS XLSX
+  (state_pa_icms_verde_xlsx; componente ecológico ≤8%, não cota ICMS total).
   MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
   CKAN DataStore dump (CSV upload 500; schema sem ICMS 2026). MS ICMS/IPVA via
   CKAN DataStore mensal (Tipo_Repasse). AC ICMS anual SEPLAG ativado; AC IPVA
@@ -23,7 +25,7 @@ notes: >
   (Repasses Municipais valores nominais). PR ICMS/IPVA via HTML mensal SEFA
   (líquido pós-FUNDEB + IPVA). RJ IP-blocked. SC PROVENANCE_ONLY (SEF CSV ≤2017).
   PB/SE PROVENANCE_VERIFIED PDF. AM HTML-per-município. MT XLSX Transparency
-  congelado ≤2015; corrente PDF. TO/PA/RR/AP/SP sem CSV/API estruturado estável
+  congelado ≤2015; corrente PDF. TO/RR/AP/SP sem CSV/API estruturado estável
   neste ciclo (RR painel HTML sem split ICMS/IPVA; AP link sefaz detalhes/17
   404). Sem agregador privado.
 states:
@@ -270,9 +272,26 @@ states:
       Gzip 200 OK neste runtime. Sem crédito.
   - uf: PA
     name: Pará
-    status: DISCOVERED
-    structured_official_source: not_verified
-    reason: Sem API/arquivo estruturado oficial de quota-parte verificado.
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: semas_icms_verde_xlsx_component_only
+    dataset_url: https://icmsverde.semas.pa.gov.br/valores_de_repasses.php
+    official_url: https://icmsverde.semas.pa.gov.br/valores_de_repasses.php
+    endpoint: https://icmsverde.semas.pa.gov.br/Valores_de_Repasses/Valores-de-repasses-ICMS-Verde-2024.xlsx
+    taxes: [ICMS_VERDE]
+    format: XLSX
+    columns: [MUNICÍPIOS, JANEIRO..DEZEMBRO, TOTAL]
+    ibge_field: name_only
+    layout_version_icms_verde: state-pa-icms-verde-v1
+    connector: state_pa_icms_verde_xlsx
+    download_probe_2026_09_20: xlsx_200_monthly_icms_verde_component
+    preferred_activation: true
+    reason: >
+      SEMAS publica XLSX anual de ICMS Verde (critério ecológico ≤8% da
+      cota-parte) com colunas mensais por município. Connector
+      state_pa_icms_verde_xlsx + join IBGE7 por nome+UF. Modalidade
+      ICMS_VERDE_QUOTA (não ICMS_QUOTA total). Cota ICMS/IPVA plena permanece
+      em portarias DOE (PDF). Fixture mínima. Sem crédito.
   - uf: PB
     name: Paraíba
     status: PROVENANCE_VERIFIED

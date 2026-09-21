@@ -1178,6 +1178,154 @@ def parse_state_pr_html(
     return silver, quarantined
 
 
+_PA_VERDE_MONTHS = {
+    "01": "JANEIRO",
+    "02": "FEVEREIRO",
+    "03": "MARCO",
+    "04": "ABRIL",
+    "05": "MAIO",
+    "06": "JUNHO",
+    "07": "JULHO",
+    "08": "AGOSTO",
+    "09": "SETEMBRO",
+    "10": "OUTUBRO",
+    "11": "NOVEMBRO",
+    "12": "DEZEMBRO",
+}
+
+
+def _iter_xlsx_matrix(body: bytes) -> list[list[str]]:
+    """Read first worksheet as a matrix without treating row 0 as a dict header."""
+    import zipfile
+    from xml.etree import ElementTree as ET
+
+    ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    with zipfile.ZipFile(io.BytesIO(body)) as archive:
+        shared: list[str] = []
+        if "xl/sharedStrings.xml" in archive.namelist():
+            root = ET.fromstring(archive.read("xl/sharedStrings.xml"))
+            for item in root.findall("m:si", ns):
+                texts = [
+                    node.text or ""
+                    for node in item.iter(
+                        "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t"
+                    )
+                ]
+                shared.append("".join(texts))
+        sheet_name = "xl/worksheets/sheet1.xml"
+        if sheet_name not in archive.namelist():
+            return []
+        xml = archive.read(sheet_name)
+    rows: list[list[str]] = []
+    for row_xml in re.findall(rb"<row[^>]*>.*?</row>", xml, flags=re.S):
+        cells: dict[int, str] = {}
+        for match in re.finditer(
+            rb'<c r="([A-Z]+)(\d+)"([^>]*)>(?:<v>(.*?)</v>)?',
+            row_xml,
+        ):
+            col = match.group(1).decode("ascii")
+            attrs = match.group(3).decode("ascii")
+            raw = match.group(4).decode("utf-8") if match.group(4) is not None else ""
+            if 't="s"' in attrs and raw.isdigit():
+                value = shared[int(raw)] if int(raw) < len(shared) else raw
+            else:
+                value = raw
+            index = 0
+            for char in col:
+                index = index * 26 + (ord(char) - 64)
+            cells[index - 1] = value
+        if not cells:
+            continue
+        width = max(cells) + 1
+        rows.append([cells.get(i, "") for i in range(width)])
+    return rows
+
+
+def parse_state_pa_icms_verde_xlsx(
+    body: bytes,
+    *,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "PA",
+    competence: str = "2024-01",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse SEMAS/PA ICMS Verde monthly XLSX (ecological 8% slice); join IBGE7 by name+UF.
+
+    Publishes modality ICMS_VERDE_QUOTA — not full constitutional ICMS quota.
+    """
+    competence_key = str(competence or "2024-01").strip()[:7]
+    if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
+        raise ValueError(f"invalid PA ICMS Verde competence: {competence}")
+    month_key = competence_key[5:7]
+    month_label = _PA_VERDE_MONTHS.get(month_key)
+    if not month_label:
+        raise ValueError(f"unsupported PA ICMS Verde month: {competence}")
+    try:
+        matrix = _iter_xlsx_matrix(body)
+    except Exception as exc:  # noqa: BLE001 — invalid OOXML surfaces as quarantine
+        return [], [({"rowId": "pa-icms-verde-document"}, f"invalid XLSX: {exc}")]
+    if len(matrix) < 3:
+        return [], [({"rowId": "pa-icms-verde-document"}, "missing ICMS Verde rows")]
+    month_row_index = None
+    amount_col = None
+    for index, row in enumerate(matrix[:5]):
+        normalized = [normalize_place(cell) for cell in row]
+        if month_label in normalized:
+            for col, label in enumerate(normalized):
+                if label == month_label:
+                    month_row_index = index
+                    amount_col = col
+                    break
+        if amount_col is not None:
+            break
+    if month_row_index is None or amount_col is None:
+        return [], [({"rowId": "pa-icms-verde-header"}, f"missing month column {month_label}")]
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    for index, row in enumerate(matrix[month_row_index + 1 :], start=month_row_index + 1):
+        if not row:
+            continue
+        raw_name = str(row[0] or "").strip()
+        place = normalize_place(raw_name)
+        if not place or place in {"MUNICIPIOS", "TOTAL", "TOTAIS"} or place.startswith("TOTAL"):
+            continue
+        if place.startswith("MESES"):
+            continue
+        raw_amount = row[amount_col] if amount_col < len(row) else ""
+        try:
+            value = float(str(raw_amount).strip().replace(",", "."))
+        except (TypeError, ValueError):
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"pa-icms-verde-{place or index}-{competence_key}"[:64],
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "value": raw_amount,
+                    },
+                    "non numeric ICMS_VERDE amount",
+                )
+            )
+            continue
+        ibge = lookup.get((place, normalize_place(uf)), "")
+        out = {
+            "rowId": f"pa-icms-verde-{ibge or place}-{competence_key}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "competence": competence_key,
+            "transferName": "ICMS_VERDE",
+            "modality": "ICMS_VERDE_QUOTA",
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((out, "missing IBGE municipality code"))
+            continue
+        silver.append(out)
+    return silver, quarantined
+
+
 def parse_state_ac_transparencia_json(
     body: bytes,
     *,

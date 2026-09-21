@@ -20,6 +20,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_ms_csv,
     parse_state_pe_csv,
     parse_state_pi_repasseweb_html,
+    parse_state_pa_icms_verde_xlsx,
     parse_state_pr_html,
     parse_state_rn_xls,
     parse_state_ro_csv,
@@ -447,6 +448,31 @@ def test_state_pr_html_joins_name_and_quarantines_territory() -> None:
     assert len(quarantined_ipva) == 1
     assert presentation_for("ESTADO-PR-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-PR-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_pa_icms_verde_xlsx_joins_name_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/pa-icms-verde-2024-01.xlsx").read_bytes()
+    lookup = {
+        ("BELEM", "PA"): "1501402",
+        ("ANANINDEUA", "PA"): "1500800",
+    }
+    silver, quarantined = parse_state_pa_icms_verde_xlsx(body, ibge_lookup=lookup)
+    assert len(silver) == 2
+    assert {row["ibgeCode"] for row in silver} == {"1501402", "1500800"}
+    assert all(row["modality"] == "ICMS_VERDE_QUOTA" for row in silver)
+    assert all(row["transferName"] == "ICMS_VERDE" for row in silver)
+    assert all(row["uf"] == "PA" for row in silver)
+    assert all(row["competence"] == "2024-01" for row in silver)
+    belem = next(row for row in silver if row["ibgeCode"] == "1501402")
+    assert belem["value"] == 126030.92
+    ananindeua = next(row for row in silver if row["ibgeCode"] == "1500800")
+    assert ananindeua["value"] == 58263.53
+    assert len(quarantined) == 1
+    assert quarantined[0][1] == "missing IBGE municipality code"
+    assert presentation_for("ESTADO-PA-ICMS-VERDE-QUOTA")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+    assert presentation_for("ESTADO-PA-ICMS-VERDE-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_ce_xls_joins_name_and_quarantines_territory() -> None:

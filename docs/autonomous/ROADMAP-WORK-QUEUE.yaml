@@ -1,17 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-20T11:00:00-03:00"
+updated_at: "2026-09-20T14:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.46"
+implementation_version: "0.3.47"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.46: PR ICMS/IPVA ativado (state_pr_html; SEFA HTML mensal);
-  AP/RR/DF PROVENANCE_VERIFIED; MA/RN/PI/AC/AL/RS/CE/RO/MS/PE/BA/MG/ES/GO e
-  setoriais intactos; PB/AM/SE PROVENANCE_VERIFIED; SP HTML-only; RJ IP-blocked;
-  SC PROVENANCE_ONLY; TO/PA sem ativação; RFB territorial sem carga nacional.
+  Ciclo 0.3.47: PA ICMS Verde ativado (state_pa_icms_verde_xlsx; componente
+  ecológico ≤8%, não cota ICMS total); PR/MA/RN/PI/AC/AL/RS/CE/RO/MS/PE/BA/MG/ES/GO
+  e setoriais intactos; PB/AM/SE/AP/RR/DF PROVENANCE_VERIFIED; SP HTML-only;
+  RJ IP-blocked; SC PROVENANCE_ONLY; TO índices; RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -350,17 +350,17 @@ items:
     frontend: true
     pipeline: false
     testes: true
-    evidencia: evidence/releases/0.3.46/
-    versao: "0.3.46"
-    commit: 7602c6a
+    evidencia: evidence/releases/0.3.47/
+    versao: "0.3.47"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA e PR
-      TECHNICALLY_APPROVED (GO só IPVA; PI só IPVA; PR via HTML SEFA; SE/PB/AM/AP/RR/DF
-      PROVENANCE_VERIFIED; MT XLSX ≤2015; TO PROVENANCE_VERIFIED PDF; SC CSV ≤2017;
-      SP HTML-only; PA DISCOVERED; RJ IP-blocked). GO ICMS aguarda colunas no
-      datastore. Sem agregador privado.
+      TECHNICALLY_APPROVED (GO só IPVA; PI só IPVA; PR via HTML SEFA; PA parcial
+      via ICMS Verde SEMAS; SE/PB/AM/AP/RR/DF PROVENANCE_VERIFIED; MT XLSX ≤2015;
+      TO PROVENANCE_VERIFIED PDF/índices; SC CSV ≤2017; SP HTML-only; RJ
+      IP-blocked). GO ICMS aguarda colunas no datastore. Sem agregador privado.
 
   - id: F3-STATE-ICMS-ACTIVATION
     fase: F3.2
@@ -375,17 +375,18 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.46/
-    versao: "0.3.46"
-    commit: 7602c6a
+    evidencia: evidence/releases/0.3.47/
+    versao: "0.3.47"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA e PR ICMS (+IPVA onde publicado) +
-      GO/PI IPVA ativados. GO/PI ICMS não publicados nos endpoints sondados.
-      MT XLSX Transparency congelado ≤2015. SC arrecadação não quota. SP HTML-only.
-      PB/SE/AM/AP/RR/DF PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. PA DISCOVERED.
-      RJ permanece IP-blocked. Sem agregador privado.
+      GO/PI IPVA + PA ICMS Verde (componente ecológico) ativados. GO/PI ICMS não
+      publicados nos endpoints sondados. PA cota plena ainda DOE PDF. MT XLSX
+      Transparency congelado ≤2015. SC arrecadação não quota. SP HTML-only.
+      PB/SE/AM/AP/RR/DF PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ permanece
+      IP-blocked. Sem agregador privado.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2
@@ -400,16 +401,16 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.46/
-    versao: "0.3.46"
-    commit: 7602c6a
+    evidencia: evidence/releases/0.3.47/
+    versao: "0.3.47"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, GO, MS, RO, CE, RS, AL, AC, PI, RN, MA e PR IPVA ativados. Seguir
       outras UFs PUBLIC_OPEN; sem inventar valores. PR via HTML SEFA; MA via SEFAZ SGC
       XLS; RN via Nextcloud XLS; PI via Repasse WEB HTML; AC via Transparência
-      POST+CSRF; RO IPVA IBGE6→7.
+      POST+CSRF; RO IPVA IBGE6→7. PA sem IPVA tabular nesta fatia (só ICMS Verde).
 
   - id: F3-RFB-CNPJ
     fase: F3.2

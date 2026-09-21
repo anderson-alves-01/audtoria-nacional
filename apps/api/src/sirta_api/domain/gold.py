@@ -239,6 +239,14 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-PA-ICMS-VERDE-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Componente ecológico (ICMS Verde, até 8%) da cota-parte de ICMS do Pará "
+            "(SEMAS XLSX mensal). Não é a cota-parte total de ICMS nem IPVA. "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ANP-REVENDEDORES": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

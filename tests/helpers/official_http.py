@@ -112,6 +112,10 @@ SNAPSHOT_URLS = {
         "rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL"
     ): "pr-repasses-mensal-2025-01.html",
     (
+        "https://icmsverde.semas.pa.gov.br/Valores_de_Repasses/"
+        "Valores-de-repasses-ICMS-Verde-2024.xlsx"
+    ): "pa-icms-verde-2024-01.xlsx",
+    (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
     (

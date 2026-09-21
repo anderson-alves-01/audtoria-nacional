@@ -1705,6 +1705,50 @@ sources:
     notes: >
       Mesmo HTML do ICMS (colunas distintas). Homologação humana pendente.
 
+  - source_id: ESTADO-PA-ICMS-VERDE-QUOTA
+    name: ICMS Verde — componente ecológico da cota-parte (PA)
+    maintainer: SEMAS/PA (valores repassados pela SEFA/PA)
+    official_domain: semas.pa.gov.br
+    official_url: https://icmsverde.semas.pa.gov.br/valores_de_repasses.php
+    endpoint: https://icmsverde.semas.pa.gov.br/Valores_de_Repasses/Valores-de-repasses-ICMS-Verde-2024.xlsx
+    documentation_url: https://icmsverde.semas.pa.gov.br/valores_de_repasses.php
+    dataset: ESTADO-PA-ICMS-VERDE-2024-01
+    dictionary_url: https://icmsverde.semas.pa.gov.br/Notas_T%C3%A9cnicas/Repasses%20dos%20Valores%20Monet%C3%A1rios%20do%20ICMS%20Verde%20Referente%20%C3%A0%20Cota%20Parte%20ICMS%20Verde.pdf
+    purpose: >
+      Componente ecológico (até 8%) da cota-parte municipal de ICMS do Pará.
+      Não substitui a cota-parte total de ICMS nem IPVA (ainda em PDF/DOE).
+    legal_basis: Lei estadual do ICMS Verde / publicação oficial SEMAS-PA
+    license_terms: publicação oficial SEMAS/PA
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_pa_icms_verde_xlsx
+    layout_version: state-pa-icms-verde-v1
+    periodicity: monthly
+    competence: "2024-01"
+    granularity: municipality
+    parameters:
+      uf: PA
+      competence: "2024-01"
+      normalize: ibge7_name_uf
+      component: ICMS_VERDE
+      not_full_icms_quota: true
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_pa_icms_verde_quota
+    formula: >
+      Valor mensal publicado na planilha SEMAS “Valores de repasses ICMS Verde”
+      para o município e competência YYYY-MM, via join IBGE7 por nome+UF.
+      Representa somente o critério ecológico (até 8%), não a cota-parte total.
+      Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-pa-icms-verde-v1
+    notes: >
+      XLSX anual com colunas mensais. Cota ICMS/IPVA plena do PA permanece
+      PROVENANCE_ONLY (DOE PDF). Homologação humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil
