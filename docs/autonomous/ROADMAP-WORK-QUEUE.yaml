@@ -1,17 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-21T10:05:00-03:00"
+updated_at: "2026-09-21T10:30:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.75"
+implementation_version: "0.3.76"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.75: BCB OLINDA Expectativas Focus anuais expandido com Taxa de
-  desocupação (PERCENT, baseCalculo=1). Re-probe UF restantes sem
+  Ciclo 0.3.76: BCB OLINDA Expectativas Focus anuais expandido com Investimento
+  direto no país (USD_BILLION, baseCalculo=1). Re-probe UF restantes sem
   ACTIVATE_NOW. Próximo: UF tabular nova quando publicada; ou OLINDA
-  Investimento direto / IPCA Livres. RFB territorial sem carga nacional.
+  IPCA Livres / IPCA Serviços. RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -661,24 +661,23 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.75/
-    versao: "0.3.75"
-    commit: 09c00c3
-    ci: "35603392091"
+    evidencia: evidence/releases/0.3.76/
+    versao: "0.3.76"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA+Selic+Câmbio+
       PIB Total+PIB Serviços+PIB Agropecuária+PIB Indústria+IGP-M+IGP-DI+INPC+
       Dívida líquida do setor público+Dívida bruta do governo geral+Balança
       comercial/Saldo+Resultado primário+Conta corrente+Resultado nominal+
-      Taxa de desocupação, max_rows=8 por indicador, multi-fetch,
-      indicator_base_calculo para IGP-DI/INPC/Dívidas=0, indicator_detalhe
-      Balança=Saldo) TECHNICALLY_APPROVED com fixtures mínimas e Gold
-      REFERENCE_QUANTITY. Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT.
-      Sem crédito. Homologação humana pendente. Próximo ciclo: UF tabular
-      nova quando publicada; ou OLINDA Investimento direto / IPCA Livres
-      se priorizado. Commit: 09c00c3.
-      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35603392091.
+      Taxa de desocupação+Investimento direto no país, max_rows=8 por
+      indicador, multi-fetch, indicator_base_calculo para
+      IGP-DI/INPC/Dívidas=0, indicator_detalhe Balança=Saldo)
+      TECHNICALLY_APPROVED com fixtures mínimas e Gold REFERENCE_QUANTITY.
+      Unidades PERCENT_OF_GDP, USD_BILLION e PERCENT. Sem crédito.
+      Homologação humana pendente. Próximo ciclo: UF tabular nova quando
+      publicada; ou OLINDA IPCA Livres / IPCA Serviços se priorizado.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2

@@ -1351,6 +1351,23 @@ def test_bcb_olinda_expectativas_parses_taxa_desocupacao() -> None:
     assert silver[0]["value"] == 5.215
 
 
+def test_bcb_olinda_expectativas_parses_investimento_direto() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-investimento-direto-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["Investimento direto no país"],
+        max_rows=8,
+        indicator_units={"Investimento direto no país": "USD_BILLION"},
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "Investimento direto no país"
+    assert silver[0]["unit"] == "USD_BILLION"
+    assert silver[0]["value"] == 80.0
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
