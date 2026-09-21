@@ -1,0 +1,7 @@
+CI PR #2 green for 0.3.89 (BCB OLINDA Expectativas mensais IPCA)
+
+- pull_request: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35636991193
+- push (feat): https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35636960323
+- push (docs hash): https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35636982116
+
+Jobs: python, web, containers — SUCCESS

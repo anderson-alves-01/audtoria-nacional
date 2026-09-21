@@ -665,7 +665,7 @@ items:
     evidencia: evidence/releases/0.3.89/
     versao: "0.3.89"
     commit: f888cd2
-    ci: null
+    ci: "35636991193"
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
@@ -676,7 +676,8 @@ items:
       crédito. Homologação humana pendente. Próximo: demais mensais ativos
       (IGP-M, Câmbio, IPCA Livres/Serviços/Administrados) ou
       ExpectativasMercadoTrimestrais; UF tabular quando publicada. Commit:
-      f888cd2.
+      f888cd2. CI verde:
+      https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35636991193.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
