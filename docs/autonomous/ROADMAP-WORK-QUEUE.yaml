@@ -1,18 +1,18 @@
 schema_version: 1
-updated_at: "2026-09-21T16:30:00-03:00"
+updated_at: "2026-09-21T16:45:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.92"
+implementation_version: "0.3.93"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.92: BCB OLINDA Expectativas mensais IPA-M/IPA-DI/IGP-DI/INPC
-  (baseCalculo=0) além de IPCA/componentes/IGP-M/Câmbio; layout mensais-v4;
-  silverCount 96. Selic mensal não ativado (congelado 2005-12-14).
-  Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS.
-  Próximo: ExpectativasMercadoTrimestrais.
+  Ciclo 0.3.93: BCB OLINDA Expectativas trimestrais
+  (BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS, entity set ExpectativasMercadoTrimestrais,
+  allowlist IPCA+componentes+Câmbio+PIB Total, baseCalculo=1, max_rows=8,
+  layout trimestrais-v1, silverCount 64). Fonte nova distinta de anuais/mensais.
+  Próximo: expandir trimestrais (PIB setoriais 2021) ou UF tabular.
   RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -658,15 +658,15 @@ items:
     estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: PUBLIC_OPEN
-    fontes_oficiais: [BCB-SGS-OLINDA, BCB-OLINDA-EXPECTATIVAS, BCB-OLINDA-EXPECTATIVAS-MENSAIS]
+    fontes_oficiais: [BCB-SGS-OLINDA, BCB-OLINDA-EXPECTATIVAS, BCB-OLINDA-EXPECTATIVAS-MENSAIS, BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS]
     backend: true
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.92/
-    versao: "0.3.92"
-    commit: eb1dbe7
-    ci: "35642801810"
+    evidencia: evidence/releases/0.3.93/
+    versao: "0.3.93"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
@@ -675,11 +675,13 @@ items:
       allowlist IPCA+componentes+IGP-M+Câmbio+IPA-M+IPA-DI+IGP-DI+INPC,
       baseCalculo default=1 com override IPA/IGP-DI/INPC=0, max_rows=8,
       layout mensais-v4, silverCount=96) TECHNICALLY_APPROVED.
+      Fonte BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS (ExpectativasMercadoTrimestrais,
+      allowlist IPCA+componentes+Câmbio+PIB Total, baseCalculo=1, max_rows=8,
+      layout trimestrais-v1, silverCount=64) TECHNICALLY_APPROVED.
       Gold REFERENCE_QUANTITY. Sem crédito. Homologação humana pendente.
-      Selic mensal não ativado (congelado 2005-12-14).
-      Próximo: ExpectativasMercadoTrimestrais; UF tabular quando publicada.
-      Commit: eb1dbe7. CI verde:
-      https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35642801810.
+      Selic/IGP/IPA/INPC trimestrais vazios na fonte; PIB Serviços/Agro/Indústria
+      congelados em 2021-09-13 — fora desta fatia.
+      Próximo: expandir trimestrais ou UF tabular quando publicada.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2

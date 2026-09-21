@@ -1,0 +1,146 @@
+[
+  {
+    "indicator": "IPCA",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.5731,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA",
+    "baseCalculo": 0,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.5377,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Livres",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.8052,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Livres%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Livres",
+    "baseCalculo": 0,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.7493,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Livres%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Serviços",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.6767,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Servi%C3%A7os%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Serviços",
+    "baseCalculo": 0,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.6836,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Servi%C3%A7os%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Administrados",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.0629,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Administrados%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Administrados",
+    "baseCalculo": 0,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.0134,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Administrados%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Alimentação no domicílio",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 3.3157,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Alimenta%C3%A7%C3%A3o%20no%20domic%C3%ADlio%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Alimentação no domicílio",
+    "baseCalculo": 0,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 2.8755,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Alimenta%C3%A7%C3%A3o%20no%20domic%C3%ADlio%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Bens industrializados",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 0.8018,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Bens%20industrializados%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPCA Bens industrializados",
+    "baseCalculo": 0,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 0.8171,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%20Bens%20industrializados%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "Câmbio",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 5.1751,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27C%C3%A2mbio%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "Câmbio",
+    "baseCalculo": 0,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 5.2,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27C%C3%A2mbio%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "PIB Total",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.3,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27PIB%20Total%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "PIB Total",
+    "baseCalculo": 0,
+    "count": 8,
+    "firstData": "2026-09-18",
+    "firstMediana": 1.47,
+    "firstRef": "1/2027",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27PIB%20Total%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  }
+]

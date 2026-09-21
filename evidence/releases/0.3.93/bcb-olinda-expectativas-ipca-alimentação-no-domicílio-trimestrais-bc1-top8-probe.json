@@ -1,0 +1,69 @@
+{
+  "@odata.context": "https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTrimestrais(Indicador,Data,DataReferencia,Media,Mediana,baseCalculo)",
+  "value": [
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2027",
+      "Media": 3.3268,
+      "Mediana": 3.3157,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2028",
+      "Media": 1.9274,
+      "Mediana": 1.8284,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2027",
+      "Media": 1.3581,
+      "Mediana": 1.2644,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2028",
+      "Media": 0.8926,
+      "Mediana": 0.8112,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2026",
+      "Media": -1.117,
+      "Mediana": -1.1423,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2027",
+      "Media": -0.5077,
+      "Mediana": -0.2799,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2026",
+      "Media": 2.7066,
+      "Mediana": 2.6931,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Alimentação no domicílio",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2027",
+      "Media": 1.7374,
+      "Mediana": 1.8209,
+      "baseCalculo": 1
+    }
+  ]
+}

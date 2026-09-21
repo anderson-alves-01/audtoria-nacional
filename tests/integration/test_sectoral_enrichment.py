@@ -37,7 +37,7 @@ def test_sectoral_enrichment_endpoint_partial_anp_aneel_bcb_epe_anatel_cnes(api_
     assert body["items"] == []
     assert body["total"] == 0
     assert body["institutionalStatus"] == "PARTIAL_TECHNICAL_ACTIVATION"
-    assert len(body["sources"]) == 8
+    assert len(body["sources"]) == 9
     by_id = {row["sourceId"]: row for row in body["sources"]}
     assert by_id["ANP-REVENDEDORES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ANP-REVENDEDORES"]["ingestAllowed"] is True
@@ -49,6 +49,8 @@ def test_sectoral_enrichment_endpoint_partial_anp_aneel_bcb_epe_anatel_cnes(api_
     assert by_id["BCB-OLINDA-EXPECTATIVAS"]["ingestAllowed"] is True
     assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["ingestAllowed"] is True
     assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["ANATEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
@@ -94,6 +96,9 @@ def test_anp_aneel_bcb_epe_anatel_cnes_listed_and_ingestible(api_client) -> None
     assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["ingestAllowed"] is True
     assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["createsTaxCredit"] is False
     assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
     assert by_id["EPE-DADOS-ABERTOS"]["createsTaxCredit"] is False
@@ -267,6 +272,44 @@ def test_bcb_olinda_expectativas_mensais_ingest_publishes_gold_without_credit(ap
     assert 0.29 in values
     assert 0.33 in values
     assert 0.27 in values
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_bcb_olinda_expectativas_trimestrais_ingest_publishes_gold_without_credit(
+    api_client,
+) -> None:
+    bcb = api_client.post(
+        "/v1/data-sources/BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS/ingest",
+        headers=_admin(),
+    )
+    assert bcb.status_code == 200
+    assert bcb.json()["silverCount"] == 64
+    assert bcb.json()["quarantinedCount"] == 0
+    assert bcb.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    values = {item["value"] for item in lines.json()["items"]}
+    assert 1.5731 in values
+    assert 1.8052 in values
+    assert 1.6767 in values
+    assert 1.0629 in values
+    assert 3.3157 in values
+    assert 0.8018 in values
+    assert 5.1751 in values
+    assert 1.3 in values
     assert all(
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]

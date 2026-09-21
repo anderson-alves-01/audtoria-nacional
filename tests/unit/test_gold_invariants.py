@@ -1249,6 +1249,79 @@ def test_bcb_olinda_expectativas_parses_mensais_ipa_igp_di_inpc() -> None:
         assert "FOCUS_MENSAL" in silver[0]["transferName"]
 
 
+def test_bcb_olinda_expectativas_parses_trimestrais_ipca_cambio_pib() -> None:
+    cases = [
+        (
+            "bcb-olinda-expectativas-ipca-trimestrais-top8.json",
+            "IPCA",
+            1.5731,
+            "PERCENT_PER_QUARTER",
+        ),
+        (
+            "bcb-olinda-expectativas-ipca-livres-trimestrais-top8.json",
+            "IPCA Livres",
+            1.8052,
+            "PERCENT_PER_QUARTER",
+        ),
+        (
+            "bcb-olinda-expectativas-ipca-servicos-trimestrais-top8.json",
+            "IPCA Serviços",
+            1.6767,
+            "PERCENT_PER_QUARTER",
+        ),
+        (
+            "bcb-olinda-expectativas-ipca-administrados-trimestrais-top8.json",
+            "IPCA Administrados",
+            1.0629,
+            "PERCENT_PER_QUARTER",
+        ),
+        (
+            "bcb-olinda-expectativas-ipca-alimentacao-trimestrais-top8.json",
+            "IPCA Alimentação no domicílio",
+            3.3157,
+            "PERCENT_PER_QUARTER",
+        ),
+        (
+            "bcb-olinda-expectativas-ipca-bens-industrializados-trimestrais-top8.json",
+            "IPCA Bens industrializados",
+            0.8018,
+            "PERCENT_PER_QUARTER",
+        ),
+        (
+            "bcb-olinda-expectativas-cambio-trimestrais-top8.json",
+            "Câmbio",
+            5.1751,
+            "BRL_PER_USD",
+        ),
+        (
+            "bcb-olinda-expectativas-pib-total-trimestrais-top8.json",
+            "PIB Total",
+            1.3,
+            "PERCENT_PER_QUARTER",
+        ),
+    ]
+    for fixture, series_id, mediana, unit in cases:
+        body = Path(f"tests/fixtures/official-snapshots/{fixture}").read_bytes()
+        silver, quarantined = parse_bcb_olinda_expectativas(
+            body,
+            indicator_allowlist=[series_id],
+            max_rows=8,
+            indicator_units={series_id: unit},
+            focus_label="FOCUS_TRIMESTRAL",
+        )
+        assert quarantined == []
+        assert len(silver) == 8
+        assert silver[0]["seriesId"] == series_id
+        assert silver[0]["unit"] == unit
+        assert silver[0]["value"] == mediana
+        assert silver[0]["horizonYear"] == "1/2027"
+        assert "FOCUS_TRIMESTRAL" in silver[0]["transferName"]
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS")["valueKind"] == (
+        "REFERENCE_QUANTITY"
+    )
+    assert presentation_for("BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS")["createsTaxCredit"] is False
+
+
 def test_bcb_olinda_expectativas_parses_selic_and_cambio_units() -> None:
     selic = Path(
         "tests/fixtures/official-snapshots/bcb-olinda-expectativas-selic-anuais-top8.json"

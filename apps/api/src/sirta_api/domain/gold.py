@@ -557,6 +557,15 @@ PRESENTATION = {
             "Contexto setorial; não constitui crédito tributário."
         ),
     },
+    "BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS": {
+        "valueKind": "REFERENCE_QUANTITY",
+        "label": (
+            "Expectativas Focus trimestrais OLINDA do Banco Central "
+            "(allowlist IPCA/IPCA Livres/IPCA Serviços/IPCA Administrados/"
+            "IPCA Alimentação/IPCA Bens industrializados/Câmbio/PIB Total). "
+            "Contexto setorial; não constitui crédito tributário."
+        ),
+    },
     "EPE-DADOS-ABERTOS": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

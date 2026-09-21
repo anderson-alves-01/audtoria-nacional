@@ -3829,6 +3829,75 @@ sources:
       congelado em 2005-12-14 — não ativado. Homologação humana pendente. Não
       constitui crédito.
 
+  - source_id: BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS
+    name: Banco Central — OLINDA Expectativas Focus trimestrais (IPCA componentes/Câmbio/PIB Total)
+    maintainer: Banco Central do Brasil
+    official_domain: bcb.gov.br
+    official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    endpoint: >-
+      https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?$top=8&$format=json&$filter=Indicador%20eq%20%27IPCA%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo
+    documentation_url: https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/swagger-ui3#/
+    dataset: BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS
+    dictionary_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
+    purpose: Expectativas de mercado Focus (mediana trimestral) como referência; nunca crédito tributário
+    legal_basis: API OLINDA pública do Banco Central
+    license_terms: termos de uso do Banco Central para dados abertos
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: bcb_olinda_expectativas
+    layout_version: bcb-olinda-expectativas-trimestrais-v1
+    periodicity: as_published
+    competence: as_published
+    granularity: series
+    parameters:
+      indicator_allowlist:
+        [
+          IPCA,
+          IPCA Livres,
+          IPCA Serviços,
+          IPCA Administrados,
+          IPCA Alimentação no domicílio,
+          IPCA Bens industrializados,
+          Câmbio,
+          PIB Total,
+        ]
+      primary_indicator: IPCA
+      max_rows: 8
+      value_field: Mediana
+      scrape_forbidden: true
+      entity_set: ExpectativasMercadoTrimestrais
+      focus_label: FOCUS_TRIMESTRAL
+      base_calculo: 1
+      indicator_units:
+        IPCA: PERCENT_PER_QUARTER
+        IPCA Livres: PERCENT_PER_QUARTER
+        IPCA Serviços: PERCENT_PER_QUARTER
+        IPCA Administrados: PERCENT_PER_QUARTER
+        IPCA Alimentação no domicílio: PERCENT_PER_QUARTER
+        IPCA Bens industrializados: PERCENT_PER_QUARTER
+        Câmbio: BRL_PER_USD
+        PIB Total: PERCENT_PER_QUARTER
+    indicator: bcb_olinda_expectativas_focus_trimestrais
+    formula: >
+      Mediana das expectativas trimestrais Focus (ExpectativasMercadoTrimestrais)
+      para indicadores na allowlist (IPCA, IPCA Livres, IPCA Serviços, IPCA
+      Administrados, IPCA Alimentação no domicílio, IPCA Bens industrializados,
+      Câmbio, PIB Total), com baseCalculo=1 e max_rows=N (multi-fetch).
+      Competência = Data de publicação; horizonte = DataReferencia (T/AAAA).
+      Unidades PERCENT_PER_QUARTER (exceto Câmbio=BRL_PER_USD). Distinto de
+      BCB-OLINDA-EXPECTATIVAS (anuais) e BCB-OLINDA-EXPECTATIVAS-MENSAIS. Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-trimestrais-v1
+    notes: >
+      OData OLINDA oficial verificado. Ativação técnica com allowlist
+      IPCA+componentes+Câmbio+PIB Total, $top/max_rows=8 por indicador e
+      fixtures mínimas. Entity set ExpectativasMercadoTrimestrais.
+      Publicação Focus observada em 2026-09-18. Selic/IGP/IPA/INPC/IPCA-15/
+      IPC-Fipe/Produção industrial sem linhas no entity set — não ativados.
+      PIB Serviços/Agro/Indústria existem mas congelados em 2021-09-13 — fora
+      desta fatia. Homologação humana pendente. Não constitui crédito.
+
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)
     maintainer: Ministério da Saúde / DATASUS

@@ -1,0 +1,69 @@
+{
+  "@odata.context": "https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTrimestrais(Indicador,Data,DataReferencia,Media,Mediana,baseCalculo)",
+  "value": [
+    {
+      "Indicador": "IPCA Administrados",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2027",
+      "Media": 1.1398,
+      "Mediana": 1.0629,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Administrados",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2028",
+      "Media": 1.0683,
+      "Mediana": 1.0182,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Administrados",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2027",
+      "Media": 1.2478,
+      "Mediana": 1.1994,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Administrados",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2028",
+      "Media": 1.1508,
+      "Mediana": 1.0839,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Administrados",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2026",
+      "Media": 0.2461,
+      "Mediana": 0.284,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Administrados",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2027",
+      "Media": 0.9527,
+      "Mediana": 0.9126,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Administrados",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2026",
+      "Media": 0.5983,
+      "Mediana": 0.6241,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Administrados",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2027",
+      "Media": 0.5276,
+      "Mediana": 0.5558,
+      "baseCalculo": 1
+    }
+  ]
+}

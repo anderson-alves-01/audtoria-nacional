@@ -1931,11 +1931,16 @@ def parse_bcb_olinda_expectativas(
         detalhe = str(item.get("IndicadorDetalhe") or "").strip()
         label_core = f"{indicator}_{detalhe}" if detalhe else indicator
         label = f"{label_core}_{period}_{horizon_token}"
-        default_unit = (
-            "PERCENT_PER_MONTH"
-            if period == "FOCUS_MENSAL"
-            else ("BRL_PER_USD" if indicator.upper() == "CÂMBIO" else "PERCENT_PER_YEAR")
-        )
+        if period == "FOCUS_MENSAL":
+            default_unit = "PERCENT_PER_MONTH"
+        elif period == "FOCUS_TRIMESTRAL":
+            default_unit = (
+                "BRL_PER_USD" if indicator.upper() == "CÂMBIO" else "PERCENT_PER_QUARTER"
+            )
+        else:
+            default_unit = (
+                "BRL_PER_USD" if indicator.upper() == "CÂMBIO" else "PERCENT_PER_YEAR"
+            )
         unit = units.get(indicator.upper()) or default_unit
         raw_row_id = f"bcb-olinda-{label_core}-{raw_date}-{horizon_token}"
         if len(raw_row_id) > 64:

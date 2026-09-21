@@ -1,0 +1,69 @@
+{
+  "@odata.context": "https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTrimestrais(Indicador,Data,DataReferencia,Media,Mediana,baseCalculo)",
+  "value": [
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2027",
+      "Media": 1.774,
+      "Mediana": 1.8052,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2028",
+      "Media": 1.3667,
+      "Mediana": 1.3658,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2027",
+      "Media": 0.919,
+      "Mediana": 0.8874,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2028",
+      "Media": 0.8132,
+      "Mediana": 0.782,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2026",
+      "Media": 0.313,
+      "Mediana": 0.3,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2027",
+      "Media": 0.5125,
+      "Mediana": 0.5309,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2026",
+      "Media": 1.4987,
+      "Mediana": 1.5359,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2027",
+      "Media": 1.263,
+      "Mediana": 1.3004,
+      "baseCalculo": 1
+    }
+  ]
+}
