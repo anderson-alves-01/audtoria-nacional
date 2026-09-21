@@ -1925,13 +1925,15 @@ def parse_bcb_olinda_expectativas(
                 )
             )
             continue
-        label = f"{indicator}_FOCUS_ANUAL_{horizon}"
+        detalhe = str(item.get("IndicadorDetalhe") or "").strip()
+        label_core = f"{indicator}_{detalhe}" if detalhe else indicator
+        label = f"{label_core}_FOCUS_ANUAL_{horizon}"
         unit = units.get(indicator.upper()) or (
             "BRL_PER_USD" if indicator.upper() == "CÂMBIO" else "PERCENT_PER_YEAR"
         )
         silver.append(
             {
-                "rowId": f"bcb-olinda-{indicator}-{raw_date}-{horizon}"[:64],
+                "rowId": f"bcb-olinda-{label_core}-{raw_date}-{horizon}"[:64],
                 "territoryName": "Brasil",
                 "uf": "BR",
                 "ibgeCode": "",
@@ -1941,6 +1943,7 @@ def parse_bcb_olinda_expectativas(
                 "unit": unit,
                 "seriesId": indicator,
                 "horizonYear": horizon,
+                "indicatorDetail": detalhe or None,
             }
         )
     return silver, quarantined

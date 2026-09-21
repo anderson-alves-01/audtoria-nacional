@@ -3591,7 +3591,7 @@ sources:
       fixture mínima (ultimos=3). Homologação humana pendente. Não constitui crédito.
 
   - source_id: BCB-OLINDA-EXPECTATIVAS
-    name: Banco Central — OLINDA Expectativas Focus anuais (IPCA, Selic, Câmbio, PIB setorial, IGP, INPC)
+    name: Banco Central — OLINDA Expectativas Focus anuais (IPCA, Selic, Câmbio, PIB setorial, IGP, INPC, Dívida, Balança)
     maintainer: Banco Central do Brasil
     official_domain: bcb.gov.br
     official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
@@ -3608,7 +3608,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: bcb_olinda_expectativas
-    layout_version: bcb-olinda-expectativas-anuais-v5
+    layout_version: bcb-olinda-expectativas-anuais-v6
     periodicity: as_published
     competence: as_published
     granularity: series
@@ -3625,6 +3625,8 @@ sources:
           IGP-M,
           IGP-DI,
           INPC,
+          Dívida líquida do setor público,
+          Balança comercial,
         ]
       primary_indicator: IPCA
       max_rows: 8
@@ -3635,6 +3637,9 @@ sources:
       indicator_base_calculo:
         IGP-DI: 0
         INPC: 0
+        Dívida líquida do setor público: 0
+      indicator_detalhe:
+        Balança comercial: Saldo
       indicator_units:
         IPCA: PERCENT_PER_YEAR
         Selic: PERCENT_PER_YEAR
@@ -3646,6 +3651,8 @@ sources:
         IGP-M: PERCENT_PER_YEAR
         IGP-DI: PERCENT_PER_YEAR
         INPC: PERCENT_PER_YEAR
+        Dívida líquida do setor público: PERCENT_OF_GDP
+        Balança comercial: USD_BILLION
     authentication: none
     rate_limit: http_429_possible
     personal_data: false
@@ -3654,15 +3661,19 @@ sources:
     formula: >
       Mediana das expectativas anuais Focus (ExpectativasMercadoAnuais) para
       indicadores na allowlist (IPCA, Selic, Câmbio, PIB Total, PIB Serviços,
-      PIB Agropecuária, PIB Indústria, IGP-M, IGP-DI, INPC), com baseCalculo
-      default=1 e override por indicador (IGP-DI/INPC=0), limitados a
-      max_rows=N por indicador (multi-fetch). Competência = Data de
-      publicação; horizonte = DataReferencia. Sem crédito.
-    methodology_version: official-bcb-olinda-expectativas-anuais-v5
+      PIB Agropecuária, PIB Indústria, IGP-M, IGP-DI, INPC, Dívida líquida do
+      setor público, Balança comercial/Saldo), com baseCalculo default=1 e
+      override por indicador (IGP-DI/INPC/Dívida=0), IndicadorDetalhe=Saldo
+      para Balança comercial, limitados a max_rows=N por indicador
+      (multi-fetch). Competência = Data de publicação; horizonte =
+      DataReferencia. Unidades distintas: PERCENT_OF_GDP (Dívida) e
+      USD_BILLION (Balança Saldo). Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-anuais-v6
     notes: >
       OData OLINDA oficial verificado. Ativação técnica com allowlist
       IPCA+Selic+Câmbio+PIB Total+PIB Serviços+PIB Agropecuária+PIB Indústria+
-      IGP-M+IGP-DI+INPC, $top/max_rows=8 por indicador e fixtures mínimas.
+      IGP-M+IGP-DI+INPC+Dívida líquida do setor público+Balança comercial
+      (Saldo), $top/max_rows=8 por indicador e fixtures mínimas.
       Distinto de BCB-SGS-OLINDA (REST SGS). Homologação humana pendente.
       Não constitui crédito.
 

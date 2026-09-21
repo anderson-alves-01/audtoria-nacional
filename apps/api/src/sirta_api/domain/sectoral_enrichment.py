@@ -80,6 +80,8 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
             "IGP-M",
             "IGP-DI",
             "INPC",
+            "Dívida líquida do setor público",
+            "Balança comercial",
         ],
     },
     {

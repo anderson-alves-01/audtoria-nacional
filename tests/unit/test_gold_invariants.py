@@ -1236,6 +1236,39 @@ def test_bcb_olinda_expectativas_parses_pib_agropecuaria_and_industria() -> None
     assert silver_ind[0]["value"] == 1.6
 
 
+def test_bcb_olinda_expectativas_parses_divida_and_balanca_saldo_units() -> None:
+    divida = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-divida-liquida-anuais-top8.json"
+    ).read_bytes()
+    balanca = Path(
+        "tests/fixtures/official-snapshots/bcb-olinda-expectativas-balanca-saldo-anuais-top8.json"
+    ).read_bytes()
+    silver_divida, q_divida = parse_bcb_olinda_expectativas(
+        divida,
+        indicator_allowlist=["Dívida líquida do setor público"],
+        max_rows=8,
+        indicator_units={"Dívida líquida do setor público": "PERCENT_OF_GDP"},
+    )
+    silver_balanca, q_balanca = parse_bcb_olinda_expectativas(
+        balanca,
+        indicator_allowlist=["Balança comercial"],
+        max_rows=8,
+        indicator_units={"Balança comercial": "USD_BILLION"},
+    )
+    assert q_divida == []
+    assert q_balanca == []
+    assert len(silver_divida) == 8
+    assert len(silver_balanca) == 8
+    assert silver_divida[0]["seriesId"] == "Dívida líquida do setor público"
+    assert silver_divida[0]["unit"] == "PERCENT_OF_GDP"
+    assert silver_divida[0]["value"] == 70.0
+    assert silver_balanca[0]["seriesId"] == "Balança comercial"
+    assert silver_balanca[0]["unit"] == "USD_BILLION"
+    assert silver_balanca[0]["value"] == 76.9
+    assert silver_balanca[0]["indicatorDetail"] == "Saldo"
+    assert "Saldo" in silver_balanca[0]["transferName"]
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
