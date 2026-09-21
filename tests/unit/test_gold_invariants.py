@@ -254,6 +254,32 @@ def test_tesouro_monthly_csv_fundeb_complement_allowlist() -> None:
     )
 
 
+def test_tesouro_coint_fundeb_wide_csv() -> None:
+    lookup = {
+        ("ACRELANDIA", "AC"): "1200013",
+        ("ASSIS BRASIL", "AC"): "1200054",
+    }
+    body = Path(
+        "tests/fixtures/official-snapshots/tesouro-fundeb-por-municipio.csv"
+    ).read_bytes()
+    silver, quarantined = parse_tesouro_coint_municipio_csv(
+        body,
+        ibge_lookup=lookup,
+        transfer_name="FUNDEB",
+        competence="2025-01",
+    )
+    assert len(quarantined) == 1
+    assert all(row["modality"] == "FUNDEB_RECEIVED" for row in silver)
+    assert all(row["transferName"] == "FUNDEB" for row in silver)
+    assert all(row["competence"] == "2025-01" for row in silver)
+    assert {row["ibgeCode"] for row in silver} == {"1200013", "1200054"}
+    assert sum(row["value"] for row in silver) == 1926974.37 + 1397435.94
+    assert presentation_for("TESOURO-FUNDEB-VALORES")["createsTaxCredit"] is False
+    assert presentation_for("TESOURO-FUNDEB-VALORES")["valueKind"] == (
+        "TRANSFER_AMOUNT_AS_PUBLISHED"
+    )
+
+
 def test_tesouro_coint_cide_fex_wide_csv() -> None:
     lookup = {
         ("ACRELANDIA", "AC"): "1200013",

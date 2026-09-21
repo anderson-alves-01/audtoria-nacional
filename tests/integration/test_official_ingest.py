@@ -86,6 +86,10 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert fundeb_comp.status_code == 200
     assert fundeb_comp.json()["silverCount"] == 5
     assert fundeb_comp.json()["taxCreditCreated"] is False
+    fundeb = api_client.post("/v1/data-sources/TESOURO-FUNDEB-VALORES/ingest", headers=_admin())
+    assert fundeb.status_code == 200
+    assert fundeb.json()["silverCount"] == 2
+    assert fundeb.json()["taxCreditCreated"] is False
     cide = api_client.post("/v1/data-sources/TESOURO-CIDE-VALORES/ingest", headers=_admin())
     assert cide.status_code == 200
     assert cide.json()["silverCount"] == 2
@@ -295,6 +299,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "TESOURO-LC176-VALORES",
         "TESOURO-IOF-OURO-VALORES",
         "TESOURO-FUNDEB-COMPLEMENT-VALORES",
+        "TESOURO-FUNDEB-VALORES",
         "TESOURO-CIDE-VALORES",
         "TESOURO-FEX-VALORES",
         "ESTADO-ICMS-QUOTA",
@@ -362,6 +367,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["TESOURO-LC176-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-IOF-OURO-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-FUNDEB-COMPLEMENT-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["TESOURO-FUNDEB-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-CIDE-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["TESOURO-FEX-VALORES"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -452,6 +458,8 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["TESOURO-IOF-OURO-VALORES"]["ingestAllowed"] is True
     assert by_id["TESOURO-FUNDEB-COMPLEMENT-VALORES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["TESOURO-FUNDEB-COMPLEMENT-VALORES"]["ingestAllowed"] is True
+    assert by_id["TESOURO-FUNDEB-VALORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["TESOURO-FUNDEB-VALORES"]["ingestAllowed"] is True
     assert by_id["TESOURO-CIDE-VALORES"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["TESOURO-CIDE-VALORES"]["ingestAllowed"] is True
     assert by_id["TESOURO-FEX-VALORES"]["status"] == "TECHNICALLY_APPROVED"

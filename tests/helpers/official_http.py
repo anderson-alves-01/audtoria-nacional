@@ -36,6 +36,11 @@ SNAPSHOT_URLS = {
     (
         "https://www.tesourotransparente.gov.br/ckan/dataset/"
         "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
+        "18d5b0ae-8037-461e-8685-3f0d7752a287/download/fundeb-por-municipio.csv"
+    ): "tesouro-fundeb-por-municipio.csv",
+    (
+        "https://www.tesourotransparente.gov.br/ckan/dataset/"
+        "3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/"
         "18820d64-95fd-4475-b391-e07d62a376ae/download/cide-por-municipio.csv"
     ): "tesouro-cide-por-municipio.csv",
     (

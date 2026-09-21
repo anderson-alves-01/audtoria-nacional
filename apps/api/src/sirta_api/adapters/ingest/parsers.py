@@ -2671,6 +2671,7 @@ def _tesouro_transfer_family(name: str) -> str:
         "IOF Ouro": "IOF_OURO",
         "FUNDEB-COMPLEMENT": "FDB_COMP",
         "FDB-COMP": "FDB_COMP",
+        "FUNDEB": "FUNDEB",
         "AJUSTE FUNDEB": "AJUSTE_FUNDEB",
         "CIDE": "CIDE",
         "CIDE-Combustíveis": "CIDE",

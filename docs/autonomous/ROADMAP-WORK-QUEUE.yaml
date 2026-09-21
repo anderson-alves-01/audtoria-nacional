@@ -1,17 +1,17 @@
 schema_version: 1
-updated_at: "2026-09-21T08:00:00-03:00"
+updated_at: "2026-09-21T12:00:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.62"
+implementation_version: "0.3.63"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.62: Tesouro FUNDEB complement (COUN VAAT/VAAR/VAAF + AJUSTE FUNDEB
-  VAAT) via allowlist no CSV mensal CKAN. UFs restantes ainda sem tabular
-  recente. Próximo: UF tabular nova quando publicada. RFB territorial sem
-  carga nacional.
+  Ciclo 0.3.63: Tesouro FUNDEB por município (COINT CSV) como
+  TESOURO-FUNDEB-VALORES, distinto de complementação COUN/AJUSTE. UFs
+  restantes ainda sem tabular recente. LC 87/96 COINT ≤2018 não ativada.
+  Próximo: UF tabular nova quando publicada. RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
     fase: F2
@@ -262,8 +262,33 @@ items:
     motivo_bloqueio: null
     next_action: >
       ITR/IPI-EXP/Royalties/LC176/IOF-Ouro/FUNDEB-COMPLEMENT allowlists ativos.
-      CIDE/FEX ausentes no CSV mensal municipal; ativados em
-      F3-TESOURO-COINT-CIDE-FEX. Ciclo 0.3.62.
+      FUNDEB distribuído ativado em F3-TESOURO-FUNDEB-COINT. CIDE/FEX ausentes
+      no CSV mensal municipal; ativados em F3-TESOURO-COINT-CIDE-FEX.
+      Ciclo 0.3.62 complement; 0.3.63 FUNDEB COINT.
+
+  - id: F3-TESOURO-FUNDEB-COINT
+    fase: F3.2
+    dominio: D9
+    descricao: CSV COINT FUNDEB por município (valores distribuídos)
+    dependencias: [F3-TESOURO-DICTIONARY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais:
+      - TESOURO-FUNDEB-VALORES
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.63/
+    versao: "0.3.63"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Conector tesouro_coint_municipio_csv com max_rows=8 e competência 2025-01.
+      Distinto de TESOURO-FUNDEB-COMPLEMENT-VALORES. Sem carga nacional do CSV
+      ~20 MiB. Homologação humana pendente.
 
   - id: F3-TESOURO-COINT-CIDE-FEX
     fase: F3.2

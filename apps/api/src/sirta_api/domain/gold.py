@@ -90,6 +90,14 @@ PRESENTATION = {
             "não crédito nem cobrança."
         ),
     },
+    "TESOURO-FUNDEB-VALORES": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Valores FUNDEB distribuídos aos municípios publicados pelo Tesouro "
+            "(COINT). Distinto de complementação COUN/AJUSTE e de retenções. "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "TESOURO-CIDE-VALORES": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
