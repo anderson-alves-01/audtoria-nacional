@@ -82,6 +82,7 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
             "PIB Serviços",
             "PIB Agropecuária",
             "PIB Indústria",
+            "PIB Formação Bruta de Capital Fixo",
             "IGP-M",
             "IGP-DI",
             "INPC",

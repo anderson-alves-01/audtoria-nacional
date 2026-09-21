@@ -3591,7 +3591,7 @@ sources:
       fixture mínima (ultimos=3). Homologação humana pendente. Não constitui crédito.
 
   - source_id: BCB-OLINDA-EXPECTATIVAS
-    name: Banco Central — OLINDA Expectativas Focus anuais (IPCA e decomposições, Selic, Câmbio, PIB setorial, IGP, INPC, Dívida, Balança, Resultado, Conta corrente, Taxa de desocupação, Investimento direto)
+    name: Banco Central — OLINDA Expectativas Focus anuais (IPCA e decomposições, Selic, Câmbio, PIB setorial/demanda, IGP, INPC, Dívida, Balança, Resultado, Conta corrente, Taxa de desocupação, Investimento direto)
     maintainer: Banco Central do Brasil
     official_domain: bcb.gov.br
     official_url: https://dadosabertos.bcb.gov.br/dataset/expectativas-mercado
@@ -3608,7 +3608,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: bcb_olinda_expectativas
-    layout_version: bcb-olinda-expectativas-anuais-v14
+    layout_version: bcb-olinda-expectativas-anuais-v15
     periodicity: as_published
     competence: as_published
     granularity: series
@@ -3627,6 +3627,7 @@ sources:
           PIB Serviços,
           PIB Agropecuária,
           PIB Indústria,
+          PIB Formação Bruta de Capital Fixo,
           IGP-M,
           IGP-DI,
           INPC,
@@ -3665,6 +3666,7 @@ sources:
         PIB Serviços: PERCENT_PER_YEAR
         PIB Agropecuária: PERCENT_PER_YEAR
         PIB Indústria: PERCENT_PER_YEAR
+        PIB Formação Bruta de Capital Fixo: PERCENT_PER_YEAR
         IGP-M: PERCENT_PER_YEAR
         IGP-DI: PERCENT_PER_YEAR
         INPC: PERCENT_PER_YEAR
@@ -3686,27 +3688,28 @@ sources:
       indicadores na allowlist (IPCA, IPCA Livres, IPCA Serviços, IPCA
       Administrados, IPCA Alimentação no domicílio, IPCA Bens industrializados,
       Selic, Câmbio, PIB Total, PIB Serviços, PIB Agropecuária, PIB Indústria,
-      IGP-M, IGP-DI, INPC, Dívida líquida do setor público, Dívida bruta do
-      governo geral, Balança comercial/Saldo, Resultado primário, Conta
-      corrente, Resultado nominal, Taxa de desocupação, Investimento direto no
-      país), com baseCalculo default=1 e override por indicador
-      (IGP-DI/INPC/Dívida líquida/Dívida bruta=0), IndicadorDetalhe=Saldo para
-      Balança comercial, limitados a max_rows=N por indicador (multi-fetch).
-      Competência = Data de publicação; horizonte = DataReferencia. Unidades
-      distintas: PERCENT_OF_GDP (Dívidas, Resultado primário, Resultado
-      nominal), USD_BILLION (Balança Saldo, Conta corrente, Investimento
-      direto) e PERCENT (Taxa de desocupação). Sem crédito.
-    methodology_version: official-bcb-olinda-expectativas-anuais-v14
+      PIB Formação Bruta de Capital Fixo, IGP-M, IGP-DI, INPC, Dívida líquida
+      do setor público, Dívida bruta do governo geral, Balança comercial/Saldo,
+      Resultado primário, Conta corrente, Resultado nominal, Taxa de
+      desocupação, Investimento direto no país), com baseCalculo default=1 e
+      override por indicador (IGP-DI/INPC/Dívida líquida/Dívida bruta=0),
+      IndicadorDetalhe=Saldo para Balança comercial, limitados a max_rows=N por
+      indicador (multi-fetch). Competência = Data de publicação; horizonte =
+      DataReferencia. Unidades distintas: PERCENT_OF_GDP (Dívidas, Resultado
+      primário, Resultado nominal), USD_BILLION (Balança Saldo, Conta corrente,
+      Investimento direto) e PERCENT (Taxa de desocupação). Sem crédito.
+    methodology_version: official-bcb-olinda-expectativas-anuais-v15
     notes: >
       OData OLINDA oficial verificado. Ativação técnica com allowlist
       IPCA+IPCA Livres+IPCA Serviços+IPCA Administrados+IPCA Alimentação no
       domicílio+IPCA Bens industrializados+Selic+Câmbio+PIB Total+PIB
-      Serviços+PIB Agropecuária+PIB Indústria+IGP-M+IGP-DI+INPC+Dívida líquida
-      do setor público+Dívida bruta do governo geral+Balança comercial
-      (Saldo)+Resultado primário+Conta corrente+Resultado nominal+Taxa de
-      desocupação+Investimento direto no país, $top/max_rows=8 por indicador e
-      fixtures mínimas. Distinto de BCB-SGS-OLINDA (REST SGS). Homologação
-      humana pendente. Não constitui crédito.
+      Serviços+PIB Agropecuária+PIB Indústria+PIB Formação Bruta de Capital
+      Fixo+IGP-M+IGP-DI+INPC+Dívida líquida do setor público+Dívida bruta do
+      governo geral+Balança comercial (Saldo)+Resultado primário+Conta
+      corrente+Resultado nominal+Taxa de desocupação+Investimento direto no
+      país, $top/max_rows=8 por indicador e fixtures mínimas. Distinto de
+      BCB-SGS-OLINDA (REST SGS). Homologação humana pendente. Não constitui
+      crédito.
 
   - source_id: CNES-DATASUS
     name: CNES/DATASUS — estabelecimentos de saúde (API DEMAS, escopo UF)

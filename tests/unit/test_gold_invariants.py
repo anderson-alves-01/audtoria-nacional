@@ -1450,6 +1450,24 @@ def test_bcb_olinda_expectativas_parses_ipca_bens_industrializados() -> None:
     assert silver[0]["value"] == 3.4641
 
 
+def test_bcb_olinda_expectativas_parses_pib_fbcf() -> None:
+    body = Path(
+        "tests/fixtures/official-snapshots/"
+        "bcb-olinda-expectativas-pib-fbcf-anuais-top8.json"
+    ).read_bytes()
+    silver, quarantined = parse_bcb_olinda_expectativas(
+        body,
+        indicator_allowlist=["PIB Formação Bruta de Capital Fixo"],
+        max_rows=8,
+        indicator_units={"PIB Formação Bruta de Capital Fixo": "PERCENT_PER_YEAR"},
+    )
+    assert quarantined == []
+    assert len(silver) == 8
+    assert silver[0]["seriesId"] == "PIB Formação Bruta de Capital Fixo"
+    assert silver[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver[0]["value"] == 0.9
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
