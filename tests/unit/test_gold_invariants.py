@@ -259,9 +259,7 @@ def test_tesouro_coint_fundeb_wide_csv() -> None:
         ("ACRELANDIA", "AC"): "1200013",
         ("ASSIS BRASIL", "AC"): "1200054",
     }
-    body = Path(
-        "tests/fixtures/official-snapshots/tesouro-fundeb-por-municipio.csv"
-    ).read_bytes()
+    body = Path("tests/fixtures/official-snapshots/tesouro-fundeb-por-municipio.csv").read_bytes()
     silver, quarantined = parse_tesouro_coint_municipio_csv(
         body,
         ibge_lookup=lookup,
