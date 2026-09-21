@@ -443,7 +443,7 @@ items:
       XLSX Transparency congelado ≤2015. SC arrecadação não quota. SP
       HTML-only. PB/SE/AM/AP/RR/DF PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED.
       RJ permanece IP-blocked. MS IPI/CIDE sem Tipo_Repasse no DataStore.
-      Sem agregador privado. Ciclo 0.3.56.
+      Sem agregador privado. Ciclo 0.3.56 commit c6fdf27.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2
