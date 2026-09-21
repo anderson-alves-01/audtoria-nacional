@@ -2766,6 +2766,89 @@ def parse_state_ba_csv(
     return silver, quarantined
 
 
+def parse_state_sc_csv(
+    body: bytes,
+    *,
+    tax: str,
+    ibge_lookup: dict[tuple[str, str], str] | None = None,
+    uf: str = "SC",
+    competence_year: str = "2017",
+) -> tuple[list[dict], list[tuple[dict, str]]]:
+    """Parse SEF/SC Anual CSV (latin-1, `;`); TOTAL ICMS/IPI/IPVA; no credit."""
+    tax_key = str(tax or "").strip().upper()
+    amount_indexes = {"ICMS": 7, "IPI": 9, "IPVA": 10}
+    if tax_key not in amount_indexes:
+        raise ValueError(f"unsupported state SC tax filter: {tax}")
+    amount_index = amount_indexes[tax_key]
+    try:
+        text = body.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        text = body.decode("latin-1")
+    reader = csv.reader(io.StringIO(text), delimiter=";")
+    lookup = ibge_lookup or {}
+    silver: list[dict] = []
+    quarantined: list[tuple[dict, str]] = []
+    modality = f"{tax_key}_QUOTA"
+    competence_key = str(competence_year or "2017").strip()[:4]
+    for index, item in enumerate(reader):
+        if not item or len(item) <= 1:
+            continue
+        sef_code = str(item[0] or "").strip()
+        if not sef_code.isdigit():
+            continue
+        raw_name = str(item[1] or "").strip()
+        if not raw_name:
+            continue
+        if len(item) <= amount_index:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"sc-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "sefCode": sef_code,
+                    },
+                    f"missing {tax_key} column",
+                )
+            )
+            continue
+        amount_raw = item[amount_index]
+        try:
+            value = parse_brazilian_number(amount_raw)
+        except ValueError:
+            quarantined.append(
+                (
+                    {
+                        "rowId": f"sc-{tax_key.lower()}-{index}",
+                        "territoryName": raw_name,
+                        "uf": uf,
+                        "sefCode": sef_code,
+                        "value": amount_raw,
+                    },
+                    f"non numeric {tax_key} amount",
+                )
+            )
+            continue
+        ibge = lookup.get((normalize_place(raw_name), normalize_place(uf)), "")
+        row = {
+            "rowId": f"sc-{tax_key.lower()}-{ibge or index}-{competence_key}"[:64],
+            "territoryName": raw_name,
+            "uf": uf,
+            "ibgeCode": ibge,
+            "sefCode": sef_code,
+            "competence": competence_key,
+            "transferName": tax_key,
+            "modality": modality,
+            "value": value,
+            "unit": "BRL",
+        }
+        if not IBGE_MUNICIPALITY.fullmatch(ibge):
+            quarantined.append((row, "missing IBGE municipality code"))
+            continue
+        silver.append(row)
+    return silver, quarantined
+
+
 def _tesouro_coint_blank_amount(raw: object) -> bool:
     text = str(raw or "").strip()
     if not text:

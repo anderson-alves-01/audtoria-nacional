@@ -6,11 +6,12 @@ adapter: state_transfer_adapter
 normalize: ibge7
 taxes: [ICMS, IPVA]
 notes: >
-  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA e PR TECHNICALLY_APPROVED
+  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA, PR e SC
+  TECHNICALLY_APPROVED
   (state_pe_csv / state_ba_csv / state_mg_csv / state_es_csv / state_go_csv +
   state_go_economia_xlsx / state_ms_csv / state_ro_csv / state_ac_csv+state_ac_transparencia_json /
   state_ce_xls / state_rs_xls / state_al_xls / state_pi_repasseweb_html /
-  state_rn_xls / state_ma_xls / state_pr_html).
+  state_rn_xls / state_ma_xls / state_pr_html / state_sc_csv).
   PA parcial TECHNICALLY_APPROVED via ICMS Verde SEMAS XLSX
   (state_pa_icms_verde_xlsx; componente ecológico ≤8%, não cota ICMS total).
   Ciclo 0.3.50: ES IPI+CIDE e GO IPI-Exportação ativados nos mesmos arquivos
@@ -31,13 +32,16 @@ notes: >
   distintos do CSV anual SEPLAG ESTADO-AC-ICMS-QUOTA.
   Ciclo 0.3.61: RS Compensação LC 194/22 (aba OUTUBRO 2024, coluna REPASSE*)
   ativada via MontaArquivo l_compensacao_perdas_icms_2024 (state_rs_xls).
+  Ciclo 0.3.95: SC ICMS/IPVA/IPI via SEF Anual_2017.csv (série histórica ≤2017,
+  join nome+UF; CKAN arrecadação permanece fora).
   UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
-  SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
+  RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
   SE/PB PDF; AM HTML-per-município; TO índices PDF.
   MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
   CKAN DataStore dump (CSV upload 500). MS ICMS/IPVA/IPI/CIDE via CKAN DataStore
   mensal. AC ICMS anual SEPLAG; AC IPVA Transparência POST+CSRF JSON.
-  CE/RS/AL/RN/MA XLS; PI IPVA Repasse WEB; PR HTML SEFA. Sem agregador privado.
+  CE/RS/AL/RN/MA XLS; PI IPVA Repasse WEB; PR HTML SEFA; SC CSV anual SEF.
+  Sem agregador privado.
 states:
   - uf: AC
     name: Acre
@@ -527,21 +531,29 @@ states:
       distintos.
   - uf: SC
     name: Santa Catarina
-    status: PROVENANCE_VERIFIED
-    structured_official_source: sef_csv_frozen_2017_plus_arrecadacao
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sef_csv_frozen_2017
     dataset_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
     official_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
     endpoint: https://www.sef.sc.gov.br/api/download?id=5728&nomeArquivo=Anual_2017.csv&mime=application/vnd.ms-excel
     arrecadacao_endpoint: https://dados.sc.gov.br/dataset/0eaade9e-98b9-4887-865d-096ccf142f1b/resource/eec848ff-67db-4a8d-9bc6-101e8573c1e2/download/icms_ipva.csv
     taxes: [ICMS, IPVA, IPI]
     format: CSV
-    ibge_field: name_and_sef_code
+    columns: [CODIGO, MUNICIPIOS, ASSOCIACAO, INDICE, ICMS components, TOTAL ICMS, IPI, IPVA, TOTAL]
+    ibge_field: name_only
+    layout_version_icms: state-sc-icms-v1
+    layout_version_ipva: state-sc-ipva-v1
+    layout_version_ipi: state-sc-ipi-v1
+    connector: state_sc_csv
     download_probe_2026_09_19: sef_csv_200_max_2017_arrecadacao_not_quota
+    download_probe_2026_09_21: sef_anual_2017_csv_ok_total_icms_ipi_ipva
     reason: >
-      SEF publica CSV de repasse via /api/download, porém congelado em ≤2017
-      (código SEF, sem IBGE). CKAN icms_ipva.csv é arrecadação (VL_PGTO), não
-      quota-parte. Repasse corrente aponta portal BB fora de *.sc.gov.br.
-      Sem ativação até série recente estruturada com IBGE.
+      CSV anual SEF Anual_2017.csv ativado com connector state_sc_csv (`;`,
+      latin-1, número BR). Colunas TOTAL ICMS=7, IPI=9 e IPVA=10 após cabeçalho
+      multi-linha; código SEF não é IBGE — join IBGE7 por nome+UF. Competência
+      anual 2017 (série oficial congelada ≤2017). CKAN icms_ipva.csv permanece
+      arrecadação (não quota). Fixture mínima. Sem crédito.
   - uf: SP
     name: São Paulo
     status: DISCOVERED

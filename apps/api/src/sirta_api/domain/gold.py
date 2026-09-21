@@ -518,6 +518,27 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-SC-ICMS-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de ICMS estadual publicada (SC ativado via SEF Anual_2017.csv). "
+            "Série histórica ≤2017. Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-SC-IPVA-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPVA estadual publicada (SC ativado via SEF Anual_2017.csv). "
+            "Série histórica ≤2017. Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-SC-IPI-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Quota-parte de IPI estadual publicada (SC ativado via SEF Anual_2017.csv). "
+            "Série histórica ≤2017. Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ANP-REVENDEDORES": {
         "valueKind": "REFERENCE_QUANTITY",
         "label": (

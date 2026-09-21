@@ -20,7 +20,7 @@ def test_ibge_snapshot_quarantines_invalid_municipality_code() -> None:
 def test_siconfi_snapshot_keeps_municipal_ibge_codes() -> None:
     body = Path("tests/fixtures/official-snapshots/siconfi-entes.json").read_bytes()
     silver, quarantined = parse_siconfi_entes(body)
-    assert len(silver) == 28
+    assert len(silver) == 30
     assert all(row["ibgeCode"].isdigit() and len(row["ibgeCode"]) == 7 for row in silver)
     assert {row["ibgeCode"] for row in silver} >= {
         "2100055",

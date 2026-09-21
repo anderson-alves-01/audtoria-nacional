@@ -3325,6 +3325,124 @@ sources:
       XLSX anual com colunas mensais. Cota ICMS/IPVA plena do PA permanece
       PROVENANCE_ONLY (DOE PDF). Homologação humana pendente.
 
+  - source_id: ESTADO-SC-ICMS-QUOTA
+    name: Quota-parte de ICMS estadual (SC)
+    maintainer: SEF/SC
+    official_domain: sef.sc.gov.br
+    official_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    endpoint: https://www.sef.sc.gov.br/api/download?id=5728&nomeArquivo=Anual_2017.csv&mime=application/vnd.ms-excel
+    documentation_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    dataset: ESTADO-SC-ICMS-2017
+    dictionary_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    purpose: Transferência estadual de ICMS — valores anuais publicados por município
+    legal_basis: Publicação oficial SEF/SC de repasses ICMS/IPI/IPVA aos municípios
+    license_terms: publicação oficial sef.sc.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_sc_csv
+    layout_version: state-sc-icms-v1
+    periodicity: annual
+    competence: "2017"
+    granularity: municipality
+    parameters:
+      tax: ICMS
+      uf: SC
+      competence_year: "2017"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_sc_icms_quota
+    formula: >
+      Valor da coluna TOTAL ICMS (índice 7) do CSV anual SEF Anual_2017.csv,
+      competência 2017, município resolvido para IBGE7 por nome+UF via
+      SICONFI-ENTES. Código SEF não é IBGE. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-sc-icms-v1
+    notes: >
+      Série oficial congelada ≤2017. CKAN dados.sc.gov.br/icms_ipva.csv é
+      arrecadação, não quota. Homologação humana pendente.
+
+  - source_id: ESTADO-SC-IPVA-QUOTA
+    name: Quota-parte de IPVA estadual (SC)
+    maintainer: SEF/SC
+    official_domain: sef.sc.gov.br
+    official_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    endpoint: https://www.sef.sc.gov.br/api/download?id=5728&nomeArquivo=Anual_2017.csv&mime=application/vnd.ms-excel
+    documentation_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    dataset: ESTADO-SC-IPVA-2017
+    dictionary_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    purpose: Transferência estadual de IPVA — valores anuais publicados por município
+    legal_basis: Publicação oficial SEF/SC de repasses ICMS/IPI/IPVA aos municípios
+    license_terms: publicação oficial sef.sc.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_sc_csv
+    layout_version: state-sc-ipva-v1
+    periodicity: annual
+    competence: "2017"
+    granularity: municipality
+    parameters:
+      tax: IPVA
+      uf: SC
+      competence_year: "2017"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_sc_ipva_quota
+    formula: >
+      Valor da coluna IPVA (índice 10) do CSV anual SEF Anual_2017.csv,
+      competência 2017, município resolvido para IBGE7 por nome+UF via
+      SICONFI-ENTES. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-sc-ipva-v1
+    notes: >
+      Mesmo arquivo do ICMS/IPI. Homologação humana pendente.
+
+  - source_id: ESTADO-SC-IPI-QUOTA
+    name: Quota-parte de IPI estadual (SC)
+    maintainer: SEF/SC
+    official_domain: sef.sc.gov.br
+    official_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    endpoint: https://www.sef.sc.gov.br/api/download?id=5728&nomeArquivo=Anual_2017.csv&mime=application/vnd.ms-excel
+    documentation_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    dataset: ESTADO-SC-IPI-2017
+    dictionary_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    purpose: Transferência estadual de IPI — valores anuais publicados por município
+    legal_basis: Publicação oficial SEF/SC de repasses ICMS/IPI/IPVA aos municípios
+    license_terms: publicação oficial sef.sc.gov.br
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_sc_csv
+    layout_version: state-sc-ipi-v1
+    periodicity: annual
+    competence: "2017"
+    granularity: municipality
+    parameters:
+      tax: IPI
+      uf: SC
+      competence_year: "2017"
+      normalize: ibge7_name_uf
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_sc_ipi_quota
+    formula: >
+      Valor da coluna IPI (índice 9) do CSV anual SEF Anual_2017.csv,
+      competência 2017, município resolvido para IBGE7 por nome+UF via
+      SICONFI-ENTES. Sem ajuste. Não constitui crédito.
+    methodology_version: official-state-sc-ipi-v1
+    notes: >
+      Mesmo arquivo do ICMS/IPVA. Homologação humana pendente.
+
   - source_id: RFB-DADOS-ABERTOS
     name: Receita Federal — dados abertos de CNPJ
     maintainer: Receita Federal do Brasil

@@ -27,6 +27,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_rn_xls,
     parse_state_ro_csv,
     parse_state_rs_xls,
+    parse_state_sc_csv,
     parse_tesouro_coint_municipio_csv,
     parse_tesouro_monthly_csv,
 )
@@ -1037,6 +1038,45 @@ def test_state_al_xls_native_ibge_and_quarantines_territory() -> None:
     assert arapiraca_royalty["value"] == 323715.38
     assert len(quarantined_royalty) == 1
     assert presentation_for("ESTADO-AL-ROYALTY-QUOTA")["createsTaxCredit"] is False
+
+
+def test_state_sc_csv_joins_ibge_and_quarantines_territory() -> None:
+    body = Path("tests/fixtures/official-snapshots/sc-anual-2017.csv").read_bytes()
+    lookup = {
+        ("ABDON BATISTA", "SC"): "4200051",
+        ("ABELARDO LUZ", "SC"): "4200101",
+    }
+    icms, quarantined_icms = parse_state_sc_csv(
+        body, tax="ICMS", ibge_lookup=lookup, competence_year="2017"
+    )
+    assert len(icms) == 2
+    assert {row["ibgeCode"] for row in icms} == {"4200051", "4200101"}
+    assert all(row["modality"] == "ICMS_QUOTA" for row in icms)
+    assert all(row["uf"] == "SC" for row in icms)
+    assert all(row["competence"] == "2017" for row in icms)
+    abdon = next(row for row in icms if row["ibgeCode"] == "4200051")
+    assert abdon["value"] == 8606979.32
+    assert len(quarantined_icms) == 1
+    assert quarantined_icms[0][1] == "missing IBGE municipality code"
+    ipva, quarantined_ipva = parse_state_sc_csv(
+        body, tax="IPVA", ibge_lookup=lookup, competence_year="2017"
+    )
+    assert len(ipva) == 2
+    abelardo = next(row for row in ipva if row["ibgeCode"] == "4200101")
+    assert abelardo["value"] == 1520608.58
+    assert abelardo["modality"] == "IPVA_QUOTA"
+    assert len(quarantined_ipva) == 1
+    ipi, quarantined_ipi = parse_state_sc_csv(
+        body, tax="IPI", ibge_lookup=lookup, competence_year="2017"
+    )
+    assert len(ipi) == 2
+    abdon_ipi = next(row for row in ipi if row["ibgeCode"] == "4200051")
+    assert abdon_ipi["value"] == 91549.6
+    assert abdon_ipi["modality"] == "IPI_QUOTA"
+    assert len(quarantined_ipi) == 1
+    assert presentation_for("ESTADO-SC-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert presentation_for("ESTADO-SC-IPVA-QUOTA")["createsTaxCredit"] is False
+    assert presentation_for("ESTADO-SC-IPI-QUOTA")["createsTaxCredit"] is False
 
 
 def test_aneel_indqual_aggregates_by_ibge7() -> None:

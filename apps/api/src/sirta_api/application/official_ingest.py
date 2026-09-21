@@ -53,6 +53,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_state_rn_xls,
     parse_state_ro_csv,
     parse_state_rs_xls,
+    parse_state_sc_csv,
     parse_tesouro_coint_municipio_csv,
     parse_tesouro_monthly_csv,
     parse_tesouro_transfer_types,
@@ -107,6 +108,7 @@ PARSERS = {
     "state_go_economia_xlsx": parse_state_go_economia_xlsx,
     "state_ms_csv": parse_state_ms_csv,
     "state_ro_csv": parse_state_ro_csv,
+    "state_sc_csv": parse_state_sc_csv,
     "state_ac_csv": parse_state_ac_csv,
     "state_ac_transparencia_json": parse_state_ac_transparencia_json,
     "state_pi_repasseweb_html": parse_state_pi_repasseweb_html,
@@ -709,6 +711,17 @@ def _parse(
             fetched.body,
             tax=str(parameters.get("tax") or "ICMS"),
             uf=str(parameters.get("uf") or "PE"),
+            ibge_lookup=_ibge_lookup(session, context=context),
+        )
+    if connector == "state_sc_csv":
+        parameters = catalog.get("parameters") or {}
+        return parser(
+            fetched.body,
+            tax=str(parameters.get("tax") or "ICMS"),
+            uf=str(parameters.get("uf") or "SC"),
+            competence_year=str(
+                parameters.get("competence_year") or catalog.get("competence") or "2017"
+            )[:4],
             ibge_lookup=_ibge_lookup(session, context=context),
         )
     if connector == "state_ba_csv":

@@ -167,6 +167,10 @@ SNAPSHOT_URLS = {
         "Valores-de-repasses-ICMS-Verde-2024.xlsx"
     ): "pa-icms-verde-2024-01.xlsx",
     (
+        "https://www.sef.sc.gov.br/api/download?id=5728&nomeArquivo=Anual_2017.csv"
+        "&mime=application/vnd.ms-excel"
+    ): "sc-anual-2017.csv",
+    (
         "https://revendedoresapi.anp.gov.br/v1/combustivel?uf=MS&numeropagina=1"
     ): "anp-revendedores-ms-page1.json",
     (

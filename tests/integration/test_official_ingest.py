@@ -39,7 +39,7 @@ def test_official_gold_empty_until_ingest(api_client) -> None:
 def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
     assert siconfi.status_code == 200
-    assert siconfi.json()["silverCount"] == 28
+    assert siconfi.json()["silverCount"] == 30
     assert siconfi.json()["quarantinedCount"] == 1
     pib = api_client.post("/v1/data-sources/IBGE-SIDRA-PIB/ingest", headers=_admin())
     assert pib.status_code == 200
@@ -250,6 +250,15 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     )
     assert al_royalty.status_code == 200
     assert al_royalty.json()["silverCount"] == 2
+    sc_icms = api_client.post("/v1/data-sources/ESTADO-SC-ICMS-QUOTA/ingest", headers=_admin())
+    assert sc_icms.status_code == 200
+    assert sc_icms.json()["silverCount"] == 2
+    sc_ipva = api_client.post("/v1/data-sources/ESTADO-SC-IPVA-QUOTA/ingest", headers=_admin())
+    assert sc_ipva.status_code == 200
+    assert sc_ipva.json()["silverCount"] == 2
+    sc_ipi = api_client.post("/v1/data-sources/ESTADO-SC-IPI-QUOTA/ingest", headers=_admin())
+    assert sc_ipi.status_code == 200
+    assert sc_ipi.json()["silverCount"] == 2
     pi_ipva = api_client.post("/v1/data-sources/ESTADO-PI-IPVA-QUOTA/ingest", headers=_admin())
     assert pi_ipva.status_code == 200
     assert pi_ipva.json()["silverCount"] == 2
@@ -372,6 +381,9 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
         "ESTADO-AL-IPVA-QUOTA",
         "ESTADO-AL-IPI-QUOTA",
         "ESTADO-AL-ROYALTY-QUOTA",
+        "ESTADO-SC-ICMS-QUOTA",
+        "ESTADO-SC-IPVA-QUOTA",
+        "ESTADO-SC-IPI-QUOTA",
         "ESTADO-PI-IPVA-QUOTA",
         "ESTADO-RN-ICMS-QUOTA",
         "ESTADO-RN-IPVA-QUOTA",
@@ -463,6 +475,9 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["ESTADO-PR-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-PR-ROYALTY-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-PA-ICMS-VERDE-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-SC-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-SC-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_id["ESTADO-SC-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["SICONFI-RREO"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-DCA"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-RGF"]["valueKind"] == "FISCAL_STATEMENT_LINE"
@@ -577,6 +592,10 @@ def test_unavailable_sources_stay_empty(api_client) -> None:
     assert by_id["ESTADO-AL-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-AL-IPI-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-AL-ROYALTY-QUOTA"]["ingestAllowed"] is True
+    assert by_id["ESTADO-SC-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-SC-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-SC-IPI-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ESTADO-SC-ICMS-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-PI-IPVA-QUOTA"]["status"] == "TECHNICALLY_APPROVED"
     assert by_id["ESTADO-PI-IPVA-QUOTA"]["ingestAllowed"] is True
     assert by_id["ESTADO-RN-ICMS-QUOTA"]["status"] == "TECHNICALLY_APPROVED"

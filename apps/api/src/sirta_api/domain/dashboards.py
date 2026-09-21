@@ -157,6 +157,9 @@ DASHBOARDS = (
             "ESTADO-PR-IPI-QUOTA",
             "ESTADO-PR-ROYALTY-QUOTA",
             "ESTADO-PA-ICMS-VERDE-QUOTA",
+            "ESTADO-SC-ICMS-QUOTA",
+            "ESTADO-SC-IPVA-QUOTA",
+            "ESTADO-SC-IPI-QUOTA",
         ),
         "emptyReason": (
             "Somente valores oficiais publicados. Dicionário FPM não é valor transferido. "

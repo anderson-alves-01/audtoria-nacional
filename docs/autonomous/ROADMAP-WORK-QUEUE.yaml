@@ -1,17 +1,16 @@
 schema_version: 1
-updated_at: "2026-09-21T17:05:00-03:00"
+updated_at: "2026-09-21T17:35:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.94"
+implementation_version: "0.3.95"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.94: BCB OLINDA Expectativas trimestrais PIB setoriais
-  (BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS + PIB Serviços/Agropecuária/Indústria,
-  série oficial Data=2021-09-13, layout trimestrais-v2, silverCount 88).
-  Próximo: UF tabular PUBLIC_OPEN restante.
+  Ciclo 0.3.95: SC SEF Anual_2017.csv ICMS/IPVA/IPI (state_sc_csv, competência
+  2017, join nome+UF, silverCount 2+1 quarantined por fonte).
+  Próximo: UF tabular PUBLIC_OPEN restante (RJ/SP/MT/SE/PB/AM/AP/RR/TO/PI ICMS).
   RFB territorial sem carga nacional.
 items:
   - id: F2-CI-CD
@@ -496,13 +495,13 @@ items:
     ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA e PR
+      PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA, PR e SC
       TECHNICALLY_APPROVED (GO ICMS/IPI via Economia XLSX + IPVA DataStore;
       ES ICMS/IPVA/IPI/CIDE/FRD/COMPENSACAO; PI só IPVA; PR via HTML SEFA; PA
       parcial via ICMS Verde SEMAS; AC ICMS anual SEPLAG + ICMS/IPVA/FUNDEB
-      Transparência; RS ICMS/IPVA + Compensação LC194; SE/PB/AM/AP/RR/DF
-      PROVENANCE_VERIFIED; MT XLSX ≤2015; TO PROVENANCE_VERIFIED PDF/índices;
-      SC CSV ≤2017; SP HTML-only; RJ IP-blocked). Sem agregador privado.
+      Transparência; RS ICMS/IPVA + Compensação LC194; SC Anual_2017.csv;
+      SE/PB/AM/AP/RR/DF PROVENANCE_VERIFIED; MT XLSX ≤2015; TO PROVENANCE_VERIFIED
+      PDF/índices; SP HTML-only; RJ IP-blocked). Sem agregador privado.
 
   - id: F3-STATE-ICMS-ACTIVATION
     fase: F3.2
@@ -517,21 +516,21 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.61/
-    versao: "0.3.61"
-    commit: 63d27ad
-    ci: "35571881274"
+    evidencia: evidence/releases/0.3.95/
+    versao: "0.3.95"
+    commit: null
+    ci: null
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA, PR e GO ICMS (+IPVA/IPI
       onde publicado) + ES IPI/CIDE/FRD/Compensação + CE/AL/RN/PE/BA/MG IPI +
       MA/PR IPI-Exportação/FPEX + MS IPI-Exportação/CIDE + AL/PR royalties +
       PI IPVA + PA ICMS Verde + AC ICMS/FUNDEB Transparência + RS Compensação
-      LC194 ativados. GO IPI via Economia XLSX (IPI-Exportação Bruto). PI ICMS
-      não publicado no Repasse WEB. PA cota plena ainda DOE PDF. MT XLSX
-      Transparency congelado ≤2015. SC arrecadação não quota. SP HTML-only.
+      LC194 + SC Anual_2017 ICMS/IPVA/IPI ativados. GO IPI via Economia XLSX
+      (IPI-Exportação Bruto). PI ICMS não publicado no Repasse WEB. PA cota
+      plena ainda DOE PDF. MT XLSX Transparency congelado ≤2015. SP HTML-only.
       PB/SE/AM/AP/RR/DF PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ
-      permanece IP-blocked. Sem agregador privado. Ciclo 0.3.61.
+      permanece IP-blocked. Sem agregador privado. Ciclo 0.3.95.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2
@@ -546,18 +545,18 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.47/
-    versao: "0.3.47"
-    commit: 5f6284d
+    evidencia: evidence/releases/0.3.95/
+    versao: "0.3.95"
+    commit: null
     ci: null
     motivo_bloqueio: null
     next_action: >
-      PE, BA, MG, ES, GO, MS, RO, CE, RS, AL, AC, PI, RN, MA e PR IPVA ativados.
+      PE, BA, MG, ES, GO, MS, RO, CE, RS, AL, AC, PI, RN, MA, PR e SC IPVA ativados.
       MA/PR também com IPI-Exportação/FPEX; MS também com IPI-Exportação/CIDE.
       Seguir outras UFs PUBLIC_OPEN; sem inventar valores. PR via HTML SEFA; MA
       via SEFAZ SGC XLS; RN via Nextcloud XLS; PI via Repasse WEB HTML; AC via
       Transparência POST+CSRF; RO IPVA IBGE6→7. PA sem IPVA tabular nesta fatia
-      (só ICMS Verde).
+      (só ICMS Verde). SC IPVA via Anual_2017.csv (ciclo 0.3.95).
 
   - id: F3-RFB-CNPJ
     fase: F3.2
