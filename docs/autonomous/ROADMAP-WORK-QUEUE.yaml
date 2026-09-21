@@ -258,7 +258,7 @@ items:
     evidencia: evidence/releases/0.3.52/
     versao: "0.3.52"
     commit: 4aae4ad
-    ci: null
+    ci: "35556806672"
     motivo_bloqueio: null
     next_action: >
       ITR/IPI-EXP/Royalties/LC176 allowlists ativos. CIDE/FEX ausentes no CSV
