@@ -71,7 +71,7 @@ def test_state_transfers_endpoint_is_empty_shell(api_client) -> None:
     assert by_uf["MA"]["taxes"] == ["ICMS", "IPVA", "IPI"]
     assert by_uf["PR"]["status"] == "TECHNICALLY_APPROVED"
     assert by_uf["PR"]["ingestAllowed"] is True
-    assert by_uf["PR"]["taxes"] == ["ICMS", "IPVA", "IPI"]
+    assert by_uf["PR"]["taxes"] == ["ICMS", "IPVA", "IPI", "ROYALTY"]
     assert by_uf["SE"]["status"] == "PROVENANCE_VERIFIED"
     assert by_uf["RJ"]["status"] == "PROVENANCE_VERIFIED"
 
@@ -581,6 +581,23 @@ def test_state_al_ingest_publishes_gold_without_credit(api_client) -> None:
         item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
         for item in lines.json()["items"]
     )
+    royalty = api_client.post("/v1/data-sources/ESTADO-AL-ROYALTY-QUOTA/ingest", headers=_admin())
+    assert royalty.status_code == 200
+    assert royalty.json()["silverCount"] == 2
+    assert royalty.json()["quarantinedCount"] == 1
+    assert royalty.json()["taxCreditCreated"] is False
+    gold_royalty = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_royalty = {item["sourceId"]: item for item in gold_royalty.json()["items"]}
+    assert by_royalty["ESTADO-AL-ROYALTY-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_royalty["ESTADO-AL-ROYALTY-QUOTA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    royalty_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-AL-ROYALTY-QUOTA",
+        headers=_analyst(),
+    )
+    assert any(item["value"] == 17942.32 for item in royalty_lines.json()["items"])
+    assert any(item["value"] == 323715.38 for item in royalty_lines.json()["items"])
 
 
 def test_state_pi_ingest_publishes_gold_without_credit(api_client) -> None:
@@ -752,6 +769,23 @@ def test_state_pr_ingest_publishes_gold_without_credit(api_client) -> None:
     )
     assert any(item["value"] == 225792.78 for item in ipi_lines.json()["items"])
     assert any(item["value"] == 891840.03 for item in ipi_lines.json()["items"])
+    royalty = api_client.post("/v1/data-sources/ESTADO-PR-ROYALTY-QUOTA/ingest", headers=_admin())
+    assert royalty.status_code == 200
+    assert royalty.json()["silverCount"] == 2
+    assert royalty.json()["quarantinedCount"] == 1
+    assert royalty.json()["taxCreditCreated"] is False
+    gold_royalty = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_royalty = {item["sourceId"]: item for item in gold_royalty.json()["items"]}
+    assert by_royalty["ESTADO-PR-ROYALTY-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
+    assert by_royalty["ESTADO-PR-ROYALTY-QUOTA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    )
+    royalty_lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ESTADO-PR-ROYALTY-QUOTA",
+        headers=_analyst(),
+    )
+    assert any(item["value"] == 17157.76 for item in royalty_lines.json()["items"])
+    assert any(item["value"] == 67769.98 for item in royalty_lines.json()["items"])
 
 
 def test_state_pa_icms_verde_ingest_publishes_gold_without_credit(api_client) -> None:

@@ -129,6 +129,7 @@ DASHBOARDS = (
             "ESTADO-AL-ICMS-QUOTA",
             "ESTADO-AL-IPVA-QUOTA",
             "ESTADO-AL-IPI-QUOTA",
+            "ESTADO-AL-ROYALTY-QUOTA",
             "ESTADO-PI-IPVA-QUOTA",
             "ESTADO-RN-ICMS-QUOTA",
             "ESTADO-RN-IPVA-QUOTA",
@@ -139,6 +140,7 @@ DASHBOARDS = (
             "ESTADO-PR-ICMS-QUOTA",
             "ESTADO-PR-IPVA-QUOTA",
             "ESTADO-PR-IPI-QUOTA",
+            "ESTADO-PR-ROYALTY-QUOTA",
             "ESTADO-PA-ICMS-VERDE-QUOTA",
         ),
         "emptyReason": (

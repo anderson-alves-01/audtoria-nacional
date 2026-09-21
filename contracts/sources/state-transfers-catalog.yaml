@@ -22,6 +22,8 @@ notes: >
   Ciclo 0.3.57: MA FPEX e PR Fundo de Exportação ativados como IPI-Exportação
   nos mesmos arquivos já aprovados (state_ma_xls / state_pr_html); MS IPI
   EXPORTAÇÃO e CIDE ativados no mesmo DataStore já aprovado (state_ms_csv).
+  Ciclo 0.3.58: AL Royalties Total e PR Royalties Petróleo ativados nos mesmos
+  arquivos já aprovados (state_al_xls / state_pr_html).
   UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
   SC CSV ≤2017; RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
   SE/PB PDF; AM HTML-per-município; TO índices PDF.
@@ -65,20 +67,22 @@ states:
     dataset_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
     official_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
     endpoint: https://dados.al.gov.br/catalogo/dataset/58cf0b6f-4026-449e-8be8-17a9af3670c6/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b/download/repasses_estaduais.xls
-    taxes: [ICMS, IPVA, IPI]
+    taxes: [ICMS, IPVA, IPI, ROYALTY]
     format: XLS
     columns: [Código, Município, IPI Total YYYY, Royalties Total YYYY, IPVA Total YYYY, ICMS Total YYYY]
     ibge_field: Código
     layout_version_icms: state-al-icms-v1
     layout_version_ipva: state-al-ipva-v1
     layout_version_ipi: state-al-ipi-v1
+    layout_version_royalty: state-al-royalty-v1
     connector: state_al_xls
     download_probe_2026_09_20: xls_bytes_ok_ibge7_native_annual_2021
     reason: >
       XLS anual Repasses Estaduais (dados.al.gov.br) ativado com connector
       state_al_xls (xlrd). IBGE7 nativo em Código; competência anual filtrada
-      (2021). ICMS/IPVA/IPI via colunas Total YYYY. Série publicada 2015-2021;
-      SEFAZ-AL corrente é PDF semanal sem CSV/API. Fixture mínima. Sem crédito.
+      (2021). ICMS/IPVA/IPI/Royalties via colunas Total YYYY. Série publicada
+      2015-2021; SEFAZ-AL corrente é PDF semanal sem CSV/API. Fixture mínima.
+      Sem crédito.
   - uf: AP
     name: Amapá
     status: PROVENANCE_VERIFIED
@@ -339,22 +343,24 @@ states:
     dataset_url: https://www.transparencia.pr.gov.br/pte/assunto/4/100?origem=4
     official_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
     endpoint: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/relatorio/rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL
-    taxes: [ICMS, IPVA, IPI]
+    taxes: [ICMS, IPVA, IPI, ROYALTY]
     format: HTML
     columns: [Municipio, FPM, ICMS bruto, ICMS liquido, Fundo de Exportacao, Royalties, IPVA, Total]
     ibge_field: name_only
     layout_version_icms: state-pr-icms-v1
     layout_version_ipva: state-pr-ipva-v1
     layout_version_ipi: state-pr-ipi-fpex-v1
+    layout_version_royalty: state-pr-royalty-v1
     connector: state_pr_html
     download_probe_2026_09_20: html_200_icms_liquido_ipva_columns
     download_probe_2026_09_21: html_200_fpex_column_index_4
+    download_probe_2026_09_21b: html_200_royalty_column_index_5
     preferred_activation: true
     reason: >
       Relatório HTML mensal SEFA/PR ativado com connector state_pr_html
-      (ICMS líquido pós-FUNDEB + IPVA + Fundo de Exportação/FPEX como IPI),
-      fixture mínima e join IBGE7 por nome+UF. Sem CSV/API; HTML GET estável.
-      Sem crédito.
+      (ICMS líquido pós-FUNDEB + IPVA + Fundo de Exportação/FPEX como IPI +
+      Royalties Petróleo), fixture mínima e join IBGE7 por nome+UF. Sem
+      CSV/API; HTML GET estável. Sem crédito.
   - uf: PE
     name: Pernambuco
     status: TECHNICALLY_APPROVED

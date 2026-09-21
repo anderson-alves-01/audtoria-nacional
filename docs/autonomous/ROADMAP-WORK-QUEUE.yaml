@@ -1,16 +1,15 @@
 schema_version: 1
-updated_at: "2026-09-21T05:30:00-03:00"
+updated_at: "2026-09-21T05:45:00-03:00"
 branch: feat/official-public-ingest
 pr: 2
-implementation_version: "0.3.57"
+implementation_version: "0.3.58"
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 initial_head: 1d7a601
 notes: >
   Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
   não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
-  Ciclo 0.3.57: IPI-Exportação/FPEX estadual MA/PR nos arquivos já aprovados
-  (state_ma_xls aba FPEX / state_pr_html coluna Fundo de Exportação) e MS
-  IPI/CIDE no DataStore já aprovado (REPASSE DE IPI EXPORTAÇÃO / REPASSE DA CIDE).
+  Ciclo 0.3.58: royalties estaduais AL/PR nos arquivos já aprovados
+  (state_al_xls coluna Royalties Total / state_pr_html coluna Royalties Petróleo).
   UFs restantes ainda sem tabular recente. Próximo: UF tabular nova quando
   publicada. RFB territorial sem carga nacional.
 items:
@@ -431,20 +430,20 @@ items:
     frontend: true
     pipeline: true
     testes: true
-    evidencia: evidence/releases/0.3.57/
-    versao: "0.3.57"
-    commit: 5bfec81
-    ci: "35564465511"
+    evidencia: evidence/releases/0.3.58/
+    versao: "0.3.58"
+    commit: pending
+    ci: null
     motivo_bloqueio: null
     next_action: >
       PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA, PR e GO ICMS (+IPVA/IPI
       onde publicado) + ES IPI/CIDE + CE/AL/RN/PE/BA/MG IPI + MA/PR
-      IPI-Exportação/FPEX + MS IPI-Exportação/CIDE + PI IPVA + PA ICMS Verde
-      ativados. GO IPI via Economia XLSX (IPI-Exportação Bruto). PI ICMS não
-      publicado no Repasse WEB. PA cota plena ainda DOE PDF. MT XLSX Transparency
-      congelado ≤2015. SC arrecadação não quota. SP HTML-only. PB/SE/AM/AP/RR/DF
-      PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ permanece IP-blocked.
-      Sem agregador privado. Ciclo 0.3.57.
+      IPI-Exportação/FPEX + MS IPI-Exportação/CIDE + AL/PR royalties + PI IPVA
+      + PA ICMS Verde ativados. GO IPI via Economia XLSX (IPI-Exportação Bruto).
+      PI ICMS não publicado no Repasse WEB. PA cota plena ainda DOE PDF. MT XLSX
+      Transparency congelado ≤2015. SC arrecadação não quota. SP HTML-only.
+      PB/SE/AM/AP/RR/DF PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ permanece
+      IP-blocked. Sem agregador privado. Ciclo 0.3.58.
 
   - id: F3-STATE-IPVA-ACTIVATION
     fase: F3.2

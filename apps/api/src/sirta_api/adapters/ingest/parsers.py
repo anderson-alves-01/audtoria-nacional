@@ -837,14 +837,14 @@ def parse_state_al_xls(
     uf: str = "AL",
     competence_year: str = "2021",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse AL dados.al.gov.br annual XLS; native IBGE7; ICMS/IPVA/IPI; no credit."""
+    """Parse AL dados.al.gov.br annual XLS; native IBGE7; ICMS/IPVA/IPI/ROYALTY; no credit."""
     try:
         import xlrd
         from xlrd.biffh import XLRDError
     except ImportError as exc:  # pragma: no cover - dependency declared in pyproject
         raise RuntimeError("xlrd is required for state_al_xls") from exc
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA", "IPI"}:
+    if tax_key not in {"ICMS", "IPVA", "IPI", "ROYALTY"}:
         raise ValueError(f"unsupported state AL tax filter: {tax}")
     year = str(competence_year or "2021").strip()[:4]
     if not re.fullmatch(r"\d{4}", year):
@@ -860,13 +860,16 @@ def parse_state_al_xls(
     amount_col = None
     for index, name in enumerate(headers):
         place = normalize_place(name)
-        if tax_key not in place or year not in place:
+        column_token = "ROYALT" if tax_key == "ROYALTY" else tax_key
+        if column_token not in place or year not in place:
             continue
-        if tax_key == "ICMS" and ("IPVA" in place or "IPI" in place):
+        if tax_key == "ICMS" and ("IPVA" in place or "IPI" in place or "ROYALT" in place):
             continue
-        if tax_key == "IPVA" and "IPI" in place:
+        if tax_key == "IPVA" and ("IPI" in place or "ROYALT" in place):
             continue
-        if tax_key == "IPI" and ("IPVA" in place or "ICMS" in place):
+        if tax_key == "IPI" and ("IPVA" in place or "ICMS" in place or "ROYALT" in place):
+            continue
+        if tax_key == "ROYALTY" and ("IPI" in place or "IPVA" in place or "ICMS" in place):
             continue
         amount_col = index
         break
@@ -1117,12 +1120,12 @@ def parse_state_pr_html(
     uf: str = "PR",
     competence: str = "2025-01",
 ) -> tuple[list[dict], list[tuple[dict, str]]]:
-    """Parse SEFA/PR monthly HTML transfer report; ICMS líquido, FPEX/IPI, IPVA.
+    """Parse SEFA/PR monthly HTML transfer report; ICMS líquido, FPEX/IPI, royalties, IPVA.
 
     Join IBGE7 by name+UF. IPI is published as Fundo de Exportação (FPEX).
     """
     tax_key = str(tax or "").strip().upper()
-    if tax_key not in {"ICMS", "IPVA", "IPI"}:
+    if tax_key not in {"ICMS", "IPVA", "IPI", "ROYALTY"}:
         raise ValueError(f"unsupported state PR HTML tax filter: {tax}")
     competence_key = str(competence or "2025-01").strip()[:7]
     if not re.fullmatch(r"\d{4}-\d{2}", competence_key):
@@ -1136,7 +1139,7 @@ def parse_state_pr_html(
     quarantined: list[tuple[dict, str]] = []
     modality = f"{tax_key}_QUOTA"
     # Columns: município, FPM, ICMS bruto, ICMS líquido, FPEX, royalties, IPVA, total.
-    amount_index = {"ICMS": 3, "IPI": 4, "IPVA": 6}[tax_key]
+    amount_index = {"ICMS": 3, "IPI": 4, "ROYALTY": 5, "IPVA": 6}[tax_key]
     for match in re.finditer(r"<tr[^>]*>([\s\S]*?)</tr>", html, re.I):
         cells = [
             re.sub(r"<[^>]+>", "", cell).strip()

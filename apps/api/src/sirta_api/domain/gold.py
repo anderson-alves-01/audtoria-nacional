@@ -325,6 +325,13 @@ PRESENTATION = {
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },
+    "ESTADO-AL-ROYALTY-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Royalties estaduais publicados (AL ativado via coluna Royalties Total "
+            "no XLS dados.al.gov.br). Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
     "ESTADO-PI-IPVA-QUOTA": {
         "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
         "label": (
@@ -397,6 +404,14 @@ PRESENTATION = {
         "label": (
             "Quota-parte de IPI-Exportação/FPEX estadual publicada "
             "(PR ativado via coluna Fundo de Exportação no HTML SEFA). "
+            "Ocorrência para análise, não crédito nem cobrança."
+        ),
+    },
+    "ESTADO-PR-ROYALTY-QUOTA": {
+        "valueKind": "TRANSFER_AMOUNT_AS_PUBLISHED",
+        "label": (
+            "Royalties de petróleo estaduais publicados "
+            "(PR ativado via coluna Royalties no HTML SEFA). "
             "Ocorrência para análise, não crédito nem cobrança."
         ),
     },

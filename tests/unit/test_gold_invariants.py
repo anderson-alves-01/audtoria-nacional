@@ -706,6 +706,15 @@ def test_state_pr_html_joins_name_and_quarantines_territory() -> None:
     assert curitiba_ipi["value"] == 891840.03
     assert len(quarantined_ipi) == 1
     assert presentation_for("ESTADO-PR-IPI-QUOTA")["createsTaxCredit"] is False
+    royalty, quarantined_royalty = parse_state_pr_html(body, tax="ROYALTY", ibge_lookup=lookup)
+    assert len(royalty) == 2
+    cascavel_royalty = next(row for row in royalty if row["ibgeCode"] == "4104808")
+    assert cascavel_royalty["value"] == 17157.76
+    assert cascavel_royalty["modality"] == "ROYALTY_QUOTA"
+    curitiba_royalty = next(row for row in royalty if row["ibgeCode"] == "4106902")
+    assert curitiba_royalty["value"] == 67769.98
+    assert len(quarantined_royalty) == 1
+    assert presentation_for("ESTADO-PR-ROYALTY-QUOTA")["createsTaxCredit"] is False
 
 
 def test_state_pa_icms_verde_xlsx_joins_name_and_quarantines_territory() -> None:
@@ -824,6 +833,15 @@ def test_state_al_xls_native_ibge_and_quarantines_territory() -> None:
     assert presentation_for("ESTADO-AL-ICMS-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-AL-IPVA-QUOTA")["createsTaxCredit"] is False
     assert presentation_for("ESTADO-AL-IPI-QUOTA")["createsTaxCredit"] is False
+    royalty, quarantined_royalty = parse_state_al_xls(body, tax="ROYALTY", competence_year="2021")
+    assert len(royalty) == 2
+    agua_royalty = next(row for row in royalty if row["ibgeCode"] == "2700102")
+    assert agua_royalty["value"] == 17942.32
+    assert agua_royalty["modality"] == "ROYALTY_QUOTA"
+    arapiraca_royalty = next(row for row in royalty if row["ibgeCode"] == "2700300")
+    assert arapiraca_royalty["value"] == 323715.38
+    assert len(quarantined_royalty) == 1
+    assert presentation_for("ESTADO-AL-ROYALTY-QUOTA")["createsTaxCredit"] is False
 
 
 def test_aneel_indqual_aggregates_by_ibge7() -> None:

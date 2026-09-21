@@ -2286,6 +2286,45 @@ sources:
     notes: >
       Mesmo XLS 2015-2021 do ICMS/IPVA. Homologação humana pendente.
 
+  - source_id: ESTADO-AL-ROYALTY-QUOTA
+    name: Royalties estaduais (AL)
+    maintainer: SEPLAG-AL / dados.al.gov.br
+    official_domain: dados.al.gov.br
+    official_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    endpoint: https://dados.al.gov.br/catalogo/dataset/58cf0b6f-4026-449e-8be8-17a9af3670c6/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b/download/repasses_estaduais.xls
+    documentation_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b
+    dataset: ESTADO-AL-ROYALTY-2021
+    dictionary_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    purpose: Transferência estadual de royalties — valores publicados por município
+    legal_basis: Dados abertos oficiais de Alagoas (repasses estaduais)
+    license_terms: Creative Commons Atribuição (portal dados.al.gov.br)
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_al_xls
+    layout_version: state-al-royalty-v1
+    periodicity: annual
+    competence: "2021"
+    granularity: municipality
+    parameters:
+      tax: ROYALTY
+      uf: AL
+      competence_year: "2021"
+      normalize: ibge7_native
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_al_royalty_quota
+    formula: >
+      Valor da coluna Royalties Total do ano no XLS Repasses Estaduais, competência
+      filtrada por ano, município com Código IBGE7 nativo. layout_version
+      distinto evita colisão de checksum com ICMS/IPVA/IPI. Não constitui crédito.
+    methodology_version: official-state-al-royalty-v1
+    notes: >
+      Mesmo XLS 2015-2021 do ICMS/IPVA/IPI. Homologação humana pendente.
+
   - source_id: ESTADO-RN-ICMS-QUOTA
     name: Quota-parte de ICMS estadual (RN)
     maintainer: SEFAZ-RN
@@ -2643,6 +2682,46 @@ sources:
     methodology_version: official-state-pr-ipi-fpex-v1
     notes: >
       Mesmo HTML do ICMS/IPVA (coluna FPEX). Homologação humana pendente.
+
+  - source_id: ESTADO-PR-ROYALTY-QUOTA
+    name: Royalties de petróleo estaduais (PR)
+    maintainer: SEFA/PR / Portal da Transparência
+    official_domain: pr.gov.br
+    official_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
+    endpoint: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/relatorio/rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL
+    documentation_url: https://www.transparencia.pr.gov.br/pte/assunto/4/100?origem=4
+    dataset: ESTADO-PR-ROYALTY-2025-01
+    dictionary_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
+    purpose: Transferência estadual de royalties de petróleo — valores publicados por município
+    legal_basis: Relatório público de repasses SEFA/PR (visão mensal)
+    license_terms: publicação oficial SEFA/PR
+    source_role: OFFICIAL_TRANSFER
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: state_pr_html
+    layout_version: state-pr-royalty-v1
+    periodicity: monthly
+    competence: "2025-01"
+    granularity: municipality
+    parameters:
+      tax: ROYALTY
+      uf: PR
+      competence: "2025-01"
+      normalize: ibge7_name_uf
+      amount_column: Royalties Petroleo
+    authentication: none
+    rate_limit: not_published
+    personal_data: false
+    retention: bronze_immutable
+    indicator: estado_pr_royalty_quota
+    formula: >
+      Valor da coluna Royalties Petróleo no relatório HTML mensal SEFA/PR,
+      competência Param_Data, município via join IBGE7 por nome+UF. Sem ajuste.
+      Não constitui crédito.
+    methodology_version: official-state-pr-royalty-v1
+    notes: >
+      Mesmo HTML do ICMS/IPVA/FPEX (coluna Royalties). Homologação humana pendente.
 
   - source_id: ESTADO-PA-ICMS-VERDE-QUOTA
     name: ICMS Verde — componente ecológico da cota-parte (PA)

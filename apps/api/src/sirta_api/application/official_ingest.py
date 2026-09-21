@@ -394,6 +394,7 @@ def ingest_official_source(
             "IPVA_QUOTA",
             "IPI_QUOTA",
             "CIDE_QUOTA",
+            "ROYALTY_QUOTA",
         }
     ]
     presentation = presentation_for(source.source_id)
