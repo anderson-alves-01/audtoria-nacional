@@ -1,4 +1,7 @@
-ci: pending_push
-tests: 17 passed (unit gold mensais + sectoral enrichment unit/integration)
+ci_green: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35638716985
+ci_green_push: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35638711092
+head: ea0a13cf33282d5dd68b45f81267a14daa379ea3
+feat_commit: 42449e75163ffd0ed66d3ad44c4b53cea4aa008f
+tests_local: 17 passed
 migration: 0093_bcb_olinda_igp_cambio
 version: 0.3.90
