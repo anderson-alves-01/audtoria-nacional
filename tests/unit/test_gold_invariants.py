@@ -1399,6 +1399,39 @@ def test_bcb_olinda_expectativas_parses_ipca_livres_and_servicos() -> None:
     assert silver_servicos[0]["value"] == 5.4427
 
 
+def test_bcb_olinda_expectativas_parses_ipca_administrados_and_alimentacao() -> None:
+    body_admin = Path(
+        "tests/fixtures/official-snapshots/"
+        "bcb-olinda-expectativas-ipca-administrados-anuais-top8.json"
+    ).read_bytes()
+    body_alim = Path(
+        "tests/fixtures/official-snapshots/"
+        "bcb-olinda-expectativas-ipca-alimentacao-anuais-top8.json"
+    ).read_bytes()
+    silver_admin, q_admin = parse_bcb_olinda_expectativas(
+        body_admin,
+        indicator_allowlist=["IPCA Administrados"],
+        max_rows=8,
+        indicator_units={"IPCA Administrados": "PERCENT_PER_YEAR"},
+    )
+    silver_alim, q_alim = parse_bcb_olinda_expectativas(
+        body_alim,
+        indicator_allowlist=["IPCA Alimentação no domicílio"],
+        max_rows=8,
+        indicator_units={"IPCA Alimentação no domicílio": "PERCENT_PER_YEAR"},
+    )
+    assert q_admin == []
+    assert q_alim == []
+    assert len(silver_admin) == 8
+    assert len(silver_alim) == 8
+    assert silver_admin[0]["seriesId"] == "IPCA Administrados"
+    assert silver_alim[0]["seriesId"] == "IPCA Alimentação no domicílio"
+    assert silver_admin[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_alim[0]["unit"] == "PERCENT_PER_YEAR"
+    assert silver_admin[0]["value"] == 4.5661
+    assert silver_alim[0]["value"] == 6.9302
+
+
 def test_epe_anuario_parses_uf_year_scoped_consumers() -> None:
     body = Path(
         "tests/fixtures/official-snapshots/epe-anuario-dados-brutos-ms-2024.csv"
