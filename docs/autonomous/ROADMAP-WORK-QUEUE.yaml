@@ -664,7 +664,7 @@ items:
     evidencia: evidence/releases/0.3.74/
     versao: "0.3.74"
     commit: 74d4b8d
-    ci: null
+    ci: "35600836849"
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA+Selic+Câmbio+
