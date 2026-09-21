@@ -7,7 +7,6 @@ Create Date: 2026-09-21
 
 from alembic import op
 
-
 revision = "0079_bcb_olinda_investimento"
 down_revision = "0078_bcb_olinda_taxa_desocup"
 branch_labels = None
