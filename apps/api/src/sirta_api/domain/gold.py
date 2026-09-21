@@ -562,7 +562,8 @@ PRESENTATION = {
         "label": (
             "Expectativas Focus trimestrais OLINDA do Banco Central "
             "(allowlist IPCA/IPCA Livres/IPCA Serviços/IPCA Administrados/"
-            "IPCA Alimentação/IPCA Bens industrializados/Câmbio/PIB Total). "
+            "IPCA Alimentação/IPCA Bens industrializados/Câmbio/PIB Total/"
+            "PIB Serviços/PIB Agropecuária/PIB Indústria). "
             "Contexto setorial; não constitui crédito tributário."
         ),
     },

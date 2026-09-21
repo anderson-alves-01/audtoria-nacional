@@ -1256,51 +1256,80 @@ def test_bcb_olinda_expectativas_parses_trimestrais_ipca_cambio_pib() -> None:
             "IPCA",
             1.5731,
             "PERCENT_PER_QUARTER",
+            "1/2027",
         ),
         (
             "bcb-olinda-expectativas-ipca-livres-trimestrais-top8.json",
             "IPCA Livres",
             1.8052,
             "PERCENT_PER_QUARTER",
+            "1/2027",
         ),
         (
             "bcb-olinda-expectativas-ipca-servicos-trimestrais-top8.json",
             "IPCA Serviços",
             1.6767,
             "PERCENT_PER_QUARTER",
+            "1/2027",
         ),
         (
             "bcb-olinda-expectativas-ipca-administrados-trimestrais-top8.json",
             "IPCA Administrados",
             1.0629,
             "PERCENT_PER_QUARTER",
+            "1/2027",
         ),
         (
             "bcb-olinda-expectativas-ipca-alimentacao-trimestrais-top8.json",
             "IPCA Alimentação no domicílio",
             3.3157,
             "PERCENT_PER_QUARTER",
+            "1/2027",
         ),
         (
             "bcb-olinda-expectativas-ipca-bens-industrializados-trimestrais-top8.json",
             "IPCA Bens industrializados",
             0.8018,
             "PERCENT_PER_QUARTER",
+            "1/2027",
         ),
         (
             "bcb-olinda-expectativas-cambio-trimestrais-top8.json",
             "Câmbio",
             5.1751,
             "BRL_PER_USD",
+            "1/2027",
         ),
         (
             "bcb-olinda-expectativas-pib-total-trimestrais-top8.json",
             "PIB Total",
             1.3,
             "PERCENT_PER_QUARTER",
+            "1/2027",
+        ),
+        (
+            "bcb-olinda-expectativas-pib-servicos-trimestrais-top8.json",
+            "PIB Serviços",
+            2.3684,
+            "PERCENT_PER_QUARTER",
+            "1/2022",
+        ),
+        (
+            "bcb-olinda-expectativas-pib-agropecuaria-trimestrais-top8.json",
+            "PIB Agropecuária",
+            2.25,
+            "PERCENT_PER_QUARTER",
+            "1/2022",
+        ),
+        (
+            "bcb-olinda-expectativas-pib-industria-trimestrais-top8.json",
+            "PIB Indústria",
+            1.8281,
+            "PERCENT_PER_QUARTER",
+            "1/2022",
         ),
     ]
-    for fixture, series_id, mediana, unit in cases:
+    for fixture, series_id, mediana, unit, horizon in cases:
         body = Path(f"tests/fixtures/official-snapshots/{fixture}").read_bytes()
         silver, quarantined = parse_bcb_olinda_expectativas(
             body,
@@ -1314,7 +1343,7 @@ def test_bcb_olinda_expectativas_parses_trimestrais_ipca_cambio_pib() -> None:
         assert silver[0]["seriesId"] == series_id
         assert silver[0]["unit"] == unit
         assert silver[0]["value"] == mediana
-        assert silver[0]["horizonYear"] == "1/2027"
+        assert silver[0]["horizonYear"] == horizon
         assert "FOCUS_TRIMESTRAL" in silver[0]["transferName"]
     assert presentation_for("BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS")["valueKind"] == (
         "REFERENCE_QUANTITY"

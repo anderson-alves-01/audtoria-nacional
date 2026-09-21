@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.93
+implementation_version: 0.3.94
 roadmap_version: "1.2"
-version: 0.3.93
+version: 0.3.94
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -117,6 +117,7 @@ completed:
     - sectoral_bcb_olinda_expectativas_mensais_ipca_components
     - sectoral_bcb_olinda_expectativas_mensais_ipa_igp_di_inpc
     - sectoral_bcb_olinda_expectativas_trimestrais_ipca_cambio_pib
+    - sectoral_bcb_olinda_expectativas_trimestrais_pib_sectors
 pending:
     - municipal_g0_authorization
     - diagnosis_g1
@@ -228,6 +229,7 @@ gates:
   f3_bcb_olinda_mensais_ipca_comp_local: GO
   f3_bcb_olinda_mensais_ipa_local: GO
   f3_bcb_olinda_trimestrais_local: GO
+  f3_bcb_olinda_trimestrais_pib_sectors_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
@@ -239,6 +241,6 @@ gates:
   cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.93/
-next_action: Prefer expand Trimestrais (PIB Serviços/Agro/Indústria frozen 2021 optional) or remaining UF tabular. Selic/IGP/IPA trimestrais empty at source. Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. BCB OLINDA Expectativas anuais+mensais+trimestrais(IPCA/componentes/Câmbio/PIB Total) ativados. Tesouro COINT municipal package complete. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.94/
+next_action: Prefer remaining UF tabular PUBLIC_OPEN. Selic/IGP/IPA trimestrais empty at source. Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, SC ≤2017, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. BCB OLINDA Expectativas anuais+mensais+trimestrais(IPCA/componentes/Câmbio/PIB Total+setoriais) ativados. Tesouro COINT municipal package complete. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

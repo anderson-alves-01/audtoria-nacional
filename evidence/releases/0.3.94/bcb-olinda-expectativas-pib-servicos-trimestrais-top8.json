@@ -1,0 +1,69 @@
+{
+  "@odata.context": "https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTrimestrais(Indicador,Data,DataReferencia,Media,Mediana,baseCalculo)",
+  "value": [
+    {
+      "Indicador": "PIB Serviços",
+      "Data": "2021-09-13",
+      "DataReferencia": "1/2022",
+      "Media": 2.2441,
+      "Mediana": 2.3684,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Serviços",
+      "Data": "2021-09-13",
+      "DataReferencia": "1/2023",
+      "Media": 2.2179,
+      "Mediana": 2.2859,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Serviços",
+      "Data": "2021-09-13",
+      "DataReferencia": "2/2022",
+      "Media": 1.6979,
+      "Mediana": 2.05,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Serviços",
+      "Data": "2021-09-13",
+      "DataReferencia": "2/2023",
+      "Media": 2.1368,
+      "Mediana": 2.0,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Serviços",
+      "Data": "2021-09-13",
+      "DataReferencia": "3/2021",
+      "Media": 5.3856,
+      "Mediana": 5.4524,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Serviços",
+      "Data": "2021-09-13",
+      "DataReferencia": "3/2022",
+      "Media": 1.8897,
+      "Mediana": 1.7134,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Serviços",
+      "Data": "2021-09-13",
+      "DataReferencia": "4/2021",
+      "Media": 3.8494,
+      "Mediana": 3.65,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Serviços",
+      "Data": "2021-09-13",
+      "DataReferencia": "4/2022",
+      "Media": 1.8026,
+      "Mediana": 1.85,
+      "baseCalculo": 1
+    }
+  ]
+}

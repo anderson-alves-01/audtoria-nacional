@@ -1,0 +1,29 @@
+[
+  {
+    "indicator": "PIB Serviços",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2021-09-13",
+    "firstMediana": 2.3684,
+    "firstRef": "1/2022",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27PIB%20Servi%C3%A7os%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc,DataReferencia%20asc&%24select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "PIB Agropecuária",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2021-09-13",
+    "firstMediana": 2.25,
+    "firstRef": "1/2022",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27PIB%20Agropecu%C3%A1ria%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc,DataReferencia%20asc&%24select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "PIB Indústria",
+    "baseCalculo": 1,
+    "count": 8,
+    "firstData": "2021-09-13",
+    "firstMediana": 1.8281,
+    "firstRef": "1/2022",
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTrimestrais?%24top=8&%24format=json&%24filter=Indicador%20eq%20%27PIB%20Ind%C3%BAstria%27%20and%20baseCalculo%20eq%201&%24orderby=Data%20desc,DataReferencia%20asc&%24select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  }
+]

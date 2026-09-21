@@ -147,6 +147,9 @@ SECTORAL_SOURCES: tuple[dict, ...] = (
             "IPCA Bens industrializados",
             "Câmbio",
             "PIB Total",
+            "PIB Serviços",
+            "PIB Agropecuária",
+            "PIB Indústria",
         ],
     },
     {
@@ -167,7 +170,8 @@ DISCLAIMER = (
     "ANP, ANEEL, EPE, Anatel e CNES ativadas com escopo UF; BCB com allowlist SGS "
     "432/433 e OLINDA Expectativas Focus anuais (IPCA/Selic/Câmbio/PIB Total/PIB Serviços/"
     "IGP-M/IGP-DI/INPC), mensais (IPCA/componentes/IGP-M/Câmbio/IPA-M/IPA-DI/"
-    "IGP-DI/INPC) e trimestrais (IPCA/componentes/Câmbio/PIB Total). "
+    "IGP-DI/INPC) e trimestrais (IPCA/componentes/Câmbio/PIB Total/"
+    "PIB Serviços/Agropecuária/Indústria). "
     "REFERENCE_ENRICHMENT apenas. Não constitui crédito tributário."
 )
 
