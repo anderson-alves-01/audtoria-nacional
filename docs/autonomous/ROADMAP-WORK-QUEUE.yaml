@@ -662,13 +662,14 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.66/
     versao: "0.3.66"
-    commit: null
+    commit: 087fd9a
     ci: null
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (IPCA, max_rows=8)
       TECHNICALLY_APPROVED com fixtures mínimas e Gold REFERENCE_QUANTITY.
       Sem crédito. Homologação humana pendente.
+      Commit: 087fd9a.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
