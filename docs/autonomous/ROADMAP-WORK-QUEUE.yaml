@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.97/
     versao: "0.3.97"
-    commit: null
+    commit: e5e0088
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -688,6 +688,7 @@ items:
       Gold REFERENCE_QUANTITY. Sem crédito. Homologação humana pendente.
       IGP/IPA/INPC trimestrais vazios na fonte.
       Próximo: Top5 OLINDA ou UF tabular PUBLIC_OPEN restante.
+      Commit: e5e0088.
       Ciclo 0.3.97.
 
   - id: F3-SECTORAL-CNES
