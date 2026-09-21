@@ -432,7 +432,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.58/
     versao: "0.3.58"
-    commit: pending
+    commit: 3fd9ae4
     ci: null
     motivo_bloqueio: null
     next_action: >
