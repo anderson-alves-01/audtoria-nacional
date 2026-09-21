@@ -241,12 +241,8 @@ def test_tesouro_coint_cide_fex_wide_csv() -> None:
     assert {row["ibgeCode"] for row in cide} == {"1200013", "1200054"}
     assert sum(row["value"] for row in cide) == 11707.50 + 6940.46
     assert presentation_for("TESOURO-CIDE-VALORES")["createsTaxCredit"] is False
-    assert presentation_for("TESOURO-CIDE-VALORES")["valueKind"] == (
-        "TRANSFER_AMOUNT_AS_PUBLISHED"
-    )
-    fex_body = Path(
-        "tests/fixtures/official-snapshots/tesouro-fex-por-municipio.csv"
-    ).read_bytes()
+    assert presentation_for("TESOURO-CIDE-VALORES")["valueKind"] == ("TRANSFER_AMOUNT_AS_PUBLISHED")
+    fex_body = Path("tests/fixtures/official-snapshots/tesouro-fex-por-municipio.csv").read_bytes()
     fex, fex_q = parse_tesouro_coint_municipio_csv(
         fex_body,
         ibge_lookup=lookup,
@@ -258,9 +254,7 @@ def test_tesouro_coint_cide_fex_wide_csv() -> None:
     assert {row["ibgeCode"] for row in fex} == {"1200013", "1200054"}
     assert sum(row["value"] for row in fex) == 668.85 + 668.85
     assert presentation_for("TESOURO-FEX-VALORES")["createsTaxCredit"] is False
-    assert presentation_for("TESOURO-FEX-VALORES")["valueKind"] == (
-        "TRANSFER_AMOUNT_AS_PUBLISHED"
-    )
+    assert presentation_for("TESOURO-FEX-VALORES")["valueKind"] == ("TRANSFER_AMOUNT_AS_PUBLISHED")
 
 
 def test_state_pe_csv_joins_ibge_and_publishes_zero_ipva() -> None:
