@@ -664,7 +664,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.90/
     versao: "0.3.90"
-    commit: null
+    commit: 42449e7
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -675,7 +675,8 @@ items:
       silverCount=24) TECHNICALLY_APPROVED. Gold REFERENCE_QUANTITY. Sem
       crédito. Homologação humana pendente. Próximo: IPCA Livres/Serviços/
       Administrados/Alimentação/Bens industrializados mensais ou
-      ExpectativasMercadoTrimestrais; UF tabular quando publicada.
+      ExpectativasMercadoTrimestrais; UF tabular quando publicada. Commit:
+      42449e7.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
