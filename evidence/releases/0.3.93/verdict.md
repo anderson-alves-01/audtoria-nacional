@@ -14,6 +14,7 @@ com allowlist IPCA + componentes Focus + Câmbio + PIB Total (`baseCalculo=1`).
   (Data 2026-09-18)
 - Layout `bcb-olinda-expectativas-trimestrais-v1`; silverCount 64
 - Migration: `0096_bcb_olinda_trimestrais` -> implementation_version `0.3.93`
+- Commit: `334efe5`
 - Gold REFERENCE_QUANTITY; createsTaxCredit=false
 - Selic/IGP/IPA/INPC trimestrais vazios na fonte; PIB setoriais congelados 2021 fora
 - Sem carga nacional; sem credito

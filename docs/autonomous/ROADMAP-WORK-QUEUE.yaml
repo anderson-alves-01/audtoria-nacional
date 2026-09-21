@@ -665,7 +665,7 @@ items:
     testes: true
     evidencia: evidence/releases/0.3.93/
     versao: "0.3.93"
-    commit: null
+    commit: 334efe5
     ci: null
     motivo_bloqueio: null
     next_action: >
@@ -682,6 +682,7 @@ items:
       Selic/IGP/IPA/INPC trimestrais vazios na fonte; PIB Serviços/Agro/Indústria
       congelados em 2021-09-13 — fora desta fatia.
       Próximo: expandir trimestrais ou UF tabular quando publicada.
+      Commit: 334efe5.
 
   - id: F3-SECTORAL-CNES
     fase: F3.2
