@@ -665,7 +665,7 @@ items:
     evidencia: evidence/releases/0.3.97/
     versao: "0.3.97"
     commit: e5e0088
-    ci: null
+    ci: "35657016511"
     motivo_bloqueio: null
     next_action: >
       SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
@@ -689,6 +689,7 @@ items:
       IGP/IPA/INPC trimestrais vazios na fonte.
       Próximo: Top5 OLINDA ou UF tabular PUBLIC_OPEN restante.
       Commit: e5e0088.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35657016511.
       Ciclo 0.3.97.
 
   - id: F3-SECTORAL-CNES
