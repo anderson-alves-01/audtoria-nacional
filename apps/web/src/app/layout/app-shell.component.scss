@@ -1,0 +1,256 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  color: var(--text);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.app-shell.is-collapsed {
+  grid-template-columns: var(--sidebar-collapsed) minmax(0, 1fr);
+}
+
+.sidebar {
+  background: var(--primary-900);
+  color: #fff;
+  padding: 0.85rem 0.7rem 1.5rem;
+  overflow: auto;
+}
+
+.brand-row,
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.brand {
+  color: #fff;
+  text-decoration: none;
+  min-height: 2.5rem;
+}
+
+.brand strong,
+.brand small {
+  display: block;
+  line-height: 1.1;
+}
+
+.brand small {
+  opacity: 0.75;
+  font-size: 0.75rem;
+}
+
+.mark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: var(--teal-600);
+  font-weight: 700;
+}
+
+.icon-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: inherit;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sidebar .icon-btn {
+  margin-left: auto;
+  color: #fff;
+}
+
+.icon-btn svg,
+.icon-btn path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.icon-btn svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.nav-group {
+  margin-top: 0.85rem;
+}
+
+.group-toggle {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  border: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.25rem 0.2rem;
+}
+
+.nav-group ul {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+}
+
+.nav-group a {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.1rem;
+  padding: 0.25rem 0.4rem;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+.nav-group a.is-active {
+  background: #fff;
+  color: var(--primary-900);
+  font-weight: 700;
+}
+
+.dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 99px;
+  background: var(--gold-500);
+  flex: none;
+}
+
+.workspace {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.crumbs {
+  display: flex;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.context-chip,
+.profile,
+.alerts,
+.env {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.alerts {
+  text-decoration: none;
+  color: var(--primary-700);
+  font-weight: 700;
+}
+
+.search input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 2.25rem;
+  padding: 0 0.6rem;
+  font: inherit;
+}
+
+.env {
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 0.1rem 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.context-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  padding: 0.45rem 1rem;
+  background: #eef3f8;
+  color: var(--primary-700);
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.content {
+  padding: 1.25rem 1.5rem 2rem;
+  min-width: 0;
+}
+
+.mobile-only {
+  display: none;
+}
+
+.backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .app-shell,
+  .app-shell.is-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: inline-grid;
+    place-items: center;
+    border-color: var(--border);
+    color: var(--primary-900);
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(84vw, 320px);
+    z-index: 30;
+    transform: translateX(-105%);
+  }
+
+  .nav-open .sidebar {
+    transform: none;
+  }
+
+  .nav-open .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    border: 0;
+    background: rgba(11, 31, 58, 0.45);
+    z-index: 25;
+  }
+}

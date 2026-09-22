@@ -1,37 +1,104 @@
-<section aria-labelledby="sectoral-enrichment-title">
-  <h1 id="sectoral-enrichment-title">Enriquecimento setorial</h1>
-  <p>
-    Fontes oficiais ANP, ANEEL, EPE, Anatel, BCB e CNES como REFERENCE_ENRICHMENT.
-    ANP, ANEEL, EPE e Anatel podem ser ingeridas com escopo UF via catálogo; CNES
-    permanece bloqueada. Sem crédito tributário.
-  </p>
-  @if (state === 'loading') {
-    <p role="status">Carregando enriquecimento setorial…</p>
-  }
-  @if (state === 'empty') {
-    <p role="status" class="estimate">{{ disclaimer }}</p>
-    <p>
-      Versão {{ version }}. Status institucional: {{ institutionalStatus }}.
-      Ingestão habilitada: {{ ingestEnabled ? 'sim' : 'não' }}.
-      Cria crédito: {{ createsTaxCredit ? 'sim' : 'não' }}.
+<section class="sectoral" aria-labelledby="sectoral-title">
+  <header>
+    <p class="kicker">Inteligência Fiscal</p>
+    <h1 id="sectoral-title">Inteligência Setorial</h1>
+    <p class="subtitle">Enriquecimento setorial</p>
+    <p class="notice">
+      Dados setoriais são referências de contexto e cruzamento. Não constituem crédito tributário nem
+      autorizam cobrança.
     </p>
-    <ul>
-      @for (row of sources; track row.sourceId) {
-        <li class="estimate">
-          <strong>{{ row.sourceId }}</strong>
-          <span>
-            — {{ row.maintainer }} · {{ row.status }} ·
-            {{ row.structuredOfficialSource }} ·
-            ingestAllowed={{ row.ingestAllowed }}
-          </span>
+  </header>
+
+  <form class="filters" aria-label="Filtros setoriais">
+    <label>UF <input type="text" value="conforme a API" readonly /></label>
+    <label>Município <input type="text" value="não publicado nesta API" readonly /></label>
+    <label>Competência <input type="text" value="não publicada nesta API" readonly /></label>
+    <label>
+      Setor
+      <select [(ngModel)]="selectedSector" name="setor">
+        @for (sector of sectors; track sector.id) {
+          <option [value]="sector.id">{{ sector.label }}</option>
+        }
+      </select>
+    </label>
+    <label>Fonte <input name="fonte" [(ngModel)]="sourceQuery" type="search" /></label>
+    <label>Qualidade <input type="text" [value]="institutionalStatus || '—'" readonly /></label>
+    <label>Homologação <input type="text" value="referência · sem crédito" readonly /></label>
+  </form>
+
+  @if (state === 'loading') {
+    <app-skeleton />
+  }
+
+  @if (state === 'error') {
+    <app-error-state
+      [message]="errorMessage"
+      [correlationId]="correlationId"
+      [retry]="true"
+      (retried)="load()"
+    />
+  }
+
+  @if (state === 'empty' || state === 'ok') {
+    <section class="kpis" aria-label="Cobertura setorial">
+      <app-kpi-card label="Fontes catalogadas" [value]="'' + sources.length" [meta]="'versão ' + version" />
+      <app-kpi-card label="Indicadores Gold" value="—" meta="série só quando a API publicar itens" />
+      <app-kpi-card label="Qualidade técnica" [value]="'' + approvedCount" meta="TECHNICALLY_APPROVED" />
+      <app-kpi-card label="Municípios" value="—" meta="não publicado nesta API" />
+    </section>
+
+    <p>
+      Ingestão habilitada: {{ ingestEnabled ? 'sim' : 'não' }}. Cria crédito:
+      {{ createsTaxCredit ? 'sim' : 'não' }}.
+    </p>
+
+    @if (state === 'empty') {
+      <app-empty-state
+        title="Sem série Gold setorial neste recorte"
+        [reason]="disclaimer || 'Catálogo de referência sem itens publicados.'"
+        hint="A série histórica, o ranking e o mapa permanecem vazios até haver Gold autorizado. O catálogo abaixo não é crédito."
+      />
+    } @else {
+      <p role="status">Há itens carregados (estado inesperado nesta fatia).</p>
+    }
+
+    <div class="tabs" role="tablist" aria-label="Setores">
+      @for (sector of sectors; track sector.id) {
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="selectedSector === sector.id"
+          [class.is-active]="selectedSector === sector.id"
+          (click)="selectedSector = sector.id"
+        >
+          {{ sector.label }}
+        </button>
+      }
+    </div>
+
+    <ul class="cards">
+      @for (row of visibleSources; track row.sourceId) {
+        <li>
+          <article>
+            <h2>{{ sectorLabel(row.sourceId) }}</h2>
+            <p><strong>{{ row.sourceId }}</strong></p>
+            <p>{{ row.maintainer }} · {{ row.status }}</p>
+            <p>{{ row.structuredOfficialSource }}</p>
+            <button type="button" (click)="openEvidence(row)">Evidência</button>
+          </article>
         </li>
       }
     </ul>
-  }
-  @if (state === 'ok') {
-    <p role="status">Há itens carregados (estado inesperado nesta fatia).</p>
-  }
-  @if (state === 'error') {
-    <p role="alert">{{ errorMessage }}</p>
+
+    <app-evidence-drawer [open]="evidenceOpen" (closed)="evidenceOpen = false">
+      @if (selected) {
+        <p>Órgão {{ selected.maintainer }}</p>
+        <p>Dataset {{ selected.sourceId }}</p>
+        <p>Qualidade {{ selected.status }}</p>
+        <p>Origem estruturada {{ selected.structuredOfficialSource }}</p>
+        <p>Flag operacional de carga: {{ selected.ingestAllowed ? 'permitida no catálogo' : 'bloqueada no catálogo' }}</p>
+        <p>Status institucional {{ institutionalStatus }}</p>
+      }
+    </app-evidence-drawer>
   }
 </section>

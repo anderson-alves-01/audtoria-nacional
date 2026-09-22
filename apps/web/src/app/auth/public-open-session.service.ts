@@ -53,6 +53,18 @@ export class PublicOpenSessionService {
     };
   }
 
+  peek(): PublicOpenSession | null {
+    if (this.session && !this.isExpired(this.session)) {
+      return this.session;
+    }
+    const cached = this.readCache();
+    if (cached && !this.isExpired(cached)) {
+      this.session = cached;
+      return cached;
+    }
+    return null;
+  }
+
   private readCache(): PublicOpenSession | null {
     try {
       const raw = sessionStorage.getItem(STORAGE_KEY);

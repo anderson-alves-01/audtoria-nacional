@@ -1,0 +1,97 @@
+<a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+
+<div class="app-shell" [class.is-collapsed]="collapsed" [class.nav-open]="mobileOpen">
+  @if (mobileOpen) {
+    <button type="button" class="backdrop" aria-label="Fechar menu" (click)="mobileOpen = false"></button>
+  }
+
+  <aside class="sidebar" aria-label="Navegação principal">
+    <div class="brand-row">
+      <a class="brand" routerLink="/executivo">
+        <span class="mark" aria-hidden="true">S</span>
+        @if (!collapsed) {
+          <span>
+            <strong>SIRTA</strong>
+            <small>Municipal</small>
+          </span>
+        }
+      </a>
+      <button type="button" class="icon-btn desktop-only" (click)="collapsed = !collapsed" [attr.aria-pressed]="collapsed" aria-label="Recolher ou expandir menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h16" /></svg>
+      </button>
+    </div>
+
+    @for (group of visibleGroups(); track group.id) {
+      <section class="nav-group">
+        <button
+          type="button"
+          class="group-toggle"
+          [attr.aria-expanded]="expanded.has(group.id)"
+          (click)="toggleGroup(group.id)"
+        >
+          @if (!collapsed) {
+            <span>{{ group.label }}</span>
+          } @else {
+            <span class="sr">{{ group.label }}</span>
+          }
+        </button>
+        @if (expanded.has(group.id)) {
+          <ul>
+            @for (link of group.links; track link.path) {
+              <li>
+                <a
+                  [routerLink]="link.path"
+                  routerLinkActive="is-active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  [attr.title]="collapsed ? link.label : null"
+                >
+                  <span class="dot" aria-hidden="true"></span>
+                  @if (!collapsed) {
+                    <span>{{ link.label }}</span>
+                  } @else {
+                    <span class="sr">{{ link.label }}</span>
+                  }
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <button type="button" class="icon-btn mobile-only" (click)="mobileOpen = !mobileOpen" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+      </button>
+      <nav class="crumbs" aria-label="Trilha">
+        <span>{{ groupLabel }}</span>
+        <span aria-hidden="true">/</span>
+        <span>{{ breadcrumb }}</span>
+      </nav>
+      <p class="context-chip">Território <strong>{{ territoryLabel }}</strong></p>
+      <p class="context-chip">Finalidade <strong>{{ purposeLabel }}</strong></p>
+      <label class="search">
+        <span class="sr">Buscar na navegação</span>
+        <input type="search" placeholder="Buscar módulo" [value]="query" (input)="query = $any($event.target).value" />
+      </label>
+      <a class="alerts" routerLink="/notificacoes">Alertas</a>
+      <p class="profile">{{ profileLabel }}</p>
+      @if (localBadge) {
+        <span class="env">local</span>
+      }
+    </header>
+
+    <div class="context-bar">
+      <span>Atualização conforme a API do painel</span>
+      <span>Fonte oficial catalogada</span>
+      <span>Qualidade exibida no painel</span>
+      <span>Homologação de referência · sem crédito</span>
+    </div>
+
+    <main id="conteudo-principal" class="content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

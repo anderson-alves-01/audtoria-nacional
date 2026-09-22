@@ -1,3 +1,30 @@
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../node_modules/@fontsource/source-sans-3/files/source-sans-3-latin-400-normal.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../node_modules/@fontsource/source-sans-3/files/source-sans-3-latin-600-normal.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../node_modules/@fontsource/source-sans-3/files/source-sans-3-latin-700-normal.woff2")
+    format("woff2");
+}
+
 *,
 *::before,
 *::after {
@@ -5,12 +32,22 @@
 }
 
 :root {
-  --sirta-ink: #12202d;
-  --sirta-teal: #0f6a6a;
-  --sirta-teal-deep: #0b3d44;
-  --sirta-sand: #e8eef1;
-  --sirta-surface: #ffffff;
-  --sirta-muted: #5a6b76;
+  --primary-900: #0b1f3a;
+  --primary-700: #163d63;
+  --teal-600: #0e7490;
+  --green-600: #16845b;
+  --gold-500: #c7962d;
+  --orange-600: #c96820;
+  --red-600: #b63a48;
+  --surface: #ffffff;
+  --background: #f4f7fb;
+  --text: #172033;
+  --muted: #667085;
+  --border: #dde3ec;
+  --sidebar: 264px;
+  --sidebar-collapsed: 80px;
+  --shadow: 0 8px 24px rgba(11, 31, 58, 0.06);
+  --radius: 12px;
 }
 
 html,
@@ -20,30 +57,47 @@ body {
 }
 
 body {
-  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
-  background:
-    radial-gradient(circle at top right, rgba(15, 106, 106, 0.08), transparent 40%),
-    linear-gradient(180deg, #f7fafb 0%, var(--sirta-sand) 100%);
-  color: var(--sirta-ink);
+  background: var(--background);
+  color: var(--text);
 }
 
 a {
-  color: var(--sirta-teal-deep);
+  color: var(--primary-700);
 }
 
-main section {
-  padding: 1.5rem;
-  max-width: 72rem;
+:focus-visible {
+  outline: 2px solid var(--teal-600);
+  outline-offset: 2px;
 }
 
-main h1 {
-  margin: 0 0 0.75rem;
-  font-size: 1.75rem;
-  line-height: 1.25;
-  color: var(--sirta-teal-deep);
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
-main p {
-  margin: 0 0 0.75rem;
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  transform: translateY(-150%);
+  z-index: 40;
+  background: var(--primary-900);
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

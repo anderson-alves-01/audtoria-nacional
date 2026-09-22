@@ -1,9 +1,84 @@
-section {
-  max-width: 48rem;
-  padding: 1.5rem;
+.sectoral {
+  display: grid;
+  gap: 1rem;
 }
 
-.estimate {
-  border-left: 4px solid #b45309;
-  padding-left: 0.5rem;
+.kicker {
+  margin: 0;
+  color: var(--teal-600);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0.15rem 0;
+  color: var(--primary-900);
+}
+
+.subtitle,
+.notice {
+  margin: 0;
+}
+
+.notice {
+  color: var(--primary-700);
+  background: #fff8ea;
+  border: 1px solid #ead7a4;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+}
+
+.filters,
+.kpis,
+.tabs,
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.filters label {
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.filters input,
+.filters select,
+.tabs button,
+.cards button {
+  font: inherit;
+  min-height: 2.25rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 0 0.55rem;
+}
+
+.tabs button.is-active {
+  background: var(--primary-900);
+  color: #fff;
+  border-color: var(--primary-900);
+}
+
+.cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cards article {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem;
+  min-width: 14rem;
+}
+
+.cards h2 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--primary-900);
 }

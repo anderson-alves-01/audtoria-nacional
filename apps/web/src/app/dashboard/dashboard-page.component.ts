@@ -2,10 +2,14 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EChartsOption } from 'echarts';
-import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
-import { Subscription, switchMap, from, catchError, of } from 'rxjs';
+import { Subscription, catchError, from, of, switchMap } from 'rxjs';
 import { PublicOpenSessionService } from '../auth/public-open-session.service';
+import { ChartCardComponent, ChartSeriesInput } from '../shared/charts/chart-card.component';
+import { EvidenceDrawerComponent } from '../shared/evidence/evidence-drawer.component';
+import { EmptyStateComponent } from '../shared/states/empty-state.component';
+import { ErrorStateComponent } from '../shared/states/error-state.component';
+import { SkeletonComponent } from '../shared/states/skeleton.component';
+import { KpiCardComponent } from '../shared/ui/kpi-card.component';
 
 export type DashboardViewState = 'loading' | 'empty' | 'ok' | 'partial' | 'error';
 
@@ -76,7 +80,10 @@ interface ChartView {
   id: string;
   title: string;
   summary: string;
-  options: EChartsOption;
+  unit: string;
+  valueKind: string;
+  chartType: 'line' | 'bar';
+  series: ChartSeriesInput;
 }
 
 interface DashboardResponse {
@@ -95,8 +102,15 @@ interface DashboardResponse {
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [CommonModule, NgxEchartsDirective],
-  providers: [provideEcharts()],
+  imports: [
+    CommonModule,
+    KpiCardComponent,
+    ChartCardComponent,
+    EmptyStateComponent,
+    ErrorStateComponent,
+    SkeletonComponent,
+    EvidenceDrawerComponent,
+  ],
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.scss',
 })
@@ -117,6 +131,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   kpis: DashboardKpi[] = [];
   chartViews: ChartView[] = [];
   errorMessage = '';
+  correlationId = '';
   commandsDisabled = true;
   lineageOpen = false;
 
@@ -168,6 +183,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     this.kpis = [];
     this.chartViews = [];
     this.errorMessage = '';
+    this.correlationId = '';
     this.lineageOpen = false;
     this.commandsDisabled = true;
   }
@@ -192,6 +208,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   }
 
   private applyError(err: HttpErrorResponse): void {
+    this.correlationId = err.headers?.get('x-trace-id') || err.headers?.get('x-correlation-id') || '';
     if (err.status === 401 || err.status === 403) {
       this.errorMessage =
         'Não autorizado a carregar o painel. Sessão PUBLIC_OPEN ausente ou inválida.';
@@ -203,32 +220,16 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   private toChartView(chart: DashboardChart): ChartView {
     const series = chart.series?.[0];
-    const categories = series?.points?.map((point) => point.x) || [];
-    const values = series?.points?.map((point) => point.y) || [];
-    const summary = `${chart.title}: ${values.length} pontos; valueKind ${chart.valueKind}.`;
-    const options: EChartsOption = {
-      color: ['#0f6a6a', '#1b4f72', '#b45309'],
-      tooltip: { trigger: 'axis' },
-      grid: { left: 48, right: 16, top: 28, bottom: 48 },
-      xAxis: {
-        type: 'category',
-        data: categories,
-        axisLabel: { color: '#3d4f5c', rotate: categories.length > 6 ? 35 : 0 },
-      },
-      yAxis: {
-        type: 'value',
-        axisLabel: { color: '#3d4f5c' },
-        splitLine: { lineStyle: { color: '#d7e2e8' } },
-      },
-      series: [
-        {
-          name: series?.name || chart.title,
-          type: chart.type === 'line' ? 'line' : 'bar',
-          data: values,
-          barMaxWidth: 36,
-        },
-      ],
+    const points = series?.points || [];
+    const summary = `${chart.title}: ${points.length} pontos; valueKind ${chart.valueKind}.`;
+    return {
+      id: chart.id,
+      title: chart.title,
+      summary,
+      unit: chart.unit,
+      valueKind: chart.valueKind,
+      chartType: chart.type === 'line' ? 'line' : 'bar',
+      series: { name: series?.name || chart.title, points },
     };
-    return { id: chart.id, title: chart.title, summary, options };
   }
 }

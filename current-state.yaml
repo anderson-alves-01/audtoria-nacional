@@ -1,6 +1,7 @@
 project: auditoria-nacional
 spec_version: 0.3.0
 implementation_version: 0.3.101
+frontend_version: "0.4.0"
 roadmap_version: "1.2"
 version: 0.3.101
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -23,6 +24,9 @@ completed:
     - fifteen_official_dashboards_empty_when_unauthored
     - human_validation_reference_only_public_open
     - premium_dashboards_charts_kpis_from_gold
+    - professional_ui_v1_shell
+    - professional_ui_v1_shell
+
     - ingest_structured_observability
     - regulatory_lc214_document_ingest
     - portal_transparencia_credential_catalog_stub
@@ -256,6 +260,6 @@ gates:
   terraform_prod_apply: GO
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.99/
-next_action: PROD PUBLIC_OPEN Gold ingested (IBGE/SICONFI/Tesouro FPM) under reference-only authorization. Executivo/Financeiro/Transferencias publish kpis/charts. No credit. No merge to main.
+evidence: evidence/releases/0.4.0/ui/
+next_action: Professional UI v1 on feat/professional-ui-v1. API implementation remains 0.3.101. No merge, no deploy.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md
