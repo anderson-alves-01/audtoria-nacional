@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.98
+implementation_version: 0.3.101
 roadmap_version: "1.2"
-version: 0.3.98
+version: 0.3.101
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -21,6 +21,8 @@ completed:
     - tesouro_fpm_monthly_csv_connector
     - siconfi_rreo_dca_partitioned_connector
     - fifteen_official_dashboards_empty_when_unauthored
+    - human_validation_reference_only_public_open
+    - premium_dashboards_charts_kpis_from_gold
     - ingest_structured_observability
     - regulatory_lc214_document_ingest
     - portal_transparencia_credential_catalog_stub
@@ -249,10 +251,11 @@ gates:
   cloud_access: AUTHORIZED_PROD_APPLY_2026-09-21
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
   doc_homologation_package: TECH_COMPLETE
+  human_validation_reference_only: GO
   terraform_prod_stack_code: GO
   terraform_prod_apply: GO
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
-evidence: evidence/ops/PROD-APPLY-G10.md
-next_action: AWS PROD infra applied (sa-east-1 account 332380491162) with PUBLIC_OPEN smoke OK. Gold human validation not requested. Institutional G0/G1/G9/G10 ops remain blocked. No merge to main.
+evidence: evidence/releases/0.3.99/
+next_action: PROD PUBLIC_OPEN Gold ingested (IBGE/SICONFI/Tesouro FPM) under reference-only authorization. Executivo/Financeiro/Transferencias publish kpis/charts. No credit. No merge to main.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

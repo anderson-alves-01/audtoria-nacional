@@ -2,6 +2,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { PublicOpenSessionService } from '../auth/public-open-session.service';
 import { DashboardPageComponent } from './dashboard-page.component';
 
 describe('DashboardPageComponent', () => {
@@ -11,22 +13,33 @@ describe('DashboardPageComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: ActivatedRoute, useValue: { snapshot: { data: { dashboardId: 'transferencias' } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: { data: of({ dashboardId: 'transferencias' }) },
+        },
+        {
+          provide: PublicOpenSessionService,
+          useValue: {
+            ensureSession: () => Promise.resolve(),
+            authHeaders: () => null,
+          },
+        },
       ],
     }).compileComponents();
   });
 
-  it('shows empty official state without synthetic values', () => {
+  it('shows empty official state without synthetic values', async () => {
     const fixture = TestBed.createComponent(DashboardPageComponent);
-    const http = TestBed.inject(HttpTestingController);
+    const httpCtrl = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
-    http.expectOne('/v1/dashboards/transferencias').flush({
+    await fixture.whenStable();
+    httpCtrl.expectOne('/v1/dashboards/transferencias').flush({
       title: 'Transferências',
-      banner: 'DADOS DE FONTE OFICIAL — PROCESSAMENTO TÉCNICO CONCLUÍDO — HOMOLOGAÇÃO HUMANA PENDENTE',
+      banner: 'DADOS DE FONTE OFICIAL — REFERÊNCIA HUMANAMENTE VALIDADA — NÃO É CRÉDITO TRIBUTÁRIO',
       emptyReason: 'Somente valores oficiais publicados. Dicionário FPM não é valor transferido.',
       published: false,
       commandsDisabled: true,
-      homologationStatus: 'REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION',
+      homologationStatus: 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY',
       items: [],
       emptySources: [
         {
@@ -35,45 +48,72 @@ describe('DashboardPageComponent', () => {
           status: 'EMPTY',
         },
       ],
+      kpis: [],
+      charts: [],
     });
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Dicionário FPM não é valor transferido');
     expect(fixture.nativeElement.textContent).toContain('TESOURO-FPM-VALORES');
-    expect(fixture.nativeElement.textContent).toContain('Homologação');
+    expect(fixture.nativeElement.textContent).toContain('Painel aberto');
+    expect(fixture.nativeElement.textContent).toContain('não é crédito tributário');
     expect(fixture.nativeElement.textContent).toContain('Comandos de cobrança');
     expect(fixture.nativeElement.textContent).not.toContain('R$');
-    http.verify();
+    fixture.destroy();
+    httpCtrl.verify();
   });
 
-  it('shows lineage when official gold is published', () => {
+  it('shows lineage when official gold is published', async () => {
     const fixture = TestBed.createComponent(DashboardPageComponent);
-    const http = TestBed.inject(HttpTestingController);
+    const httpCtrl = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
-    http.expectOne('/v1/dashboards/transferencias').flush({
+    await fixture.whenStable();
+    httpCtrl.expectOne('/v1/dashboards/transferencias').flush({
       title: 'Transferências',
-      banner: 'DADOS DE FONTE OFICIAL — PROCESSAMENTO TÉCNICO CONCLUÍDO — HOMOLOGAÇÃO HUMANA PENDENTE',
+      banner: 'DADOS DE FONTE OFICIAL — REFERÊNCIA HUMANAMENTE VALIDADA — NÃO É CRÉDITO TRIBUTÁRIO',
       emptyReason: 'Somente valores oficiais publicados.',
       published: true,
       commandsDisabled: true,
-      homologationStatus: 'REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION',
+      homologationStatus: 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY',
       emptySources: [],
+      kpis: [
+        {
+          id: 'kpi-1',
+          label: 'FPM',
+          value: 1000,
+          unit: 'BRL',
+          valueKind: 'TRANSFER_AMOUNT_AS_PUBLISHED',
+          sourceId: 'TESOURO-FPM-VALORES',
+          evidenceId: 'g1',
+        },
+      ],
+      charts: [
+        {
+          id: 'coverage-by-source',
+          title: 'Cobertura por fonte oficial',
+          type: 'bar',
+          unit: 'COUNT',
+          valueKind: 'REFERENCE_QUANTITY',
+          series: [{ name: 'Cobertura', points: [{ x: 'TESOURO-FPM-VALORES', y: 2 }] }],
+          evidenceIds: ['g1'],
+        },
+      ],
       items: [
         {
-          sourceId: 'TESOURO-TRANSPARENTE',
-          indicator: 'tesouro_constitutional_transfer_types',
+          sourceId: 'TESOURO-FPM-VALORES',
+          indicator: 'fpm_published',
           maintainer: 'Tesouro Nacional',
-          dataset: 'TESOURO-TRANSFERENCIAS-DICIONARIO',
+          dataset: 'TESOURO-FPM',
           competence: '2026',
-          formula: 'Lista publicada.',
-          methodologyVersion: 'official-tesouro-transfer-types-v1',
-          coverageCount: 1,
+          formula: 'Soma publicada.',
+          methodologyVersion: 'official-fpm-v1',
+          coverageCount: 2,
           qualityLevel: 'TECHNICALLY_VALIDATED',
-          homologationStatus: 'REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION',
+          homologationStatus: 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY',
           officialUrl: 'https://www.tesourotransparente.gov.br/',
           quarantinedCount: 0,
-          numericTotal: null,
-          valueKind: 'CATALOG_METADATA',
-          financial: false,
+          numericTotal: 1000,
+          valueKind: 'TRANSFER_AMOUNT_AS_PUBLISHED',
+          financial: true,
           lineageLineCount: 1,
           lineage: {
             bronzeSha256: 'abc',
@@ -84,9 +124,16 @@ describe('DashboardPageComponent', () => {
       ],
     });
     fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.textContent).toContain('Cobertura por fonte oficial');
+    expect(fixture.nativeElement.textContent).toContain('Fontes e lineage');
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button.linkish');
+    button.click();
+    fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Lineage');
     expect(fixture.nativeElement.textContent).toContain('landing/manifest.json');
     expect(fixture.nativeElement.textContent).toContain('linhas 1');
-    http.verify();
+    fixture.destroy();
+    httpCtrl.verify();
   });
 });

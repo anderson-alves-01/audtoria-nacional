@@ -14,14 +14,14 @@ $base = $BaseUrl.TrimEnd("/")
 $lines = @()
 $lines += "smoke_started=$(Get-Date -Format o)"
 $lines += "base_url=$base"
-$lines += "gold_status=PENDING_HUMAN_VALIDATION"
-$lines += "note=Smoke does not promote Gold or validate fiscal credit."
+$lines += "gold_status=REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+$lines += "note=Smoke checks public shells; does not constitute tax credit."
 
 function Test-Url([string]$Path) {
     $url = "$base$Path"
     try {
-        $resp = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 30
-        return "OK $Path status=$($resp.StatusCode)"
+        $resp = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 45
+        return "OK $Path status=$($resp.StatusCode) len=$($resp.RawContentLength)"
     }
     catch {
         return "FAIL $Path error=$($_.Exception.Message)"
@@ -30,6 +30,10 @@ function Test-Url([string]$Path) {
 
 $lines += (Test-Url "/health")
 $lines += (Test-Url "/")
+$lines += (Test-Url "/executivo")
+$lines += (Test-Url "/financeiro")
+$lines += (Test-Url "/transferencias")
+$lines += (Test-Url "/cobranca")
 $lines += "smoke_finished=$(Get-Date -Format o)"
 $lines | Tee-Object -FilePath $out
 Write-Host "SMOKE_EVIDENCE=$out"

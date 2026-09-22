@@ -1,0 +1,3 @@
+api=arn:aws:ecs:sa-east-1:332380491162:task-definition/sirta-prod-api:4
+web=arn:aws:ecs:sa-east-1:332380491162:task-definition/sirta-prod-web:4
+STABLE

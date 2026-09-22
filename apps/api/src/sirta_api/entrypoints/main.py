@@ -24,6 +24,7 @@ from sirta_api.entrypoints.payments_panel import router as payments_panel_router
 from sirta_api.entrypoints.pilot_readiness import router as pilot_readiness_router
 from sirta_api.entrypoints.pipeline import router as pipeline_router
 from sirta_api.entrypoints.procuradoria_panel import router as procuradoria_panel_router
+from sirta_api.entrypoints.public_open_session import router as public_open_session_router
 from sirta_api.entrypoints.regulatory import router as regulatory_router
 from sirta_api.entrypoints.sectoral_enrichment import router as sectoral_enrichment_router
 from sirta_api.entrypoints.state_transfers import router as state_transfers_router
@@ -49,6 +50,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     application.include_router(health_router)
+    application.include_router(public_open_session_router)
     application.include_router(tax_credit_router)
     application.include_router(pipeline_router)
     application.include_router(transfer_router)

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import {
+  APP_DASHBOARD_NAV,
   APP_IMPLEMENTATION_VERSION,
-  APP_NAV_GROUPS,
   APP_STATUS_LINE,
+  APP_UTILITY_NAV,
 } from './app.shell';
 
 @Component({
@@ -17,5 +18,6 @@ export class AppComponent {
   readonly title = 'SIRTA Municipal';
   readonly implementationVersion = APP_IMPLEMENTATION_VERSION;
   readonly statusLine = APP_STATUS_LINE;
-  readonly navGroups = APP_NAV_GROUPS;
+  readonly dashboardNav = APP_DASHBOARD_NAV;
+  readonly utilityNav = APP_UTILITY_NAV;
 }

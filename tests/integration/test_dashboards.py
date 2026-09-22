@@ -30,7 +30,7 @@ def test_fifteen_dashboards_are_empty_without_synthetic_fill(api_client) -> None
         assert item["roiCalculated"] is False
         assert item["taxPotentialAsCredit"] is False
         assert item["commandsDisabled"] is True
-        assert item["homologationStatus"] == "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        assert item["homologationStatus"] == "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     for catalog in DASHBOARDS:
         detail = api_client.get(f"/v1/dashboards/{catalog['id']}", headers=_analyst())
         assert detail.status_code == 200
@@ -38,19 +38,38 @@ def test_fifteen_dashboards_are_empty_without_synthetic_fill(api_client) -> None
         assert body_detail["createsTaxCredit"] is False
         assert body_detail["commandsDisabled"] is True
         assert body_detail["roiCalculated"] is False
-        assert body_detail["homologationStatus"] == ("REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION")
+        assert body_detail["homologationStatus"] == (
+            "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+        )
         assert body_detail["emptyReason"]
         assert "emptySources" in body_detail
         assert isinstance(body_detail["emptySources"], list)
+        assert "kpis" in body_detail
+        assert "charts" in body_detail
+        assert isinstance(body_detail["kpis"], list)
+        assert isinstance(body_detail["charts"], list)
         if not body_detail["published"]:
             assert body_detail["items"] == []
+            assert body_detail["kpis"] == []
+            assert body_detail["charts"] == []
         else:
             assert all(item["createsTaxCredit"] is False for item in body_detail["items"])
             for item in body_detail["items"]:
                 assert "lineage" in item
-                assert item.get("homologationStatus") == (
-                    "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
-                )
+                if item.get("sourceId") == "COVERAGE-DIVERGENCE":
+                    assert item.get("homologationStatus") == (
+                        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+                    )
+                else:
+                    assert item.get("homologationStatus") == (
+                        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+                    )
+            for chart in body_detail["charts"]:
+                assert "evidenceIds" in chart
+                assert chart["valueKind"] in {
+                    "REFERENCE_QUANTITY",
+                    "TRANSFER_AMOUNT_AS_PUBLISHED",
+                }
     transferencias = api_client.get("/v1/dashboards/transferencias", headers=_analyst()).json()
     assert "Dicionário FPM" in transferencias["emptyReason"]
     if transferencias["published"]:

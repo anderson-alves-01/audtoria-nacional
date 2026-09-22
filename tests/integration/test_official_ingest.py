@@ -32,7 +32,7 @@ def test_official_gold_empty_until_ingest(api_client) -> None:
     assert gold.status_code == 200
     body = gold.json()
     assert body["createsTaxCredit"] is False
-    assert "HOMOLOGAÇÃO HUMANA PENDENTE" in body["banner"]
+    assert "NÃO É CRÉDITO TRIBUTÁRIO" in body["banner"]
     assert any(item["sourceId"] == "ESTADO-ICMS-QUOTA" for item in body["emptySources"])
 
 
@@ -482,7 +482,7 @@ def test_siconfi_entes_and_ibge_pib_and_planalto_ingest(api_client) -> None:
     assert by_id["SICONFI-DCA"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert by_id["SICONFI-RGF"]["valueKind"] == "FISCAL_STATEMENT_LINE"
     assert all(
-        item["homologationStatus"] == "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        item["homologationStatus"] == "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
         for item in body["items"]
     )
     assert all(item["createsTaxCredit"] is False for item in body["items"])

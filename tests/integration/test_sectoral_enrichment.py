@@ -138,7 +138,7 @@ def test_anp_ingest_publishes_gold_without_credit_or_cnpj(api_client) -> None:
     assert by_id["ANP-REVENDEDORES"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["ANP-REVENDEDORES"]["createsTaxCredit"] is False
     assert by_id["ANP-REVENDEDORES"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ANP-REVENDEDORES",
@@ -164,7 +164,7 @@ def test_aneel_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ANEEL-DADOS-ABERTOS"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["ANEEL-DADOS-ABERTOS"]["createsTaxCredit"] is False
     assert by_id["ANEEL-DADOS-ABERTOS"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ANEEL-DADOS-ABERTOS",
@@ -189,7 +189,7 @@ def test_bcb_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["BCB-SGS-OLINDA"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["BCB-SGS-OLINDA"]["createsTaxCredit"] is False
     assert by_id["BCB-SGS-OLINDA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=BCB-SGS-OLINDA",
@@ -215,7 +215,7 @@ def test_bcb_olinda_expectativas_ingest_publishes_gold_without_credit(api_client
     assert by_id["BCB-OLINDA-EXPECTATIVAS"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["BCB-OLINDA-EXPECTATIVAS"]["createsTaxCredit"] is False
     assert by_id["BCB-OLINDA-EXPECTATIVAS"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS",
@@ -268,7 +268,7 @@ def test_bcb_olinda_expectativas_mensais_ingest_publishes_gold_without_credit(ap
     assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["createsTaxCredit"] is False
     assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-MENSAIS",
@@ -309,7 +309,7 @@ def test_bcb_olinda_expectativas_trimestrais_ingest_publishes_gold_without_credi
     assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["createsTaxCredit"] is False
     assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS",
@@ -350,7 +350,7 @@ def test_bcb_olinda_expectativas_selic_ingest_publishes_gold_without_credit(
     assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["createsTaxCredit"] is False
     assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-SELIC",
@@ -383,7 +383,7 @@ def test_bcb_olinda_expectativas_inflacao_12m_ingest_publishes_gold_without_cred
     assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["createsTaxCredit"] is False
     assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M",
@@ -416,7 +416,7 @@ def test_bcb_olinda_expectativas_inflacao_24m_ingest_publishes_gold_without_cred
     assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["createsTaxCredit"] is False
     assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M",
@@ -444,7 +444,7 @@ def test_epe_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["EPE-DADOS-ABERTOS"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["EPE-DADOS-ABERTOS"]["createsTaxCredit"] is False
     assert by_id["EPE-DADOS-ABERTOS"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=EPE-DADOS-ABERTOS",
@@ -469,7 +469,7 @@ def test_anatel_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ANATEL-DADOS-ABERTOS"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["ANATEL-DADOS-ABERTOS"]["createsTaxCredit"] is False
     assert by_id["ANATEL-DADOS-ABERTOS"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ANATEL-DADOS-ABERTOS",
@@ -495,7 +495,7 @@ def test_cnes_ingest_publishes_gold_without_credit_or_pii(api_client) -> None:
     assert by_id["CNES-DATASUS"]["valueKind"] == "REFERENCE_QUANTITY"
     assert by_id["CNES-DATASUS"]["createsTaxCredit"] is False
     assert by_id["CNES-DATASUS"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=CNES-DATASUS",

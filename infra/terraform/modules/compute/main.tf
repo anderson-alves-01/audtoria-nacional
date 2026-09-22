@@ -320,7 +320,10 @@ resource "aws_ecs_task_definition" "api" {
     }]
     environment = [
       { name = "SIRTA_ENV", value = "prod" },
-      { name = "S3_BUCKET", value = var.landing_bucket_name }
+      { name = "S3_BUCKET", value = var.landing_bucket_name },
+      { name = "OIDC_JWKS_PATH", value = "/app/var/oidc/jwks.json" },
+      { name = "OIDC_SIGNING_KEY_PATH", value = "/app/var/oidc/private.pem" },
+      { name = "SIRTA_PUBLIC_OPEN_UI_BOOTSTRAP", value = "true" }
     ]
     logConfiguration = {
       logDriver = "awslogs"

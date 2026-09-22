@@ -10,11 +10,11 @@
 ## Resultado infra
 
 - `terraform apply`: **51 resources added**
-- Imagens ECR tag `0.3.98` (api/web/worker) enviadas
-- Task definitions atualizadas; web corrigido com `nginx.prod.conf` (sem upstream `api`)
-- Smoke: `/health` **200**, `/` **200**
+- Imagens ECR tag `0.3.99` (api/web) — dashboards premium REFERENCE_ONLY
+- Task definitions atualizadas; web com `nginx.prod.conf`
+- Smoke: `/health` **200** (`0.3.99`), `/` e painéis `/executivo` `/financeiro` `/transferencias` `/cobranca` **200**
 - ALB: `http://sirta-prod-alb-1369017354.sa-east-1.elb.amazonaws.com`
-- Gold: **não** promovido (`PENDING_HUMAN_VALIDATION`)
+- Gold: `REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY` (referência; não crédito)
 - Merge `main`: não realizado
 
 ## Arquivos

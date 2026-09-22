@@ -698,7 +698,10 @@ paths:
   /v1/dashboards/{dashboardId}:
     get:
       operationId: getDashboard
-      description: One official dashboard. ROI is never calculated without eligible received values.
+      description: >
+        One official dashboard with optional kpis/charts from PUBLIC_OPEN Gold.
+        ROI is never calculated without eligible received values. Charts only use
+        REFERENCE_QUANTITY or TRANSFER_AMOUNT_AS_PUBLISHED. Not tax credit.
       parameters:
         - name: dashboardId
           in: path
@@ -707,7 +710,11 @@ paths:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
       responses:
-        '200': {description: Dashboard view}
+        '200':
+          description: Dashboard view with Gold items, kpis and charts
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/DashboardView'}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
         '404': {$ref: '#/components/responses/NotFound'}
@@ -928,6 +935,86 @@ components:
         officialSource: {type: string}
         expectedAmount: {type: [number, 'null'], minimum: 0}
         receivedAmount: {type: number, minimum: 0}
+    DashboardChartPoint:
+      type: object
+      required: [x, y]
+      properties:
+        x: {type: string}
+        y: {type: number}
+    DashboardChartSeries:
+      type: object
+      required: [name, points]
+      properties:
+        name: {type: string}
+        points:
+          type: array
+          items: {$ref: '#/components/schemas/DashboardChartPoint'}
+    DashboardChart:
+      type: object
+      required: [id, title, type, unit, valueKind, series, evidenceIds]
+      properties:
+        id: {type: string}
+        title: {type: string}
+        type: {type: string, enum: [bar, line, pie]}
+        unit: {type: string}
+        valueKind: {type: string}
+        series:
+          type: array
+          items: {$ref: '#/components/schemas/DashboardChartSeries'}
+        evidenceIds:
+          type: array
+          items: {type: string}
+    DashboardKpi:
+      type: object
+      required: [id, label, value, unit, valueKind, sourceId]
+      properties:
+        id: {type: string}
+        label: {type: string}
+        value: {type: number}
+        unit: {type: string}
+        valueKind: {type: string}
+        sourceId: {type: string}
+        evidenceId: {type: [string, 'null']}
+    DashboardView:
+      type: object
+      required:
+        - id
+        - title
+        - banner
+        - homologationStatus
+        - createsTaxCredit
+        - commandsDisabled
+        - published
+        - items
+        - emptySources
+        - roiCalculated
+        - taxPotentialAsCredit
+        - kpis
+        - charts
+      properties:
+        id: {type: string}
+        path: {type: string}
+        title: {type: string}
+        banner: {type: string}
+        homologationStatus:
+          type: string
+          enum:
+            - REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY
+            - REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION
+        createsTaxCredit: {type: boolean}
+        commandsDisabled: {type: boolean}
+        emptyReason: {type: string}
+        published: {type: boolean}
+        items: {type: array, items: {type: object, additionalProperties: true}}
+        emptySources: {type: array, items: {type: object, additionalProperties: true}}
+        roiCalculated: {type: boolean}
+        taxPotentialAsCredit: {type: boolean}
+        kpis:
+          type: array
+          items: {$ref: '#/components/schemas/DashboardKpi'}
+        charts:
+          type: array
+          items: {$ref: '#/components/schemas/DashboardChart'}
     Problem:
       type: object
       required: [type, title, status, traceId]

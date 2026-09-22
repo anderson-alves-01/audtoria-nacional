@@ -3,8 +3,7 @@
 ## Escopo
 
 Ambiente `prod` em AWS para validar shells + dados `PUBLIC_OPEN`.  
-Gold permanece `REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION`.  
-Não promove crédito, não faz merge em `main`, não carrega dados municipais restritos.
+Gold permanece `REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY` para indicadores PUBLIC_OPEN de referência (não crédito).
 
 ## Pré-requisitos
 

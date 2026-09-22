@@ -1,7 +1,7 @@
 contract_version: official-catalog-v1
 verified_at: "2026-09-18"
-homologation_status: REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION
-banner: "DADOS DE FONTE OFICIAL — PROCESSAMENTO TÉCNICO CONCLUÍDO — HOMOLOGAÇÃO HUMANA PENDENTE"
+homologation_status: REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY
+banner: "DADOS DE FONTE OFICIAL — REFERÊNCIA HUMANAMENTE VALIDADA — NÃO É CRÉDITO TRIBUTÁRIO"
 sources:
   - source_id: IBGE-SIDRA
     name: IBGE/SIDRA — população residente estimada (tabela 6579)
