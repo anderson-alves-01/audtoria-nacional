@@ -32,4 +32,6 @@ jobs:
       - name: Validate
         run: terraform validate
       - name: Plan gated off
+        env:
+          AWS_EC2_METADATA_DISABLED: "true"
         run: terraform plan -input=false -var=cloud_apply_authorized=false -lock=false

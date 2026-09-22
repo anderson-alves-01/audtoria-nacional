@@ -28,9 +28,7 @@ class Settings(BaseSettings):
     )
     public_open_ui_bootstrap: bool = Field(
         default=False,
-        validation_alias=AliasChoices(
-            "SIRTA_PUBLIC_OPEN_UI_BOOTSTRAP", "PUBLIC_OPEN_UI_BOOTSTRAP"
-        ),
+        validation_alias=AliasChoices("SIRTA_PUBLIC_OPEN_UI_BOOTSTRAP", "PUBLIC_OPEN_UI_BOOTSTRAP"),
     )
     s3_endpoint: str = "http://localhost:9000"
     s3_access_key: str = "sirta"

@@ -27,6 +27,11 @@ terraform {
 provider "aws" {
   region = var.aws_region
 
+  # CI plan with cloud_apply_authorized=false must not require real AWS credentials.
+  skip_credentials_validation = !var.cloud_apply_authorized
+  skip_requesting_account_id  = !var.cloud_apply_authorized
+  skip_metadata_api_check     = !var.cloud_apply_authorized
+
   default_tags {
     tags = local.tags
   }
@@ -84,10 +89,13 @@ variable "budget_notification_email" {
   default = ""
 }
 
-data "aws_caller_identity" "current" {}
+data "aws_caller_identity" "current" {
+  count = var.cloud_apply_authorized ? 1 : 0
+}
 
 locals {
   enabled = var.cloud_apply_authorized
+  caller_account_id = var.cloud_apply_authorized ? data.aws_caller_identity.current[0].account_id : ""
   tags = {
     project = "auditoria-nacional"
     env     = "prod"
@@ -99,13 +107,13 @@ locals {
 resource "null_resource" "g10_gate" {
   triggers = {
     authorized = tostring(var.cloud_apply_authorized)
-    account    = data.aws_caller_identity.current.account_id
+    account    = local.caller_account_id == "" ? "gated-off" : local.caller_account_id
     region     = var.aws_region
   }
 
   lifecycle {
     precondition {
-      condition     = var.aws_account_id == "" || var.aws_account_id == data.aws_caller_identity.current.account_id
+      condition     = var.aws_account_id == "" || local.caller_account_id == "" || var.aws_account_id == local.caller_account_id
       error_message = "AWS account mismatch. Set aws_account_id to the authorized production account."
     }
     precondition {
@@ -172,7 +180,7 @@ output "apply_allowed" {
 }
 
 output "aws_account_id" {
-  value = data.aws_caller_identity.current.account_id
+  value = local.caller_account_id == "" ? null : local.caller_account_id
 }
 
 output "aws_region" {

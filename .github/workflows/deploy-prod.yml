@@ -51,6 +51,8 @@ jobs:
       - name: Terraform validate
         run: terraform validate
       - name: Gate remains closed in CI
+        env:
+          AWS_EC2_METADATA_DISABLED: "true"
         run: |
           terraform plan -input=false -var=cloud_apply_authorized=false -lock=false
           echo "CI never sets cloud_apply_authorized=true. Apply is local/G10 only."

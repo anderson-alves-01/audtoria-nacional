@@ -32,9 +32,7 @@ def get_dashboard(session: Session, *, context: AccessContext, dashboard_id: str
     view = _view(catalog, gold_items=gold["items"], empty_sources=gold["emptySources"])
     lines_payload = list_official_gold_lines(session, context=context)
     source_ids = {item.get("sourceId") for item in view["items"]}
-    scoped_lines = [
-        line for line in lines_payload["items"] if line.get("sourceId") in source_ids
-    ]
+    scoped_lines = [line for line in lines_payload["items"] if line.get("sourceId") in source_ids]
     visuals = build_dashboard_visuals(items=view["items"], lines=scoped_lines)
     view["kpis"] = visuals["kpis"]
     view["charts"] = visuals["charts"]
