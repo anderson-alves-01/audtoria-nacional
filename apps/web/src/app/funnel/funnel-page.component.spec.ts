@@ -39,8 +39,11 @@ describe('FunnelPageComponent', () => {
       emptySources: [],
     });
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('ibge_population_estimated');
+    expect(fixture.nativeElement.textContent).toContain('População estimada');
+    expect(fixture.nativeElement.textContent).toContain('18.642.470');
     expect(fixture.nativeElement.textContent).toContain('HOMOLOGAÇÃO HUMANA PENDENTE');
+    expect(fixture.nativeElement.textContent).not.toContain('ibge_population_estimated');
+    expect(fixture.nativeElement.textContent).not.toContain('REAL_OFFICIAL_DATA');
     expect(fixture.nativeElement.textContent).not.toContain('R$');
     http.verify();
   });
@@ -57,7 +60,8 @@ describe('FunnelPageComponent', () => {
     });
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Nenhum Gold oficial publicado');
-    expect(fixture.nativeElement.textContent).toContain('ESTADO-ICMS-QUOTA');
+    expect(fixture.nativeElement.textContent).toContain('Estado — quota-parte de ICMS');
+    expect(fixture.nativeElement.textContent).not.toContain('ESTADO-ICMS-QUOTA');
     http.verify();
   });
 });

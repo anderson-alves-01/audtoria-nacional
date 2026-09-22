@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
+import {
+  humanizeCatalogToken,
+  humanizeHomologation,
+  humanizeQuality,
+  humanizeSource,
+} from '../shared/presentation/official-labels';
 
 interface SourceItem {
   sourceId: string;
@@ -47,6 +53,22 @@ export class SourcesPageComponent implements OnInit {
   errorMessage = '';
   readonly banner =
     'DADOS DE FONTE OFICIAL — PROCESSAMENTO TÉCNICO CONCLUÍDO — HOMOLOGAÇÃO HUMANA PENDENTE';
+
+  sourceHeading(sourceId: string): string {
+    return humanizeSource(sourceId);
+  }
+
+  catalogText(code: string | null | undefined): string {
+    return humanizeCatalogToken(code);
+  }
+
+  qualityText(level: string | null | undefined): string {
+    return humanizeQuality(level);
+  }
+
+  validationText(status: string | null | undefined): string {
+    return humanizeHomologation(status);
+  }
 
   ngOnInit(): void {
     this.http.get<{ items: SourceItem[] }>('/v1/data-sources').subscribe({

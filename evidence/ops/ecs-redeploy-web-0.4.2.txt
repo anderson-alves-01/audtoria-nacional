@@ -1,0 +1,11 @@
+image=332380491162.dkr.ecr.sa-east-1.amazonaws.com/sirta-prod-web:0.4.2
+digest=sha256:9d2cf508fb3cf7a9899c4b3ff5620b1a95bb5e565ce04bcd0def94a1bd775972
+task_definition=sirta-prod-web:9
+previous=sirta-prod-web:8
+rollback=update service to sirta-prod-web:6 (image 0.3.101) or sirta-prod-web:8 (image 0.4.1)
+main_js=main-H2FVPIQV.js
+len=387753
+markers=IBGE/SIDRA 5938, IBGE/SIDRA 6579, checksum esquema e contagens, Tesouro Nacional
+routes=200 /health / /executivo /financeiro /transferencias /economia
+api=unchanged
+scope=web labels only; no API, no Terraform

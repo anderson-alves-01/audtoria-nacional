@@ -86,7 +86,8 @@ describe('SectoralEnrichmentPageComponent', () => {
     expect(text).toContain('EPE-DADOS-ABERTOS');
     expect(text).toContain('ANATEL-DADOS-ABERTOS');
     expect(text).toContain('CNES-DATASUS');
-    expect(text).toContain('TECHNICALLY_APPROVED');
+    expect(text).toContain('Aprovado na conferência técnica do catálogo');
+    expect(text).not.toContain('TECHNICALLY_APPROVED');
     http.verify();
   });
 

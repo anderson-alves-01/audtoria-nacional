@@ -1,6 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
+import {
+  formatPublishedValue,
+  humanizeHomologation,
+  humanizeIndicator,
+  humanizeProse,
+  humanizeQuality,
+  humanizeSource,
+  humanizeValueKind,
+} from '../shared/presentation/official-labels';
 
 export type FunnelViewState = 'loading' | 'empty' | 'ok' | 'error';
 
@@ -38,6 +47,34 @@ export class FunnelPageComponent implements OnInit {
   emptySources: { sourceId: string; emptyReason?: string; status?: string }[] = [];
   banner = '';
   errorMessage = '';
+
+  readingTitle(item: OfficialGoldItem): string {
+    return humanizeIndicator(item.indicator, item.presentation);
+  }
+
+  measureText(item: OfficialGoldItem): string {
+    return humanizeValueKind(item.valueKind);
+  }
+
+  sourceHeading(sourceId: string): string {
+    return humanizeSource(sourceId);
+  }
+
+  prose(text: string | null | undefined): string {
+    return humanizeProse(text);
+  }
+
+  publishedFigure(item: OfficialGoldItem): string {
+    return formatPublishedValue(item.numericTotal, item.financial ? 'BRL' : 'UNIT');
+  }
+
+  qualityText(level: string): string {
+    return humanizeQuality(level);
+  }
+
+  validationText(status: string): string {
+    return humanizeHomologation(status);
+  }
 
   ngOnInit(): void {
     this.http

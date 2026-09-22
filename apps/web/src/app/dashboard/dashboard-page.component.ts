@@ -6,6 +6,16 @@ import { Subscription, catchError, from, of, switchMap } from 'rxjs';
 import { PublicOpenSessionService } from '../auth/public-open-session.service';
 import { ChartCardComponent, ChartSeriesInput } from '../shared/charts/chart-card.component';
 import { EvidenceDrawerComponent } from '../shared/evidence/evidence-drawer.component';
+import {
+  formatPublishedValue,
+  humanizeAxis,
+  humanizeHomologation,
+  humanizeIndicator,
+  humanizeProse,
+  humanizeQuality,
+  humanizeSource,
+  humanizeValueKind,
+} from '../shared/presentation/official-labels';
 import { EmptyStateComponent } from '../shared/states/empty-state.component';
 import { ErrorStateComponent } from '../shared/states/error-state.component';
 import { SkeletonComponent } from '../shared/states/skeleton.component';
@@ -164,11 +174,58 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     this.lineageOpen = !this.lineageOpen;
   }
 
+  readonly humanizeValueKind = humanizeValueKind;
+
+  sourceHeading(sourceId: string): string {
+    return humanizeSource(sourceId);
+  }
+
+  prose(text: string | null | undefined): string {
+    return humanizeProse(text);
+  }
+
+  panelSources(): string {
+    const names = [...new Set(this.items.map((item) => humanizeSource(item.sourceId)))];
+    return names.slice(0, 3).join('; ');
+  }
+
   formatKpi(value: number, unit: string): string {
-    if (unit === 'BRL') {
-      return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    return formatPublishedValue(value, unit);
+  }
+
+  indicatorTitle(item: DashboardGoldItem): string {
+    return humanizeIndicator(item.indicator, item.presentation);
+  }
+
+  kpiTitle(kpi: DashboardKpi): string {
+    const item = this.items.find((entry) => entry.sourceId === kpi.sourceId);
+    if (kpi.label.startsWith('Cobertura ')) {
+      return `Registros na base · ${humanizeSource(kpi.sourceId)}`;
     }
-    return value.toLocaleString('pt-BR');
+    return humanizeIndicator(kpi.label, item?.presentation);
+  }
+
+  kpiMeta(kpi: DashboardKpi): string {
+    const item = this.items.find((entry) => entry.sourceId === kpi.sourceId);
+    const source = humanizeSource(kpi.sourceId);
+    return item?.competence ? `${source} · competência ${item.competence}` : source;
+  }
+
+  kpiKind(kpi: DashboardKpi): string {
+    return humanizeValueKind(kpi.valueKind);
+  }
+
+  validationText(status: string | null | undefined): string {
+    return humanizeHomologation(status || this.homologationStatus);
+  }
+
+  qualityText(level: string | null | undefined): string {
+    return humanizeQuality(level);
+  }
+
+  publishedTotal(item: DashboardGoldItem): string {
+    const unit = item.financial ? 'BRL' : 'UNIT';
+    return formatPublishedValue(item.numericTotal, unit);
   }
 
   private resetView(dashboardId: string): void {
@@ -221,7 +278,11 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   private toChartView(chart: DashboardChart): ChartView {
     const series = chart.series?.[0];
     const points = series?.points || [];
-    const summary = `${chart.title}: ${points.length} pontos; valueKind ${chart.valueKind}.`;
+    const caution =
+      chart.unit === 'MIXED'
+        ? ' Pontos de naturezas diferentes ficam no mesmo eixo e não formam um total único.'
+        : '';
+    const summary = `${chart.title}: ${points.length} pontos publicados. ${humanizeValueKind(chart.valueKind)}.${caution}`;
     return {
       id: chart.id,
       title: chart.title,
@@ -229,7 +290,14 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       unit: chart.unit,
       valueKind: chart.valueKind,
       chartType: chart.type === 'line' ? 'line' : 'bar',
-      series: { name: series?.name || chart.title, points },
+      series: {
+        name: series?.name || chart.title,
+        points: points.map((point) => ({ ...point, x: this.axisLabel(point.x) })),
+      },
     };
+  }
+
+  private axisLabel(value: string): string {
+    return humanizeAxis(value);
   }
 }

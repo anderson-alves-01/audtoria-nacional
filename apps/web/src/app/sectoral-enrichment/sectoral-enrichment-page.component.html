@@ -43,7 +43,7 @@
     <section class="kpis" aria-label="Cobertura setorial">
       <app-kpi-card label="Fontes catalogadas" [value]="'' + sources.length" [meta]="'versão ' + version" />
       <app-kpi-card label="Indicadores Gold" value="—" meta="série só quando a API publicar itens" />
-      <app-kpi-card label="Qualidade técnica" [value]="'' + approvedCount" meta="TECHNICALLY_APPROVED" />
+      <app-kpi-card label="Qualidade técnica" [value]="'' + approvedCount" meta="Aprovado na conferência técnica do catálogo" />
       <app-kpi-card label="Municípios" value="—" meta="não publicado nesta API" />
     </section>
 
@@ -82,8 +82,7 @@
           <article>
             <h2>{{ sectorLabel(row.sourceId) }}</h2>
             <p><strong>{{ row.sourceId }}</strong></p>
-            <p>{{ row.maintainer }} · {{ row.status }}</p>
-            <p>{{ row.structuredOfficialSource }}</p>
+            <p>{{ row.maintainer }} · {{ catalogText(row.status) }}</p>
             <button type="button" (click)="openEvidence(row)">Evidência</button>
           </article>
         </li>
@@ -94,7 +93,7 @@
       @if (selected) {
         <p>Órgão {{ selected.maintainer }}</p>
         <p>Dataset {{ selected.sourceId }}</p>
-        <p>Qualidade {{ selected.status }}</p>
+        <p>Qualidade {{ catalogText(selected.status) }}</p>
         <p>Origem estruturada {{ selected.structuredOfficialSource }}</p>
         <p>Flag operacional de carga: {{ selected.ingestAllowed ? 'permitida no catálogo' : 'bloqueada no catálogo' }}</p>
         <p>Status institucional {{ institutionalStatus }}</p>

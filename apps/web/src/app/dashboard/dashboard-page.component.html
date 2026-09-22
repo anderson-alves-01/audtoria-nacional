@@ -1,15 +1,11 @@
 <section class="dash" aria-labelledby="dashboard-title">
   <header class="dash-hero">
-    <p class="dash-kicker">SIRTA · painel oficial · {{ dashboardId || '—' }}</p>
+    <p class="dash-kicker">SIRTA · painel oficial</p>
     <h1 id="dashboard-title">{{ title || (state === 'loading' ? 'Carregando painel…' : 'Painel oficial') }}</h1>
     @if (banner) {
       <p class="dash-banner">{{ banner }}</p>
     }
-    <p class="dash-status">
-      Homologação
-      <strong>{{ homologationStatus || 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY' }}</strong>
-      · referência citável · <strong>não é crédito tributário</strong>
-    </p>
+    <p class="dash-status">{{ validationText(homologationStatus) }}</p>
     @if (commandsDisabled) {
       <p class="dash-note">Comandos operacionais desativados. Nenhum valor sintético é exibido.</p>
     }
@@ -30,15 +26,15 @@
         <div class="dash-empty-grid">
           @for (source of emptySources; track source.sourceId) {
             <article>
-              <h4>{{ source.sourceId }}</h4>
-              <p>{{ source.emptyReason || 'Fonte sem Gold oficial publicado.' }}</p>
+              <h4>{{ sourceHeading(source.sourceId) }}</h4>
+              <p>{{ prose(source.emptyReason) || 'Fonte sem dado oficial publicado neste recorte.' }}</p>
               @if (source.competence) {
                 <p>Competência {{ source.competence }}</p>
               }
               @if (source.formula) {
                 <p>Fórmula: {{ source.formula }}</p>
               }
-              <p>Homologação {{ source.homologationStatus || homologationStatus }}</p>
+              <p>Validação: {{ validationText(source.homologationStatus) }}</p>
             </article>
           }
         </div>
@@ -51,10 +47,10 @@
       <section class="dash-kpis" aria-label="Indicadores-chave oficiais">
         @for (kpi of kpis; track kpi.id) {
           <app-kpi-card
-            [label]="kpi.label"
+            [label]="kpiTitle(kpi)"
             [value]="formatKpi(kpi.value, kpi.unit)"
-            [meta]="kpi.sourceId"
-            [kind]="kpi.valueKind"
+            [meta]="kpiMeta(kpi)"
+            [kind]="kpiKind(kpi)"
           />
         }
       </section>
@@ -71,6 +67,8 @@
             [chartType]="chart.chartType"
             [series]="chart.series"
             [homologation]="homologationStatus"
+            [quality]="qualityText(items.length ? items[0].qualityLevel : '')"
+            [source]="panelSources()"
           />
         }
       </section>
@@ -82,7 +80,7 @@
 
     <section class="dash-sources" aria-label="Fontes publicadas">
       <div class="sources-head">
-        <h2>Fontes e lineage</h2>
+        <h2>O que foi publicado</h2>
         <button type="button" class="linkish" (click)="toggleLineage()">
           {{ lineageOpen ? 'Ocultar detalhe' : 'Exibir lineage' }}
         </button>
@@ -90,20 +88,22 @@
       <ul class="source-list">
         @for (item of items; track item.sourceId + item.indicator) {
           <li [class.assessed]="!item.financial" [class.collection]="!!item.financial">
-            <strong>{{ item.indicator }}</strong> — {{ item.sourceId }}
-            <span>{{ item.presentation || item.valueKind }}</span>
-            <span>Órgão {{ item.maintainer }} · competência {{ item.competence }}</span>
-            <span>Qualidade {{ item.qualityLevel }} · homologação {{ item.homologationStatus }}</span>
-            @if (item.financial && item.numericTotal !== null) {
-              <span>Total publicado {{ item.numericTotal }} {{ item.valueKind }}. Não é crédito tributário.</span>
-            }
+            <strong>{{ indicatorTitle(item) }}</strong>
+            <span class="tabular">{{ publishedTotal(item) }}</span>
+            <span>Medida: {{ humanizeValueKind(item.valueKind) }}.</span>
+            <span>{{ prose(item.presentation) || 'Leitura do valor publicado pelo órgão. Não é crédito tributário.' }}</span>
+            <span>Órgão {{ item.maintainer }} · competência {{ item.competence }} · {{ item.coverageCount }} registros na base</span>
+            <span>Conferência: {{ qualityText(item.qualityLevel) }}.</span>
+            <span>Validação: {{ validationText(item.homologationStatus) }}</span>
+            <span>Fórmula publicada: {{ item.formula }}</span>
           </li>
         }
       </ul>
       <app-evidence-drawer [open]="lineageOpen" (closed)="lineageOpen = false">
         @for (item of items; track item.sourceId + item.indicator) {
           <p>
-            <strong>{{ item.indicator }}</strong>
+            <strong>{{ indicatorTitle(item) }}</strong>
+            · código interno {{ item.indicator }} · identificador {{ item.sourceId }}
             · órgão {{ item.maintainer }} · dataset {{ item.dataset }} · competência {{ item.competence }}
           </p>
           <p>Fórmula: {{ item.formula }} Metodologia {{ item.methodologyVersion }}.</p>
@@ -126,7 +126,7 @@
       <section aria-label="Fontes sem Gold">
         <h2>Fontes sem dado oficial publicado</h2>
         @for (source of emptySources; track source.sourceId) {
-          <p>{{ source.sourceId }}: {{ source.emptyReason }}</p>
+          <p>{{ sourceHeading(source.sourceId) }}: {{ prose(source.emptyReason) }}</p>
         }
       </section>
     }

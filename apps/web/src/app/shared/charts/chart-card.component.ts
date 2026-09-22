@@ -1,6 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
+import {
+  formatPublishedValue,
+  humanizeHomologation,
+  humanizeUnit,
+  humanizeValueKind,
+} from '../presentation/official-labels';
 
 export interface ChartSeriesInput {
   name: string;
@@ -18,16 +24,17 @@ export interface ChartSeriesInput {
         <h2>{{ title }}</h2>
         <p>{{ summary }}</p>
         <p class="meta">
-          Unidade {{ unit }} · período {{ period || 'não informado' }} · {{ valueKind }}
+          {{ measure }} · {{ humanizeUnit(unit) }}
+          @if (period) {
+            · período {{ period }}
+          }
           @if (source) {
-            · fonte {{ source }}
+            · {{ source }}
           }
           @if (quality) {
-            · qualidade {{ quality }}
+            · {{ quality }}
           }
-          @if (homologation) {
-            · homologação {{ homologation }}
-          }
+          · {{ humanizeHomologation(homologation) }}
         </p>
       </header>
       <div
@@ -51,7 +58,7 @@ export interface ChartSeriesInput {
           @for (row of rows; track row.x) {
             <tr>
               <th scope="row">{{ row.x }}</th>
-              <td class="tabular">{{ row.y }}</td>
+              <td class="tabular">{{ formatPublishedValue(row.y, unit) }}</td>
             </tr>
           }
         </tbody>
@@ -114,6 +121,13 @@ export class ChartCardComponent {
   @Input() homologation = '';
   @Input() chartType: 'line' | 'bar' = 'bar';
   @Input() seriesName = 'Série';
+  readonly humanizeUnit = humanizeUnit;
+  readonly humanizeHomologation = humanizeHomologation;
+  readonly formatPublishedValue = formatPublishedValue;
+
+  get measure(): string {
+    return humanizeValueKind(this.valueKind);
+  }
 
   rows: { x: string; y: number }[] = [];
   options: EChartsOption = {};

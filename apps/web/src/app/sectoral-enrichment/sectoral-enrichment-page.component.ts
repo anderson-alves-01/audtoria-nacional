@@ -6,6 +6,7 @@ import { EvidenceDrawerComponent } from '../shared/evidence/evidence-drawer.comp
 import { EmptyStateComponent } from '../shared/states/empty-state.component';
 import { ErrorStateComponent } from '../shared/states/error-state.component';
 import { SkeletonComponent } from '../shared/states/skeleton.component';
+import { humanizeCatalogToken } from '../shared/presentation/official-labels';
 import { KpiCardComponent } from '../shared/ui/kpi-card.component';
 
 export type SectoralEnrichmentViewState = 'loading' | 'empty' | 'ok' | 'error';
@@ -132,6 +133,10 @@ export class SectoralEnrichmentPageComponent implements OnInit {
 
   get approvedCount(): number {
     return this.sources.filter((row) => row.status === 'TECHNICALLY_APPROVED').length;
+  }
+
+  catalogText(code: string | null | undefined): string {
+    return humanizeCatalogToken(code);
   }
 
   sectorLabel(sourceId: string): string {

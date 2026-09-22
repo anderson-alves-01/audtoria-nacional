@@ -10,7 +10,7 @@
       @for (item of items; track item.sourceId) {
         <li [class.estimate]="!item.ingestAllowed" [class.assessed]="item.ingestAllowed">
           <strong>{{ item.sourceId }}</strong> — {{ item.name }}
-          <span>{{ item.sourceRole }} · {{ item.accessClassification }} · {{ item.status }}</span>
+          <span>{{ catalogText(item.sourceRole) }} · {{ catalogText(item.accessClassification) }} · {{ catalogText(item.status) }}</span>
           <span>Ingestão {{ item.ingestAllowed ? 'oficial permitida' : 'bloqueada' }}. Cria crédito: {{ item.createsTaxCredit ? 'sim' : 'não' }}.</span>
           @if (item.ingestAllowed) {
             <button type="button" (click)="ingest(item)">Ingerir fonte oficial</button>
@@ -27,14 +27,14 @@
         @if (enrichment.published) {
           <p>{{ enrichment.banner || banner }}</p>
           <p>
-            Fonte {{ enrichment.sourceId }}. Publicados: sim.
+            Fonte {{ sourceHeading(enrichment.sourceId) }}. Publicados: sim.
             Indicadores: {{ enrichment.indicatorCount }}. Cria crédito: {{ enrichment.createsTaxCredit ? 'sim' : 'não' }}.
           </p>
-          <p>Competência {{ enrichment.competence }}. Qualidade {{ enrichment.qualityLevel }}. Homologação {{ enrichment.homologationStatus }}.</p>
+          <p>Competência {{ enrichment.competence }}. Conferência: {{ qualityText(enrichment.qualityLevel) }}. Validação: {{ validationText(enrichment.homologationStatus) }}.</p>
           <p>Fórmula: {{ enrichment.formula }} Metodologia {{ enrichment.methodologyVersion }}.</p>
           <p>Rejeitados/quarentena: {{ enrichment.quarantinedCount || 0 }}. Fonte {{ enrichment.officialUrl }}.</p>
         } @else {
-          <p role="status">Nenhum Gold oficial publicado para {{ enrichment.sourceId }}. {{ enrichment.emptyReason || enrichment.note || 'Estado vazio — nenhum valor demonstrativo é exibido.' }}</p>
+          <p role="status">Nenhum Gold oficial publicado para {{ sourceHeading(enrichment.sourceId) }}. {{ enrichment.emptyReason || enrichment.note || 'Estado vazio — nenhum valor demonstrativo é exibido.' }}</p>
         }
       </section>
     }

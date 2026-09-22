@@ -8,30 +8,28 @@
   @if (state === 'empty') {
     <p role="status">Nenhum Gold oficial publicado. O painel permanece vazio; nenhum valor demonstrativo é exibido.</p>
     @for (source of emptySources; track source.sourceId) {
-      <p>{{ source.sourceId }}: {{ source.emptyReason }}</p>
+      <p>{{ sourceHeading(source.sourceId) }}: {{ prose(source.emptyReason) }}</p>
     }
   }
   @if (state === 'ok') {
     <ul>
       @for (item of items; track item.sourceId + item.indicator) {
         <li class="assessed">
-          <strong>{{ item.indicator }}</strong> — {{ item.sourceId }}
-          <span>{{ item.presentation || 'Dado oficial de referência. Não é crédito tributário.' }}</span>
-          <span>Órgão {{ item.maintainer }} · dataset {{ item.dataset }} · competência {{ item.competence }}</span>
-          <span>Extração {{ item.lastExtractedAt }} · cobertura {{ item.coverageCount }} · qualidade {{ item.qualityLevel }}</span>
-          <span>Homologação {{ item.homologationStatus }} · quarentena {{ item.quarantinedCount }} · tipo {{ item.valueKind }}</span>
-          <span>Fórmula: {{ item.formula }} Metodologia {{ item.methodologyVersion }}.</span>
-          <span>Fonte {{ item.officialUrl }}</span>
-          @if (item.financial && item.numericTotal !== null) {
-            <span>Total publicado {{ item.numericTotal }}. Ocorrência para análise, não crédito nem cobrança.</span>
-          }
+          <strong>{{ readingTitle(item) }}</strong>
+          <span class="tabular">{{ publishedFigure(item) }}</span>
+          <span>Medida: {{ measureText(item) }}.</span>
+          <span>{{ prose(item.presentation) || 'Dado oficial de referência. Não é crédito tributário.' }}</span>
+          <span>Órgão {{ item.maintainer }} · competência {{ item.competence }} · {{ item.coverageCount }} registros na base</span>
+          <span>Conferência: {{ qualityText(item.qualityLevel) }}.</span>
+          <span>Validação: {{ validationText(item.homologationStatus) }}</span>
+          <span>Fórmula publicada: {{ item.formula }}</span>
         </li>
       }
     </ul>
     @if (emptySources.length) {
       <h2>Fontes sem dado oficial publicado</h2>
       @for (source of emptySources; track source.sourceId) {
-        <p>{{ source.sourceId }}: {{ source.emptyReason }}</p>
+        <p>{{ sourceHeading(source.sourceId) }}: {{ prose(source.emptyReason) }}</p>
       }
     }
   }

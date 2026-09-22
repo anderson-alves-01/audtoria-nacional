@@ -1,0 +1,11 @@
+previous=arn:aws:ecs:sa-east-1:332380491162:task-definition/sirta-prod-web:6
+web=arn:aws:ecs:sa-east-1:332380491162:task-definition/sirta-prod-web:7
+image=332380491162.dkr.ecr.sa-east-1.amazonaws.com/sirta-prod-web:0.4.0
+rollback=redeploy task arn:aws:ecs:sa-east-1:332380491162:task-definition/sirta-prod-web:6 image tag 0.3.101
+image_live=sirta-prod-web:0.4.1
+task_definition=sirta-prod-web:8
+previous=sirta-prod-web:6
+rollback=update service to sirta-prod-web:6
+main_js=main-DI56IK4O.js
+nginx_fix=quoted location regex
+

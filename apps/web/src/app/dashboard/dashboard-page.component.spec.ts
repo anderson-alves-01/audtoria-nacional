@@ -53,9 +53,11 @@ describe('DashboardPageComponent', () => {
     });
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Dicionário FPM não é valor transferido');
-    expect(fixture.nativeElement.textContent).toContain('TESOURO-FPM-VALORES');
+    expect(fixture.nativeElement.textContent).toContain('Tesouro Nacional — FPM publicado');
+    expect(fixture.nativeElement.textContent).not.toContain('TESOURO-FPM-VALORES');
+    expect(fixture.nativeElement.textContent).not.toContain('REAL_OFFICIAL_DATA');
     expect(fixture.nativeElement.textContent).toContain('Painel aberto');
-    expect(fixture.nativeElement.textContent).toContain('não é crédito tributário');
+    expect(fixture.nativeElement.textContent).toContain('Não é crédito tributário');
     expect(fixture.nativeElement.textContent).toContain('Comandos de cobrança');
     expect(fixture.nativeElement.textContent).not.toContain('R$');
     fixture.destroy();
@@ -126,7 +128,11 @@ describe('DashboardPageComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     expect(fixture.nativeElement.textContent).toContain('Cobertura por fonte oficial');
-    expect(fixture.nativeElement.textContent).toContain('Fontes e lineage');
+    expect(fixture.nativeElement.textContent).toContain('O que foi publicado');
+    expect(fixture.nativeElement.textContent).toContain('R$');
+    expect(fixture.nativeElement.textContent).not.toContain('REFERENCE_QUANTITY');
+    expect(fixture.nativeElement.textContent).not.toContain('REAL_OFFICIAL_DATA');
+    expect(fixture.nativeElement.textContent).not.toContain('fpm_published');
     const button: HTMLButtonElement = fixture.nativeElement.querySelector('button.linkish');
     button.click();
     fixture.detectChanges();
