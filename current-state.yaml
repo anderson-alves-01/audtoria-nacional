@@ -261,5 +261,5 @@ gates:
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
 evidence: evidence/releases/0.4.0/ui/
-next_action: Professional UI v1 on feat/professional-ui-v1. API implementation remains 0.3.101. No merge, no deploy.
+next_action: Chart reading slice committed. API 0.3.103 and web 0.4.4 live. G10 remains NO-GO. No merge.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

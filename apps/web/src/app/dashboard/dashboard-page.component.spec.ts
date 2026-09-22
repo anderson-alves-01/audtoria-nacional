@@ -142,4 +142,64 @@ describe('DashboardPageComponent', () => {
     fixture.destroy();
     httpCtrl.verify();
   });
+
+  it('keeps distinct measures apart and drops mixed charts', async () => {
+    const fixture = TestBed.createComponent(DashboardPageComponent);
+    const httpCtrl = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    httpCtrl.expectOne('/v1/dashboards/transferencias').flush({
+      title: 'Transferências',
+      banner: 'DADOS DE FONTE OFICIAL — REFERÊNCIA HUMANAMENTE VALIDADA — NÃO É CRÉDITO TRIBUTÁRIO',
+      emptyReason: '',
+      published: true,
+      commandsDisabled: true,
+      homologationStatus: 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY',
+      emptySources: [],
+      kpis: [],
+      charts: [
+        {
+          id: 'mixed',
+          title: 'Total publicado por competência',
+          type: 'bar',
+          unit: 'MIXED',
+          valueKind: 'REFERENCE_QUANTITY',
+          series: [{ name: 'Total', points: [{ x: '2024', y: 1 }] }],
+          evidenceIds: [],
+        },
+      ],
+      items: [
+        {
+          sourceId: 'IBGE-SIDRA-CEMP',
+          indicator: 'ibge_cemp_municipal_totals',
+          maintainer: 'IBGE',
+          dataset: 'SIDRA-9509',
+          competence: '2024',
+          formula: 'Variáveis separadas.',
+          methodologyVersion: 'v1',
+          coverageCount: 2,
+          qualityLevel: 'TECHNICALLY_VALIDATED',
+          homologationStatus: 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY',
+          officialUrl: 'https://sidra.ibge.gov.br/',
+          quarantinedCount: 0,
+          numericTotal: 999,
+          valueKind: 'REFERENCE_QUANTITY',
+          financial: false,
+          measures: [
+            { label: 'Pessoal ocupado', value: 10, unit: 'Pessoas' },
+            { label: 'Salários', value: 20, unit: 'Mil Reais' },
+          ],
+        },
+      ],
+    });
+    fixture.detectChanges();
+    const text = fixture.nativeElement.textContent as string;
+    expect(text).toContain('Pessoal ocupado');
+    expect(text).toContain('Salários');
+    expect(text).toContain('Mil Reais');
+    expect(text).not.toContain('Total publicado por competência');
+    expect(text).not.toContain('999');
+    fixture.destroy();
+    httpCtrl.verify();
+  });
 });

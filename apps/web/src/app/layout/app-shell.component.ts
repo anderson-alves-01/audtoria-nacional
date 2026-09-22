@@ -3,6 +3,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
 import { filter } from 'rxjs';
 import { PublicOpenSessionService } from '../auth/public-open-session.service';
 import { APP_NAV_GROUPS, NavGroup } from './navigation';
+import { humanizeContext, humanizeSessionMode } from '../shared/presentation/official-labels';
 
 @Component({
   selector: 'app-shell',
@@ -36,15 +37,23 @@ export class AppShellComponent {
   }
 
   get territoryLabel(): string {
-    return this.session.peek()?.territoryId || 'não carregado';
+    return humanizeContext('territory', this.session.peek()?.territoryId);
+  }
+
+  get territoryCode(): string {
+    return this.session.peek()?.territoryId || '';
   }
 
   get purposeLabel(): string {
-    return this.session.peek()?.purposeId || 'não carregada';
+    return humanizeContext('purpose', this.session.peek()?.purposeId);
+  }
+
+  get purposeCode(): string {
+    return this.session.peek()?.purposeId || '';
   }
 
   get profileLabel(): string {
-    return this.session.peek()?.mode || 'sessão não iniciada';
+    return humanizeSessionMode(this.session.peek()?.mode);
   }
 
   visibleGroups(): NavGroup[] {

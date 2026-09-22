@@ -68,7 +68,7 @@
             [series]="chart.series"
             [homologation]="homologationStatus"
             [quality]="qualityText(items.length ? items[0].qualityLevel : '')"
-            [source]="panelSources()"
+            [source]="chart.sourceId ? sourceHeading(chart.sourceId) : panelSources()"
           />
         }
       </section>
@@ -89,7 +89,14 @@
         @for (item of items; track item.sourceId + item.indicator) {
           <li [class.assessed]="!item.financial" [class.collection]="!!item.financial">
             <strong>{{ indicatorTitle(item) }}</strong>
-            <span class="tabular">{{ publishedTotal(item) }}</span>
+            @if (separateMeasures(item).length) {
+              <span>Medidas publicadas em separado, sem somar naturezas diferentes.</span>
+              @for (measure of separateMeasures(item); track measure.label) {
+                <span class="tabular">{{ measure.label }}: {{ formatMeasure(measure) }}</span>
+              }
+            } @else {
+              <span class="tabular">{{ publishedTotal(item) }}</span>
+            }
             <span>Medida: {{ humanizeValueKind(item.valueKind) }}.</span>
             <span>{{ prose(item.presentation) || 'Leitura do valor publicado pelo órgão. Não é crédito tributário.' }}</span>
             <span>Órgão {{ item.maintainer }} · competência {{ item.competence }} · {{ item.coverageCount }} registros na base</span>

@@ -1,8 +1,12 @@
 import {
   formatPublishedValue,
+  humanizeContext,
   humanizeHomologation,
   humanizeIndicator,
+  humanizeQuality,
+  humanizeSessionMode,
   humanizeSource,
+  humanizeUnit,
   humanizeValueKind,
 } from './official-labels';
 
@@ -24,5 +28,14 @@ describe('official labels', () => {
     expect(humanizeSource('TESOURO-FPM-VALORES')).toBe('Tesouro Nacional — FPM publicado');
     expect(formatPublishedValue(1000, 'BRL')).toContain('R$');
     expect(formatPublishedValue(18642470, 'UNIT')).not.toContain('R$');
+    expect(humanizeUnit('Pessoas')).toBe('Pessoas');
+    expect(humanizeSessionMode('PUBLIC_OPEN_UI_BOOTSTRAP')).toBe('Consulta pública de referência');
+    expect(humanizeSessionMode('PUBLIC_OPEN_UI_BOOTSTRAP')).not.toContain('PUBLIC_OPEN');
+    expect(humanizeContext('territory', '11111111-1111-4111-8111-111111111021')).toBe(
+      'Território da sessão de consulta',
+    );
+    expect(humanizeQuality('COVERAGE_DIVERGENCE_PENDING_HUMAN_VALIDATION')).toContain(
+      'Diferença de cobertura',
+    );
   });
 });

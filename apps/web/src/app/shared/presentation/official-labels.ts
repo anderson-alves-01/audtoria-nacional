@@ -18,6 +18,8 @@ const QUALITY: Record<string, string> = {
   TECHNICALLY_VALIDATED: 'Conferido na carga técnica (checksum, esquema e contagens)',
   TECHNICALLY_APPROVED: 'Aprovado na conferência técnica do catálogo',
   PENDING_HUMAN_VALIDATION: 'Aguardando validação humana',
+  COVERAGE_DIVERGENCE_PENDING_HUMAN_VALIDATION:
+    'Diferença de cobertura entre as fontes, ainda sem validação humana. Não é ocorrência de cobrança.',
 };
 
 const CATALOG: Record<string, string> = {
@@ -203,6 +205,9 @@ export function humanizeUnit(unit: string | null | undefined): string {
   if (unit === 'MIXED') {
     return 'medidas de naturezas diferentes, sem soma única';
   }
+  if (unit && !/^[A-Z0-9_]+$/.test(unit)) {
+    return unit;
+  }
   return 'unidade publicada pelo órgão';
 }
 
@@ -262,6 +267,28 @@ export function humanizeAxis(value: string): string {
     return humanizeSource(value);
   }
   return value;
+}
+
+export function humanizeSessionMode(mode: string | null | undefined): string {
+  if (!mode) {
+    return 'Sessão não iniciada';
+  }
+  if (mode === 'PUBLIC_OPEN_UI_BOOTSTRAP') {
+    return 'Consulta pública de referência';
+  }
+  return 'Sessão autenticada';
+}
+
+export function humanizeContext(kind: 'territory' | 'purpose', id: string | null | undefined): string {
+  if (!id) {
+    return kind === 'territory' ? 'Território não carregado' : 'Finalidade não carregada';
+  }
+  if (/^[0-9a-f-]{36}$/i.test(id)) {
+    return kind === 'territory'
+      ? 'Território da sessão de consulta'
+      : 'Finalidade de consulta pública';
+  }
+  return id;
 }
 
 export function formatPublishedValue(value: number | null | undefined, unit: string | null | undefined): string {

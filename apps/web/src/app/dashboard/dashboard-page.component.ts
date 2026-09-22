@@ -23,6 +23,13 @@ import { KpiCardComponent } from '../shared/ui/kpi-card.component';
 
 export type DashboardViewState = 'loading' | 'empty' | 'ok' | 'partial' | 'error';
 
+interface PublishedMeasure {
+  label: string;
+  value: number;
+  unit: string;
+  count?: number;
+}
+
 interface DashboardGoldItem {
   sourceId: string;
   indicator: string;
@@ -40,6 +47,7 @@ interface DashboardGoldItem {
   valueKind?: string;
   presentation?: string;
   financial?: boolean;
+  measures?: PublishedMeasure[];
   lineageLineCount?: number;
   goldId?: string;
   lineage?: {
@@ -82,6 +90,7 @@ interface DashboardChart {
   type: string;
   unit: string;
   valueKind: string;
+  sourceId?: string;
   series: { name: string; points: ChartPoint[] }[];
   evidenceIds: string[];
 }
@@ -92,6 +101,7 @@ interface ChartView {
   summary: string;
   unit: string;
   valueKind: string;
+  sourceId: string;
   chartType: 'line' | 'bar';
   series: ChartSeriesInput;
 }
@@ -202,13 +212,19 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     if (kpi.label.startsWith('Cobertura ')) {
       return `Registros na base · ${humanizeSource(kpi.sourceId)}`;
     }
+    if (kpi.label.includes(' ') && !kpi.label.includes('_')) {
+      return kpi.label;
+    }
     return humanizeIndicator(kpi.label, item?.presentation);
   }
 
   kpiMeta(kpi: DashboardKpi): string {
     const item = this.items.find((entry) => entry.sourceId === kpi.sourceId);
     const source = humanizeSource(kpi.sourceId);
-    return item?.competence ? `${source} · competência ${item.competence}` : source;
+    const competence = item?.competence ? `competência ${item.competence}` : '';
+    const officialUnit =
+      kpi.unit && !['BRL', 'COUNT', 'UNIT', 'MIXED'].includes(kpi.unit) ? kpi.unit : '';
+    return [source, competence, officialUnit].filter((part) => part.length > 0).join(' · ');
   }
 
   kpiKind(kpi: DashboardKpi): string {
@@ -226,6 +242,18 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   publishedTotal(item: DashboardGoldItem): string {
     const unit = item.financial ? 'BRL' : 'UNIT';
     return formatPublishedValue(item.numericTotal, unit);
+  }
+
+  separateMeasures(item: DashboardGoldItem): PublishedMeasure[] {
+    return item.measures && item.measures.length > 1 ? item.measures : [];
+  }
+
+  formatMeasure(measure: PublishedMeasure): string {
+    const figure = formatPublishedValue(measure.value, measure.unit === 'BRL' ? 'BRL' : 'UNIT');
+    if (!measure.unit || measure.unit === 'BRL' || measure.unit === 'UNIT' || measure.unit === 'COUNT') {
+      return figure;
+    }
+    return `${figure} ${measure.unit}`;
   }
 
   private resetView(dashboardId: string): void {
@@ -253,7 +281,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     this.items = body.items || [];
     this.emptySources = body.emptySources || [];
     this.kpis = body.kpis || [];
-    this.chartViews = (body.charts || []).map((chart) => this.toChartView(chart));
+    this.chartViews = (body.charts || [])
+      .filter((chart) => chart.unit !== 'MIXED')
+      .map((chart) => this.toChartView(chart));
     this.commandsDisabled = body.commandsDisabled;
     if (!body.published) {
       this.state = 'empty';
@@ -282,13 +312,15 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       chart.unit === 'MIXED'
         ? ' Pontos de naturezas diferentes ficam no mesmo eixo e não formam um total único.'
         : '';
-    const summary = `${chart.title}: ${points.length} pontos publicados. ${humanizeValueKind(chart.valueKind)}.${caution}`;
+    const pointWord = points.length === 1 ? 'ponto publicado' : 'pontos publicados';
+    const summary = `${chart.title}: ${points.length} ${pointWord}. ${humanizeValueKind(chart.valueKind)}.${caution}`;
     return {
       id: chart.id,
       title: chart.title,
       summary,
       unit: chart.unit,
       valueKind: chart.valueKind,
+      sourceId: chart.sourceId || '',
       chartType: chart.type === 'line' ? 'line' : 'bar',
       series: {
         name: series?.name || chart.title,
@@ -298,6 +330,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   }
 
   private axisLabel(value: string): string {
+    if (/^\d{6,7}$/.test(value)) {
+      return `Município ${value}`;
+    }
     return humanizeAxis(value);
   }
 }

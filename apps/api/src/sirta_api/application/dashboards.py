@@ -6,7 +6,7 @@ from sirta_api.domain.catalog import (
     HOMOLOGATION_REFERENCE_VALIDATED,
     OFFICIAL_BANNER,
 )
-from sirta_api.domain.dashboard_charts import build_dashboard_visuals
+from sirta_api.domain.dashboard_charts import build_dashboard_visuals, separate_measures
 from sirta_api.domain.dashboards import DASHBOARDS, dashboard_by_id
 from sirta_api.domain.errors import NotVisibleError
 
@@ -34,6 +34,7 @@ def get_dashboard(session: Session, *, context: AccessContext, dashboard_id: str
     source_ids = {item.get("sourceId") for item in view["items"]}
     scoped_lines = [line for line in lines_payload["items"] if line.get("sourceId") in source_ids]
     visuals = build_dashboard_visuals(items=view["items"], lines=scoped_lines)
+    separate_measures(view["items"], scoped_lines)
     view["kpis"] = visuals["kpis"]
     view["charts"] = visuals["charts"]
     return view

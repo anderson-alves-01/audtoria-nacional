@@ -70,8 +70,8 @@
         <span aria-hidden="true">/</span>
         <span>{{ breadcrumb }}</span>
       </nav>
-      <p class="context-chip">Território <strong>{{ territoryLabel }}</strong></p>
-      <p class="context-chip">Finalidade <strong>{{ purposeLabel }}</strong></p>
+      <p class="context-chip" [attr.title]="territoryCode">Território <strong>{{ territoryLabel }}</strong></p>
+      <p class="context-chip" [attr.title]="purposeCode">Finalidade <strong>{{ purposeLabel }}</strong></p>
       <label class="search">
         <span class="sr">Buscar na navegação</span>
         <input type="search" placeholder="Buscar módulo" [value]="query" (input)="query = $any($event.target).value" />
