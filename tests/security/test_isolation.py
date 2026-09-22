@@ -29,6 +29,10 @@ def _analyst_headers(**kwargs):
     return auth_headers(**data)
 
 
+# Bootstrap mint endpoint intentionally has no prior access context.
+_PUBLIC_BOOTSTRAP_PATHS = {"/v1/auth/public-open-session"}
+
+
 def test_protected_routes_require_access_context_dependency() -> None:
     app = create_app()
     protected = []
@@ -37,7 +41,7 @@ def test_protected_routes_require_access_context_dependency() -> None:
         nested = original.routes if original is not None else [route]
         for item in nested:
             path = getattr(item, "path", "")
-            if path.startswith("/v1"):
+            if path.startswith("/v1") and path not in _PUBLIC_BOOTSTRAP_PATHS:
                 protected.append(item)
     assert protected
     for route in protected:
