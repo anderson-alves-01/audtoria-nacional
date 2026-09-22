@@ -94,7 +94,7 @@ data "aws_caller_identity" "current" {
 }
 
 locals {
-  enabled = var.cloud_apply_authorized
+  enabled           = var.cloud_apply_authorized
   caller_account_id = var.cloud_apply_authorized ? data.aws_caller_identity.current[0].account_id : ""
   tags = {
     project = "auditoria-nacional"
