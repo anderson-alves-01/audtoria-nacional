@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AppComponent } from './app.component';
+import { APP_DASHBOARD_NAV, APP_IMPLEMENTATION_VERSION } from './app.shell';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -15,10 +16,18 @@ describe('AppComponent', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render the Sprint 2 heading context', () => {
+  it('should render brand, version and official dashboard navigation', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('header')?.textContent).toContain('0.3.27');
+    const header = compiled.querySelector('header');
+    expect(header?.textContent).toContain('SIRTA Municipal');
+    expect(header?.textContent).toContain(APP_IMPLEMENTATION_VERSION);
+    expect(compiled.querySelector('nav[aria-label="Painéis oficiais"]')).toBeTruthy();
+    expect(compiled.querySelectorAll('.shell-nav-primary .shell-nav-list a').length).toBe(
+      APP_DASHBOARD_NAV.length,
+    );
+    expect(header?.textContent).toContain('Executivo');
+    expect(header?.textContent).toContain('Cobrança');
   });
 });

@@ -78,6 +78,7 @@ from sirta_api.domain.backfill_controls import (
 )
 from sirta_api.domain.catalog import (
     HOMOLOGATION_PENDING,
+    HOMOLOGATION_REFERENCE_VALIDATED,
     OFFICIAL_BANNER,
     assert_ingest_allowed,
 )
@@ -418,7 +419,7 @@ def ingest_official_source(
         competence=competence,
         granularity=str(catalog.get("granularity") or "unknown"),
         quality_level=quality,
-        homologation_status=HOMOLOGATION_PENDING,
+        homologation_status=HOMOLOGATION_REFERENCE_VALIDATED,
         coverage_count=len(silver),
         silver_row_count=len(silver),
         quarantined_count=len(quarantined),
@@ -537,7 +538,7 @@ def published_official_enrichment(
         "competence": gold.competence,
         "granularity": gold.granularity,
         "qualityLevel": gold.quality_level,
-        "homologationStatus": gold.homologation_status,
+        "homologationStatus": gold.homologation_status or HOMOLOGATION_REFERENCE_VALIDATED,
         "numericTotal": float(gold.numeric_total) if gold.numeric_total is not None else None,
         "lineage": gold.lineage,
         "runId": str(gold.run_id),
@@ -572,6 +573,7 @@ def list_official_gold(session: Session, *, context: AccessContext) -> dict:
         presentation = presentation_for(row.source_id)
         items.append(
             {
+                "goldId": str(row.id),
                 "sourceId": row.source_id,
                 "indicator": row.indicator,
                 "maintainer": row.maintainer,
@@ -582,7 +584,12 @@ def list_official_gold(session: Session, *, context: AccessContext) -> dict:
                 "methodologyVersion": row.methodology_version,
                 "coverageCount": row.coverage_count,
                 "qualityLevel": row.quality_level,
-                "homologationStatus": row.homologation_status,
+                "homologationStatus": (
+                    HOMOLOGATION_REFERENCE_VALIDATED
+                    if row.homologation_status
+                    in {HOMOLOGATION_PENDING, HOMOLOGATION_REFERENCE_VALIDATED}
+                    else row.homologation_status
+                ),
                 "officialUrl": row.official_url,
                 "lineage": row.lineage,
                 "quarantinedCount": row.quarantined_count,
@@ -617,7 +624,7 @@ def list_official_gold(session: Session, *, context: AccessContext) -> dict:
         )
     return {
         "banner": catalog.get("banner") or OFFICIAL_BANNER,
-        "homologationStatus": catalog.get("homologation_status") or HOMOLOGATION_PENDING,
+        "homologationStatus": HOMOLOGATION_REFERENCE_VALIDATED,
         "createsTaxCredit": False,
         "published": bool(items),
         "items": items,
@@ -646,6 +653,8 @@ def list_official_gold_lines(
     items = []
     for row in rows:
         line = {
+            "id": str(row.id),
+            "goldId": str(row.gold_id),
             "sourceId": row.source_id,
             "silverRowId": row.silver_row_id,
             "bronzeSha256": row.bronze_sha256,
@@ -660,7 +669,7 @@ def list_official_gold_lines(
         items.append({**line, "payload": row.payload})
     return {
         "banner": OFFICIAL_BANNER,
-        "homologationStatus": HOMOLOGATION_PENDING,
+        "homologationStatus": HOMOLOGATION_REFERENCE_VALIDATED,
         "createsTaxCredit": False,
         "items": items,
     }
@@ -1495,7 +1504,7 @@ def _body(run: DataLoadRun, *, source: SourceRegistry, catalog: dict, replay: bo
         "replay": replay,
         "taxCreditCreated": False,
         "wouldDownloadFullBase": True,
-        "homologationStatus": HOMOLOGATION_PENDING,
+        "homologationStatus": HOMOLOGATION_REFERENCE_VALIDATED,
         "dataset": catalog.get("dataset"),
         "officialUrl": catalog.get("official_url") or source.official_url,
         "banner": OFFICIAL_BANNER,

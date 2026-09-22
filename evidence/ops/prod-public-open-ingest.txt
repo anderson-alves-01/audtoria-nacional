@@ -1,0 +1,16 @@
+started=2026-09-22T10:10:11.808386+00:00
+authorization=PUBLIC_OPEN_REFERENCE_ONLY_PROD
+account=332380491162
+region=sa-east-1
+createsTaxCredit=false
+{"sourceId": "IBGE-SIDRA", "httpStatus": 200, "elapsedSec": 3.8, "runId": "20e8dbbb-dda2-41c6-9bb1-6789ee5db7b7", "status": "PUBLISHED", "replay": false, "receivedCount": 5571, "silverCount": 5571, "quarantinedCount": 0, "taxCreditCreated": false, "homologationStatus": "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY", "title": null, "detail": null}
+{"sourceId": "IBGE-SIDRA-PIB", "httpStatus": 200, "elapsedSec": 5.1, "runId": "a1e16d5d-a31e-4179-8eaf-ed8e8daa8ff0", "status": "PUBLISHED", "replay": false, "receivedCount": 11140, "silverCount": 5570, "quarantinedCount": 5570, "taxCreditCreated": false, "homologationStatus": "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY", "title": null, "detail": null}
+{"sourceId": "IBGE-SIDRA-CEMP", "httpStatus": 200, "elapsedSec": 10.3, "runId": "d66d94d5-378a-46e3-91af-249a5de3ad6f", "status": "PUBLISHED", "replay": false, "receivedCount": 16710, "silverCount": 16710, "quarantinedCount": 0, "taxCreditCreated": false, "homologationStatus": "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY", "title": null, "detail": null}
+{"sourceId": "SICONFI-ENTES", "httpStatus": 200, "elapsedSec": 3.4, "runId": "0751f71c-f263-4c43-b9ef-f6336796717c", "status": "PUBLISHED", "replay": false, "receivedCount": 5570, "silverCount": 5570, "quarantinedCount": 0, "taxCreditCreated": false, "homologationStatus": "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY", "title": null, "detail": null}
+{"sourceId": "TESOURO-TRANSPARENTE", "httpStatus": 200, "elapsedSec": 2.2, "runId": "ce8c3340-8323-4458-93da-9b4d573d61c6", "status": "PUBLISHED", "replay": false, "receivedCount": 18, "silverCount": 18, "quarantinedCount": 0, "taxCreditCreated": false, "homologationStatus": "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY", "title": null, "detail": null}
+{"sourceId": "TESOURO-FPM-VALORES", "httpStatus": 200, "elapsedSec": 8.4, "runId": "661c1990-2a7b-409f-9e59-04e89b339d72", "status": "PUBLISHED", "replay": false, "receivedCount": 11139, "silverCount": 11001, "quarantinedCount": 138, "taxCreditCreated": false, "homologationStatus": "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY", "title": null, "detail": null}
+{"goldHttp": 200, "published": true, "itemCount": 7, "emptyCount": 92, "createsTaxCredit": false}
+{"dashboard": "executivo", "http": 200, "published": true, "items": 5, "kpis": 6, "charts": 3}
+{"dashboard": "financeiro", "http": 200, "published": true, "items": 1, "kpis": 2, "charts": 3}
+{"dashboard": "transferencias", "http": 200, "published": true, "items": 2, "kpis": 2, "charts": 3}
+finished=2026-09-22T10:10:58.002497+00:00

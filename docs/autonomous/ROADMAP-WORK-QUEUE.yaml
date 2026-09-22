@@ -1069,7 +1069,7 @@ items:
     dominio: D1
     descricao: Pacote único final de homologação humana
     dependencias: [DASHBOARDS-COMPLETE, F3-RREO-BACKFILL, F3-FPM-MUNICIPAL, F8-IBS-CBS]
-    estado_tecnico: PENDING
+    estado_tecnico: TECH_COMPLETE
     estado_institucional: HUMAN_VALIDATION_PENDING
     dados_necessarios: none
     fontes_oficiais: []
@@ -1078,11 +1078,11 @@ items:
     pipeline: false
     testes: false
     evidencia: docs/delivery/HUMAN_VALIDATION_PACKAGE.md
-    versao: "0.3.15"
-    commit: 1d7a601
+    versao: "0.3.98"
+    commit: 6f58c5d
     ci: null
     motivo_bloqueio: null
-    next_action: Não solicitar homologação agora; consolidar somente quando a fila técnica fechar.
+    next_action: Pacote técnico consolidado; não solicitar aceite Gold agora. Deploy AWS PROD permanece no gate G10.
 
   - id: G0-HUMAN
     fase: G0

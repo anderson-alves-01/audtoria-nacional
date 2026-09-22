@@ -1,0 +1,13 @@
+# Example values for production. Copy to terraform.tfvars ONLY after G10 authorization.
+# Never commit real secrets or terraform.tfvars with cloud_apply_authorized=true.
+
+cloud_apply_authorized = false
+aws_region             = "sa-east-1"
+aws_account_id         = "332380491162"
+name_prefix            = "sirta-prod"
+budget_limit_usd       = 200
+# budget_notification_email = "ops@example.gov.br"
+# acm_certificate_arn       = "arn:aws:acm:sa-east-1:ACCOUNT:certificate/..."
+# api_image                 = "ACCOUNT.dkr.ecr.sa-east-1.amazonaws.com/sirta-prod-api:tag"
+# web_image                 = "ACCOUNT.dkr.ecr.sa-east-1.amazonaws.com/sirta-prod-web:tag"
+# worker_image              = "ACCOUNT.dkr.ecr.sa-east-1.amazonaws.com/sirta-prod-worker:tag"

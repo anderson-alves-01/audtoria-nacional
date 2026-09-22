@@ -38,7 +38,7 @@ def test_catalog_ingest_ibge_is_idempotent_and_never_creates_tax_credit(api_clie
     assert body["landingPreserved"] is True
     assert body["taxCreditCreated"] is False
     assert body["wouldDownloadFullBase"] is True
-    assert body["homologationStatus"] == "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+    assert body["homologationStatus"] == "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     second = api_client.post("/v1/data-sources/IBGE-SIDRA/ingest", headers=_admin())
     assert second.status_code == 200
     assert second.json()["runId"] == body["runId"]
@@ -65,8 +65,8 @@ def test_analyst_cannot_ingest_but_can_read_enrichment(api_client) -> None:
     assert payload["createsTaxCredit"] is False
     assert payload["indicatorCount"] == 2
     assert payload["sourceRole"] == "REFERENCE_ENRICHMENT"
-    assert payload["homologationStatus"] == "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
-    assert "HOMOLOGAÇÃO HUMANA PENDENTE" in payload["banner"]
+    assert payload["homologationStatus"] == "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    assert "NÃO É CRÉDITO TRIBUTÁRIO" in payload["banner"]
 
 
 def test_logical_rollback_unpublishes_enrichment(api_client) -> None:

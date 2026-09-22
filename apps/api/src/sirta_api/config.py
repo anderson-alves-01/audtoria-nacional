@@ -22,6 +22,14 @@ class Settings(BaseSettings):
     oidc_audience: str = "sirta-api"
     oidc_jwks_url: str | None = "http://localhost:8081/realms/sirta/protocol/openid-connect/certs"
     oidc_jwks_path: str | None = None
+    oidc_signing_key_path: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("OIDC_SIGNING_KEY_PATH", "SIRTA_OIDC_SIGNING_KEY_PATH"),
+    )
+    public_open_ui_bootstrap: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("SIRTA_PUBLIC_OPEN_UI_BOOTSTRAP", "PUBLIC_OPEN_UI_BOOTSTRAP"),
+    )
     s3_endpoint: str = "http://localhost:9000"
     s3_access_key: str = "sirta"
     s3_secret_key: str = _LOCAL_S3_SECRET

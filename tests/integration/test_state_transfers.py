@@ -114,7 +114,7 @@ def test_state_pe_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-PE-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-PE-IPI-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-PE-IPI-QUOTA",
@@ -152,7 +152,7 @@ def test_state_ba_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-BA-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-BA-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-BA-IPI-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-BA-IPI-QUOTA",
@@ -187,7 +187,7 @@ def test_state_mg_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-MG-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-MG-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MG-IPI-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-MG-IPI-QUOTA",
@@ -217,7 +217,7 @@ def test_state_es_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-ES-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-ES-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-ES-IPVA-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-ES-ICMS-QUOTA",
@@ -291,7 +291,7 @@ def test_state_go_ipva_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-GO-IPVA-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-GO-IPVA-QUOTA",
@@ -320,7 +320,7 @@ def test_state_go_icms_economia_ingest_publishes_gold_without_credit(api_client)
     assert by_id["ESTADO-GO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-GO-ICMS-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-GO-ICMS-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-GO-ICMS-QUOTA",
@@ -369,7 +369,7 @@ def test_state_ms_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-MS-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MS-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-MS-IPVA-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-MS-ICMS-QUOTA",
@@ -397,7 +397,7 @@ def test_state_ms_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_ext["ESTADO-MS-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_ext["ESTADO-MS-CIDE-QUOTA"]["createsTaxCredit"] is False
     assert by_ext["ESTADO-MS-CIDE-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     ipi_lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-MS-IPI-QUOTA",
@@ -434,7 +434,7 @@ def test_state_ro_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-RO-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-RO-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-RO-IPVA-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-RO-ICMS-QUOTA",
@@ -482,12 +482,12 @@ def test_state_ac_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-AC-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-AC-ICMS-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-AC-ICMS-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     assert by_id["ESTADO-AC-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-AC-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-AC-IPVA-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     assert by_id["ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA"]["valueKind"] == (
         "TRANSFER_AMOUNT_AS_PUBLISHED"
@@ -564,7 +564,7 @@ def test_state_ce_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-CE-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-CE-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-CE-IPI-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-CE-IPI-QUOTA",
@@ -598,7 +598,7 @@ def test_state_rs_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-RS-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-RS-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-RS-IPVA-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-RS-ICMS-QUOTA",
@@ -625,7 +625,7 @@ def test_state_rs_ingest_publishes_gold_without_credit(api_client) -> None:
     )
     assert by_comp["ESTADO-RS-COMPENSACAO-LC194-QUOTA"]["createsTaxCredit"] is False
     assert by_comp["ESTADO-RS-COMPENSACAO-LC194-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     comp_lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-RS-COMPENSACAO-LC194-QUOTA",
@@ -662,7 +662,7 @@ def test_state_al_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-AL-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-AL-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-AL-IPI-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-AL-IPI-QUOTA",
@@ -684,7 +684,7 @@ def test_state_al_ingest_publishes_gold_without_credit(api_client) -> None:
     by_royalty = {item["sourceId"]: item for item in gold_royalty.json()["items"]}
     assert by_royalty["ESTADO-AL-ROYALTY-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_royalty["ESTADO-AL-ROYALTY-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     royalty_lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-AL-ROYALTY-QUOTA",
@@ -708,7 +708,7 @@ def test_state_pi_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-PI-IPVA-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-PI-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-PI-IPVA-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-PI-IPVA-QUOTA",
@@ -748,7 +748,7 @@ def test_state_rn_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-RN-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-RN-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-RN-IPI-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-RN-IPI-QUOTA",
@@ -782,7 +782,7 @@ def test_state_ma_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-MA-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-MA-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-MA-IPVA-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-MA-ICMS-QUOTA",
@@ -804,7 +804,7 @@ def test_state_ma_ingest_publishes_gold_without_credit(api_client) -> None:
     by_ipi = {item["sourceId"]: item for item in gold_ipi.json()["items"]}
     assert by_ipi["ESTADO-MA-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_ipi["ESTADO-MA-IPI-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     ipi_lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-MA-IPI-QUOTA",
@@ -833,7 +833,7 @@ def test_state_pr_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-PR-ICMS-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-PR-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-PR-IPVA-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-PR-ICMS-QUOTA",
@@ -855,7 +855,7 @@ def test_state_pr_ingest_publishes_gold_without_credit(api_client) -> None:
     by_ipi = {item["sourceId"]: item for item in gold_ipi.json()["items"]}
     assert by_ipi["ESTADO-PR-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_ipi["ESTADO-PR-IPI-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     ipi_lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-PR-IPI-QUOTA",
@@ -872,7 +872,7 @@ def test_state_pr_ingest_publishes_gold_without_credit(api_client) -> None:
     by_royalty = {item["sourceId"]: item for item in gold_royalty.json()["items"]}
     assert by_royalty["ESTADO-PR-ROYALTY-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_royalty["ESTADO-PR-ROYALTY-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     royalty_lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-PR-ROYALTY-QUOTA",
@@ -896,7 +896,7 @@ def test_state_pa_icms_verde_ingest_publishes_gold_without_credit(api_client) ->
     assert by_id["ESTADO-PA-ICMS-VERDE-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-PA-ICMS-VERDE-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-PA-ICMS-VERDE-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-PA-ICMS-VERDE-QUOTA",
@@ -936,7 +936,7 @@ def test_state_sc_ingest_publishes_gold_without_credit(api_client) -> None:
     assert by_id["ESTADO-SC-IPVA-QUOTA"]["createsTaxCredit"] is False
     assert by_id["ESTADO-SC-IPI-QUOTA"]["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert by_id["ESTADO-SC-IPI-QUOTA"]["homologationStatus"] == (
-        "REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION"
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
     )
     lines = api_client.get(
         "/v1/indicators/official-gold/lines?sourceId=ESTADO-SC-ICMS-QUOTA",

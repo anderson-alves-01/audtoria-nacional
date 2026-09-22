@@ -1,8 +1,8 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.97
+implementation_version: 0.3.101
 roadmap_version: "1.2"
-version: 0.3.97
+version: 0.3.101
 status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
@@ -14,11 +14,15 @@ completed:
     - catalog_driven_synthetic_ingest_ibge
     - tesouro_stub_and_blocked_gate_checklists
     - terraform_modules_documentation_only
+    - doc_homologation_package_tech_complete
+    - terraform_prod_stack_code_g10_gated
     - official_public_ingest_wave_1_ibge_siconfi_tesouro_dictionary
     - gold_lineage_per_row
     - tesouro_fpm_monthly_csv_connector
     - siconfi_rreo_dca_partitioned_connector
     - fifteen_official_dashboards_empty_when_unauthored
+    - human_validation_reference_only_public_open
+    - premium_dashboards_charts_kpis_from_gold
     - ingest_structured_observability
     - regulatory_lc214_document_ingest
     - portal_transparencia_credential_catalog_stub
@@ -244,9 +248,14 @@ gates:
   g7_official_tesouro_connectors: NO-GO
   g9_pilot: NO-GO
   g10_production: NO-GO
-  cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
+  cloud_access: AUTHORIZED_PROD_APPLY_2026-09-21
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
+  doc_homologation_package: TECH_COMPLETE
+  human_validation_reference_only: GO
+  terraform_prod_stack_code: GO
+  terraform_prod_apply: GO
+  terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.97/
-next_action: Prefer remaining UF tabular PUBLIC_OPEN or BCB OLINDA Top5. Inflacao12/24m activated. Still blocked: RJ IP HTML, PI ICMS empty Repasse WEB, SP HTML-per-muni, RR total without split, PA full DOE PDF, AP 404, MT ≤2015/PDF, SE/PB PDF, AM HTML-per-muni, TO indices. BCB OLINDA Expectativas anuais+mensais+trimestrais+Selic reunião+Inflacao12/24m ativados. Tesouro COINT municipal complete. RFB READY_FOR_TERRITORIAL_SCOPE. Human validation of Gold not requested now.
+evidence: evidence/releases/0.3.99/
+next_action: PROD PUBLIC_OPEN Gold ingested (IBGE/SICONFI/Tesouro FPM) under reference-only authorization. Executivo/Financeiro/Transferencias publish kpis/charts. No credit. No merge to main.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md
