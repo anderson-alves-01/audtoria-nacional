@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from sirta_api.application.public_open_session import mint_public_open_session
 from sirta_api.config import Settings
 from sirta_api.domain.errors import ForbiddenError
@@ -11,11 +13,8 @@ def test_public_open_session_requires_flag(db_session) -> None:
         oidc_signing_key_path="tests/fixtures/jwt/private.pem",
         oidc_jwks_path="tests/fixtures/jwt/jwks.json",
     )
-    try:
+    with pytest.raises(ForbiddenError):
         mint_public_open_session(db_session, settings=settings)
-        assert False, "expected ForbiddenError"
-    except ForbiddenError:
-        pass
 
 
 def test_public_open_session_mints_mfa_token(db_session) -> None:

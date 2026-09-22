@@ -33,5 +33,9 @@ jobs:
         run: terraform validate
       - name: Plan gated off
         env:
+          # Placeholder creds satisfy the AWS provider when G10 is closed (no API calls).
+          AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
+          AWS_SECRET_ACCESS_KEY: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+          AWS_DEFAULT_REGION: "sa-east-1"
           AWS_EC2_METADATA_DISABLED: "true"
         run: terraform plan -input=false -var=cloud_apply_authorized=false -lock=false
