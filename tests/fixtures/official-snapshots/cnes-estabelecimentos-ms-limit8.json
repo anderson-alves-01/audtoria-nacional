@@ -1,0 +1,74 @@
+{
+  "estabelecimentos": [
+    {
+      "codigo_cnes": 1000001,
+      "codigo_uf": 50,
+      "codigo_municipio": 500270,
+      "codigo_tipo_unidade": 1,
+      "data_atualizacao": "2026-09-01"
+    },
+    {
+      "codigo_cnes": 1000002,
+      "codigo_uf": 50,
+      "codigo_municipio": 500270,
+      "codigo_tipo_unidade": 2,
+      "data_atualizacao": "2026-09-01"
+    },
+    {
+      "codigo_cnes": 1000003,
+      "codigo_uf": 50,
+      "codigo_municipio": 500270,
+      "codigo_tipo_unidade": 22,
+      "data_atualizacao": "2026-09-01"
+    },
+    {
+      "codigo_cnes": 1000004,
+      "codigo_uf": 50,
+      "codigo_municipio": 500830,
+      "codigo_tipo_unidade": 1,
+      "data_atualizacao": "2026-09-01"
+    },
+    {
+      "codigo_cnes": 1000005,
+      "codigo_uf": 50,
+      "codigo_municipio": 500830,
+      "codigo_tipo_unidade": 36,
+      "data_atualizacao": "2026-09-01"
+    },
+    {
+      "codigo_cnes": 1000006,
+      "codigo_uf": 50,
+      "codigo_municipio": 500370,
+      "codigo_tipo_unidade": 1,
+      "data_atualizacao": "2026-09-01"
+    },
+    {
+      "codigo_cnes": 1000007,
+      "codigo_uf": 50,
+      "codigo_municipio": 500200,
+      "codigo_tipo_unidade": 1,
+      "data_atualizacao": "2026-09-01"
+    },
+    {
+      "codigo_cnes": 1000008,
+      "codigo_uf": 50,
+      "codigo_municipio": 500080,
+      "codigo_tipo_unidade": 1,
+      "data_atualizacao": "2026-09-01"
+    },
+    {
+      "codigo_cnes": 1000009,
+      "codigo_uf": 50,
+      "codigo_municipio": "BAD",
+      "codigo_tipo_unidade": 1,
+      "data_atualizacao": "2026-09-01"
+    },
+    {
+      "codigo_cnes": 1000010,
+      "codigo_uf": 33,
+      "codigo_municipio": 330240,
+      "codigo_tipo_unidade": 22,
+      "data_atualizacao": "2026-09-01"
+    }
+  ]
+}

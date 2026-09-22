@@ -1,0 +1,4 @@
+﻿CI green for HEAD 3035bff (0.3.94 BCB OLINDA trimestrais PIB setoriais).
+Primary run: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35648904520
+Companion: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35648899205
+Jobs: python/web/containers SUCCESS

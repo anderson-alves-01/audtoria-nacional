@@ -1,0 +1,4 @@
+unit bcb_olinda: 25 passed
+integration sectoral_enrichment: 11 passed
+integration/alembic + unit balanca targets: 8 passed
+catalog: layout bcb-olinda-expectativas-anuais-v23; detalhe Balança=[Saldo, Exportações, Importações]

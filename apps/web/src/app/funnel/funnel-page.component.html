@@ -1,19 +1,39 @@
 <section aria-labelledby="funnel-title">
-  <h1 id="funnel-title">Funil sintético de créditos</h1>
-  <p>Valores regionais em reais permanecem hipóteses e não entram neste painel.</p>
+  <h1 id="funnel-title">Indicadores oficiais (Gold)</h1>
+  <p>{{ banner || 'DADOS DE FONTE OFICIAL — PROCESSAMENTO TÉCNICO CONCLUÍDO — HOMOLOGAÇÃO HUMANA PENDENTE' }}</p>
+  <p>Valores públicos alimentam análise. Não há crédito tributário, dívida ou valor exigível neste painel.</p>
   @if (state === 'loading') {
-    <p role="status">Carregando Gold publicado…</p>
+    <p role="status">Carregando Gold oficial…</p>
   }
   @if (state === 'empty') {
-    <p role="status">Nenhum Gold publicado. Execute a carga sintética local.</p>
+    <p role="status">Nenhum Gold oficial publicado. O painel permanece vazio; nenhum valor demonstrativo é exibido.</p>
+    @for (source of emptySources; track source.sourceId) {
+      <p>{{ source.sourceId }}: {{ source.emptyReason }}</p>
+    }
   }
   @if (state === 'ok') {
     <ul>
-      <li class="finding">Identificados: {{ identified }}</li>
-      <li class="assessed">Validados: {{ validated }}</li>
-      <li class="collection">Em cobrança: {{ inCollection }}</li>
+      @for (item of items; track item.sourceId + item.indicator) {
+        <li class="assessed">
+          <strong>{{ item.indicator }}</strong> — {{ item.sourceId }}
+          <span>{{ item.presentation || 'Dado oficial de referência. Não é crédito tributário.' }}</span>
+          <span>Órgão {{ item.maintainer }} · dataset {{ item.dataset }} · competência {{ item.competence }}</span>
+          <span>Extração {{ item.lastExtractedAt }} · cobertura {{ item.coverageCount }} · qualidade {{ item.qualityLevel }}</span>
+          <span>Homologação {{ item.homologationStatus }} · quarentena {{ item.quarantinedCount }} · tipo {{ item.valueKind }}</span>
+          <span>Fórmula: {{ item.formula }} Metodologia {{ item.methodologyVersion }}.</span>
+          <span>Fonte {{ item.officialUrl }}</span>
+          @if (item.financial && item.numericTotal !== null) {
+            <span>Total publicado {{ item.numericTotal }}. Ocorrência para análise, não crédito nem cobrança.</span>
+          }
+        </li>
+      }
     </ul>
-    <p>Metodologia {{ methodology }}. {{ note }}</p>
+    @if (emptySources.length) {
+      <h2>Fontes sem dado oficial publicado</h2>
+      @for (source of emptySources; track source.sourceId) {
+        <p>{{ source.sourceId }}: {{ source.emptyReason }}</p>
+      }
+    }
   }
   @if (state === 'error') {
     <p role="alert">{{ errorMessage }}</p>

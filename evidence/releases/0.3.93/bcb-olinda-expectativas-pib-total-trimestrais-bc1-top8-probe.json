@@ -1,0 +1,69 @@
+{
+  "@odata.context": "https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTrimestrais(Indicador,Data,DataReferencia,Media,Mediana,baseCalculo)",
+  "value": [
+    {
+      "Indicador": "PIB Total",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2027",
+      "Media": 1.2947,
+      "Mediana": 1.3,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Total",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2028",
+      "Media": 1.6763,
+      "Mediana": 1.7,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Total",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2027",
+      "Media": 1.3693,
+      "Mediana": 1.3,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Total",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2028",
+      "Media": 1.6838,
+      "Mediana": 1.655,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Total",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2026",
+      "Media": 1.8156,
+      "Mediana": 1.8,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Total",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2027",
+      "Media": 1.404,
+      "Mediana": 1.4,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Total",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2026",
+      "Media": 1.7585,
+      "Mediana": 1.7604,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "PIB Total",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2027",
+      "Media": 1.4675,
+      "Mediana": 1.5089,
+      "baseCalculo": 1
+    }
+  ]
+}

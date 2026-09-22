@@ -1,0 +1,13 @@
+# Combined applicable tests — 0.3.82
+
+## Unit (bcb_olinda)
+17 passed
+
+## Integration sectoral OLINDA + alembic head
+3 passed (unit adm pública + ingest silverCount=208 + alembic head)
+
+## Alembic paths
+5 passed
+
+## Ruff
+parsers/migration clean after I001 fix on 0085

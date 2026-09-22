@@ -1,27 +1,145 @@
 project: auditoria-nacional
 spec_version: 0.3.0
-implementation_version: 0.3.13
+implementation_version: 0.3.101
 roadmap_version: "1.2"
-version: 0.3.13
-status: TERRAFORM_MODULES_DOCS
-current_phase: TERRAFORM_MODULES_DOCS
-release_stage: TERRAFORM_MODULES_DOCS
+version: 0.3.101
+status: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
+current_phase: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
+release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
 completed:
-  - alembic_hygiene
-  - source_master_registry_synthetic
-  - program_gates_snapshot
-  - terraform_docs_no_apply
-  - catalog_driven_synthetic_ingest_ibge
-  - tesouro_stub_and_blocked_gate_checklists
-  - terraform_modules_documentation_only
+    - alembic_hygiene
+    - source_master_registry_synthetic
+    - program_gates_snapshot
+    - terraform_docs_no_apply
+    - catalog_driven_synthetic_ingest_ibge
+    - tesouro_stub_and_blocked_gate_checklists
+    - terraform_modules_documentation_only
+    - doc_homologation_package_tech_complete
+    - terraform_prod_stack_code_g10_gated
+    - official_public_ingest_wave_1_ibge_siconfi_tesouro_dictionary
+    - gold_lineage_per_row
+    - tesouro_fpm_monthly_csv_connector
+    - siconfi_rreo_dca_partitioned_connector
+    - fifteen_official_dashboards_empty_when_unauthored
+    - human_validation_reference_only_public_open
+    - premium_dashboards_charts_kpis_from_gold
+    - ingest_structured_observability
+    - regulatory_lc214_document_ingest
+    - portal_transparencia_credential_catalog_stub
+    - diagnosis_empty_technical_shell
+    - audit_rules_non_binding_catalog
+    - ibs_cbs_calendar_preserved_documents
+    - siconfi_rgf_connector
+    - local_security_hardening_mfa_dlp
+    - local_postgres_backup_restore_dry_run
+    - findings_empty_technical_shell
+    - audit_cases_empty_technical_shell
+    - human_validation_workflow_empty_shell
+    - notifications_empty_technical_shell
+    - collection_panel_empty_official_shell
+    - payments_panel_empty_official_shell
+    - active_debt_panel_empty_official_shell
+    - procuradoria_panel_empty_official_shell
+    - transfer_reconciliation_empty_technical_shell
+    - pilot_readiness_technical_checklist
+    - ops_governance_local_runbooks_shell
+    - municipal_restricted_upload_empty_shell
+    - cadastro_360_empty_technical_shell
+    - sectoral_official_catalog_empty_shell
+    - controlled_backfill_fpm_rreo_dca
+    - rfb_territorial_connector_without_national_load
+    - state_icms_ipva_rj_provenance_and_empty_shell
+    - state_pe_icms_ipva_csv_activation
+    - state_ba_icms_ipva_csv_activation
+    - state_mg_icms_ipva_csv_gz_activation
+    - state_es_icms_ipva_csv_activation
+    - state_go_ipva_datastore_activation
+    - state_go_icms_economia_xlsx_activation
+    - state_es_ipi_cide_csv_activation
+    - state_go_ipi_economia_xlsx_activation
+    - state_ms_icms_ipva_datastore_activation
+    - anp_revendedores_uf_scoped_activation
+    - aneel_indqual_municipio_uf_scoped_activation
+    - sectoral_bcb_sgs_allowlist_activation
+    - sectoral_bcb_olinda_expectativas_activation
+    - sectoral_bcb_olinda_expectativas_selic_cambio
+    - sectoral_bcb_olinda_expectativas_pib
+    - sectoral_bcb_olinda_expectativas_igp_inpc
+    - sectoral_bcb_olinda_expectativas_pib_sectors
+    - sectoral_bcb_olinda_expectativas_divida_balanca
+    - sectoral_bcb_olinda_expectativas_resultado_conta
+    - sectoral_bcb_olinda_expectativas_resultado_nominal
+    - sectoral_bcb_olinda_expectativas_divida_bruta
+    - sectoral_bcb_olinda_expectativas_taxa_desocupacao
+    - sectoral_bcb_olinda_expectativas_investimento_direto
+    - sectoral_bcb_olinda_expectativas_ipca_livres_servicos
+    - sectoral_bcb_olinda_expectativas_ipca_administrados_alimentacao
+    - sectoral_bcb_olinda_expectativas_ipca_bens_industrializados
+    - sectoral_epe_anuario_dados_brutos_uf_scoped_activation
+    - sectoral_anatel_meu_municipio_uf_scoped_activation
+    - sectoral_cnes_demas_uf_scoped_activation
+    - state_ro_icms_ipva_csv_activation
+    - state_ac_icms_csv_activation
+    - state_ce_icms_ipva_xls_activation
+    - state_rs_icms_ipva_montaarquivo_xls_activation
+    - state_al_icms_ipva_xls_activation
+    - state_ac_ipva_transparencia_json_activation
+    - state_pi_ipva_repasseweb_html_activation
+    - state_rn_icms_ipva_xls_activation
+    - state_ma_icms_ipva_xls_activation
+    - state_pr_icms_ipva_html_activation
+    - state_pa_icms_verde_xlsx_activation
+    - ibge_sidra_9509_cemp_activation
+    - tesouro_monthly_itr_ipi_exp_royalties_allowlist
+    - tesouro_monthly_lc176_allowlist
+    - tesouro_monthly_iof_ouro_allowlist
+    - tesouro_coint_cide_fex_municipio_csv
+    - state_ce_al_rn_ipi_activation
+    - state_pe_ba_mg_ipi_activation
+    - state_ma_pr_ipi_fpex_activation
+    - state_ms_ipi_cide_activation
+    - state_al_pr_royalty_activation
+    - state_es_frd_compensacao_activation
+    - state_ac_transparencia_icms_fundeb_activation
+    - state_rs_compensacao_lc194_activation
+    - tesouro_monthly_fundeb_complement_allowlist
+    - tesouro_coint_fundeb_municipio_csv
+    - tesouro_coint_lc87_municipio_csv
+    - tesouro_coint_fpm_itr_iof_lc176_municipio_csv
+    - sectoral_bcb_olinda_expectativas_ipca_bens_industrializados
+    - sectoral_bcb_olinda_expectativas_pib_fbcf
+    - sectoral_bcb_olinda_expectativas_pib_despesa_familias
+    - sectoral_bcb_olinda_expectativas_pib_despesa_adm_publica
+    - sectoral_bcb_olinda_expectativas_pib_exportacao_bens_servicos
+    - sectoral_bcb_olinda_expectativas_pib_importacao_bens_servicos
+    - sectoral_bcb_olinda_expectativas_producao_industrial
+    - sectoral_bcb_olinda_expectativas_ipca_15
+    - sectoral_bcb_olinda_expectativas_ipc_fipe_ipa
+    - sectoral_bcb_olinda_expectativas_balanca_exportacoes_importacoes
+    - sectoral_bcb_olinda_expectativas_mensais_ipca
+    - sectoral_bcb_olinda_expectativas_mensais_igp_cambio
+    - sectoral_bcb_olinda_expectativas_mensais_ipca_components
+    - sectoral_bcb_olinda_expectativas_mensais_ipa_igp_di_inpc
+    - sectoral_bcb_olinda_expectativas_trimestrais_ipca_cambio_pib
+    - sectoral_bcb_olinda_expectativas_trimestrais_pib_sectors
+    - state_sc_icms_ipva_ipi_anual_2017_activation
+    - sectoral_bcb_olinda_expectativas_selic_reuniao
+    - sectoral_bcb_olinda_expectativas_inflacao_12_24m
 pending:
-  - municipal_g0_authorization
-  - diagnosis_g1
-  - specialist_homologation_g4
-  - official_tesouro_connectors_g7
-  - official_ibs_cbs_homologation_g8
-  - pilot_g9
-  - production_g10
+    - municipal_g0_authorization
+    - diagnosis_g1
+    - specialist_homologation_g4
+    - official_tesouro_national_backfill
+    - state_other_uf_activation_followup
+    - state_pi_icms_when_repasseweb_publishes
+    - state_mt_when_recent_tabular_published
+    - state_pa_full_icms_ipva_when_tabular_published
+    - rfb_scoped_authorized_load
+    - official_ibs_cbs_homologation_g8
+    - remaining_roadmap_technical_items
+    - pilot_g9
+    - production_g10
+    - human_validation_of_official_gold
 gates:
   g6_finance_local: GO
   g7_transfers_local: GO
@@ -33,16 +151,111 @@ gates:
   program_gates_local: GO
   terraform_docs_no_apply: GO
   terraform_modules_docs: GO
+  official_public_ingest_local: GO
+  f5_findings_cases_local: GO
+  f5_human_validation_workflow_local: GO
+  f5_notifications_collection_local: GO
+  f6_payments_active_debt_local: GO
+  f7_transfer_reconciliation_local: GO
+  f9_pilot_technical_local: GO
+  f10_ops_governance_local: GO
+  f3_municipal_upload_shell_local: GO
+  f4_cadastro_360_shell_local: GO
+  f3_sectoral_catalog_shell_local: GO
+  f3_controlled_backfill_local: GO
+  f3_rfb_territorial_local: GO
+  f3_state_transfers_shell_local: GO
+  f3_state_pe_activation_local: GO
+  f3_state_ba_activation_local: GO
+  f3_state_mg_activation_local: GO
+  f3_state_es_activation_local: GO
+  f3_state_go_ipva_activation_local: GO
+  f3_state_go_icms_economia_local: GO
+  f3_state_es_ipi_cide_local: GO
+  f3_state_go_ipi_economia_local: GO
+  f3_state_ms_activation_local: GO
+  f3_anp_revendedores_local: GO
+  f3_aneel_indqual_local: GO
+  f3_bcb_sgs_local: GO
+  f3_bcb_olinda_expectativas_local: GO
+  f3_bcb_olinda_selic_cambio_local: GO
+  f3_bcb_olinda_pib_local: GO
+  f3_bcb_olinda_igp_inpc_local: GO
+  f3_bcb_olinda_pib_sectors_local: GO
+  f3_bcb_olinda_divida_balanca_local: GO
+  f3_bcb_olinda_resultado_conta_local: GO
+  f3_bcb_olinda_resultado_nominal_local: GO
+  f3_bcb_olinda_divida_bruta_local: GO
+  f3_bcb_olinda_taxa_desocupacao_local: GO
+  f3_bcb_olinda_investimento_direto_local: GO
+  f3_bcb_olinda_ipca_livres_servicos_local: GO
+  f3_bcb_olinda_ipca_administrados_alimentacao_local: GO
+  f3_bcb_olinda_ipca_bens_industrializados_local: GO
+  f3_bcb_olinda_pib_fbcf_local: GO
+  f3_bcb_olinda_pib_despesa_familias_local: GO
+  f3_bcb_olinda_pib_despesa_adm_publica_local: GO
+  f3_bcb_olinda_pib_exportacao_bens_servicos_local: GO
+  f3_bcb_olinda_pib_importacao_bens_servicos_local: GO
+  f3_bcb_olinda_producao_industrial_local: GO
+  f3_bcb_olinda_ipca_15_local: GO
+  f3_bcb_olinda_ipc_fipe_ipa_local: GO
+  f3_bcb_olinda_balanca_exim_local: GO
+  f3_bcb_olinda_mensais_ipca_local: GO
+  f3_epe_dados_brutos_local: GO
+  f3_anatel_meu_municipio_local: GO
+  f3_cnes_demas_local: GO
+  f3_state_ro_activation_local: GO
+  f3_state_ac_activation_local: GO
+  f3_state_ce_activation_local: GO
+  f3_state_rs_activation_local: GO
+  f3_state_al_activation_local: GO
+  f3_state_ac_ipva_activation_local: GO
+  f3_state_pi_ipva_activation_local: GO
+  f3_state_rn_activation_local: GO
+  f3_state_ma_activation_local: GO
+  f3_state_pr_activation_local: GO
+  f3_state_pa_icms_verde_activation_local: GO
+  f3_ibge_sidra_cemp_local: GO
+  f3_tesouro_monthly_allowlist_local: GO
+  f3_tesouro_lc176_local: GO
+  f3_tesouro_iof_ouro_local: GO
+  f3_tesouro_coint_cide_fex_local: GO
+  f3_tesouro_fundeb_complement_local: GO
+  f3_tesouro_fundeb_coint_local: GO
+  f3_tesouro_lc87_coint_local: GO
+  f3_tesouro_coint_remaining_local: GO
+  f3_state_ce_al_rn_ipi_local: GO
+  f3_state_pe_ba_mg_ipi_local: GO
+  f3_state_ma_pr_ipi_fpex_local: GO
+  f3_state_ms_ipi_cide_local: GO
+  f3_state_al_pr_royalty_local: GO
+  f3_state_es_frd_compensacao_local: GO
+  f3_state_ac_transparencia_icms_fundeb_local: GO
+  f3_state_rs_compensacao_lc194_local: GO
+  f3_bcb_olinda_mensais_igp_cambio_local: GO
+  f3_bcb_olinda_mensais_ipca_comp_local: GO
+  f3_bcb_olinda_mensais_ipa_local: GO
+  f3_bcb_olinda_trimestrais_local: GO
+  f3_bcb_olinda_trimestrais_pib_sectors_local: GO
+  f3_state_sc_activation_local: GO
+  f3_bcb_olinda_selic_reuniao_local: GO
+  f3_bcb_olinda_inflacao_12_24m_local: GO
   g8_official_homologation: NO-GO
   g0_municipal_program: NO-GO
   g1_diagnosis: NO-GO
   g4_specialist_homologation: NO-GO
+  g5_case_validation: NO-GO
   g7_official_tesouro_connectors: NO-GO
   g9_pilot: NO-GO
   g10_production: NO-GO
-  cloud_access: BLOCKED_UNTIL_EXPLICIT_AUTHORIZATION
+  cloud_access: AUTHORIZED_PROD_APPLY_2026-09-21
   real_data_ingestion: BLOCKED_UNTIL_DPA_AND_AUTHORIZATION
+  doc_homologation_package: TECH_COMPLETE
+  human_validation_reference_only: GO
+  terraform_prod_stack_code: GO
+  terraform_prod_apply: GO
+  terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
-evidence: evidence/releases/0.3.13/
-next_action: Stop. Remaining roadmap items require a human gate. Reports docs/delivery/TECHNICAL_COMPLETION_REPORT.md and docs/delivery/HUMAN_DECISIONS_REQUIRED.md
+evidence: evidence/releases/0.3.99/
+next_action: PROD PUBLIC_OPEN Gold ingested (IBGE/SICONFI/Tesouro FPM) under reference-only authorization. Executivo/Financeiro/Transferencias publish kpis/charts. No credit. No merge to main.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

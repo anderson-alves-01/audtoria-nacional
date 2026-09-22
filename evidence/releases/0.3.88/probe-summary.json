@@ -1,0 +1,26 @@
+{
+  "slice": "bcb-olinda-balanca-exportacoes-importacoes",
+  "version": "0.3.88",
+  "layout": "bcb-olinda-expectativas-anuais-v23",
+  "silverCount": 280,
+  "probes": [
+    {
+      "indicator": "Balança comercial",
+      "detalhe": "Exportações",
+      "baseCalculo": 1,
+      "median": 372.9,
+      "data": "2026-09-18",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=8&$format=json&$filter=Indicador%20eq%20%27Balan%C3%A7a%20comercial%27%20and%20IndicadorDetalhe%20eq%20%27Exporta%C3%A7%C3%B5es%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,IndicadorDetalhe,Data,DataReferencia,Mediana,Media,baseCalculo"
+    },
+    {
+      "indicator": "Balança comercial",
+      "detalhe": "Importações",
+      "baseCalculo": 1,
+      "median": 294.0198,
+      "data": "2026-09-18",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=8&$format=json&$filter=Indicador%20eq%20%27Balan%C3%A7a%20comercial%27%20and%20IndicadorDetalhe%20eq%20%27Importa%C3%A7%C3%B5es%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,IndicadorDetalhe,Data,DataReferencia,Mediana,Media,baseCalculo"
+    }
+  ],
+  "name_probe_new_indicators": [],
+  "next": "UF tabular when published; or remaining OLINDA Focus entity sets"
+}

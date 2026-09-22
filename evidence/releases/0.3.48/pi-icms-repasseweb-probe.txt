@@ -1,0 +1,43 @@
+﻿PI Repasse WEB ICMS/IPVA probe 2026-09-20T21:54:33.3500737-03:00
+connector_ref: apps/api fetch_primefaces_datatable + _fetch_pi_repasseweb_html tax_code 1=IPVA 2=ICMS
+endpoint: https://webas.sefaz.pi.gov.br/repasseweb/faces/views/repasseMunicipios.xhtml
+municipio_filter: j_idt19:j_idt27=99999 (TODOS per connector)
+
+--- tax=IPVA tax_code=1 competence=2025-01 ---
+status consult=200 expand=200 htmlBytes=845390
+noDataMessage=False dataRiRows=905 periodRows=905
+date_start=01/1/2025 date_end=31/1/2025 anoSelect=2025 j_idt19:j_idt27=99999 rows=1000
+sample municipality=ACAUA-PI value_col6=57.097,57
+sample municipality=ACAUA-PI value_col6=34.599,35
+sample municipality=ACAUA-PI value_col6=11.662,78
+sample municipality=AGRICOLANDIA-PI value_col6=41.007,59
+sample municipality=AGRICOLANDIA-PI value_col6=2.316,39
+
+--- tax=ICMS tax_code=2 competence=2025-01 ---
+status consult=200 expand=200 htmlBytes=109
+noDataMessage=True dataRiRows=0 periodRows=0
+date_start=01/1/2025 date_end=31/1/2025 anoSelect=2025 j_idt19:j_idt27=99999 rows=1000
+message=Nenhum repasse encontrado
+
+--- tax=IPVA tax_code=1 competence=2026-01 ---
+status consult=200 expand=200 htmlBytes=925691
+noDataMessage=False dataRiRows=1000 periodRows=1000
+date_start=01/1/2026 date_end=31/1/2026 anoSelect=2026 j_idt19:j_idt27=99999 rows=1000
+sample municipality=ACAUA-PI value_col6=65.828,19
+sample municipality=ACAUA-PI value_col6=927,56
+sample municipality=ACAUA-PI value_col6=890,08
+sample municipality=ACAUA-PI value_col6=34.335,32
+sample municipality=ACAUA-PI value_col6=7.638,83
+
+--- tax=ICMS tax_code=2 competence=2026-01 ---
+status consult=200 expand=200 htmlBytes=109
+noDataMessage=True dataRiRows=0 periodRows=0
+date_start=01/1/2026 date_end=31/1/2026 anoSelect=2026 j_idt19:j_idt27=99999 rows=1000
+message=Nenhum repasse encontrado
+
+supplement_python_client_2026-09-20:
+ICMS tax_code=2 also empty for 2025-06, 2024-01, 2023-01 (109 bytes, data-ri=0)
+ICMS tax_code=2 full_year 2025-01-01..2025-12-31: empty row HTML=<tr class="ui-widget-content ui-datatable-empty-message"><td colspan="8">Nenhum repasse encontrado.</td></tr>
+console_radio_values: ICMS=2 IPVA=1 (j_idt19:console from repasseMunicipios.xhtml)
+IPVA_control tax_code=1 2025-01: data-ri=905 (matches PowerShell probe)
+

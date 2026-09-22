@@ -1,0 +1,2 @@
+pytest unit+integration F6 panels + health: 16 passed
+angular payments/active-debt/procuradoria + version specs: 10 SUCCESS

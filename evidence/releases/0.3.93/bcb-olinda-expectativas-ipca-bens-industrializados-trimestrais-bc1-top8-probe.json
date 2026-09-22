@@ -1,0 +1,69 @@
+{
+  "@odata.context": "https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTrimestrais(Indicador,Data,DataReferencia,Media,Mediana,baseCalculo)",
+  "value": [
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2027",
+      "Media": 0.8355,
+      "Mediana": 0.8018,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2028",
+      "Media": 0.8072,
+      "Mediana": 0.7921,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2027",
+      "Media": 0.7348,
+      "Mediana": 0.7016,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2028",
+      "Media": 0.7194,
+      "Mediana": 0.7162,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2026",
+      "Media": 0.4984,
+      "Mediana": 0.5001,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2027",
+      "Media": 0.4736,
+      "Mediana": 0.4707,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2026",
+      "Media": 0.623,
+      "Mediana": 0.6209,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Bens industrializados",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2027",
+      "Media": 0.6684,
+      "Mediana": 0.6911,
+      "baseCalculo": 1
+    }
+  ]
+}

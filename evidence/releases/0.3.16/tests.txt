@@ -1,0 +1,10 @@
+14 passed, 1 warning in ~21s
+targets:
+  - tests/unit/test_ingest_observability.py
+  - tests/unit/test_health.py
+  - tests/integration/test_dashboards.py
+  - tests/integration/test_catalog.py
+  - tests/integration/test_official_ingest.py
+  - tests/integration/test_alembic_paths.py
+angular:
+  - dashboard-page.component.spec.ts: 2 SUCCESS

@@ -1,0 +1,28 @@
+<section aria-labelledby="audit-cases-title">
+  <h1 id="audit-cases-title">Casos de auditoria técnicos</h1>
+  <p>
+    Shell D5 vazio. Distinto de cobrança administrativa. Criação e comandos
+    jurídicos desativados.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando casos técnicos…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ catalogVersion }}. G5: {{ g5Status }}. Comandos desativados.
+    </p>
+    <button type="button" (click)="attemptCreate()">
+      Tentar criar caso (desativado)
+    </button>
+    @if (createMessage) {
+      <p role="status">{{ createMessage }}</p>
+    }
+  }
+  @if (state === 'ok') {
+    <p role="status">Lista de casos carregada.</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

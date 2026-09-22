@@ -1,0 +1,13 @@
+{
+  "@odata.context": "https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoAnuais(Indicador,Data,DataReferencia,Media,Mediana,baseCalculo)",
+  "value": [
+    {"Indicador": "IPCA", "Data": "2026-09-11", "DataReferencia": "2026", "Media": 4.9277, "Mediana": 4.9488, "baseCalculo": 1},
+    {"Indicador": "IPCA", "Data": "2026-09-11", "DataReferencia": "2027", "Media": 4.3224, "Mediana": 4.312, "baseCalculo": 1},
+    {"Indicador": "IPCA", "Data": "2026-09-11", "DataReferencia": "2028", "Media": 3.8022, "Mediana": 3.8, "baseCalculo": 1},
+    {"Indicador": "IPCA", "Data": "2026-09-11", "DataReferencia": "2029", "Media": 3.6555, "Mediana": 3.5005, "baseCalculo": 1},
+    {"Indicador": "IPCA", "Data": "2026-09-11", "DataReferencia": "2030", "Media": 3.633, "Mediana": 3.5, "baseCalculo": 1},
+    {"Indicador": "IPCA", "Data": "2026-09-10", "DataReferencia": "2026", "Media": 4.9948, "Mediana": 5.0, "baseCalculo": 1},
+    {"Indicador": "IPCA", "Data": "2026-09-10", "DataReferencia": "2027", "Media": 4.2996, "Mediana": 4.2797, "baseCalculo": 1},
+    {"Indicador": "IPCA", "Data": "2026-09-10", "DataReferencia": "2028", "Media": 3.7718, "Mediana": 3.78, "baseCalculo": 1}
+  ]
+}

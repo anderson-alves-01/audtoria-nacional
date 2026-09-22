@@ -1,0 +1,6 @@
+CI green for 0.3.62 Tesouro FUNDEB complement
+
+run: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35574317803
+head: e3ab19f6e1c671068887a01f329e6f9e4220b3e2
+jobs: python, web, containers — success
+pr: https://github.com/anderson-alves-01/audtoria-nacional/pull/2

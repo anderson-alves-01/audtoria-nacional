@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "IPCA-15",
+      "Data": "2021-02-17",
+      "DataReferencia": "01/2022",
+      "Media": 0.35,
+      "Mediana": 0.35,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA-15",
+      "Data": "2021-02-17",
+      "DataReferencia": "02/2021",
+      "Media": 0.4,
+      "Mediana": 0.4,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA-15",
+      "Data": "2021-02-17",
+      "DataReferencia": "02/2022",
+      "Media": 0.34,
+      "Mediana": 0.34,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA-15",
+      "Data": "2021-02-17",
+      "DataReferencia": "03/2021",
+      "Media": 0.2,
+      "Mediana": 0.2,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA-15",
+      "Data": "2021-02-17",
+      "DataReferencia": "03/2022",
+      "Media": 0.32,
+      "Mediana": 0.32,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA-15",
+      "Data": "2021-02-17",
+      "DataReferencia": "04/2021",
+      "Media": 0.3,
+      "Mediana": 0.3,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA-15",
+      "Data": "2021-02-17",
+      "DataReferencia": "04/2022",
+      "Media": 0.31,
+      "Mediana": 0.31,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA-15",
+      "Data": "2021-02-17",
+      "DataReferencia": "05/2021",
+      "Media": 0.33,
+      "Mediana": 0.33,
+      "baseCalculo": 0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "ano": 2025,
+    "mes": 1,
+    "municipio": "Acrelândia",
+    "valor_fundeb": "155135.15",
+    "valor_icms": "620540.98",
+    "valor_ipva": "119355.73",
+    "valor_total": "895031.86"
+  },
+  {
+    "ano": 2025,
+    "mes": 1,
+    "municipio": "Assis Brasil",
+    "valor_fundeb": "134638.78",
+    "valor_icms": "538555.43",
+    "valor_ipva": "20042.59",
+    "valor_total": "693236.80"
+  },
+  {
+    "ano": 2025,
+    "mes": 1,
+    "municipio": "Municipio Sem Codigo",
+    "valor_fundeb": "1.00",
+    "valor_icms": "1.00",
+    "valor_ipva": "1.00",
+    "valor_total": "3.00"
+  }
+]

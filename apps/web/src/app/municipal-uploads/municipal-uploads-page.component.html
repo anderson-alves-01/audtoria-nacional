@@ -1,0 +1,35 @@
+<section aria-labelledby="municipal-uploads-title">
+  <h1 id="municipal-uploads-title">Upload municipal restrito</h1>
+  <p>
+    Schemas e slots de upload controlado. Sem amostra real até DPA e G0.
+    Upload permanece desativado.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando slots de upload municipal…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. G0: {{ g0Status }}.
+      Upload habilitado: {{ uploadEnabled ? 'sim' : 'não' }}.
+    </p>
+    <ul>
+      @for (slot of slots; track slot.sourceId) {
+        <li class="estimate">
+          <strong>{{ slot.sourceId }}</strong>
+          <span>
+            — {{ slot.layoutVersion }} · quarentena
+            {{ slot.quarantineRequired ? 'obrigatória' : 'opcional' }} · tenant
+            {{ slot.tenantScoped ? 'sim' : 'não' }} · status {{ slot.status }}
+          </span>
+        </li>
+      }
+    </ul>
+  }
+  @if (state === 'ok') {
+    <p role="status">Há itens municipais carregados (estado inesperado nesta fatia).</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

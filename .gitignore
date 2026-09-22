@@ -51,12 +51,16 @@ yarn-error.log*
 Thumbs.db
 Desktop.ini
 
-# Docker volumes and local data
-volumes/
+# Official landing/bronze payloads. Git keeps manifests and checksums only.
+var/datalake/
+**/var/datalake/
 docker-data/
 pgdata/
 minio-data/
 keycloak-data/
+
+# Autonomous orchestrator runtime (locks, logs, PIDs). No secrets or payloads.
+.cursor-autonomous/
 
 # Terraform (never apply prod in F0)
 .terraform/

@@ -4,6 +4,26 @@ import { Component, OnInit, inject } from '@angular/core';
 
 export type FunnelViewState = 'loading' | 'empty' | 'ok' | 'error';
 
+interface OfficialGoldItem {
+  sourceId: string;
+  indicator: string;
+  maintainer: string;
+  dataset: string;
+  competence: string;
+  lastExtractedAt: string;
+  formula: string;
+  methodologyVersion: string;
+  coverageCount: number;
+  qualityLevel: string;
+  homologationStatus: string;
+  officialUrl: string;
+  quarantinedCount: number;
+  numericTotal: number | null;
+  valueKind?: string;
+  presentation?: string;
+  financial?: boolean;
+}
+
 @Component({
   selector: 'app-funnel-page',
   standalone: true,
@@ -14,34 +34,28 @@ export type FunnelViewState = 'loading' | 'empty' | 'ok' | 'error';
 export class FunnelPageComponent implements OnInit {
   private readonly http = inject(HttpClient);
   state: FunnelViewState = 'loading';
-  identified = 0;
-  validated = 0;
-  inCollection = 0;
-  methodology = '';
-  note = '';
+  items: OfficialGoldItem[] = [];
+  emptySources: { sourceId: string; emptyReason?: string; status?: string }[] = [];
+  banner = '';
   errorMessage = '';
 
   ngOnInit(): void {
     this.http
       .get<{
-        identifiedCount: number;
-        validatedCount: number;
-        inCollectionCount: number;
-        methodologyVersion: string;
         published: boolean;
-        note: string;
-      }>('/v1/indicators/credit-funnel')
+        banner: string;
+        items: OfficialGoldItem[];
+        emptySources: { sourceId: string; emptyReason?: string; status?: string }[];
+      }>('/v1/indicators/official-gold')
       .subscribe({
         next: (body) => {
-          this.identified = body.identifiedCount;
-          this.validated = body.validatedCount;
-          this.inCollection = body.inCollectionCount;
-          this.methodology = body.methodologyVersion;
-          this.note = body.note;
+          this.items = body.items || [];
+          this.emptySources = body.emptySources || [];
+          this.banner = body.banner;
           this.state = body.published ? 'ok' : 'empty';
         },
         error: () => {
-          this.errorMessage = 'Não foi possível carregar o funil sintético.';
+          this.errorMessage = 'Não foi possível carregar os indicadores oficiais.';
           this.state = 'error';
         },
       });

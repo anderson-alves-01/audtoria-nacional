@@ -1,0 +1,6 @@
+CI green for 0.3.85:
+
+- push: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35627451675
+- pull_request: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35627458789
+
+Jobs python/web/containers: SUCCESS on both runs.

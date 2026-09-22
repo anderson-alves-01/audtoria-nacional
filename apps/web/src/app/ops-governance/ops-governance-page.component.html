@@ -1,0 +1,31 @@
+<section aria-labelledby="ops-governance-title">
+  <h1 id="ops-governance-title">Operação e governança local</h1>
+  <p>
+    Runbooks locais e snapshot de prontidão operacional. G10 permanece bloqueado.
+    Sem deploy, sem terraform apply e sem fabricar aprovação.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando governança operacional…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status">Nenhum runbook local registrado.</p>
+  }
+  @if (state === 'ok') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. G10: {{ g10Status }}.
+      Deploy autorizado: {{ canDeploy ? 'sim' : 'não' }}.
+    </p>
+    <ul>
+      @for (item of runbooks; track item.id) {
+        <li class="estimate">
+          <strong>{{ item.label }}</strong>
+          <span> — {{ item.path }} ({{ item.present ? 'presente' : 'ausente' }})</span>
+        </li>
+      }
+    </ul>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

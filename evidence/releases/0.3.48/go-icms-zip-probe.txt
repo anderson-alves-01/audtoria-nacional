@@ -1,0 +1,4 @@
+﻿# GO annual ZIP probe 2026-09-20T21:56:08.3432455-03:00
+URL=https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/2b247d3c-0299-4b50-a7a9-2040f1cf9099/download/repasses_municipios_ano_2025.zip
+ERR=O servidor remoto retornou um erro: (500) Erro Interno do Servidor.
+2024_ERR=O servidor remoto retornou um erro: (500) Erro Interno do Servidor.

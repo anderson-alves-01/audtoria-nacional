@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "IGP-DI",
+      "Data": "2021-02-17",
+      "DataReferencia": "01/2022",
+      "Media": 0.27,
+      "Mediana": 0.27,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IGP-DI",
+      "Data": "2021-02-17",
+      "DataReferencia": "02/2021",
+      "Media": 1.35,
+      "Mediana": 1.35,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IGP-DI",
+      "Data": "2021-02-17",
+      "DataReferencia": "02/2022",
+      "Media": 0.22,
+      "Mediana": 0.22,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IGP-DI",
+      "Data": "2021-02-17",
+      "DataReferencia": "03/2021",
+      "Media": -0.01,
+      "Mediana": -0.01,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IGP-DI",
+      "Data": "2021-02-17",
+      "DataReferencia": "03/2022",
+      "Media": 0.27,
+      "Mediana": 0.27,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IGP-DI",
+      "Data": "2021-02-17",
+      "DataReferencia": "04/2021",
+      "Media": -0.8,
+      "Mediana": -0.8,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IGP-DI",
+      "Data": "2021-02-17",
+      "DataReferencia": "04/2022",
+      "Media": 0.19,
+      "Mediana": 0.19,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IGP-DI",
+      "Data": "2021-02-17",
+      "DataReferencia": "05/2021",
+      "Media": -0.28,
+      "Mediana": -0.28,
+      "baseCalculo": 0
+    }
+  ]
+}

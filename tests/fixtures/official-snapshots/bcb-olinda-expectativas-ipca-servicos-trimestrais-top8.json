@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "IPCA Serviços",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2027",
+      "Media": 1.6913,
+      "Mediana": 1.6767,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Serviços",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2028",
+      "Media": 1.4777,
+      "Mediana": 1.4562,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Serviços",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2027",
+      "Media": 0.8872,
+      "Mediana": 0.8623,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Serviços",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2028",
+      "Media": 0.8135,
+      "Mediana": 0.8021,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Serviços",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2026",
+      "Media": 0.8592,
+      "Mediana": 0.8618,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Serviços",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2027",
+      "Media": 1.0171,
+      "Mediana": 1.0258,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Serviços",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2026",
+      "Media": 1.5551,
+      "Mediana": 1.5486,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA Serviços",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2027",
+      "Media": 1.4307,
+      "Mediana": 1.4165,
+      "baseCalculo": 1
+    }
+  ]
+}

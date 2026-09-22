@@ -1,0 +1,76 @@
+﻿# RR HTML structure 2026-09-20T22:00:16.2885440-03:00
+len=92439
+TH Mês
+TH Valor repassado
+TH Janeiro
+TH Fevereiro
+TH Março
+TH Abril
+TH Maio
+TH Junho
+TH Julho
+TH Agosto
+TH Setembro
+TH Outubro
+TH Novembro
+TH Dezembro
+TH Total do exercício
+TH Mês
+TH Valor repassado
+TH Janeiro
+TH Fevereiro
+TH Março
+TH Abril
+TH Maio
+TH Junho
+TH Julho
+TH Agosto
+TH Setembro
+TH Outubro
+TH Novembro
+TH Dezembro
+TH Total do exercício
+TH Mês
+TH Valor repassado
+TH Janeiro
+TH Fevereiro
+TH Março
+TH Abril
+TH Maio
+TH Junho
+TH Julho
+TH Agosto
+KW Repasse
+KW repasse
+KW repasse
+KW Repasse
+KW repasse
+KW Repasse
+KW Repasse
+KW repasse
+KW repasse
+KW repasse
+KW Repasse
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+KW Total
+KW repasse
+KW Total
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+KW repasse
+PANEL alto-alegre
+data-city-panel="alto-alegre"                   role="tabpanel"                   aria-labelledby="tab-alto-alegre"                                   >                   <div class="repasses-tab-panel__header">                     <div>                       <h3>Alto Alegre</h3>                       <p>Leitura mensal do exercício de 2026.</p>                     </div>                     <strong>R$ 11.565.060,31</strong>                   </div>                    <div class="repasses-table-wrap">                     <table class="repasses-table">                       <thead>                         <tr>                           <th scope="col">Mês</th>                           <th scope="col">Valor repassado</th>                         </tr>                       </thead>                       <tbody>                                                   <tr>                             <th scope="row">Janeiro</th>                             <td>R$ 1.866.973,39</td>                           </tr>                                                   <tr>                             <th scope="row">Fevereiro</th>                             <td>R$ 1.782.467,77</td>                           </tr>                                                   <tr>                             <th scope="row">Março</th>                             <td>R$ 1.775.800,90</td>                           </tr>                                                   <tr>                             <th sc
+SIDRA9509 sample bytes=769
+[{"id":"707","variavel":"Pessoal ocupado total","unidade":"Pessoas","resultados":[{"classificacoes":[],"series":[{"localidade":{"id":"3550308","nivel":{"id":"N6","nome":"MunicÃ­pio"},"nome":"SÃ£o Paulo (SP)"},"serie":{"2024":"6822182"}}]}]},{"id":"662","variavel":"SalÃ¡rios e outras remuneraÃ§Ãµes","unidade":"Mil Reais","resultados":[{"classificacoes":[],"series":[{"localidade":{"id":"3550308","nivel":{"id":"N6","nome":"MunicÃ­pio"},"nome":"SÃ£o Paulo (SP)"},"serie":{"2024":"382299579"}}]}]},{"id":"367","variavel":"NÃºmero de empresas e outras organizaÃ§Ãµes atuantes","unidade":"Unidades","resultados":[{"classificacoes":[],"series":[{"localidade":{"id":"3550308","nivel":{"id":"N6","nome":"MunicÃ­pio"},"nome":"SÃ£o Paulo (SP)"},"serie":{"2024":"1221001"}}]}]}]

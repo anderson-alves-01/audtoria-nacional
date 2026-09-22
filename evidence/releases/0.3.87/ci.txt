@@ -1,0 +1,12 @@
+# CI 0.3.87
+
+Local gates before push:
+- unit OLINDA ipc_fipe/ipa_m/ipa_di/ipca_15: 4 passed
+- unit+alembic bcb_olinda filter: 24 passed
+- integration sectoral enrichment: 11 passed
+- silverCount BCB-OLINDA-EXPECTATIVAS: 264
+
+CI GitHub Actions (PR #2):
+- pull_request: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35631718656 (python/web/containers SUCCESS)
+- push: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35631713771 (python/web/containers SUCCESS)
+

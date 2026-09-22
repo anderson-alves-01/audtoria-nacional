@@ -1,0 +1,20 @@
+{
+  "bytes": 689494,
+  "competence": "2026",
+  "contentType": "application/json",
+  "coverage": "municipality",
+  "dataset": "SIDRA-6579",
+  "etag": null,
+  "extractedAtUtc": "2026-09-19T02:39:43.377515+00:00",
+  "httpStatus": 200,
+  "lastModified": null,
+  "layoutVersion": "sidra-agregados-v3-6579",
+  "logicalUrl": "https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2026/variaveis/9324?localidades=N6[all]",
+  "officialUrl": "https://sidra.ibge.gov.br/tabela/6579",
+  "quarantinedCount": 0,
+  "receivedCount": 5571,
+  "resolvedUrl": "https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2026/variaveis/9324?localidades=N6[all]",
+  "sha256": "36b8bd4c9ec1c74f0b1e76cbb108fec91571c351b9423e508bf0f4350e6d27b0",
+  "silverCount": 5571,
+  "sourceId": "IBGE-SIDRA"
+}

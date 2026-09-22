@@ -1,0 +1,39 @@
+{
+  "layoutVersion": "bcb-olinda-expectativas-mensais-v4",
+  "silverCountExpected": 96,
+  "indicators": [
+    {
+      "indicator": "IPA-M",
+      "date": "2021-02-17",
+      "ref": "01/2022",
+      "mediana": 0.29,
+      "count": 8,
+      "baseCalculo": 0
+    },
+    {
+      "indicator": "IPA-DI",
+      "date": "2021-02-17",
+      "ref": "01/2022",
+      "mediana": 0.33,
+      "count": 8,
+      "baseCalculo": 0
+    },
+    {
+      "indicator": "IGP-DI",
+      "date": "2021-02-17",
+      "ref": "01/2022",
+      "mediana": 0.27,
+      "count": 8,
+      "baseCalculo": 0
+    },
+    {
+      "indicator": "INPC",
+      "date": "2021-02-17",
+      "ref": "01/2022",
+      "mediana": 0.33,
+      "count": 8,
+      "baseCalculo": 0
+    }
+  ],
+  "note": "copied from 0.3.89 probes; series frozen at source 2021-02-17"
+}

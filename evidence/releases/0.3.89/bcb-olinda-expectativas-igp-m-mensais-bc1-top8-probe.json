@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "IGP-M",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2027",
+      "Media": 0.4471,
+      "Mediana": 0.4327,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IGP-M",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2028",
+      "Media": 0.3891,
+      "Mediana": 0.35,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IGP-M",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2027",
+      "Media": 0.4494,
+      "Mediana": 0.45,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IGP-M",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2028",
+      "Media": 0.4136,
+      "Mediana": 0.4,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IGP-M",
+      "Data": "2026-09-18",
+      "DataReferencia": "03/2027",
+      "Media": 0.4677,
+      "Mediana": 0.455,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IGP-M",
+      "Data": "2026-09-18",
+      "DataReferencia": "04/2027",
+      "Media": 0.2866,
+      "Mediana": 0.3,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IGP-M",
+      "Data": "2026-09-18",
+      "DataReferencia": "05/2027",
+      "Media": 0.195,
+      "Mediana": 0.24,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IGP-M",
+      "Data": "2026-09-18",
+      "DataReferencia": "06/2027",
+      "Media": 0.2319,
+      "Mediana": 0.225,
+      "baseCalculo": 1
+    }
+  ]
+}

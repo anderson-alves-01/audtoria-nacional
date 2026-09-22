@@ -1,0 +1,20 @@
+﻿# UF re-probe 2026-09-21 (post BCB OLINDA IPCA Livres + IPCA Serviços)
+
+| UF | Verdict | Reason |
+|----|---------|--------|
+| RJ | STILL_BLOCKED | GET 200 text/html IP catalog block (not CSV bytes) — prior cycle |
+| SP | STILL_BLOCKED | CKAN package_search sem quota municipal; RepasseConsulta 403 — prior |
+| SC | STILL_BLOCKED | dados.sc.gov.br dataset still 404; CSV ≤2017 frozen — spot HEAD 404 |
+| AP | STILL_BLOCKED | sefaz detalhes/17 still 404 — spot HEAD 404 |
+| TO | STILL_BLOCKED | dados.to.gov.br still NXDOMAIN — spot DNS fail |
+| MT | STILL_BLOCKED | XLSX connection reset / series ≤2015 — prior |
+| SE | STILL_BLOCKED | SharePoint PDF monthly — prior |
+| AM | STILL_BLOCKED | SRT HTML-per-muni public — prior |
+| RR | STILL_BLOCKED | painel totals without ICMS/IPVA split — prior |
+| PB | STILL_BLOCKED | edocman PDF; dados.pb.gov.br live but no quota dataset — prior |
+| PI ICMS | STILL_BLOCKED | Repasse WEB ICMS search empty (IPVA already approved) — prior |
+| DF | N/A | No municipalities — out of municipal quota scope |
+
+No ACTIVATE_NOW among remaining UFs. Cycle progressed via BCB OLINDA
+IPCA Livres + IPCA Serviços (PERCENT_PER_YEAR, baseCalculo=1). Spot-check
+AP/TO/SC unchanged; no new tabular PUBLIC_OPEN found.

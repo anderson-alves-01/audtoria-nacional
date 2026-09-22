@@ -1,0 +1,38 @@
+{
+  "version": "0.3.90",
+  "sourceId": "BCB-OLINDA-EXPECTATIVAS-MENSAIS",
+  "layout": "bcb-olinda-expectativas-mensais-v2",
+  "silverCount": 24,
+  "entitySet": "ExpectativaMercadoMensais",
+  "indicators": [
+    {
+      "name": "IPCA",
+      "baseCalculo": 1,
+      "median": 0.4937,
+      "data": "2026-09-18",
+      "dataReferencia": "01/2027",
+      "unit": "PERCENT_PER_MONTH"
+    },
+    {
+      "name": "IGP-M",
+      "baseCalculo": 1,
+      "median": 0.4327,
+      "data": "2026-09-18",
+      "dataReferencia": "01/2027",
+      "unit": "PERCENT_PER_MONTH"
+    },
+    {
+      "name": "Câmbio",
+      "baseCalculo": 1,
+      "median": 5.17,
+      "data": "2026-09-18",
+      "dataReferencia": "01/2027",
+      "unit": "BRL_PER_USD"
+    }
+  ],
+  "next": [
+    "IPCA Livres/Serviços/Administrados mensais",
+    "IPCA Alimentação/Bens industrializados mensais",
+    "ExpectativasMercadoTrimestrais"
+  ]
+}

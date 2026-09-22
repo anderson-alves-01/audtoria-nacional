@@ -1,0 +1,37 @@
+﻿# GO ZIP alt 2026-09-20T21:57:56.2614258-03:00
+ERR https://dadosabertos.go.gov.br/dataset/cd82f643-f203-41d9-9542-9250df93cd14/resource/5d001bcf-236e-47da-8901-e21f012792be/download/repasses_municipios_2014_2025.zip :: O servidor remoto retornou um erro: (500) Erro Interno do Servidor.
+OK https://dadosabertos.go.gov.br/api/3/action/resource_show?id=343d1fb0-a182-4005-9203-dce168d2ad60 len=1300
+{"help": "https://dadosabertos.go.gov.br/api/3/action/help_show?name=resource_show", "success": true, "result": {"cache_last_updated": null, "cache_url": null, "ckan_url": "https://dadosabertos.go.gov.br", "created": "2026-09-14T11:30:57.935228", "datastore_active": true, "datastore_contains_all_records_of_source_file": true, "description": "Repasses - Agosto/2026", "format": "CSV", "hash": "458e811418f81b1da69f983df89835bc", "id": "343d1fb0-a182-4005-9203-dce168d2ad60", "ignore_hash": false, "l
+OK https://dadosabertos.go.gov.br/api/3/action/datastore_search?resource_id=343d1fb0-a182-4005-9203-dce168d2ad60&limit=1 len=1126
+{"help": "https://dadosabertos.go.gov.br/api/3/action/help_show?name=datastore_search", "success": true, "result": {"include_total": true, "limit": 1, "records_format": "objects", "resource_id": "343d1fb0-a182-4005-9203-dce168d2ad60", "total_estimation_threshold": null, "records": [{"_id":1,"VALR_IPVA":"13397.86","VALOR_TOTAL":"20029.72","VALR_IPVA_FUNDEB":"6631.86","DATA_COMPLETA_CREDITO":"2026-08-04 00:00:00.000","NUMR_ANO_MES":"202608","DATA_COMPLETA_REPASSE":"2026-08-04 00:00:00.000","DESC_M
+SC-NEXT_DATA bytes=179581
+SC-FILE nomeArquivo":"Dezembro_2017.csv"
+SC-FILE nomeArquivo":"Dezembro_2017.pdf"
+SC-FILE nomeArquivo":"Novembro_2017.csv"
+SC-FILE nomeArquivo":"Novembro_2017.pdf"
+SC-FILE nomeArquivo":"Outubro_2017.csv"
+SC-FILE nomeArquivo":"Outubro_2017.pdf"
+SC-FILE nomeArquivo":"Setembro_2017.csv"
+SC-FILE nomeArquivo":"Setembro_2017.pdf"
+SC-FILE nomeArquivo":"Agosto_2017.csv"
+SC-FILE nomeArquivo":"Agosto_2017.pdf"
+SC-FILE nomeArquivo":"Julho_2017.csv"
+SC-FILE nomeArquivo":"Julho_2017.pdf"
+SC-FILE nomeArquivo":"Junho_2017.csv"
+SC-FILE nomeArquivo":"Junho_2017.pdf"
+SC-FILE nomeArquivo":"Maio_2017.csv"
+SC-FILE nomeArquivo":"Maio_2017.pdf"
+SC-FILE nomeArquivo":"Abril_2017.csv"
+SC-FILE nomeArquivo":"Abril_2017.pdf"
+SC-FILE nomeArquivo":"Marco_2017.csv"
+SC-FILE nomeArquivo":"Marco_2017.pdf"
+SC-FILE nomeArquivo":"Fevereiro_2017.csv"
+SC-FILE nomeArquivo":"Fevereiro_2017.pdf"
+SC-FILE nomeArquivo":"Janeiro_2017.csv"
+SC-FILE nomeArquivo":"Janeiro_2017.pdf"
+SC-FILE nomeArquivo":"Anual_2017.csv"
+SC-FILE nomeArquivo":"Anual_2017.pdf"
+SC-FILE nomeArquivo":"Dezembro_2016.csv"
+SC-FILE nomeArquivo":"Dezembro_2016.pdf"
+SC-FILE nomeArquivo":"Novembro_2016.csv"
+SC-FILE nomeArquivo":"Novembro_2016.pdf"

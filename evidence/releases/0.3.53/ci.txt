@@ -1,0 +1,4 @@
+CI green for 0.3.53 Tesouro IOF-Ouro
+push: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35557634933
+pr: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35557636835
+jobs: python/web/containers SUCCESS

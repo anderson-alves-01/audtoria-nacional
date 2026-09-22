@@ -1,0 +1,5 @@
+CI green for 0.3.52 Tesouro LC176 allowlist
+push run: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35556806672
+pr run: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35556809368
+jobs: python/web/containers SUCCESS
+head: 1c214bd

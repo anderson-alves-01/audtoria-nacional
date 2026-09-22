@@ -1,0 +1,7 @@
+MA SEFAZ SGC XLS probe 2026-09-20
+official_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
+endpoint: https://ui-sgc.sefaz.ma.gov.br/sgc/api/portal/arquivos/public/identificador?identificador=2185e882-6a8a-4b89-bae7-4d687c2e4515
+http: 200 application/vnd.ms-excel OLE D0CF11E0 ~280064 bytes (fixture minimized to 2 munis + quarantine row)
+sheets: ICMS/IPVA/FPEX 1o+2o Semestre; months Janeiro..; name-only IBGE join
+TO: central.to.gov.br PDF IPM; dados.to.gov.br NXDOMAIN — PROVENANCE_ONLY
+PA: sefa.pa.gov.br/icgh SPA; ICMS Verde XLSX only — DISCOVERED for full quota

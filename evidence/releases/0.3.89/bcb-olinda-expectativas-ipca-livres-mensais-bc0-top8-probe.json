@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2027",
+      "Media": 0.5157,
+      "Mediana": 0.5028,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "01/2028",
+      "Media": 0.42,
+      "Mediana": 0.4,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2027",
+      "Media": 0.7579,
+      "Mediana": 0.75,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "02/2028",
+      "Media": 0.6078,
+      "Mediana": 0.6,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "03/2027",
+      "Media": 0.4545,
+      "Mediana": 0.43,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "03/2028",
+      "Media": 0.3664,
+      "Mediana": 0.3442,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "04/2027",
+      "Media": 0.4406,
+      "Mediana": 0.4269,
+      "baseCalculo": 0
+    },
+    {
+      "Indicador": "IPCA Livres",
+      "Data": "2026-09-18",
+      "DataReferencia": "04/2028",
+      "Media": 0.375,
+      "Mediana": 0.3526,
+      "baseCalculo": 0
+    }
+  ]
+}

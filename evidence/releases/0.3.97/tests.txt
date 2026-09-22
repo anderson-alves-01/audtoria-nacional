@@ -1,0 +1,2 @@
+﻿unit: 5 passed (inflacao12/24m parsers + sectoral panel)
+integration: 5 passed (inflacao12/24m ingest + sectoral listing + alembic head 0100)

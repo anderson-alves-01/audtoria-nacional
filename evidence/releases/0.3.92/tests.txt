@@ -1,0 +1,2 @@
+﻿unit: 5 passed (mensais IPA + components + sectoral panel)
+sectoral+alembic: 6 passed (mensais ingest silverCount=96; alembic head 0095/0.3.92)

@@ -1,0 +1,68 @@
+{
+  "value": [
+    {
+      "Indicador": "IPCA",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2027",
+      "Media": 1.6023,
+      "Mediana": 1.5731,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA",
+      "Data": "2026-09-18",
+      "DataReferencia": "1/2028",
+      "Media": 1.3379,
+      "Mediana": 1.3145,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2027",
+      "Media": 1.0021,
+      "Mediana": 0.9731,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA",
+      "Data": "2026-09-18",
+      "DataReferencia": "2/2028",
+      "Media": 0.891,
+      "Mediana": 0.8481,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2026",
+      "Media": 0.2897,
+      "Mediana": 0.2786,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA",
+      "Data": "2026-09-18",
+      "DataReferencia": "3/2027",
+      "Media": 0.6152,
+      "Mediana": 0.6454,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2026",
+      "Media": 1.2625,
+      "Mediana": 1.2571,
+      "baseCalculo": 1
+    },
+    {
+      "Indicador": "IPCA",
+      "Data": "2026-09-18",
+      "DataReferencia": "4/2027",
+      "Media": 1.0797,
+      "Mediana": 1.0887,
+      "baseCalculo": 1
+    }
+  ]
+}

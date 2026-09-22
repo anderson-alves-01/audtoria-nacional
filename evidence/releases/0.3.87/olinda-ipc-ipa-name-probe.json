@@ -1,0 +1,121 @@
+[
+  {
+    "indicator": "IPC-Fipe",
+    "base": 1,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPC-Fipe%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPC-Fipe",
+    "base": 0,
+    "n": 2,
+    "first": {
+      "Indicador": "IPC-Fipe",
+      "Data": "2021-02-17",
+      "DataReferencia": "2021",
+      "Media": 3.88,
+      "Mediana": 3.88,
+      "baseCalculo": 0
+    },
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPC-Fipe%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPC-FIPE",
+    "base": 1,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPC-FIPE%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPC-FIPE",
+    "base": 0,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPC-FIPE%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPC Fipe",
+    "base": 1,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPC%20Fipe%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPC Fipe",
+    "base": 0,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPC%20Fipe%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPA-M",
+    "base": 1,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPA-M%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPA-M",
+    "base": 0,
+    "n": 2,
+    "first": {
+      "Indicador": "IPA-M",
+      "Data": "2021-02-17",
+      "DataReferencia": "2021",
+      "Media": 8.76,
+      "Mediana": 8.76,
+      "baseCalculo": 0
+    },
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPA-M%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPA-DI",
+    "base": 1,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPA-DI%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPA-DI",
+    "base": 0,
+    "n": 2,
+    "first": {
+      "Indicador": "IPA-DI",
+      "Data": "2021-02-17",
+      "DataReferencia": "2021",
+      "Media": 8.87,
+      "Mediana": 8.87,
+      "baseCalculo": 0
+    },
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPA-DI%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPA-OG",
+    "base": 1,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPA-OG%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPA-OG",
+    "base": 0,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPA-OG%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPA",
+    "base": 1,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPA%27%20and%20baseCalculo%20eq%201&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  },
+  {
+    "indicator": "IPA",
+    "base": 0,
+    "n": 0,
+    "first": null,
+    "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?$top=2&$format=json&$filter=Indicador%20eq%20%27IPA%27%20and%20baseCalculo%20eq%200&$orderby=Data%20desc,DataReferencia%20asc&$select=Indicador,Data,DataReferencia,Mediana,Media,baseCalculo"
+  }
+]

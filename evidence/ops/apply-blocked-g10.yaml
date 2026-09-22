@@ -1,0 +1,10 @@
+timestamp: 2026-09-21T21:56:00Z
+action: terraform_apply
+result: APPLY_BLOCKED
+reason: Missing exact G10 authorization phrase
+account_observed: "332380491162"
+region_planned: sa-east-1
+cloud_apply_authorized: false
+paid_resources_created: 0
+phrase_required: "autorizo terraform apply em produção nesta conta/região"
+evidence_plan: evidence/ops/terraform-plan-prod-20260921T185608Z.txt

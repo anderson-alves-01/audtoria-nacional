@@ -1,0 +1,13 @@
+State transfer open-data probe follow-up 2026-09-19 (post-cycle research)
+
+PE: CSV 200 OK — transferencias_municipais_2024_.csv
+  header: ano,mes,MUNICÍPIO,ICMS,IPI,IPVA,TOTAL
+  preferred_activation: true
+
+BA: CSV 200 OK — 2024.csv (multi-header; ICMS/IPVA present)
+
+MG: CKAN package_show 200 OK; gzip fact download previously 403 in research runtime
+
+RJ: already recorded sefaz_ip_filter_html_block
+
+SP/PR/SC/RS: not activation-ready (HTML/coefficients/arrecadação only)

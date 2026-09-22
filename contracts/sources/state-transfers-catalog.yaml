@@ -1,0 +1,593 @@
+contract_version: state-transfers-catalog-v1
+verified_at: "2026-09-20"
+technical_reference_territory: none
+pilot_state_approved: false
+adapter: state_transfer_adapter
+normalize: ibge7
+taxes: [ICMS, IPVA]
+notes: >
+  PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA, PR e SC
+  TECHNICALLY_APPROVED
+  (state_pe_csv / state_ba_csv / state_mg_csv / state_es_csv / state_go_csv +
+  state_go_economia_xlsx / state_ms_csv / state_ro_csv / state_ac_csv+state_ac_transparencia_json /
+  state_ce_xls / state_rs_xls / state_al_xls / state_pi_repasseweb_html /
+  state_rn_xls / state_ma_xls / state_pr_html / state_sc_csv).
+  PA parcial TECHNICALLY_APPROVED via ICMS Verde SEMAS XLSX
+  (state_pa_icms_verde_xlsx; componente ecológico ≤8%, não cota ICMS total).
+  Ciclo 0.3.50: ES IPI+CIDE e GO IPI-Exportação ativados nos mesmos arquivos
+  PUBLIC_OPEN já usados para ICMS/IPVA (state_es_csv / state_go_economia_xlsx).
+  Ciclo 0.3.55: CE/AL/RN IPI ativados nos mesmos arquivos já aprovados
+  (state_ce_xls / state_al_xls / state_rn_xls).
+  Ciclo 0.3.56: PE/BA/MG IPI ativados nos mesmos arquivos já aprovados
+  (state_pe_csv / state_ba_csv / state_mg_csv).
+  Ciclo 0.3.57: MA FPEX e PR Fundo de Exportação ativados como IPI-Exportação
+  nos mesmos arquivos já aprovados (state_ma_xls / state_pr_html); MS IPI
+  EXPORTAÇÃO e CIDE ativados no mesmo DataStore já aprovado (state_ms_csv).
+  Ciclo 0.3.58: AL Royalties Total e PR Royalties Petróleo ativados nos mesmos
+  arquivos já aprovados (state_al_xls / state_pr_html).
+  Ciclo 0.3.59: ES FRD (FundoReducaoDesigualdades) e CompensacaoFinanceira
+  ativados no mesmo CSV TransfEstadoMunicipios já aprovado (state_es_csv).
+  Ciclo 0.3.60: AC ICMS mensal (valor_icms) e FUNDEB (valor_fundeb) ativados
+  no mesmo JSON Transparência já aprovado (state_ac_transparencia_json),
+  distintos do CSV anual SEPLAG ESTADO-AC-ICMS-QUOTA.
+  Ciclo 0.3.61: RS Compensação LC 194/22 (aba OUTUBRO 2024, coluna REPASSE*)
+  ativada via MontaArquivo l_compensacao_perdas_icms_2024 (state_rs_xls).
+  Ciclo 0.3.95: SC ICMS/IPVA/IPI via SEF Anual_2017.csv (série histórica ≤2017,
+  join nome+UF; CKAN arrecadação permanece fora).
+  UFs restantes: RJ IP HTML block; PI ICMS Repasse WEB vazio; SP HTML-per-muni;
+  RR total sem split ICMS/IPVA; AP 404; MT XLSX ≤2015 / PDF;
+  SE/PB PDF; AM HTML-per-município; TO índices PDF.
+  MG/ES/AL usam IBGE7 nativo. RO ICMS nome+UF; RO IPVA IBGE6→7. GO IPVA via
+  CKAN DataStore dump (CSV upload 500). MS ICMS/IPVA/IPI/CIDE via CKAN DataStore
+  mensal. AC ICMS anual SEPLAG; AC IPVA Transparência POST+CSRF JSON.
+  CE/RS/AL/RN/MA XLS; PI IPVA Repasse WEB; PR HTML SEFA; SC CSV anual SEF.
+  Sem agregador privado.
+states:
+  - uf: AC
+    name: Acre
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_and_transparencia_json
+    dataset_url: https://dados.ac.gov.br/dataset/repasse-constitucional-de-icms-para-os-municipios
+    official_url: https://dados.ac.gov.br/dataset/repasse-constitucional-de-icms-para-os-municipios
+    endpoint: https://dados.ac.gov.br/dataset/e9f7ca08-2c55-45d5-a948-ef25a1acb296/resource/d0deaa76-c075-4b0d-8cf3-468c5fcb1267/download/repasse-constitucional-de-icms-para-os-municipios.csv
+    ipva_dataset_url: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios-2
+    ipva_endpoint: https://transparencia.ac.gov.br/conteudo/repasse-aos-municipios/dados-exportacao
+    taxes: [ICMS, IPVA, FUNDEB]
+    format: CSV+JSON
+    columns: [municipio, Cod IBGE, 2018, 2019, 2020, 2021]
+    columns_ipva: [ano, mes, municipio, valor_fundeb, valor_icms, valor_ipva, valor_total]
+    ibge_field: Cod IBGE
+    layout_version_icms: state-ac-icms-v1
+    layout_version_icms_transparencia: state-ac-icms-transparencia-v1
+    layout_version_ipva: state-ac-ipva-transparencia-v1
+    layout_version_fundeb: state-ac-fundeb-transparencia-v1
+    connector: state_ac_csv
+    ipva_connector: state_ac_transparencia_json
+    icms_transparencia_connector: state_ac_transparencia_json
+    fundeb_connector: state_ac_transparencia_json
+    download_probe_2026_09_19: csv_bytes_ok_ibge7_native_annual
+    download_probe_2026_09_20: transparencia_post_csrf_json_ok_ipva
+    download_probe_2026_09_21: transparencia_json_ok_icms_fundeb_columns
+    reason: >
+      CSV anual SEPLAG Repasse Constitucional de ICMS ativado com connector
+      state_ac_csv (`;`, latin-1, número BR). IBGE7 nativo em Cod IBGE;
+      competência anual filtrada (2021). IPVA/ICMS/FUNDEB mensais ativados via
+      Transparência POST+CSRF JSON (state_ac_transparencia_json), join nome+UF,
+      competência 2025-01 (valor_ipva/valor_icms/valor_fundeb). Fixture mínima.
+      Sem crédito.
+  - uf: AL
+    name: Alagoas
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: dados_al_xls_downloadable
+    dataset_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    official_url: https://dados.al.gov.br/catalogo/lt/dataset/dados-de-financas-perfil-municipal
+    endpoint: https://dados.al.gov.br/catalogo/dataset/58cf0b6f-4026-449e-8be8-17a9af3670c6/resource/1de71f0a-e93e-47e0-b053-9d6dd2abae5b/download/repasses_estaduais.xls
+    taxes: [ICMS, IPVA, IPI, ROYALTY]
+    format: XLS
+    columns: [Código, Município, IPI Total YYYY, Royalties Total YYYY, IPVA Total YYYY, ICMS Total YYYY]
+    ibge_field: Código
+    layout_version_icms: state-al-icms-v1
+    layout_version_ipva: state-al-ipva-v1
+    layout_version_ipi: state-al-ipi-v1
+    layout_version_royalty: state-al-royalty-v1
+    connector: state_al_xls
+    download_probe_2026_09_20: xls_bytes_ok_ibge7_native_annual_2021
+    reason: >
+      XLS anual Repasses Estaduais (dados.al.gov.br) ativado com connector
+      state_al_xls (xlrd). IBGE7 nativo em Código; competência anual filtrada
+      (2021). ICMS/IPVA/IPI/Royalties via colunas Total YYYY. Série publicada
+      2015-2021; SEFAZ-AL corrente é PDF semanal sem CSV/API. Fixture mínima.
+      Sem crédito.
+  - uf: AP
+    name: Amapá
+    status: PROVENANCE_VERIFIED
+    structured_official_source: transparencia_static_broken_link
+    dataset_url: http://www.transparencia.ap.gov.br/consulta_estatica/5/244/repasses/repasse-de-icms-e-ipva-aos-municipios
+    official_url: http://www.transparencia.ap.gov.br/consulta_estatica/5/244/repasses/repasse-de-icms-e-ipva-aos-municipios
+    endpoint: https://www.sefaz.ap.gov.br/detalhes/17
+    taxes: [ICMS, IPVA]
+    format: unknown
+    ibge_field: unknown
+    download_probe_2026_09_20: transparencia_lists_doc_sefaz_detalhes_17_404
+    reason: >
+      Portal Transparência lista “Demonstrativo de Repasses do ICMS E IPVA”,
+      porém o link sefaz.ap.gov.br/detalhes/17 retorna HTTP 404. Dados abertos
+      do portal cobrem receitas agregadas, não quota-parte municipal. Sem
+      ativação até arquivo estruturado estável.
+  - uf: AM
+    name: Amazonas
+    status: PROVENANCE_VERIFIED
+    structured_official_source: html_per_municipality_srt
+    dataset_url: https://sistemas.sefaz.am.gov.br/srt/relatorioMensalRateioPublico.do?metodo=qbePublico&origem=publico
+    official_url: https://sistemas.sefaz.am.gov.br/srt/relatorioMensalRateioPublico.do?metodo=qbePublico&origem=publico
+    endpoint: https://sistemas.sefaz.am.gov.br/srt/relatorioMensalRateioPublico.do
+    taxes: [ICMS, IPVA]
+    format: HTML
+    ibge_field: name_only
+    download_probe_2026_09_20: html_export_per_municipio_no_bulk_csv
+    reason: >
+      SRT público exporta HTML/PDF por município (exportarHTML); Excel exige
+      sessão autenticada. Sem CSV/API bulk estável; sem ativação nesta fatia.
+  - uf: BA
+    name: Bahia
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
+    official_url: https://dados.ba.gov.br/dataset/repasses-a-municipios
+    endpoint: https://dados.ba.gov.br/dataset/2ac6387d-80ee-4855-aaba-d6820a5f8a71/resource/76430704-b1a2-484f-87dc-c86248f4f288/download/2024.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    columns_layout: multi_header_semicolon_latin1
+    ibge_field: name_only
+    layout_version_icms: state-ba-icms-v1
+    layout_version_ipva: state-ba-ipva-v1
+    layout_version_ipi: state-ba-ipi-v1
+    connector: state_ba_csv
+    download_probe_2026_09_19: csv_bytes_ok_multi_header
+    reason: >
+      CSV anual ativado com connector state_ba_csv (`;`, latin-1, número BR).
+      Colunas posicionais ICMS=4, IPI=9 e IPVA=13 após cabeçalho multi-coluna.
+      Fixture mínima + join IBGE7 por nome+UF. Sem crédito.
+  - uf: CE
+    name: Ceará
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_xls_downloadable
+    dataset_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    official_url: https://www.sefaz.ce.gov.br/download/repasse-aos-municipios/
+    endpoint: https://www.ce.gov.br/sefaz/wp-content/uploads/sites/46/2020/08/1.Portaria-jan-25-ANEXO-UNICO.xls
+    taxes: [ICMS, IPVA, IPI]
+    format: XLS
+    columns: [Município, ICMS Total, ICMS Líquido, ICMS FUNDEB, IPVA Total, IPVA Líquido, IPVA FUNDEB, IPI Total, IPI Líquido, IPI FUNDEB]
+    ibge_field: name_only
+    layout_version_icms: state-ce-icms-v1
+    layout_version_ipva: state-ce-ipva-v1
+    layout_version_ipi: state-ce-ipi-v1
+    connector: state_ce_xls
+    download_probe_2026_09_19: xls_bytes_ok_name_uf_join
+    reason: >
+      XLS mensal SEFAZ Portaria de distribuição ICMS/IPVA/IPI ativado com
+      connector state_ce_xls (xlrd). Coluna Total (quota constitucional) por
+      município; join IBGE7 por nome+UF via SICONFI-ENTES. Competência
+      2025-01. Fixture mínima. Sem crédito.
+  - uf: DF
+    name: Distrito Federal
+    status: PROVENANCE_VERIFIED
+    structured_official_source: not_applicable_no_municipalities
+    reason: >
+      DF não possui municípios; não há quota-parte municipal de ICMS/IPVA
+      estadual a ativar neste catálogo.
+  - uf: ES
+    name: Espírito Santo
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    official_url: https://dados.es.gov.br/dataset/portal-da-transparencia-transferencias-para-municipios
+    endpoint: https://dados.es.gov.br/dataset/d85497f8-3dc4-4104-8e18-f242ae82b6ee/resource/f76f120c-ee95-440c-a77a-2fdace48b1bc/download/transfestadomunicipios-2024.csv
+    taxes: [ICMS, IPVA, IPI, CIDE, FRD, COMPENSACAO]
+    format: CSV
+    columns: [Id, CodMunicipio, NomeMunicipio, IndiceImposto, Icms, IcmsLei2508, IcmsTotal, Ipi, Ipva, IndiceFundo, FundoReducaoDesigualdades, CotaParteCide, CompensacaoFinanceira, Ano, Mes]
+    ibge_field: CodMunicipio
+    layout_version_icms: state-es-icms-v1
+    layout_version_ipva: state-es-ipva-v1
+    layout_version_ipi: state-es-ipi-v1
+    layout_version_cide: state-es-cide-v1
+    layout_version_frd: state-es-frd-v1
+    layout_version_compensacao: state-es-compensacao-v1
+    connector: state_es_csv
+    download_probe_2026_09_19: csv_bytes_ok_ibge7_native
+    reason: >
+      CSV anual TransfEstadoMunicipios-2024 ativado com connector state_es_csv
+      (`;`, UTF-8, número BR). ICMS via IcmsTotal; IPVA via Ipva; IPI via Ipi;
+      CIDE via CotaParteCide; FRD via FundoReducaoDesigualdades; Compensação
+      via CompensacaoFinanceira. IBGE7 nativo em CodMunicipio. Fixture mínima.
+      Sem crédito.
+  - uf: GO
+    name: Goiás
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_datastore_ipva_and_economia_xlsx_icms
+    dataset_url: https://dadosabertos.go.gov.br/dataset/repasses
+    official_url: https://goias.gov.br/economia/repasse-aos-municipios/
+    endpoint: https://dadosabertos.go.gov.br/datastore/dump/343d1fb0-a182-4005-9203-dce168d2ad60
+    icms_endpoint: https://goias.gov.br/economia/wp-content/uploads/sites/45/2024/12/transf-municipios_2024_11.xlsx
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV+XLSX
+    columns: [VALR_IPVA, VALOR_TOTAL, VALR_IPVA_FUNDEB, DATA_COMPLETA_CREDITO, NUMR_ANO_MES, DATA_COMPLETA_REPASSE, DESC_MUN]
+    columns_icms: [Ordem, MUNICÍPIOS, ÍNDICE IPM, IPVA Bruto.., IPI Bruto.., ICMS Bruto, ICMS FUNDEB, ICMS Creditado Líquido]
+    ibge_field: name_only
+    layout_version_ipva: state-go-ipva-v1
+    layout_version_icms: state-go-icms-economia-v1
+    layout_version_ipi: state-go-ipi-economia-v1
+    connector: state_go_csv
+    icms_connector: state_go_economia_xlsx
+    ipi_connector: state_go_economia_xlsx
+    download_probe_2026_09_19: datastore_dump_ok_csv_download_500
+    download_probe_2026_09_20: economia_xlsx_200_icms_bruto_sheet_mm_yyyy
+    reason: >
+      IPVA via dump oficial CKAN DataStore (CSV upload 500; schema sem ICMS 2026).
+      ICMS e IPI-Exportação ativados via XLSX mensal Secretaria da Economia
+      (transf-municipios, aba MM-YYYY, colunas Bruto) com connector
+      state_go_economia_xlsx + join IBGE7 por nome+UF. Competência 2024-11.
+      Fixture mínima. Sem crédito.
+  - uf: MA
+    name: Maranhão
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_sgc_xls_downloadable
+    dataset_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
+    official_url: https://portal-sgc.sefaz.ma.gov.br/portal?codigo=69
+    endpoint: https://ui-sgc.sefaz.ma.gov.br/sgc/api/portal/arquivos/public/identificador?identificador=2185e882-6a8a-4b89-bae7-4d687c2e4515
+    taxes: [ICMS, IPVA, IPI]
+    format: XLS
+    columns_icms: [MUNICIPIOS, Janeiro..Junho/Julho..Dezembro, Total do Semestre]
+    columns_ipva: [MUNICIPIOS, Janeiro..Junho/Julho..Dezembro, Total do Semestre]
+    columns_ipi: [MUNICIPIOS, Janeiro..Junho/Julho..Dezembro, Total do Semestre]
+    ibge_field: name_only
+    layout_version_icms: state-ma-icms-v1
+    layout_version_ipva: state-ma-ipva-v1
+    layout_version_ipi: state-ma-ipi-fpex-v1
+    connector: state_ma_xls
+    download_probe_2026_09_20: sgc_xls_200_sheets_icms_ipva_semester
+    download_probe_2026_09_21: sgc_xls_200_sheets_fpex_semester
+    reason: >
+      XLS Repasses Municipais SEFAZ-MA (SGC UUID público) ativado com connector
+      state_ma_xls. Abas ICMS/IPVA/FPEX por semestre; coluna mensal; join IBGE7
+      por nome+UF. IPI via aba FPEX (IPI-Exportação). Competência 2026-01.
+      Fixture mínima. Sem crédito.
+  - uf: MT
+    name: Mato Grosso
+    status: PROVENANCE_VERIFIED
+    structured_official_source: transparency_xlsx_frozen_2015_plus_pdf_current
+    dataset_url: https://www5.sefaz.mt.gov.br/-/transparencia
+    official_url: https://www5.sefaz.mt.gov.br/fundo-de-participacao-dos-municipios
+    endpoint: https://www5.sefaz.mt.gov.br/documents/6071037/6402159/Item23_Repasse_aos_Municipios_Base_de_Dados.xlsx/e45f0890-9d55-4a2e-a97a-bd85dced0133
+    taxes: [ICMS, IPVA, IPI, FEP, FUPIS]
+    format: XLSX+PDF
+    ibge_field: name_only
+    download_probe_2026_09_20: xlsx_200_frozen_2013_to_maio_2015_current_pdf
+    reason: >
+      Item23 Base de Dados XLSX downloadável, porém série congelada 2013–maio/2015.
+      Repasses correntes na página Fundo de Participação dos Municípios são PDF
+      mensais. Sem ativação até série tabular recente com IBGE.
+  - uf: MS
+    name: Mato Grosso do Sul
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_datastore_dump
+    dataset_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    official_url: https://www.dados.ms.gov.br/dataset/repasses-dos-municipios
+    endpoint: https://www.dados.ms.gov.br/datastore/dump/repasses-dos-municipios-01_2026
+    taxes: [ICMS, IPVA, IPI, CIDE]
+    format: CSV
+    columns: [_id, Tipo_Repasse, Data, Data_Contabilização, Municipio, Valor_Total]
+    ibge_field: name_only
+    layout_version_icms: state-ms-icms-v1
+    layout_version_ipva: state-ms-ipva-v1
+    layout_version_ipi: state-ms-ipi-v1
+    layout_version_cide: state-ms-cide-v1
+    connector: state_ms_csv
+    download_probe_2026_09_19: datastore_dump_ok_icms_ipva
+    download_probe_2026_09_21: datastore_dump_ok_ipi_exportacao_cide
+    reason: >
+      Dump mensal CKAN DataStore 200 OK com Tipo_Repasse REPASSE DE ICMS,
+      REPASSE DE IPVA, REPASSE DE IPI EXPORTAÇÃO e REPASSE DA CIDE. Connector
+      state_ms_csv + join IBGE7 por nome+UF após remover prefixo PREFEITURA
+      MUNICIPAL DE. Fixture mínima. Sem crédito.
+  - uf: MG
+    name: Minas Gerais
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_frictionless_csv_gz
+    dataset_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    official_url: https://dados.mg.gov.br/dataset/transferencia-de-impostos-a-municipios
+    endpoint: https://dados.mg.gov.br/dataset/5a849756-f55b-4399-860f-b9b08eca0f1a/resource/ebed720b-5c5e-4e38-878b-be800c6e9967/download/ft_repasse_mun.csv.gz
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV.gz
+    ibge_field: cd_municipio_ibge
+    layout_version_icms: state-mg-icms-v1
+    layout_version_ipva: state-mg-ipva-v1
+    layout_version_ipi: state-mg-ipi-v1
+    connector: state_mg_csv
+    download_probe_2026_09_19: csv_gz_bytes_ok_join_dims
+    reason: >
+      Frictionless ft_repasse_mun.csv.gz + dm_municipio + dm_tempo_mensal.
+      IBGE7 nativo; territórios sem IBGE7 em quarentena. IPI via vr_ipi.
+      Fixture mínima. Gzip 200 OK neste runtime. Sem crédito.
+  - uf: PA
+    name: Pará
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: semas_icms_verde_xlsx_component_only
+    dataset_url: https://icmsverde.semas.pa.gov.br/valores_de_repasses.php
+    official_url: https://icmsverde.semas.pa.gov.br/valores_de_repasses.php
+    endpoint: https://icmsverde.semas.pa.gov.br/Valores_de_Repasses/Valores-de-repasses-ICMS-Verde-2024.xlsx
+    taxes: [ICMS_VERDE]
+    format: XLSX
+    columns: [MUNICÍPIOS, JANEIRO..DEZEMBRO, TOTAL]
+    ibge_field: name_only
+    layout_version_icms_verde: state-pa-icms-verde-v1
+    connector: state_pa_icms_verde_xlsx
+    download_probe_2026_09_20: xlsx_200_monthly_icms_verde_component
+    preferred_activation: true
+    reason: >
+      SEMAS publica XLSX anual de ICMS Verde (critério ecológico ≤8% da
+      cota-parte) com colunas mensais por município. Connector
+      state_pa_icms_verde_xlsx + join IBGE7 por nome+UF. Modalidade
+      ICMS_VERDE_QUOTA (não ICMS_QUOTA total). Cota ICMS/IPVA plena permanece
+      em portarias DOE (PDF). Fixture mínima. Sem crédito.
+  - uf: PB
+    name: Paraíba
+    status: PROVENANCE_VERIFIED
+    structured_official_source: edocman_pdf_only
+    dataset_url: https://www.sefaz.pb.gov.br/cidadao/municipios/36-repasse-de-arrecadacao/35-icms
+    official_url: https://www.sefaz.pb.gov.br/cidadao/municipios/36-repasse-de-arrecadacao
+    endpoint: https://www.sefaz.pb.gov.br/cidadao/municipios?task=document.download&id=2684
+    taxes: [ICMS, IPVA]
+    format: PDF
+    ibge_field: unknown
+    download_probe_2026_09_20: pdf_edocman_200_no_csv_api
+    reason: >
+      SEFAZ-PB publica séries anuais ICMS/IPVA via edocman como PDF (ex.:
+      REPASSE DE ICMS EXERCÍCIO DE 2025.pdf). Sem CSV/API estruturado; sem
+      ativação até arquivo tabular estável.
+  - uf: PR
+    name: Paraná
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefa_transparencia_html_monthly
+    dataset_url: https://www.transparencia.pr.gov.br/pte/assunto/4/100?origem=4
+    official_url: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/index.jsp
+    endpoint: https://www4.pr.gov.br/Gestao/portaldatransparencia/repasses/relatorio/rrepassesmun.jsp?Param_Data=01%2F01%2F2025&Param_Tiporelatorio=MENSAL
+    taxes: [ICMS, IPVA, IPI, ROYALTY]
+    format: HTML
+    columns: [Municipio, FPM, ICMS bruto, ICMS liquido, Fundo de Exportacao, Royalties, IPVA, Total]
+    ibge_field: name_only
+    layout_version_icms: state-pr-icms-v1
+    layout_version_ipva: state-pr-ipva-v1
+    layout_version_ipi: state-pr-ipi-fpex-v1
+    layout_version_royalty: state-pr-royalty-v1
+    connector: state_pr_html
+    download_probe_2026_09_20: html_200_icms_liquido_ipva_columns
+    download_probe_2026_09_21: html_200_fpex_column_index_4
+    download_probe_2026_09_21b: html_200_royalty_column_index_5
+    preferred_activation: true
+    reason: >
+      Relatório HTML mensal SEFA/PR ativado com connector state_pr_html
+      (ICMS líquido pós-FUNDEB + IPVA + Fundo de Exportação/FPEX como IPI +
+      Royalties Petróleo), fixture mínima e join IBGE7 por nome+UF. Sem
+      CSV/API; HTML GET estável. Sem crédito.
+  - uf: PE
+    name: Pernambuco
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    official_url: https://dados.pe.gov.br/dataset/transferencias-municipais
+    endpoint: https://dados.pe.gov.br/dataset/d157c770-7680-454e-9b0f-ddb777de4888/resource/ff98eec8-cce6-43ba-b8a8-bf55493c554f/download/transferencias_municipais_2024_.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    columns: [ano, mes, MUNICÍPIO, ICMS, IPI, IPVA, TOTAL]
+    ibge_field: name_only
+    layout_version_icms: state-pe-icms-v1
+    layout_version_ipva: state-pe-ipva-v1
+    layout_version_ipi: state-pe-ipi-v1
+    connector: state_pe_csv
+    download_probe_2026_09_19: csv_bytes_ok
+    preferred_activation: true
+    reason: >
+      CSV 2024 ativado com connector state_pe_csv, fixture mínima e join IBGE7
+      por nome+UF. IPVA zero publicado como valor oficial. IPI via coluna IPI
+      no mesmo arquivo. Sem crédito.
+  - uf: PI
+    name: Piauí
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_repasseweb_html
+    dataset_url: https://webas.sefaz.pi.gov.br/repasseweb/
+    official_url: https://webas.sefaz.pi.gov.br/repasseweb/
+    endpoint: https://webas.sefaz.pi.gov.br/repasseweb/faces/views/repasseMunicipios.xhtml
+    taxes: [IPVA]
+    format: HTML
+    columns_ipva: [Período, Município, Banco Arrecadador, Arrecadação, Parcela Estado, Parcela FUNDEB, Repasse Municipio]
+    ibge_field: name_only
+    layout_version_ipva: state-pi-ipva-repasseweb-v1
+    connector: state_pi_repasseweb_html
+    download_probe_2026_09_20: repasseweb_ipva_primefaces_905_rows
+    reason: >
+      Repasse WEB SEFAZ-PI (JSF/PrimeFaces) retorna tabela HTML de IPVA com
+      município+banco; connector state_pi_repasseweb_html agrega Repasse
+      Municipio por nome+UF e competência YYYYMM. ICMS no mesmo UI retornou
+      "Nenhum repasse encontrado" nos intervalos sondados. Fixture mínima.
+      Sem crédito.
+  - uf: RJ
+    name: Rio de Janeiro
+    status: PROVENANCE_VERIFIED
+    structured_official_source: ckan_csv_cataloged
+    dataset_url: https://dadosabertos.rj.gov.br/dataset/distribuicoes-constitucionais-muns-obrig
+    official_url: https://portal.fazenda.rj.gov.br/transparencia-fiscal/relatorios/transferencias-aos-municipios/
+    endpoint: https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2024/02/Relatorio-de-Repasses-aos-Municipios-2024.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    dictionary_url: none
+    download_probe_2026_09_19: sefaz_ip_filter_html_block
+    reason: >
+      CKAN estadual lista CSV anual de repasses (ICMS/IPVA/IPI). Schema de colunas
+      ainda não confirmado em bytes baixáveis neste runtime (bloqueio HTML por
+      catálogo de IP da SEFAZ-RJ). Agregadores privados recusados. Sem ativação
+      de ingest até schema verificado.
+  - uf: RN
+    name: Rio Grande do Norte
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_nextcloud_xls
+    dataset_url: https://www.sefaz.rn.gov.br/documentos/Transpar%C3%AAncia/Transfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN/
+    official_url: https://www.transparencia.rn.gov.br/transferencia-para-municipios
+    endpoint: https://www.sefaz.rn.gov.br/wp-json/nextcloud/v1/download?filePath=SEFAZ-GOVRN%2FTranspar%C3%AAncia%2FTransfer%C3%AAncias%20para%20os%20Munic%C3%ADpios%20do%20RN%2F2026%2FRepasses%20Prefeituras%202026%20-%20Valores%20Repassados%20at%C3%A9%20o%20dia%2031-05-2026.xls
+    taxes: [ICMS, IPVA, IPI]
+    format: XLS
+    columns_icms: [MUNICÍPIOS, ÍNDICE %, JANEIRO..DEZEMBRO]
+    columns_ipva: [MUNICÍPIOS, JANEIRO..DEZEMBRO]
+    ibge_field: name_only
+    layout_version_icms: state-rn-icms-v1
+    layout_version_ipva: state-rn-ipva-v1
+    layout_version_ipi: state-rn-ipi-v1
+    connector: state_rn_xls
+    download_probe_2026_09_20: nextcloud_xls_200_sheets_icms_ipva
+    reason: >
+      XLS Repasses Prefeituras SEFAZ-RN via Nextcloud (abas ICMS/IPVA/IPI)
+      ativado com connector state_rn_xls. Coluna mensal JANEIRO..; join IBGE7
+      por nome+UF. Competência 2026-01. Fixture mínima. Sem crédito.
+  - uf: RS
+    name: Rio Grande do Sul
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sefaz_montaarquivo_xls
+    dataset_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    official_url: https://www.sefaz.rs.gov.br/Site/MontaMenu.aspx?MenuAlias=m_transf_mun_mun
+    endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_icms_rep_202501
+    ipva_endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_ipva_rep_202501
+    taxes: [ICMS, IPVA, COMPENSACAO_LC194]
+    format: XLS
+    columns_icms: [MUNICIPIO, weekly REPASSE/RETENÇÃO/LÍQUIDO, TOTAL month REPASSE]
+    columns_ipva: [NOME DO MUNICÍPIO, daily amounts, Total Mês, Total Ano]
+    columns_compensacao_lc194: [MUNICIPIO, IPM, REPASSE*]
+    compensacao_lc194_endpoint: https://www.sefaz.rs.gov.br/Site/MontaArquivo.aspx?al=l_compensacao_perdas_icms_2024
+    ibge_field: name_only
+    layout_version_icms: state-rs-icms-v1
+    layout_version_ipva: state-rs-ipva-v1
+    layout_version_compensacao_lc194: state-rs-compensacao-lc194-v1
+    connector: state_rs_xls
+    download_probe_2026_09_19: montaarquivo_xls_200_total_mes
+    download_probe_2026_09_21: montaarquivo_compensacao_lc194_2024_outubro
+    reason: >
+      XLS mensal SEFAZ-RS via MontaArquivo (l_icms_rep_YYYYMM / l_ipva_rep_YYYYMM)
+      ativado com connector state_rs_xls (xlrd). ICMS usa coluna TOTAL
+      MÊS/ANO REPASSE; IPVA usa Total Mês. Compensação LC 194/22 via
+      l_compensacao_perdas_icms_2024 (aba OUTUBRO 2024, coluna REPASSE*).
+      Join IBGE7 por nome+UF. Fixture mínima. Sem crédito.
+  - uf: RO
+    name: Rondônia
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: ckan_csv_downloadable
+    dataset_url: https://dados.ro.gov.br/dataset/repasses-icms
+    official_url: https://dados.ro.gov.br/dataset/repasses-icms
+    endpoint: https://dados.ro.gov.br/dataset/cfff3fa2-6bb2-4519-bfaa-2f60126dd811/resource/28a6ff6c-59d4-409e-947d-a38b35bae75b/download/___
+    ipva_dataset_url: https://dados.ro.gov.br/dataset/repasses-ipva
+    ipva_endpoint: https://dados.ro.gov.br/dataset/ae2649de-b047-4555-9dfe-501b6d447fb8/resource/5deb9684-7411-4824-a904-a855ad68ab66/download/ipva-portal-2019-2022.csv
+    taxes: [ICMS, IPVA]
+    format: CSV
+    columns_icms: [MUNICÍPIO, MM/YYYY...]
+    columns_ipva: [Código, Município, jan/yy...]
+    ibge_field: name_only_icms_ibge6_ipva
+    layout_version_icms: state-ro-icms-v1
+    layout_version_ipva: state-ro-ipva-v1
+    connector: state_ro_csv
+    download_probe_2026_09_19: csv_bytes_ok_wide_monthly
+    reason: >
+      CSV SEFIN no portal dados.ro.gov.br (ICMS-2022 e IPVA-2019-2022) ativado
+      com connector state_ro_csv. ICMS wide MM/YYYY + join IBGE7 por nome+UF.
+      IPVA wide jan/yy + IBGE6→7. Fixture mínima. Sem crédito.
+  - uf: RR
+    name: Roraima
+    status: PROVENANCE_VERIFIED
+    structured_official_source: sefaz_painel_html_total_only
+    dataset_url: https://www.sefaz.rr.gov.br/central/repasses
+    official_url: https://www.sefaz.rr.gov.br/central/repasses
+    endpoint: https://www.sefaz.rr.gov.br/central/repasses
+    taxes: [ICMS, IPVA]
+    format: HTML
+    ibge_field: name_only
+    download_probe_2026_09_20: painel_html_200_total_sem_split_icms_ipva
+    reason: >
+      Painel SEFAZ-RR publica totais mensais por município a partir de planilha
+      interna, porém sem segregação ICMS/IPVA no HTML público. Boletins de
+      transferência são PDF. Sem ativação até série tabular com impostos
+      distintos.
+  - uf: SC
+    name: Santa Catarina
+    status: TECHNICALLY_APPROVED
+    ingest_allowed: true
+    structured_official_source: sef_csv_frozen_2017
+    dataset_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    official_url: https://www.sef.sc.gov.br/transparencias/transferencias-para-municipios-icms-ipva-ipi
+    endpoint: https://www.sef.sc.gov.br/api/download?id=5728&nomeArquivo=Anual_2017.csv&mime=application/vnd.ms-excel
+    arrecadacao_endpoint: https://dados.sc.gov.br/dataset/0eaade9e-98b9-4887-865d-096ccf142f1b/resource/eec848ff-67db-4a8d-9bc6-101e8573c1e2/download/icms_ipva.csv
+    taxes: [ICMS, IPVA, IPI]
+    format: CSV
+    columns: [CODIGO, MUNICIPIOS, ASSOCIACAO, INDICE, ICMS components, TOTAL ICMS, IPI, IPVA, TOTAL]
+    ibge_field: name_only
+    layout_version_icms: state-sc-icms-v1
+    layout_version_ipva: state-sc-ipva-v1
+    layout_version_ipi: state-sc-ipi-v1
+    connector: state_sc_csv
+    download_probe_2026_09_19: sef_csv_200_max_2017_arrecadacao_not_quota
+    download_probe_2026_09_21: sef_anual_2017_csv_ok_total_icms_ipi_ipva
+    reason: >
+      CSV anual SEF Anual_2017.csv ativado com connector state_sc_csv (`;`,
+      latin-1, número BR). Colunas TOTAL ICMS=7, IPI=9 e IPVA=10 após cabeçalho
+      multi-linha; código SEF não é IBGE — join IBGE7 por nome+UF. Competência
+      anual 2017 (série oficial congelada ≤2017). CKAN icms_ipva.csv permanece
+      arrecadação (não quota). Fixture mínima. Sem crédito.
+  - uf: SP
+    name: São Paulo
+    status: DISCOVERED
+    structured_official_source: not_verified
+    reason: >
+      Portal SEFAZ-SP RepasseConsulta é HTML por município; dadosabertos.sp.gov.br
+      sem CSV/API de quota-parte municipal verificado nesta fatia.
+  - uf: SE
+    name: Sergipe
+    status: PROVENANCE_VERIFIED
+    structured_official_source: sefaz_sharepoint_pdf_only
+    dataset_url: https://www.sefaz.se.gov.br/transparencia/SitePages/relatorios_financeiros.aspx
+    official_url: https://www.sefaz.se.gov.br/transparencia/SitePages/relatorios_financeiros.aspx
+    endpoint: https://www.sefaz.se.gov.br/transparencia/Relatrios%20Financeiros/DEMONSTRATIVOS%20DIVERSOS/Demonstrativo%20de%20Distribui%C3%A7%C3%A3o%20de%20ICMS%20aos%20Munic%C3%ADpios/2026/janeiro/ICMS_JANEIRO_2026.pdf
+    taxes: [ICMS, IPVA]
+    format: PDF
+    ibge_field: unknown
+    download_probe_2026_09_20: sharepoint_pdf_monthly_200_no_csv
+    reason: >
+      SEFAZ-SE publica demonstrativos mensais ICMS/IPVA em PDF no SharePoint
+      (Relatórios Financeiros / DEMONSTRATIVOS DIVERSOS). Sem CSV/XLS/API
+      tabular estável; sem ativação até arquivo estruturado.
+  - uf: TO
+    name: Tocantins
+    status: PROVENANCE_VERIFIED
+    structured_official_source: ipm_pdf_powerbi_no_money_series
+    dataset_url: https://www.to.gov.br/sefaz/ipm-indice-de-participacao-dos-municipios/3fyzm5k8xqry
+    official_url: https://www.to.gov.br/sefaz/ipm-indice-de-participacao-dos-municipios/3fyzm5k8xqry
+    endpoint: https://central.to.gov.br/download/459908
+    taxes: [ICMS]
+    format: PDF
+    ibge_field: name_only
+    download_probe_2026_09_20: pdf_ipm_200_no_csv_money_series
+    reason: >
+      SEFAZ-TO publica IPM (índices) em PDF/DOE e Power BI; servlet IPM exige
+      autenticação. dados.to.gov.br NXDOMAIN. Sem série monetária tabular de
+      quota-parte ICMS/IPVA; sem ativação até CSV/XLS/API estável.

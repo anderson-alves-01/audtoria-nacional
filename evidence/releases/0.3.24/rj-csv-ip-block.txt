@@ -1,0 +1,5 @@
+﻿RJ CSV probe 2026-09-19
+dataset: https://dadosabertos.rj.gov.br/dataset/distribuicoes-constitucionais-muns-obrig
+resource: Relatorio de Repasses aos Municipios 2024 CSV
+endpoint: https://portal.fazenda.rj.gov.br/transparencia-fiscal/wp-content/uploads/sites/15/2024/02/Relatorio-de-Repasses-aos-Municipios-2024.csv
+result: HTTP 200 with text/html SEFAZ IP catalog block page (no CSV bytes)

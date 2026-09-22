@@ -1,0 +1,5 @@
+unit: test_tesouro_coint_lc87_wide_csv PASSED
+integration: test_official_ingest + test_alembic_paths PASSED (9 tests)
+command: python -m pytest tests/unit/test_gold_invariants.py::test_tesouro_coint_lc87_wide_csv tests/integration/test_official_ingest.py tests/integration/test_alembic_paths.py -q
+date: 2026-09-21
+slice: TESOURO-LC87-VALORES (COINT historical <=2018)

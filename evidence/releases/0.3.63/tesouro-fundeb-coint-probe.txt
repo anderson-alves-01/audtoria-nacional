@@ -1,0 +1,27 @@
+﻿# Tesouro COINT FUNDEB probe — 2026-09-21
+
+Resource: FUNDEB por município
+URL: https://www.tesourotransparente.gov.br/ckan/dataset/3b5a779d-78f5-4602-a6b7-23ece6d60f27/resource/18d5b0ae-8037-461e-8685-3f0d7752a287/download/fundeb-por-municipio.csv
+Bytes: 20761434 (~19.7 MiB)
+Layout: COD_MUN;Município;UF;Município - UF;Mês;2007..2026 (latin-1, ';')
+Rows: 66830 (5569 municípios × 12 meses + 2 blank)
+
+Non-zero year columns (sample):
+| Year | Non-zero cells |
+|------|----------------|
+| 2023 | 66816 |
+| 2024 | 66813 |
+| 2025 | 66816 |
+| 2026 | 44551 |
+
+Sample 2025-01 Acrelândia-AC: 1.926.974,37
+Sample 2025-01 Assis Brasil-AC: 1.397.435,94
+
+Distinct from:
+- TESOURO-FUNDEB-COMPLEMENT-VALORES (monthly CSV COUN/AJUSTE)
+- FPM/IPI-EXP/ITR → FUNDEB retention rows
+
+COD_MUN is not IBGE7; join name+UF via SICONFI/entes.
+Activated with max_rows=8, competence=2025-01.
+
+LC 87/96 COINT companion CSV ends nonzero values in 2018 — not activated.

@@ -1,5 +1,7 @@
 from sirta_api.domain.errors import ConflictError
 from sirta_api.domain.regulatory import (
+    CATALOG_VERSION,
+    PRESERVED_DOC_SOURCE_IDS,
     STATUS_NON_BINDING,
     SYNTHETIC_CATALOG,
     assert_not_operational,
@@ -9,8 +11,11 @@ from sirta_api.domain.regulatory import (
 
 def test_synthetic_catalog_is_never_binding() -> None:
     assert SYNTHETIC_CATALOG
-    assert all(item.version == "catalog-synthetic-v1" for item in SYNTHETIC_CATALOG)
+    assert CATALOG_VERSION == "catalog-official-docs-v1"
+    assert PRESERVED_DOC_SOURCE_IDS == ("PLANALTO-LEGISLACAO", "PLANALTO-LC-214")
+    assert all(item.version == CATALOG_VERSION for item in SYNTHETIC_CATALOG)
     assert all(item.code for item in SYNTHETIC_CATALOG)
+    assert any(item.code == "LC-214-2025" for item in SYNTHETIC_CATALOG)
 
 
 def test_operational_use_is_denied_without_homologation() -> None:

@@ -1,0 +1,18 @@
+﻿# UF re-probe 2026-09-21 (post BCB OLINDA IGP/INPC)
+
+| UF | Verdict | Reason |
+|----|---------|--------|
+| RJ | STILL_BLOCKED | GET 200 text/html IP catalog block (not CSV bytes) |
+| SP | STILL_BLOCKED | open-data host probe 200; no municipal quota CSV confirmed |
+| SC | STILL_BLOCKED | CSV still ≤2017 frozen (200) |
+| AP | STILL_BLOCKED | sefaz detalhes/17 still 404 |
+| TO | STILL_BLOCKED | dados.to.gov.br still unavailable |
+| MT | STILL_BLOCKED | XLSX still frozen ≤2015 series (ERR) |
+| SE | STILL_BLOCKED | SharePoint PDF monthly (200) |
+| AM | STILL_BLOCKED | SRT HTML-per-muni public (200) |
+| RR | STILL_BLOCKED | painel totals without ICMS/IPVA split (200) |
+| PB | STILL_BLOCKED | edocman PDF only (200) |
+
+| PI ICMS | STILL_BLOCKED | Repasse WEB ICMS search empty (IPVA already approved) |
+
+No ACTIVATE_NOW among remaining UFs. Cycle progressed via BCB OLINDA IGP-M/IGP-DI/INPC.

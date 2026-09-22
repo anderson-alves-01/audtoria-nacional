@@ -1,0 +1,21 @@
+{
+  "sourceId": "BCB-OLINDA-EXPECTATIVAS-MENSAIS",
+  "entitySet": "ExpectativaMercadoMensais",
+  "layoutVersion": "bcb-olinda-expectativas-mensais-v3",
+  "baseCalculo": 1,
+  "maxRowsPerIndicator": 8,
+  "silverCountExpected": 64,
+  "indicators": [
+    {"name": "IPCA", "unit": "PERCENT_PER_MONTH", "medianaSample": 0.4937},
+    {"name": "IPCA Livres", "unit": "PERCENT_PER_MONTH", "medianaSample": 0.515},
+    {"name": "IPCA Serviços", "unit": "PERCENT_PER_MONTH", "medianaSample": 0.31},
+    {"name": "IPCA Administrados", "unit": "PERCENT_PER_MONTH", "medianaSample": 0.335},
+    {"name": "IPCA Alimentação no domicílio", "unit": "PERCENT_PER_MONTH", "medianaSample": 1.38},
+    {"name": "IPCA Bens industrializados", "unit": "PERCENT_PER_MONTH", "medianaSample": 0.3},
+    {"name": "IGP-M", "unit": "PERCENT_PER_MONTH", "medianaSample": 0.4327},
+    {"name": "Câmbio", "unit": "BRL_PER_USD", "medianaSample": 5.17}
+  ],
+  "probeData": "2026-09-18",
+  "createsTaxCredit": false,
+  "valueKind": "REFERENCE_QUANTITY"
+}

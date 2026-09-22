@@ -1,0 +1,8 @@
+CI green for 0.3.81 BCB OLINDA PIB Despesa de consumo das famílias
+
+push: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35617242745
+pr:   https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35617250603
+
+python/web/containers: SUCCESS
+HEAD feat: 08a3936
+HEAD fix:  930aa92

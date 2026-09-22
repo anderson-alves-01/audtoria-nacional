@@ -1,0 +1,5 @@
+CI green for 0.3.61 RS Compensacao LC194
+PR #2 head: 9125321
+pull_request run: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35571881274
+push run: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35571878398
+jobs: python/web/containers SUCCESS

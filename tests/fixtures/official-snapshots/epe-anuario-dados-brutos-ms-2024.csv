@@ -1,0 +1,9 @@
+Data,TipoConsumidor,Sistema,UF,Setor Econômico - N1,Setor Econômico - N2,Setor Econômico - N3,Tipo Tensão - N1,Tipo Tensão - N2,Tipo Tensão - N3,Faixa de Consumo N1,Faixa de Consumo N2,Consumidores,Consumo
+20240101,Cativo,Sudeste / Centro-Oeste,MS,Residencial,Convencional (Excepto Baixa Renda),TOTAL,B - Baixa Tensão,Convencional,TOTAL,TOTAL,TOTAL,38741,1085.03
+20240201,Cativo,Sudeste / Centro-Oeste,MS,Residencial,Convencional (Excepto Baixa Renda),TOTAL,B - Baixa Tensão,Convencional,TOTAL,TOTAL,TOTAL,43687,1111.925
+20240301,Cativo,Sudeste / Centro-Oeste,MS,Residencial,Convencional (Excepto Baixa Renda),TOTAL,B - Baixa Tensão,Convencional,TOTAL,TOTAL,TOTAL,45558,1109.437
+20240401,Cativo,Sudeste / Centro-Oeste,MS,Residencial,Convencional (Excepto Baixa Renda),TOTAL,B - Baixa Tensão,Convencional,TOTAL,TOTAL,TOTAL,47379,1172.034
+20240501,Cativo,Sudeste / Centro-Oeste,MS,Residencial,Convencional (Excepto Baixa Renda),TOTAL,B - Baixa Tensão,Convencional,TOTAL,TOTAL,TOTAL,50011,1249.991
+20240601,Cativo,Sudeste / Centro-Oeste,MS,Residencial,Convencional (Excepto Baixa Renda),TOTAL,B - Baixa Tensão,Convencional,TOTAL,TOTAL,TOTAL,50539,1401.541
+20240101,Cativo,Sudeste / Centro-Oeste,MS,Industrial,TOTAL,TOTAL,A - Alta Tensão,Alta Tensão,TOTAL,TOTAL,TOTAL,INVALID,0
+20240101,Cativo,Norte,RO,Residencial,Convencional (Excepto Baixa Renda),TOTAL,B - Baixa Tensão,Convencional,TOTAL,TOTAL,TOTAL,100,10

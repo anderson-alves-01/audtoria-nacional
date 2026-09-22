@@ -1,0 +1,16 @@
+# UF re-probe 2026-09-20 (post GO ICMS Economia activation)
+
+Priority UFs still without bulk PUBLIC_OPEN ICMS/IPVA quota:
+
+| UF | Verdict | Reason |
+|----|---------|--------|
+| SP | STILL_BLOCKED | HTML per-município; sem CSV/API quota em dadosabertos.sp.gov.br |
+| TO | STILL_BLOCKED | IPM PDF/índices; servlet autenticado |
+| MT | STILL_BLOCKED | XLSX congelado ≤maio/2015; corrente PDF |
+| AM | STILL_BLOCKED | Excel público exige login; HTML por município |
+| SE | STILL_BLOCKED | SharePoint PDF mensal |
+| PB | STILL_BLOCKED | edocman PDF; dados.pb.gov.br NXDOMAIN |
+| AP | STILL_BLOCKED | sefaz detalhes/17 → 404 |
+| SC | STILL_BLOCKED | CSV quota ≤2017; pós-2017 PDF; CKAN é arrecadação |
+
+GO ICMS: activated separately via Economia XLSX (0.3.49). No ACTIVATE_NOW among remaining UFs.

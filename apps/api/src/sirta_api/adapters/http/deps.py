@@ -12,6 +12,7 @@ from sirta_api.config import get_settings
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.errors import ForbiddenError, UnauthorizedError
 from sirta_api.domain.identities import Role
+from sirta_api.domain.security_policy import ensure_mfa_if_required
 
 
 def get_access_context(
@@ -25,7 +26,9 @@ def get_access_context(
     if not token:
         raise UnauthorizedError("Bearer token is required")
 
-    claims = decode_access_token(token, get_settings())
+    settings = get_settings()
+    claims = decode_access_token(token, settings)
+    ensure_mfa_if_required(claims, environment=settings.environment)
     subject = claims.get("sub")
     tenant_claim = claims.get("tenant_id")
     if not subject or not tenant_claim:

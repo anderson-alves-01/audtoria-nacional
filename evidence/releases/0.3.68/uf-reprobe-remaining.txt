@@ -1,0 +1,20 @@
+# UF re-probe 2026-09-21 (post BCB OLINDA Selic/Câmbio)
+
+Priority UFs still without bulk PUBLIC_OPEN ICMS/IPVA quota:
+
+| UF | Verdict | Reason |
+|----|---------|--------|
+| RJ | STILL_BLOCKED | CSV cataloged; SEFAZ IP HTML filter; CKAN resources same host |
+| PI ICMS | STILL_BLOCKED | Repasse WEB ICMS search empty (IPVA already approved) |
+| SP | STILL_BLOCKED | HTML-per-muni; quotaparte totals only; open-data hosts fail |
+| SC | STILL_BLOCKED | SEF CSV ≤2017; CKAN not quota; BB portal off *.sc.gov.br |
+| MT | STILL_BLOCKED | Item23 XLSX frozen ≤2015; current PDF portarias |
+| SE | STILL_BLOCKED | SharePoint PDF monthly; sibling XLSX 404 |
+| PB | STILL_BLOCKED | edocman PDF only |
+| AP | STILL_BLOCKED | sefaz detalhes/17 → 404 |
+| AM | STILL_BLOCKED | SRT HTML-per-muni; Excel not bulk public |
+| RR | STILL_BLOCKED | Painel totals without ICMS/IPVA split |
+| TO | STILL_BLOCKED | IPM PDF/indices; dados.to.gov.br NXDOMAIN |
+| GO CKAN CSV upload | STILL_500 | DataStore IPVA-only schema 2026 (already activated) |
+
+No ACTIVATE_NOW among remaining UFs. Cycle progressed via BCB OLINDA PIB.

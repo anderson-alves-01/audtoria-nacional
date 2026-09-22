@@ -1,0 +1,515 @@
+from tests.helpers.tokens import auth_headers
+
+from sirta_api.adapters.db.synthetic_ids import (
+    PURPOSE_ALPHA_ACTIVE,
+    TENANT_ALPHA,
+    TERRITORY_ALPHA_CENTRO,
+    USER_ADMIN_ALPHA,
+    USER_ANALYST_ALPHA,
+)
+
+
+def _analyst() -> dict[str, str]:
+    return auth_headers(
+        subject=USER_ANALYST_ALPHA,
+        tenant_id=TENANT_ALPHA,
+        territory_id=TERRITORY_ALPHA_CENTRO,
+        purpose_id=PURPOSE_ALPHA_ACTIVE,
+    )
+
+
+def _admin() -> dict[str, str]:
+    return auth_headers(
+        subject=USER_ADMIN_ALPHA,
+        tenant_id=TENANT_ALPHA,
+        territory_id=TERRITORY_ALPHA_CENTRO,
+        purpose_id=PURPOSE_ALPHA_ACTIVE,
+    )
+
+
+def test_sectoral_enrichment_endpoint_partial_anp_aneel_bcb_epe_anatel_cnes(api_client) -> None:
+    response = api_client.get("/v1/sectoral-enrichment", headers=_analyst())
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ingestEnabled"] is True
+    assert body["createsTaxCredit"] is False
+    assert body["commandsDisabled"] is True
+    assert body["items"] == []
+    assert body["total"] == 0
+    assert body["institutionalStatus"] == "PARTIAL_TECHNICAL_ACTIVATION"
+    assert len(body["sources"]) == 12
+    by_id = {row["sourceId"]: row for row in body["sources"]}
+    assert by_id["ANP-REVENDEDORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ANP-REVENDEDORES"]["ingestAllowed"] is True
+    assert by_id["ANEEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ANEEL-DADOS-ABERTOS"]["ingestAllowed"] is True
+    assert by_id["BCB-SGS-OLINDA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-SGS-OLINDA"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["ingestAllowed"] is True
+    assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
+    assert by_id["ANATEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ANATEL-DADOS-ABERTOS"]["ingestAllowed"] is True
+    assert by_id["CNES-DATASUS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["CNES-DATASUS"]["ingestAllowed"] is True
+
+
+def test_sectoral_enrichment_command_is_rejected(api_client) -> None:
+    response = api_client.post("/v1/sectoral-enrichment", headers=_analyst(), json={})
+    assert response.status_code == 409
+    detail = str(response.json().get("detail", response.json()))
+    assert "desativad" in detail.lower()
+
+
+def test_tech_admin_cannot_read_sectoral_enrichment(api_client) -> None:
+    response = api_client.get(
+        "/v1/sectoral-enrichment",
+        headers=auth_headers(
+            subject=USER_ADMIN_ALPHA,
+            tenant_id=TENANT_ALPHA,
+            territory_id=TERRITORY_ALPHA_CENTRO,
+            purpose_id=PURPOSE_ALPHA_ACTIVE,
+        ),
+    )
+    assert response.status_code == 403
+
+
+def test_anp_aneel_bcb_epe_anatel_cnes_listed_and_ingestible(api_client) -> None:
+    listing = api_client.get("/v1/data-sources", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in listing.json()["items"]}
+    assert by_id["ANP-REVENDEDORES"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ANP-REVENDEDORES"]["ingestAllowed"] is True
+    assert by_id["ANEEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ANEEL-DADOS-ABERTOS"]["ingestAllowed"] is True
+    assert by_id["ANEEL-DADOS-ABERTOS"]["createsTaxCredit"] is False
+    assert by_id["BCB-SGS-OLINDA"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-SGS-OLINDA"]["ingestAllowed"] is True
+    assert by_id["BCB-SGS-OLINDA"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["ingestAllowed"] is True
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["createsTaxCredit"] is False
+    assert by_id["EPE-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["EPE-DADOS-ABERTOS"]["ingestAllowed"] is True
+    assert by_id["EPE-DADOS-ABERTOS"]["createsTaxCredit"] is False
+    assert by_id["ANATEL-DADOS-ABERTOS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["ANATEL-DADOS-ABERTOS"]["ingestAllowed"] is True
+    assert by_id["ANATEL-DADOS-ABERTOS"]["createsTaxCredit"] is False
+    assert by_id["CNES-DATASUS"]["status"] == "TECHNICALLY_APPROVED"
+    assert by_id["CNES-DATASUS"]["ingestAllowed"] is True
+    assert by_id["CNES-DATASUS"]["createsTaxCredit"] is False
+
+
+def test_anp_ingest_publishes_gold_without_credit_or_cnpj(api_client) -> None:
+    siconfi = api_client.post("/v1/data-sources/SICONFI-ENTES/ingest", headers=_admin())
+    assert siconfi.status_code == 200
+    anp = api_client.post("/v1/data-sources/ANP-REVENDEDORES/ingest", headers=_admin())
+    assert anp.status_code == 200
+    assert anp.json()["silverCount"] == 1
+    assert anp.json()["quarantinedCount"] == 1
+    assert anp.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["ANP-REVENDEDORES"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["ANP-REVENDEDORES"]["createsTaxCredit"] is False
+    assert by_id["ANP-REVENDEDORES"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ANP-REVENDEDORES",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(item["value"] == 2 for item in lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+    assert all("cnpj" not in (item.get("payload") or {}) for item in lines.json()["items"])
+
+
+def test_aneel_ingest_publishes_gold_without_credit(api_client) -> None:
+    aneel = api_client.post("/v1/data-sources/ANEEL-DADOS-ABERTOS/ingest", headers=_admin())
+    assert aneel.status_code == 200
+    assert aneel.json()["silverCount"] == 6
+    assert aneel.json()["quarantinedCount"] == 1
+    assert aneel.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["ANEEL-DADOS-ABERTOS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["ANEEL-DADOS-ABERTOS"]["createsTaxCredit"] is False
+    assert by_id["ANEEL-DADOS-ABERTOS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ANEEL-DADOS-ABERTOS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(item["value"] == 2 for item in lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_bcb_ingest_publishes_gold_without_credit(api_client) -> None:
+    bcb = api_client.post("/v1/data-sources/BCB-SGS-OLINDA/ingest", headers=_admin())
+    assert bcb.status_code == 200
+    assert bcb.json()["silverCount"] == 6
+    assert bcb.json()["quarantinedCount"] == 0
+    assert bcb.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["BCB-SGS-OLINDA"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["BCB-SGS-OLINDA"]["createsTaxCredit"] is False
+    assert by_id["BCB-SGS-OLINDA"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=BCB-SGS-OLINDA",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(item["value"] == 13.75 for item in lines.json()["items"])
+    assert any(item["value"] == -0.32 for item in lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_bcb_olinda_expectativas_ingest_publishes_gold_without_credit(api_client) -> None:
+    bcb = api_client.post("/v1/data-sources/BCB-OLINDA-EXPECTATIVAS/ingest", headers=_admin())
+    assert bcb.status_code == 200
+    assert bcb.json()["silverCount"] == 280
+    assert bcb.json()["quarantinedCount"] == 0
+    assert bcb.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    values = {item["value"] for item in lines.json()["items"]}
+    assert 4.9488 in values
+    assert 13.5625 in values
+    assert 5.2 in values
+    assert 1.8564 in values
+    assert 1.7 in values
+    assert 2.5 in values
+    assert 1.6 in values
+    assert 4.833 in values
+    assert 3.73 in values
+    assert 3.34 in values
+    assert -0.4 in values
+    assert -60.85 in values
+    assert -9.0 in values
+    assert 83.4 in values
+    assert 5.215 in values
+    assert 80.0 in values
+    assert 4.5661 in values
+    assert 6.9302 in values
+    assert 3.4641 in values
+    assert 0.9 in values
+    assert 2.2 in values
+    assert 6.3348 in values
+    assert 3.79 in values
+    assert 372.9 in values
+    assert 294.0198 in values
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_bcb_olinda_expectativas_mensais_ingest_publishes_gold_without_credit(api_client) -> None:
+    bcb = api_client.post(
+        "/v1/data-sources/BCB-OLINDA-EXPECTATIVAS-MENSAIS/ingest",
+        headers=_admin(),
+    )
+    assert bcb.status_code == 200
+    assert bcb.json()["silverCount"] == 96
+    assert bcb.json()["quarantinedCount"] == 0
+    assert bcb.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-MENSAIS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-MENSAIS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    values = {item["value"] for item in lines.json()["items"]}
+    assert 0.4937 in values
+    assert 0.4327 in values
+    assert 5.17 in values
+    assert 0.515 in values
+    assert 0.31 in values
+    assert 0.335 in values
+    assert 1.38 in values
+    assert 0.3 in values
+    assert 0.29 in values
+    assert 0.33 in values
+    assert 0.27 in values
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_bcb_olinda_expectativas_trimestrais_ingest_publishes_gold_without_credit(
+    api_client,
+) -> None:
+    bcb = api_client.post(
+        "/v1/data-sources/BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS/ingest",
+        headers=_admin(),
+    )
+    assert bcb.status_code == 200
+    assert bcb.json()["silverCount"] == 88
+    assert bcb.json()["quarantinedCount"] == 0
+    assert bcb.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    values = {item["value"] for item in lines.json()["items"]}
+    assert 1.5731 in values
+    assert 1.8052 in values
+    assert 1.6767 in values
+    assert 1.0629 in values
+    assert 3.3157 in values
+    assert 0.8018 in values
+    assert 5.1751 in values
+    assert 1.3 in values
+    assert 2.3684 in values
+    assert 2.25 in values
+    assert 1.8281 in values
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_bcb_olinda_expectativas_selic_ingest_publishes_gold_without_credit(
+    api_client,
+) -> None:
+    bcb = api_client.post(
+        "/v1/data-sources/BCB-OLINDA-EXPECTATIVAS-SELIC/ingest",
+        headers=_admin(),
+    )
+    assert bcb.status_code == 200
+    assert bcb.json()["silverCount"] == 8
+    assert bcb.json()["quarantinedCount"] == 0
+    assert bcb.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-SELIC"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-SELIC",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    values = {item["value"] for item in lines.json()["items"]}
+    assert 13.25 in values
+    assert 11.75 in values
+    assert 11.0 in values
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_bcb_olinda_expectativas_inflacao_12m_ingest_publishes_gold_without_credit(
+    api_client,
+) -> None:
+    bcb = api_client.post(
+        "/v1/data-sources/BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M/ingest",
+        headers=_admin(),
+    )
+    assert bcb.status_code == 200
+    assert bcb.json()["silverCount"] == 8
+    assert bcb.json()["quarantinedCount"] == 0
+    assert bcb.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    values = {item["value"] for item in lines.json()["items"]}
+    assert 4.8016 in values
+    assert 5.5292 in values
+    assert 5.1325 in values
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_bcb_olinda_expectativas_inflacao_24m_ingest_publishes_gold_without_credit(
+    api_client,
+) -> None:
+    bcb = api_client.post(
+        "/v1/data-sources/BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M/ingest",
+        headers=_admin(),
+    )
+    assert bcb.status_code == 200
+    assert bcb.json()["silverCount"] == 8
+    assert bcb.json()["quarantinedCount"] == 0
+    assert bcb.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["createsTaxCredit"] is False
+    assert by_id["BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    values = {item["value"] for item in lines.json()["items"]}
+    assert 3.9081 in values
+    assert 4.7291 in values
+    assert 2.7186 in values
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_epe_ingest_publishes_gold_without_credit(api_client) -> None:
+    epe = api_client.post("/v1/data-sources/EPE-DADOS-ABERTOS/ingest", headers=_admin())
+    assert epe.status_code == 200
+    assert epe.json()["silverCount"] == 6
+    assert epe.json()["quarantinedCount"] == 1
+    assert epe.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["EPE-DADOS-ABERTOS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["EPE-DADOS-ABERTOS"]["createsTaxCredit"] is False
+    assert by_id["EPE-DADOS-ABERTOS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=EPE-DADOS-ABERTOS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(item["value"] == 38741 for item in lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_anatel_ingest_publishes_gold_without_credit(api_client) -> None:
+    anatel = api_client.post("/v1/data-sources/ANATEL-DADOS-ABERTOS/ingest", headers=_admin())
+    assert anatel.status_code == 200
+    assert anatel.json()["silverCount"] == 6
+    assert anatel.json()["quarantinedCount"] == 1
+    assert anatel.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["ANATEL-DADOS-ABERTOS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["ANATEL-DADOS-ABERTOS"]["createsTaxCredit"] is False
+    assert by_id["ANATEL-DADOS-ABERTOS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=ANATEL-DADOS-ABERTOS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(item["value"] == 296 for item in lines.json()["items"])
+    assert any(item["ibgeCode"] == "5005251" for item in lines.json()["items"])
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+
+
+def test_cnes_ingest_publishes_gold_without_credit_or_pii(api_client) -> None:
+    cnes = api_client.post("/v1/data-sources/CNES-DATASUS/ingest", headers=_admin())
+    assert cnes.status_code == 200
+    assert cnes.json()["silverCount"] == 5
+    assert cnes.json()["quarantinedCount"] == 1
+    assert cnes.json()["taxCreditCreated"] is False
+    gold = api_client.get("/v1/indicators/official-gold", headers=_analyst())
+    by_id = {item["sourceId"]: item for item in gold.json()["items"]}
+    assert by_id["CNES-DATASUS"]["valueKind"] == "REFERENCE_QUANTITY"
+    assert by_id["CNES-DATASUS"]["createsTaxCredit"] is False
+    assert by_id["CNES-DATASUS"]["homologationStatus"] == (
+        "REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY"
+    )
+    lines = api_client.get(
+        "/v1/indicators/official-gold/lines?sourceId=CNES-DATASUS",
+        headers=_analyst(),
+    )
+    assert lines.status_code == 200
+    assert any(
+        item["value"] == 3 and item["ibgeCode"] == "5002704" for item in lines.json()["items"]
+    )
+    assert all(
+        item["bronzeSha256"] and item["landingManifestPath"] and item["officialUrl"]
+        for item in lines.json()["items"]
+    )
+    assert all(
+        "cnpj" not in str(item).lower() and "email" not in str(item).lower()
+        for item in lines.json()["items"]
+    )

@@ -1,0 +1,9 @@
+# BCB OLINDA Expectativas PIB probe 2026-09-21
+
+ExpectativasMercadoAnuais baseCalculo=1 $top=8:
+
+- PIB Total: OK Mediana[0]=1.8564 Data=2026-09-11
+- PIB Serviços: OK Mediana[0]=1.7 Data=2026-09-11
+
+Units: PERCENT_PER_YEAR (growth expectations).
+Distinct from BCB-SGS-OLINDA REST series.

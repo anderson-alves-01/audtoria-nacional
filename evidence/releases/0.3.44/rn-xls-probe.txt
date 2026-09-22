@@ -1,0 +1,10 @@
+﻿RN probe 2026-09-20
+endpoint_icms_ipva=https://www.sefaz.rn.gov.br/wp-json/nextcloud/v1/download?filePath=...Repasses Prefeituras 2026 - Valores Repassados até o dia 31-05-2026.xls
+status=200
+content_type=application/vnd.ms-excel
+magic=D0CF11E0 (OLE XLS)
+sheets=ICMS,IPVA,IPI,ROYALTIES,REPASSES
+competence_used=2026-01
+sha256_official_2026_05=F558B72279D2F77A661E4219F897DDEC9EAC47183DD66A265D189B490BB429BF
+MT_Item23_xlsx=BASE DE DADOS 2013 A MAIO/15 frozen; not activated
+TO_PA_MA=no structured CSV/API in this cycle

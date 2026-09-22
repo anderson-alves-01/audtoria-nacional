@@ -1,0 +1,2 @@
+﻿python -m pytest tests/unit/test_gold_invariants.py::test_aneel_indqual_aggregates_by_ibge7 tests/unit/test_sectoral_enrichment.py tests/integration/test_sectoral_enrichment.py tests/integration/test_alembic_paths.py tests/integration/test_official_ingest.py -q
+18 passed, 1 warning in 29.01s

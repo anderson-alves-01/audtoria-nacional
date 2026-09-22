@@ -1,0 +1,731 @@
+{
+  "summary": {
+    "known_count": 33,
+    "candidates_probed": 40,
+    "found_new": [],
+    "sanity_ipca_count": 0,
+    "hits": 0
+  },
+  "results": [
+    {
+      "indicator": "IGP-10",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IGP-10%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IGP-10",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IGP-10%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPA",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPA%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPA",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPA%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPC-Br",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPC-Br%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPC-Br",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPC-Br%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPC",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPC%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPC",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPC%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "INCC-M",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27INCC-M%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "INCC-M",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27INCC-M%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "INCC-DI",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27INCC-DI%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "INCC-DI",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27INCC-DI%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "INCC",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27INCC%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "INCC",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27INCC%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Alimentação e bebidas",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Alimenta%C3%A7%C3%A3o+e+bebidas%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Alimentação e bebidas",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Alimenta%C3%A7%C3%A3o+e+bebidas%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Habitação",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Habita%C3%A7%C3%A3o%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Habitação",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Habita%C3%A7%C3%A3o%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Artigos de residência",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Artigos+de+resid%C3%AAncia%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Artigos de residência",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Artigos+de+resid%C3%AAncia%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Vestuário",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Vestu%C3%A1rio%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Vestuário",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Vestu%C3%A1rio%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Transportes",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Transportes%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Transportes",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Transportes%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Saúde e cuidados pessoais",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Sa%C3%BAde+e+cuidados+pessoais%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Saúde e cuidados pessoais",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Sa%C3%BAde+e+cuidados+pessoais%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Despesas pessoais",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Despesas+pessoais%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Despesas pessoais",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Despesas+pessoais%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Educação",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Educa%C3%A7%C3%A3o%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Educação",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Educa%C3%A7%C3%A3o%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Comunicação",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Comunica%C3%A7%C3%A3o%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "IPCA Comunicação",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27IPCA+Comunica%C3%A7%C3%A3o%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "PIB",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27PIB%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "PIB",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27PIB%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Crescimento do PIB",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Crescimento+do+PIB%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Crescimento do PIB",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Crescimento+do+PIB%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Produção Industrial",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Produ%C3%A7%C3%A3o+Industrial%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Produção Industrial",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Produ%C3%A7%C3%A3o+Industrial%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Meta para inflação",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Meta+para+infla%C3%A7%C3%A3o%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Meta para inflação",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Meta+para+infla%C3%A7%C3%A3o%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Taxa de câmbio",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Taxa+de+c%C3%A2mbio%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Taxa de câmbio",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Taxa+de+c%C3%A2mbio%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Taxa Selic",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Taxa+Selic%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Taxa Selic",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Taxa+Selic%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Selic meta",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Selic+meta%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Selic meta",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Selic+meta%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "TJLP",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27TJLP%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "TJLP",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27TJLP%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "TR",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27TR%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "TR",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27TR%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Resultado primário do governo central",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Resultado+prim%C3%A1rio+do+governo+central%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Resultado primário do governo central",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Resultado+prim%C3%A1rio+do+governo+central%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Dívida líquida",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27D%C3%ADvida+l%C3%ADquida%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Dívida líquida",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27D%C3%ADvida+l%C3%ADquida%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Dívida bruta",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27D%C3%ADvida+bruta%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Dívida bruta",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27D%C3%ADvida+bruta%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Investimento direto",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Investimento+direto%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Investimento direto",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Investimento+direto%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Investimentos diretos no país",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Investimentos+diretos+no+pa%C3%ADs%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Investimentos diretos no país",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Investimentos+diretos+no+pa%C3%ADs%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Conta-corrente",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Conta-corrente%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Conta-corrente",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Conta-corrente%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Saldo em conta corrente",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Saldo+em+conta+corrente%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Saldo em conta corrente",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Saldo+em+conta+corrente%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Balança Comercial",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Balan%C3%A7a+Comercial%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Balança Comercial",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Balan%C3%A7a+Comercial%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Exportações",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Exporta%C3%A7%C3%B5es%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Exportações",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Exporta%C3%A7%C3%B5es%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Importações",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Importa%C3%A7%C3%B5es%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Importações",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Importa%C3%A7%C3%B5es%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Desemprego",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Desemprego%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Desemprego",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Desemprego%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Taxa de desemprego",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Taxa+de+desemprego%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Taxa de desemprego",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Taxa+de+desemprego%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "População desocupada",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Popula%C3%A7%C3%A3o+desocupada%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "População desocupada",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Popula%C3%A7%C3%A3o+desocupada%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Preço do petróleo",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Pre%C3%A7o+do+petr%C3%B3leo%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Preço do petróleo",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Pre%C3%A7o+do+petr%C3%B3leo%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Petróleo",
+      "baseCalculo": 1,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Petr%C3%B3leo%27+and+baseCalculo+eq+1&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    },
+    {
+      "indicator": "Petróleo",
+      "baseCalculo": 0,
+      "detalhe": null,
+      "count": 0,
+      "error": "HTTP Error 400: Bad Request",
+      "url": "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoAnuais?%24top=2&%24format=json&%24filter=Indicador+eq+%27Petr%C3%B3leo%27+and+baseCalculo+eq+0&%24orderby=Data+desc%2CDataReferencia+asc&%24select=Indicador%2CIndicadorDetalhe%2CData%2CDataReferencia%2CMediana%2CMedia%2CbaseCalculo",
+      "ok": false
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+Tesouro monthly CSV probe 202609 (from prior streamed scan; no full dump retained)
+IOF_ROWS=31
+Item label: IOF Ouro
+Transferência label: IOF-Ouro
+Allowlist: item IOF Ouro -> TESOURO-IOF-OURO-VALORES (transfer_name=IOF-Ouro)
+CIDE_ROWS=0
+FEX_ROWS=0
+Verdict: activate IOF-Ouro; CIDE/FEX still ABSENT from municipal monthly CSV

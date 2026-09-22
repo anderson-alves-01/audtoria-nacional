@@ -1,0 +1,37 @@
+<section aria-labelledby="sectoral-enrichment-title">
+  <h1 id="sectoral-enrichment-title">Enriquecimento setorial</h1>
+  <p>
+    Fontes oficiais ANP, ANEEL, EPE, Anatel, BCB e CNES como REFERENCE_ENRICHMENT.
+    ANP, ANEEL, EPE e Anatel podem ser ingeridas com escopo UF via catálogo; CNES
+    permanece bloqueada. Sem crédito tributário.
+  </p>
+  @if (state === 'loading') {
+    <p role="status">Carregando enriquecimento setorial…</p>
+  }
+  @if (state === 'empty') {
+    <p role="status" class="estimate">{{ disclaimer }}</p>
+    <p>
+      Versão {{ version }}. Status institucional: {{ institutionalStatus }}.
+      Ingestão habilitada: {{ ingestEnabled ? 'sim' : 'não' }}.
+      Cria crédito: {{ createsTaxCredit ? 'sim' : 'não' }}.
+    </p>
+    <ul>
+      @for (row of sources; track row.sourceId) {
+        <li class="estimate">
+          <strong>{{ row.sourceId }}</strong>
+          <span>
+            — {{ row.maintainer }} · {{ row.status }} ·
+            {{ row.structuredOfficialSource }} ·
+            ingestAllowed={{ row.ingestAllowed }}
+          </span>
+        </li>
+      }
+    </ul>
+  }
+  @if (state === 'ok') {
+    <p role="status">Há itens carregados (estado inesperado nesta fatia).</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+</section>

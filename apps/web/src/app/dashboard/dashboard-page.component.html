@@ -1,0 +1,173 @@
+<section class="dash" aria-labelledby="dashboard-title">
+  <header class="dash-hero">
+    <p class="dash-kicker">SIRTA · painel oficial · {{ dashboardId || '—' }}</p>
+    <h1 id="dashboard-title">{{ title || 'Carregando painel…' }}</h1>
+    @if (banner) {
+      <p class="dash-banner">{{ banner }}</p>
+    }
+    <p class="dash-status">
+      Homologação
+      <strong>{{ homologationStatus || 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY' }}</strong>
+      · referência citável · <strong>não é crédito tributário</strong>
+    </p>
+    @if (commandsDisabled) {
+      <p class="dash-note">Comandos operacionais desativados. Nenhum valor sintético é exibido.</p>
+    }
+  </header>
+
+  @if (state === 'loading') {
+    <div class="dash-skeleton" role="status" aria-live="polite">
+      <div class="skel skel-wide"></div>
+      <div class="skel-grid">
+        <div class="skel"></div>
+        <div class="skel"></div>
+        <div class="skel"></div>
+      </div>
+      <div class="skel skel-chart"></div>
+      <p>Carregando painel oficial…</p>
+    </div>
+  }
+
+  @if (state === 'empty') {
+    <div class="dash-empty" role="status">
+      <h2>Painel aberto — sem Gold neste recorte</h2>
+      <p class="dash-empty-lead">
+        {{ emptyReason || 'Sem dados oficiais publicados. O painel permanece vazio de propósito.' }}
+      </p>
+      <p class="dash-empty-hint">
+        Isto não é falha de tela: o shell oficial está ativo e não inventa séries. Quando houver Gold
+        PUBLIC_OPEN no território, KPIs e gráficos aparecem aqui.
+      </p>
+      @if (emptySources.length) {
+        <h3 class="dash-empty-sub">Fontes esperadas neste painel</h3>
+        <div class="dash-empty-grid">
+          @for (source of emptySources; track source.sourceId) {
+            <article class="dash-empty-source">
+              <h4>{{ source.sourceId }}</h4>
+              <p>{{ source.emptyReason || 'Fonte sem Gold oficial publicado.' }}</p>
+              @if (source.competence) {
+                <p>Competência {{ source.competence }}</p>
+              }
+              @if (source.formula) {
+                <p>Fórmula: {{ source.formula }}</p>
+              }
+              <p>Homologação {{ source.homologationStatus || homologationStatus }}</p>
+              @if (source.officialUrl) {
+                <p>
+                  Fonte
+                  <a [href]="source.officialUrl" rel="noopener noreferrer" target="_blank">{{
+                    source.officialUrl
+                  }}</a>
+                </p>
+              }
+            </article>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  @if (state === 'ok' || state === 'partial') {
+    @if (kpis.length) {
+      <section class="dash-kpis" aria-label="Indicadores-chave oficiais">
+        @for (kpi of kpis; track kpi.id) {
+          <article class="kpi">
+            <p class="kpi-label">{{ kpi.label }}</p>
+            <p class="kpi-value">{{ formatKpi(kpi.value, kpi.unit) }}</p>
+            <p class="kpi-meta">{{ kpi.sourceId }} · {{ kpi.valueKind }}</p>
+            @if (kpi.evidenceId) {
+              <p class="kpi-evidence">Evidência {{ kpi.evidenceId }}</p>
+            }
+          </article>
+        }
+      </section>
+    }
+
+    @if (chartViews.length) {
+      <section class="dash-charts" aria-label="Gráficos oficiais">
+        @for (chart of chartViews; track chart.id) {
+          <article class="chart-panel">
+            <h2>{{ chart.title }}</h2>
+            <p class="chart-summary">{{ chart.summary }}</p>
+            <div
+              echarts
+              [options]="chart.options"
+              class="chart-canvas"
+              role="img"
+              [attr.aria-label]="chart.summary"
+            ></div>
+          </article>
+        }
+      </section>
+    } @else if (!kpis.length) {
+      <p class="dash-empty-hint" role="status">
+        Gold publicado sem séries chartáveis neste recorte (apenas metadados/cobertura).
+      </p>
+    }
+
+    <section class="dash-sources" aria-label="Fontes publicadas">
+      <div class="sources-head">
+        <h2>Fontes e lineage</h2>
+        <button type="button" class="linkish" (click)="toggleLineage()">
+          {{ lineageOpen ? 'Ocultar detalhe' : 'Exibir lineage' }}
+        </button>
+      </div>
+      <ul class="source-list">
+        @for (item of items; track item.sourceId + item.indicator) {
+          <li [class.assessed]="!item.financial" [class.collection]="!!item.financial">
+            <strong>{{ item.indicator }}</strong> — {{ item.sourceId }}
+            <span>{{ item.presentation || item.valueKind }}</span>
+            <span>
+              Órgão {{ item.maintainer }} · dataset {{ item.dataset }} · competência
+              {{ item.competence }}
+            </span>
+            <span>
+              Cobertura {{ item.coverageCount }} · qualidade {{ item.qualityLevel }} · homologação
+              {{ item.homologationStatus }}
+            </span>
+            <span>Fórmula: {{ item.formula }} Metodologia {{ item.methodologyVersion }}.</span>
+            <span>Fonte {{ item.officialUrl }} · quarentena {{ item.quarantinedCount }}</span>
+            @if (lineageOpen && item.lineage) {
+              <span>
+                Lineage bronze {{ item.lineage.bronzeSha256 }} · manifesto
+                {{ item.lineage.landingManifestPath }} · endpoint {{ item.lineage.endpoint }} · linhas
+                {{ item.lineageLineCount || 0 }}
+                @if (item.goldId) {
+                  · gold {{ item.goldId }}
+                }
+              </span>
+            }
+            @if (item.financial && item.numericTotal !== null) {
+              <span
+                >Total publicado {{ item.numericTotal }} {{ item.valueKind }}. Não é crédito
+                tributário.</span
+              >
+            }
+          </li>
+        }
+      </ul>
+    </section>
+
+    @if (emptySources.length) {
+      <section class="dash-empty-partial" aria-label="Fontes sem Gold">
+        <h2>Fontes sem dado oficial publicado</h2>
+        @for (source of emptySources; track source.sourceId) {
+          <p>{{ source.sourceId }}: {{ source.emptyReason }}</p>
+        }
+      </section>
+    }
+  }
+
+  @if (state === 'error') {
+    <div class="dash-error-box" role="alert">
+      <h2>Falha ao carregar</h2>
+      <p>{{ errorMessage }}</p>
+    </div>
+  }
+
+  @if (commandsDisabled) {
+    <p class="dash-footer-note">
+      Comandos de cobrança, inscrição, notificação ou decisão administrativa permanecem desativados.
+    </p>
+  }
+</section>

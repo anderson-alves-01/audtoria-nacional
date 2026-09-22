@@ -1,0 +1,21 @@
+﻿# SC/MT/GO alt probe 2026-09-20T21:56:41.5288396-03:00
+ALT https://www.sef.sc.gov.br/api/transparencias/transferencias-para-municipios-icms-ipva-ipi ERR=O servidor remoto retornou um erro: (404) Não Localizado.
+ALT https://www.sef.sc.gov.br/_next/data ERR=O servidor remoto retornou um erro: (404) Não Localizado.
+ALT https://dados.sc.gov.br/api/3/action/package_search?q=repasse+ICMS&rows=10 status=200 len=215 snip={"help": "https://dados.sc.gov.br/api/3/action/help_show?name=package_search", "success": true, "result": {"count": 0, "sort": "score desc, metadata_modified desc", "facets": {}, "results": [], "search_facets": {}}}
+ALT https://dados.sc.gov.br/api/3/action/package_show?id=0eaade9e-98b9-4887-865d-096ccf142f1b status=200 len=4020 snip={"help": "https://dados.sc.gov.br/api/3/action/help_show?name=package_show", "success": true, "result": {"license_title": "Creative Commons Atribui\u00e7\u00e3o", "maintainer": "GEDAD - Ger\u00eancia de Transpar\u00eancia e Dados Abertos", "relations
+GO-DUMP-HEAD
+_id,VALR_IPVA,VALOR_TOTAL,VALR_IPVA_FUNDEB,DATA_COMPLETA_CREDITO,NUMR_ANO_MES,DATA_COMPLETA_REPASSE,DESC_MUN
+1,13397.86,20029.72,6631.86,2026-08-04 00:00:00.000,202608,2026-08-04 00:00:00.000,ABADIA DE GOIAS
+2,36517.64,41887.76,5370.12,2026-08-04 00:00:00.000,202608,2026-08-04 00:00:00.000,ABADIANIA
+3,19109.16,39365.62,20256.46,2026-08-04 00:00:00.000,202608,2026-08-04 00:00:00.000,ACREUNA
+4,1637.48,5277.78,3640.3,2026-08-04 00:00:00.000,202608,2026-08-04 00:00:00.000,ADELANDIA
+GO-DICT ERR=O servidor remoto retornou um erro: (500) Erro Interno do Servidor.
+MT-XLSX ERR=A conexão subjacente estava fechada: Erro inesperado em um recebimento.
+RR-SCRIPT /imgs/logo_gov-fazenda.png
+RR-SCRIPT /imgs/assistant-robot.svg
+RR-SCRIPT /imgs/cetif-logotipo-moocromatico-branco-300x235-1.png
+RR-SCRIPT /repasses-municipio.js?v=1786468061
+RR-SCRIPT /accessibility.js
+RR-SCRIPT /chatbot.js?v=1786475872
+RR-SCRIPT https://vlibras.gov.br/app/vlibras-plugin.js
+RR-context ame="description"     content="Painel interno com repasses municipais e detalhamento mensal por planilha."   >   <link rel="preconnect" href="https://fonts.googleapis.com">   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>   <link     href="https://fonts.googleapis.com/css2?fami

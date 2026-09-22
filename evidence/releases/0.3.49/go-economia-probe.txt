@@ -1,0 +1,5 @@
+﻿# GO Economia ICMS probe 2026-09-20
+PAGE=https://goias.gov.br/economia/repasse-aos-municipios/ HTTP 200
+XLSX=https://goias.gov.br/economia/wp-content/uploads/sites/45/2024/12/transf-municipios_2024_11.xlsx HTTP 200 size=705528
+SHEETS=01-2024..12-2024 + acumulado
+ICMS_COL=Bruto (group ICMS) join IBGE7 name+UF

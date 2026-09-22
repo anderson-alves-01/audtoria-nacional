@@ -1,0 +1,4 @@
+﻿CI green after alembic head/version fix:
+https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35646346911
+python=SUCCESS web=SUCCESS containers=SUCCESS
+HEAD: 1219d45

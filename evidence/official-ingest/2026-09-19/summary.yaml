@@ -1,0 +1,82 @@
+extractedAtUtc: "2026-09-19T02:39:54.913734+00:00"
+homologationStatus: REAL_OFFICIAL_DATA_PENDING_HUMAN_VALIDATION
+ciLiveHttp: false
+activated:
+  - sourceId: IBGE-SIDRA
+    officialUrl: https://sidra.ibge.gov.br/tabela/6579
+    endpoint: https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2026/variaveis/9324?localidades=N6[all]
+    competence: "2026"
+    httpStatus: 200
+    sha256: 36b8bd4c9ec1c74f0b1e76cbb108fec91571c351b9423e508bf0f4350e6d27b0
+    bytes: 689494
+    bronzeLines: 5571
+    silverLines: 5571
+    quarantined: 0
+    goldIndicator: ibge_population_estimated
+    runId: d4fd3e47-e6df-4b32-b104-4de6719cd6a6
+  - sourceId: IBGE-SIDRA-PIB
+    officialUrl: https://sidra.ibge.gov.br/tabela/5938
+    endpoint: https://servicodados.ibge.gov.br/api/v3/agregados/5938/periodos/2023/variaveis/37|6575?localidades=N6[all]
+    competence: "2023"
+    httpStatus: 200
+    sha256: c4390df063249157d7d6f59642c46aaa131f3744e0aff85ac2e40cdcae626dd0
+    bytes: 1378019
+    bronzeLines: 11140
+    silverLines: 5570
+    quarantined: 5570
+    goldIndicator: ibge_gdp_and_services_va
+    limitation: Variável 6575 retornou células oficiais '...' e permaneceu em quarentena.
+    runId: ba768f6a-86d6-4827-a8ff-36422d2b1e94
+  - sourceId: SICONFI-ENTES
+    officialUrl: https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes
+    competence: "2026"
+    httpStatus: 200
+    sha256: 0fe90b47e501929e32925f988d2622270d516fe5073e2f7d80042831ff7f2cc2
+    bytes: 866510
+    bronzeLines: 5570
+    silverLines: 5570
+    quarantined: 0
+    goldIndicator: siconfi_municipal_entes
+    minimization: CNPJ de ente público não promovido a Silver/Gold
+    runId: 8cc5faff-26d1-4d0c-a6c8-239b476c1adf
+  - sourceId: TESOURO-TRANSPARENTE
+    officialUrl: https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/transferencias
+    competence: "2026"
+    httpStatus: 200
+    sha256: 577613b4023277239e5091d0e5b60348211b9f132f037481e7fef004bc39e2b4
+    bytes: 852
+    bronzeLines: 18
+    silverLines: 18
+    quarantined: 0
+    goldIndicator: tesouro_constitutional_transfer_types
+    runId: c00194cf-0479-4e33-9b9d-1dcc2aacc8f1
+notActivated:
+  - sourceId: TESOURO-FPM-VALORES
+    status: UNAVAILABLE
+    reason: Endpoint de valores municipais de FPM não parametrizado de forma comprovável
+  - sourceId: SICONFI-RREO
+    status: PROVENANCE_VERIFIED
+    reason: Carga nacional de RREO adiada por volume
+  - sourceId: PLANALTO-LEGISLACAO
+    status: UNAVAILABLE
+    reason: Servidor desconectou sem resposta na captura ao vivo
+  - sourceId: MUNICIPAL-ISS-RESTRICTED
+    status: CREDENTIAL_REQUIRED
+    reason: DPA e G0/G1 ausentes
+  - sourceId: ESTADO-ICMS-QUOTA
+    status: DISCOVERED
+    reason: Estado piloto não selecionado
+  - sourceId: RFB-DADOS-ABERTOS
+    status: DISCOVERED
+    reason: Volume nacional e minimização de dados pessoais não desenhados
+reproduction:
+  - alembic upgrade head
+  - python -m sirta_api.adapters.db.seed
+  - python -m sirta_api.adapters.ingest
+  - python -m pytest tests -q
+tests:
+  pytest: "106 passed, 1 skipped"
+  angular: "16 SUCCESS"
+dashboards:
+  - /fontes
+  - /funil

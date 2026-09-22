@@ -1,0 +1,16 @@
+# Tests 0.3.85
+
+## Unit
+- test_bcb_olinda_expectativas_parses_producao_industrial + sectoral unit: 4 passed
+
+## Integration partial
+- test_bcb_olinda_expectativas_ingest_publishes_gold_without_credit
+- test_upgrade_base_to_head_on_empty_database
+→ 2 passed (silverCount=232; alembic head 0088_bcb_olinda_prod_ind / 0.3.85)
+
+## Sectoral suite
+- tests/integration/test_sectoral_enrichment.py + unit gold bcb_olinda|sectoral
+→ 31 passed, 40 deselected
+
+## Lint
+- ruff: All checks passed!

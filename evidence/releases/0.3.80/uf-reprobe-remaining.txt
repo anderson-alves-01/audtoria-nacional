@@ -1,0 +1,23 @@
+# UF re-probe 2026-09-21 (post BCB OLINDA PIB Formação Bruta de Capital Fixo)
+
+Status inherited from `evidence/releases/0.3.79/uf-reprobe-remaining.txt`
+(no new ACTIVATE_NOW among remaining UFs).
+
+| UF | Verdict | Reason |
+|----|---------|--------|
+| RJ | STILL_BLOCKED | GET 200 text/html IP catalog block (not CSV bytes) — prior cycle |
+| SP | STILL_BLOCKED | CKAN package_search sem quota municipal; RepasseConsulta 403 — prior |
+| SC | STILL_BLOCKED | dados.sc.gov.br dataset still 404; CSV ≤2017 frozen — prior |
+| AP | STILL_BLOCKED | sefaz detalhes/17 still 404 — prior |
+| TO | STILL_BLOCKED | dados.to.gov.br still NXDOMAIN — prior |
+| MT | STILL_BLOCKED | XLSX connection reset / series ≤2015 — prior |
+| SE | STILL_BLOCKED | SharePoint PDF monthly — prior |
+| AM | STILL_BLOCKED | SRT HTML-per-muni public — prior |
+| RR | STILL_BLOCKED | painel totals without ICMS/IPVA split — prior |
+| PB | STILL_BLOCKED | edocman PDF; dados.pb.gov.br live but no quota dataset — prior |
+| PI ICMS | STILL_BLOCKED | Repasse WEB ICMS search empty (IPVA already approved) — prior |
+| DF | N/A | No municipalities — out of municipal quota scope |
+
+No ACTIVATE_NOW among remaining UFs. Cycle progressed via BCB OLINDA
+PIB Formação Bruta de Capital Fixo (PERCENT_PER_YEAR, baseCalculo=1). No new
+tabular PUBLIC_OPEN found for remaining UFs.

@@ -1,0 +1,7 @@
+﻿# Tests 0.3.84
+
+- unit bcb_olinda (+ related): 19 passed
+- integration sectoral + alembic: 16 passed
+- targeted importacao + ingest + alembic: 7 passed
+
+See tests-unit.txt, tests-sectoral.txt, tests-partial.txt

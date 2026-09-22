@@ -1,0 +1,28 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from sirta_api.adapters.db.session import get_session
+from sirta_api.adapters.http.deps import get_access_context
+from sirta_api.application.active_debt_panel import (
+    get_active_debt_panel,
+    inscription_command_rejected,
+)
+from sirta_api.domain.authorization import AccessContext
+
+router = APIRouter()
+
+
+@router.get("/v1/active-debt")
+def active_debt_panel_endpoint(
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> dict:
+    return get_active_debt_panel(session, context=context)
+
+
+@router.post("/v1/active-debt")
+def active_debt_inscription_endpoint(
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> None:
+    inscription_command_rejected(session, context=context)

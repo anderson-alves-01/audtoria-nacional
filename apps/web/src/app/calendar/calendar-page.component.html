@@ -1,18 +1,42 @@
 <section aria-labelledby="calendar-title">
-  <h1 id="calendar-title">Calendário IBS/CBS sintético</h1>
+  <h1 id="calendar-title">Calendário IBS/CBS</h1>
   <p>
-    Catálogo versionado e não vinculante. Datas oficiais, alíquotas e leiautes
-    só entram em operação após homologação municipal e jurídica.
+    Catálogo versionado e não vinculante. Documentos oficiais preservados
+    (EC 132 e LC 214) aparecem com lineage quando houver Gold. Datas, alíquotas
+    e leiautes só entram em operação após homologação municipal e jurídica.
   </p>
   @if (state === 'loading') {
     <p role="status">Carregando catálogo regulatório…</p>
   }
   @if (state === 'empty') {
-    <p role="status">Nenhum item no catálogo sintético.</p>
+    <p role="status">Nenhum item no catálogo regulatório.</p>
   }
   @if (state === 'ok') {
     <p role="status" class="estimate">{{ disclaimer }}</p>
-    <p>Versão {{ catalogVersion }}. Operacional: {{ operational ? 'sim' : 'não' }}. Homologado: {{ homologated ? 'sim' : 'não' }}.</p>
+    <p>
+      Versão {{ catalogVersion }}. Operacional: {{ operational ? 'sim' : 'não' }}.
+      Homologado: {{ homologated ? 'sim' : 'não' }}.
+    </p>
+    <h2>Documentos oficiais preservados</h2>
+    <ul>
+      @for (doc of preservedDocuments; track doc.sourceId) {
+        <li class="estimate">
+          <strong>{{ doc.sourceId }}</strong>
+          <span>
+            Publicado {{ doc.published ? 'sim' : 'não' }}.
+            Vinculante {{ doc.binding ? 'sim' : 'não' }}.
+            Operacional {{ doc.operational ? 'sim' : 'não' }}.
+          </span>
+          @if (doc.published) {
+            <span>URL {{ doc.officialUrl }}. SHA-256 {{ doc.checksumSha256 }}.</span>
+            <span>Manifesto {{ doc.landingManifestPath }}.</span>
+          } @else {
+            <span>Gold ainda não preservado para esta fonte.</span>
+          }
+        </li>
+      }
+    </ul>
+    <h2>Itens do catálogo</h2>
     <ul>
       @for (item of items; track item.code) {
         <li class="estimate">

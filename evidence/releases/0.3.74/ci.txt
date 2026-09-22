@@ -1,0 +1,8 @@
+# CI 0.3.74
+
+PR #2 checks green after BCB OLINDA Dívida bruta:
+
+- pull_request: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35600836849
+- push: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35600831124
+
+Jobs: python, web, containers — SUCCESS.

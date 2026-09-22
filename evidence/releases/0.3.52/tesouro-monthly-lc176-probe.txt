@@ -1,0 +1,10 @@
+Tesouro monthly CSV probe 202609 (streamed; no full dump retained)
+ROWS_SCANNED=79409
+LC176_ROWS=5426
+CIDE_ROWS=0
+FEX_ROWS=0
+IOF_ROWS=31
+Distinct Item: AJUSTE FUNDEB VAAT, ANP, CFEM, CFH, COUN VAAF, COUN VAAR, COUN VAAT, DEDU, FEP, FPE, FPM, ICMS, IOF Ouro, IPI-EXP, IPVA, ITA, ITCMD, ITR, LC 176/2020 (ADO25), PEA
+Distinct Transferência: AJUSTE FUNDEB, FPM, FUNDEB, IOF-Ouro, ITR, LC 176/2020 (ADO25), Royalties
+Allowlist: item LC 176/2020 (ADO25) -> TESOURO-LC176-VALORES
+Verdict: activate LC176; CIDE/FEX ABSENT from this municipal monthly CSV

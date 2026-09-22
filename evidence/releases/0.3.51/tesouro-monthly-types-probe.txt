@@ -1,0 +1,8 @@
+﻿Tesouro monthly CSV probe 202609 (streamed; no full dump retained)
+Distinct Item (sample): FPM, ITR, IPI-EXP, IPVA, ITCMD, ICMS, DEDU, FPE, FEP, LC 176/2020 (ADO25), COUN VAAT/VAAR/VAAF, AJUSTE FUNDEB VAAT, CFEM, ANP, CFH
+Distinct Transferência (sample): FPM, ITR, FUNDEB, Royalties, LC 176/2020 (ADO25), AJUSTE FUNDEB
+50k-row scan:
+- ITR destinations: ITR + FUNDEB
+- IPI-EXP destinations: FUNDEB only (no IPI-EXP self in scanned rows)
+- Royalties items: FEP, CFEM, ANP, CFH, PEA, ITA
+Allowlist: item ITR / item IPI-EXP / destination Royalties

@@ -1,0 +1,1185 @@
+schema_version: 1
+updated_at: "2026-09-21T18:30:00-03:00"
+branch: feat/official-public-ingest
+pr: 2
+implementation_version: "0.3.97"
+release_stage: OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS
+initial_head: 1d7a601
+notes: >
+  Fila completa do ROADMAP 1.2. Volume, duração ou necessidade de outro ciclo
+  não classificam EXTERNAL_BLOCKED. Gates humanos permanecem institucionais.
+  Ciclo 0.3.97: BCB OLINDA ExpectativasMercadoInflacao12Meses +
+  ExpectativasMercadoInflacao24Meses (FOCUS_INFLACAO_12M/24M, horizonte
+  Suavizada, silverCount 8 cada). Distinto de anuais/mensais/trimestrais/Selic.
+  Próximo: UF tabular PUBLIC_OPEN restante ou Top5 OLINDA.
+  RFB territorial sem carga nacional.
+items:
+  - id: F2-CI-CD
+    fase: F2
+    dominio: D1
+    descricao: CI Python, web e containers reproduzível
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: LOCAL_GO
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.24/
+    versao: "0.3.24"
+    commit: 9938773
+    ci: "35445715071"
+
+  - id: F2-TENANT-ISOLATION
+    fase: F2
+    dominio: D1
+    descricao: Testes de isolamento de tenant e autorização negativa
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: LOCAL_GO
+    dados_necessarios: synthetic_test_only
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: false
+    testes: true
+    evidencia: tests/security/test_isolation.py
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Expandir casos negativos se novos recursos forem adicionados.
+
+  - id: F2-OBSERVABILITY
+    fase: F2
+    dominio: D1
+    descricao: Observabilidade de API, jobs e ingestão (métricas, logs, traces)
+    dependencias: [F2-CI-CD]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: LOCAL_GO
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: true
+    evidencia: tests/unit/test_ingest_observability.py
+    versao: "0.3.16"
+    commit: 0c91448
+    ci: null
+    motivo_bloqueio: null
+    next_action: Expandir métricas Prometheus/OTel em ciclo futuro; manter logs de ingestão.
+
+  - id: F2-BACKUP-RESTORE
+    fase: F10
+    dominio: D1
+    descricao: Continuidade, backup e restauração documentados e testáveis localmente
+    dependencias: [F2-CI-CD]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: false
+    testes: true
+    evidencia: docs/operations/backup-restore-local.md
+    versao: "0.3.17"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Manter dry-run e recusa de host não local; sem apply em nuvem.
+
+  - id: F2-SECURITY-HARDENING
+    fase: F2
+    dominio: D1
+    descricao: MFA não local, DLP de prompt, auditoria de tool calls, secrets fora do código
+    dependencias: [F2-TENANT-ISOLATION]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: LOCAL_GO
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: false
+    testes: true
+    evidencia: tests/unit/test_security_hardening.py
+    versao: "0.3.17"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Expandir vault gerenciado quando ambiente não local for autorizado.
+
+  - id: F3-SOURCE-CATALOG
+    fase: F3.0
+    dominio: D2
+    descricao: Registro mestre de fontes oficiais
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [contracts/sources/official-catalog.yaml]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: contracts/sources/official-catalog.yaml
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Atualizar catálogo a cada fonte investigada.
+
+  - id: F3-GOLD-LINEAGE
+    fase: F3.1
+    dominio: D3
+    descricao: Lineage Gold por linha até Silver, Bronze, landing e URL
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: []
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: true
+    evidencia: tests/unit/test_gold_invariants.py
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Garantir lineage em toda nova carga Gold.
+
+  - id: F3-IBGE-SIDRA
+    fase: F3.2
+    dominio: D3
+    descricao: IBGE SIDRA 6579, 5938 e 9509 CEMP; variável 6575 em quarentena
+    dependencias: [F3-GOLD-LINEAGE]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [IBGE-SIDRA, IBGE-SIDRA-PIB, IBGE-SIDRA-CEMP]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.48/
+    versao: "0.3.48"
+    commit: 711c780
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter 6575 sem interpolação; exibir cobertura 5571 vs 5570; CEMP 9509
+      (707/662/367) é REFERENCE_QUANTITY, nunca base de ISS.
+
+  - id: F3-SICONFI-ENTES
+    fase: F3.2
+    dominio: D3
+    descricao: Cadastro SICONFI/entes como cobertura, não demonstrativo
+    dependencias: [F3-GOLD-LINEAGE]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [SICONFI-ENTES]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/official-ingest/2026-09-19/
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Não apresentar como RREO/DCA.
+
+  - id: F3-TESOURO-DICTIONARY
+    fase: F3.2
+    dominio: D9
+    descricao: Dicionário Aria de tipos de transferência
+    dependencias: [F3-GOLD-LINEAGE]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [TESOURO-TRANSPARENTE]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/official-ingest/2026-09-19/
+    versao: "0.3.15"
+    commit: 1d7a601
+    ci: "35437663525"
+    motivo_bloqueio: null
+    next_action: Nunca apresentar como valor de FPM.
+
+  - id: F3-FPM-MUNICIPAL
+    fase: F3.2
+    dominio: D9
+    descricao: Valores mensais de FPM por município (CKAN) com retenções FUNDEB
+    dependencias: [F3-SICONFI-ENTES]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [TESOURO-FPM-VALORES]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.23/
+    versao: "0.3.23"
+    commit: 1add7b0
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Controles de competência e disco presentes. Allowlist ITR/IPI-EXP/Royalties/
+      LC176 em F3-TESOURO-MONTHLY-ALLOWLIST. Carga nacional multi-mês permanece fora
+      sem autorização e espaço; manter join IBGE.
+
+  - id: F3-TESOURO-MONTHLY-ALLOWLIST
+    fase: F3.2
+    dominio: D9
+    descricao: Allowlist ITR, IPI-EXP, Royalties, LC176, IOF-Ouro e FUNDEB complement no CSV mensal Tesouro
+    dependencias: [F3-FPM-MUNICIPAL]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais:
+      - TESOURO-ITR-VALORES
+      - TESOURO-IPI-EXP-VALORES
+      - TESOURO-ROYALTIES-VALORES
+      - TESOURO-LC176-VALORES
+      - TESOURO-IOF-OURO-VALORES
+      - TESOURO-FUNDEB-COMPLEMENT-VALORES
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.62/
+    versao: "0.3.62"
+    commit: 1f7f2b0
+    ci: "35574317803"
+    motivo_bloqueio: null
+    next_action: >
+      ITR/IPI-EXP/Royalties/LC176/IOF-Ouro/FUNDEB-COMPLEMENT allowlists ativos.
+      FUNDEB distribuído ativado em F3-TESOURO-FUNDEB-COINT. LC 87/96 histórico
+      ativado em F3-TESOURO-LC87-COINT. CIDE/FEX ausentes no CSV mensal
+      municipal; ativados em F3-TESOURO-COINT-CIDE-FEX.
+      Ciclo 0.3.62 complement; 0.3.63 FUNDEB COINT; 0.3.64 LC87 COINT.
+
+  - id: F3-TESOURO-FUNDEB-COINT
+    fase: F3.2
+    dominio: D9
+    descricao: CSV COINT FUNDEB por município (valores distribuídos)
+    dependencias: [F3-TESOURO-DICTIONARY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais:
+      - TESOURO-FUNDEB-VALORES
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.63/
+    versao: "0.3.63"
+    commit: f848c87
+    ci: "35575763429"
+    motivo_bloqueio: null
+    next_action: >
+      Conector tesouro_coint_municipio_csv com max_rows=8 e competência 2025-01.
+      Distinto de TESOURO-FUNDEB-COMPLEMENT-VALORES. Sem carga nacional do CSV
+      ~20 MiB. Homologação humana pendente.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35575763429.
+
+  - id: F3-TESOURO-LC87-COINT
+    fase: F3.2
+    dominio: D9
+    descricao: CSV COINT LC 87/96 por município (série histórica ≤2018)
+    dependencias: [F3-TESOURO-DICTIONARY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais:
+      - TESOURO-LC87-VALORES
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.64/
+    versao: "0.3.64"
+    commit: 5794f2d
+    ci: "35577286713"
+    motivo_bloqueio: null
+    next_action: >
+      Conector tesouro_coint_municipio_csv com max_rows=8 e competência 2018-01.
+      Série histórica oficial (valores não nulos até 2018). Distinto de
+      TESOURO-LC176-VALORES. Sem carga nacional do CSV ~17 MiB. Homologação
+      humana pendente.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35577286713.
+
+  - id: F3-TESOURO-COINT-REMAINING
+    fase: F3.2
+    dominio: D9
+    descricao: CSV COINT FPM/ITR/IOF-Ouro/LC176 por município (restantes do dataset)
+    dependencias: [F3-TESOURO-DICTIONARY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais:
+      - TESOURO-FPM-COINT-VALORES
+      - TESOURO-ITR-COINT-VALORES
+      - TESOURO-IOF-OURO-COINT-VALORES
+      - TESOURO-LC176-COINT-VALORES
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.65/
+    versao: "0.3.65"
+    commit: 024538d
+    ci: "35579924293"
+    motivo_bloqueio: null
+    next_action: >
+      Conector tesouro_coint_municipio_csv com max_rows=8. FPM/ITR/LC176
+      competência 2025-01; IOF-Ouro 2014-07 (série esparsa). Distintos dos
+      CSV mensais TESOURO-*-VALORES. Pacote COINT municipal do dataset
+      Transferências Obrigatórias completo. Sem carga nacional. Homologação
+      humana pendente.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35579924293.
+
+  - id: F3-TESOURO-COINT-CIDE-FEX
+    fase: F3.2
+    dominio: D9
+    descricao: CSV COINT CIDE e FEX por município (dataset transferências obrigatórias)
+    dependencias: [F3-TESOURO-DICTIONARY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais:
+      - TESOURO-CIDE-VALORES
+      - TESOURO-FEX-VALORES
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.54/
+    versao: "0.3.54"
+    commit: 2989b75
+    ci: "35558606217"
+    motivo_bloqueio: null
+    next_action: >
+      Conector tesouro_coint_municipio_csv com max_rows=8 e competência 2025-01.
+      Sem carga nacional dos CSV ~12–14 MiB. Homologação humana pendente.
+
+  - id: F3-RREO-BACKFILL
+    fase: F3.2
+    dominio: D3
+    descricao: Backfill controlado SICONFI RREO com paginação, checkpoint e limite de entes
+    dependencias: [F3-SICONFI-ENTES]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [SICONFI-RREO]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.23/
+    versao: "0.3.23"
+    commit: 1add7b0
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      max_entes=5 com hard_cap=25, métricas e COMPLETE sem wrap. Sem carga
+      nacional ilimitada.
+
+  - id: F3-DCA-FINBRA-BACKFILL
+    fase: F3.2
+    dominio: D3
+    descricao: Backfill controlado SICONFI DCA/FINBRA
+    dependencias: [F3-SICONFI-ENTES]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [SICONFI-DCA]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.23/
+    versao: "0.3.23"
+    commit: 1add7b0
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Controles iguais ao RREO; fixture DCA no fluxo de integração. Exercícios
+      adicionais só com max_entes e hard_cap.
+
+  - id: F3-SICONFI-OTHER-STATEMENTS
+    fase: F3.2
+    dominio: D3
+    descricao: Demais demonstrativos SICONFI necessários aos indicadores (RGF e anexos)
+    dependencias: [F3-RREO-BACKFILL]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [SICONFI-RGF]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: true
+    evidencia: tests/fixtures/official-snapshots/siconfi-rgf.json
+    versao: "0.3.17"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Backfill controlado por max_entes_per_run; anexos adicionais só se PUBLIC_OPEN.
+
+  - id: F3-PORTAL-TRANSPARENCIA
+    fase: F3.2
+    dominio: D9
+    descricao: Portal da Transparência da União para transferências quando API estruturada existir
+    dependencias: [F3-TESOURO-DICTIONARY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: PUBLIC_CONTROLLED
+    fontes_oficiais: [portaldatransparencia.gov.br]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: true
+    evidencia: contracts/sources/official-catalog.yaml
+    versao: "0.3.16"
+    commit: 0c91448
+    ci: null
+    motivo_bloqueio: API exige chave (401 sem credencial); scraping proibido.
+    next_action: Aguardar credencial institucional; manter vazio e ingest bloqueado.
+
+  - id: F3-REGULATORY-BEYOND-EC132
+    fase: F3.2
+    dominio: D10
+    descricao: Catálogo documental LC 214, normas CGIBS, RFB e demais oficiais além da EC 132
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: NON_BINDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [PLANALTO-LEGISLACAO, PLANALTO-LC-214]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: tests/fixtures/official-snapshots/planalto-lc214.html
+    versao: "0.3.16"
+    commit: 0c91448
+    ci: null
+    motivo_bloqueio: null
+    next_action: Adicionar CGIBS/RFB documentais quando URL única estável existir; manter NON_BINDING.
+
+  - id: F3-STATE-CATALOG
+    fase: F3.2
+    dominio: D9
+    descricao: Catálogo dos 26 estados e DF para ICMS/IPVA
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: DISCOVERED
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [contracts/sources/state-transfers-catalog.yaml]
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.50/
+    versao: "0.3.50"
+    commit: b2cdb01
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      PE, BA, MG, ES, GO, MS, RO, AC, CE, RS, AL, PI, RN, MA, PR e SC
+      TECHNICALLY_APPROVED (GO ICMS/IPI via Economia XLSX + IPVA DataStore;
+      ES ICMS/IPVA/IPI/CIDE/FRD/COMPENSACAO; PI só IPVA; PR via HTML SEFA; PA
+      parcial via ICMS Verde SEMAS; AC ICMS anual SEPLAG + ICMS/IPVA/FUNDEB
+      Transparência; RS ICMS/IPVA + Compensação LC194; SC Anual_2017.csv;
+      SE/PB/AM/AP/RR/DF PROVENANCE_VERIFIED; MT XLSX ≤2015; TO PROVENANCE_VERIFIED
+      PDF/índices; SP HTML-only; RJ IP-blocked). Sem agregador privado.
+
+  - id: F3-STATE-ICMS-ACTIVATION
+    fase: F3.2
+    dominio: D9
+    descricao: Ativar quotas ICMS estaduais PUBLIC_OPEN verificadas
+    dependencias: [F3-STATE-CATALOG]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ESTADO-ICMS-QUOTA]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.95/
+    versao: "0.3.95"
+    commit: ed6ad44
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      PE, BA, MG, ES, MS, RO, AC, CE, RS, AL, RN, MA, PR e GO ICMS (+IPVA/IPI
+      onde publicado) + ES IPI/CIDE/FRD/Compensação + CE/AL/RN/PE/BA/MG IPI +
+      MA/PR IPI-Exportação/FPEX + MS IPI-Exportação/CIDE + AL/PR royalties +
+      PI IPVA + PA ICMS Verde + AC ICMS/FUNDEB Transparência + RS Compensação
+      LC194 + SC Anual_2017 ICMS/IPVA/IPI ativados. GO IPI via Economia XLSX
+      (IPI-Exportação Bruto). PI ICMS não publicado no Repasse WEB. PA cota
+      plena ainda DOE PDF. MT XLSX Transparency congelado ≤2015. SP HTML-only.
+      PB/SE/AM/AP/RR/DF PROVENANCE_VERIFIED. TO PROVENANCE_VERIFIED. RJ
+      permanece IP-blocked. Sem agregador privado. Ciclo 0.3.95.
+
+  - id: F3-STATE-IPVA-ACTIVATION
+    fase: F3.2
+    dominio: D9
+    descricao: Ativar quotas IPVA estaduais PUBLIC_OPEN verificadas
+    dependencias: [F3-STATE-CATALOG]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ESTADO-IPVA-QUOTA]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.95/
+    versao: "0.3.95"
+    commit: ed6ad44
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      PE, BA, MG, ES, GO, MS, RO, CE, RS, AL, AC, PI, RN, MA, PR e SC IPVA ativados.
+      MA/PR também com IPI-Exportação/FPEX; MS também com IPI-Exportação/CIDE.
+      Seguir outras UFs PUBLIC_OPEN; sem inventar valores. PR via HTML SEFA; MA
+      via SEFAZ SGC XLS; RN via Nextcloud XLS; PI via Repasse WEB HTML; AC via
+      Transparência POST+CSRF; RO IPVA IBGE6→7. PA sem IPVA tabular nesta fatia
+      (só ICMS Verde). SC IPVA via Anual_2017.csv (ciclo 0.3.95).
+
+  - id: F3-RFB-CNPJ
+    fase: F3.2
+    dominio: D4
+    descricao: Conector RFB CNPJ com minimização, streaming e escopo territorial
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: READY_FOR_TERRITORIAL_SCOPE
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [RFB-DADOS-ABERTOS]
+    backend: true
+    frontend: false
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.24/
+    versao: "0.3.24"
+    commit: 9938773
+    ci: "35445715071"
+    motivo_bloqueio: null
+    next_action: >
+      Escopo, resume, manifesto e EI prontos. Manter ingestAllowed=false até
+      territorial_scope autorizado; sem carga nacional.
+
+  - id: F3-SECTORAL-ANP
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar dados abertos oficiais ANP
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ANP-REVENDEDORES]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.31/
+    versao: "0.3.31"
+    commit: 32156ae
+    ci: "35452312674"
+    motivo_bloqueio: null
+    next_action: >
+      ANP e ANEEL TECHNICALLY_APPROVED com escopo UF=MS, fixture mínima e Gold
+      REFERENCE_QUANTITY. Demais setoriais permanecem DISCOVERED. Sem crédito.
+
+  - id: F3-SECTORAL-ANEEL-EPE
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar dados abertos oficiais ANEEL/EPE
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ANEEL-DADOS-ABERTOS, EPE-DADOS-ABERTOS]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.34/
+    versao: "0.3.34"
+    commit: 83e0e8a
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      ANEEL IndQual e EPE Anuário Dados brutos TECHNICALLY_APPROVED com escopo
+      UF=MS (EPE competence_year=2024, max_rows=8). Gold REFERENCE_QUANTITY.
+      Sem crédito.
+
+  - id: F3-SECTORAL-ANATEL
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar dados abertos oficiais Anatel
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [ANATEL-DADOS-ABERTOS]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.35/
+    versao: "0.3.35"
+    commit: c4e8962
+    ci: "35460729005"
+    motivo_bloqueio: null
+    next_action: >
+      Meu Município ZIP/CSV TECHNICALLY_APPROVED com escopo UF=MS,
+      competência 2025-11, serviço Banda Larga Fixa, IBGE7 nativo e
+      max_rows=8. Gold REFERENCE_QUANTITY. Sem crédito.
+
+  - id: F3-SECTORAL-BCB
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar dados abertos oficiais do Banco Central
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [BCB-SGS-OLINDA, BCB-OLINDA-EXPECTATIVAS, BCB-OLINDA-EXPECTATIVAS-MENSAIS, BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS, BCB-OLINDA-EXPECTATIVAS-SELIC, BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M, BCB-OLINDA-EXPECTATIVAS-INFLACAO-24M]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.97/
+    versao: "0.3.97"
+    commit: e5e0088
+    ci: "35657016511"
+    motivo_bloqueio: null
+    next_action: >
+      SGS 432/433 e OLINDA ExpectativasMercadoAnuais (allowlist anual completa
+      até Balança Saldo/Exportações/Importações) TECHNICALLY_APPROVED.
+      Fonte BCB-OLINDA-EXPECTATIVAS-MENSAIS (ExpectativaMercadoMensais,
+      allowlist IPCA+componentes+IGP-M+Câmbio+IPA-M+IPA-DI+IGP-DI+INPC,
+      baseCalculo default=1 com override IPA/IGP-DI/INPC=0, max_rows=8,
+      layout mensais-v4, silverCount=96) TECHNICALLY_APPROVED.
+      Fonte BCB-OLINDA-EXPECTATIVAS-TRIMESTRAIS (ExpectativasMercadoTrimestrais,
+      allowlist IPCA+componentes+Câmbio+PIB Total+PIB Serviços/Agropecuária/
+      Indústria, baseCalculo=1, max_rows=8, layout trimestrais-v2,
+      silverCount=88) TECHNICALLY_APPROVED. PIB setoriais trimestrais com
+      Data congelada 2021-09-13 na fonte (sem interpolação).
+      Fonte BCB-OLINDA-EXPECTATIVAS-SELIC (ExpectativasMercadoSelic,
+      allowlist Selic, horizon_field=Reuniao, baseCalculo=1, max_rows=8,
+      layout selic-v1, silverCount=8) TECHNICALLY_APPROVED.
+      Fontes BCB-OLINDA-EXPECTATIVAS-INFLACAO-12M/24M
+      (ExpectativasMercadoInflacao12Meses/24Meses, horizon_field=Suavizada,
+      baseCalculo=1, max_rows=8, silverCount=8 cada) TECHNICALLY_APPROVED.
+      Gold REFERENCE_QUANTITY. Sem crédito. Homologação humana pendente.
+      IGP/IPA/INPC trimestrais vazios na fonte.
+      Próximo: Top5 OLINDA ou UF tabular PUBLIC_OPEN restante.
+      Commit: e5e0088.
+      CI verde: https://github.com/anderson-alves-01/audtoria-nacional/actions/runs/35657016511.
+      Ciclo 0.3.97.
+
+  - id: F3-SECTORAL-CNES
+    fase: F3.2
+    dominio: D3
+    descricao: Investigar CNES/DATASUS oficial
+    dependencias: [F3-SOURCE-CATALOG]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [CNES-DATASUS]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.36/
+    versao: "0.3.36"
+    commit: 8aa89dc
+    ci: "35461744360"
+    motivo_bloqueio: null
+    next_action: >
+      API DEMAS TECHNICALLY_APPROVED com escopo UF=MS (codigo_uf=50),
+      limit=8, IBGE7 derivado e max_rows=8. Gold REFERENCE_QUANTITY.
+      PII (CNPJ/e-mail/telefone) não sobe a Silver. Sem crédito.
+
+  - id: F3-MUNICIPAL-RESTRICTED
+    fase: F3.3
+    dominio: D2
+    descricao: Conectores ISS IPTU ITBI DA pagamentos parcelamentos processos
+    dependencias: []
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.21/
+    versao: "0.3.21"
+    commit: faf825b
+    ci: null
+    motivo_bloqueio: DPA e G0 ausentes; uploadEnabled=false.
+    next_action: >
+      Manter /v1/municipal-uploads vazio, uploadEnabled=false, POST → 409.
+      Sem amostra municipal. G0 BLOCKED.
+
+  - id: F4-DIAGNOSIS
+    fase: F4
+    dominio: D5
+    descricao: Diagnóstico municipal técnico com estado vazio funcional
+    dependencias: [F3-IBGE-SIDRA]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.17/
+    versao: "0.3.17"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Manter recoveryMeta=null e G1 BLOCKED; sem amostra municipal.
+
+  - id: F4-CADASTRO-360
+    fase: F4
+    dominio: D4
+    descricao: Cadastro 360 técnico sem PII real
+    dependencias: [F3-RFB-CNPJ, F3-MUNICIPAL-RESTRICTED]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.21/
+    versao: "0.3.21"
+    commit: faf825b
+    ci: null
+    motivo_bloqueio: Escopo territorial RFB e DPA ausentes; piiPresent=false.
+    next_action: >
+      Manter /v1/cadastro-360 vazio, piiPresent=false, territoryInvented=false,
+      POST → 409. Sem território inventado. G0 BLOCKED.
+
+  - id: F4-AUDIT-RULES
+    fase: F4
+    dominio: D5
+    descricao: Regras de auditoria versionadas não vinculantes
+    dependencias: [F4-DIAGNOSIS]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.17/
+    versao: "0.3.17"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: Manter binding=false e taxPotentialAsCredit=false; G4 BLOCKED.
+
+  - id: F5-FINDINGS-CASES
+    fase: F5
+    dominio: D5
+    descricao: Achados, evidências e casos com APIs vazias
+    dependencias: [F4-AUDIT-RULES]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.18/
+    versao: "0.3.18"
+    commit: 4868196
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter items vazios, POST /v1/cases → 409, legalCommandsEnabled=false.
+      Sem crédito público. G5 BLOCKED.
+
+  - id: F5-HUMAN-VALIDATION
+    fase: F5
+    dominio: D5
+    descricao: Workflow de validação humana (não a homologação institucional)
+    dependencias: [F5-FINDINGS-CASES]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.18/
+    versao: "0.3.18"
+    commit: 4868196
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter referenceStates documentais e queue vazia; publishesPublicCredit=false.
+      Distinto da homologação Gold. G4/G5 BLOCKED.
+
+  - id: F5-NOTIFICATIONS
+    fase: F5
+    dominio: D6
+    descricao: Notificações administrativas desativadas até aprovação humana
+    dependencias: [F5-HUMAN-VALIDATION]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.18/
+    versao: "0.3.18"
+    commit: b300d30
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter items vazios, POST /v1/notifications → 409, sendEnabled=false.
+      Sem comunicação ao contribuinte. G5 BLOCKED.
+
+  - id: F5-COLLECTION
+    fase: F5
+    dominio: D6
+    descricao: Cobrança administrativa controlada
+    dependencias: [F5-HUMAN-VALIDATION]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.18/
+    versao: "0.3.18"
+    commit: b300d30
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter painel oficial vazio, commandsDisabled=true; fluxo sintético só em
+      testes de API via tax-credit collection-cases. G0/G4/G5 BLOCKED.
+
+  - id: F6-PAYMENTS
+    fase: F6
+    dominio: D7
+    descricao: Pagamentos e parcelamentos
+    dependencias: [F5-COLLECTION]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.19/
+    versao: "0.3.19"
+    commit: 4c4c2bf
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter /v1/payments vazio, recoveryInvented=false, POST → 409.
+      Sem recuperação inventada. G0/G5 BLOCKED; G6 oficial BLOCKED.
+
+  - id: F6-ACTIVE-DEBT
+    fase: F6
+    dominio: D8
+    descricao: Dívida ativa
+    dependencias: [F6-PAYMENTS]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: CREDENTIAL_REQUIRED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.19/
+    versao: "0.3.19"
+    commit: 4c4c2bf
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter /v1/active-debt vazio, inscriptionEnabled=false, POST → 409.
+      Sem inscrição real. G0/G5 BLOCKED.
+
+  - id: F6-PROCURADORIA
+    fase: F6
+    dominio: D8
+    descricao: Módulo Procuradoria
+    dependencias: [F6-ACTIVE-DEBT]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.19/
+    versao: "0.3.19"
+    commit: 4c4c2bf
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter /v1/procuradoria vazio, altersLegalStatus=false, POST → 409.
+      Sem alteração jurídica automática. G0/G5 BLOCKED.
+
+  - id: F7-TRANSFER-RECONCILIATION
+    fase: F7
+    dominio: D9
+    descricao: Conciliação previsto versus realizado de transferências
+    dependencias: [F3-FPM-MUNICIPAL, F3-STATE-ICMS-ACTIVATION]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [TESOURO-FPM-VALORES]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.20/
+    versao: "0.3.20"
+    commit: 2aca756
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter /v1/transfer-reconciliation vazio, createsTaxCredit=false,
+      differenceIsOccurrenceOnly=true, POST → 409. Comparar só quando ambos
+      existirem após backfill FPM/ICMS. G7 oficial BLOCKED.
+
+  - id: F8-IBS-CBS
+    fase: F8
+    dominio: D10
+    descricao: Prontidão IBS/CBS documental e calendário não vinculante
+    dependencias: [F3-REGULATORY-BEYOND-EC132]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: NON_BINDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: [PLANALTO-LEGISLACAO, PLANALTO-LC-214]
+    backend: true
+    frontend: true
+    pipeline: true
+    testes: true
+    evidencia: evidence/releases/0.3.17/
+    versao: "0.3.17"
+    commit: null
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      catalogVersion=catalog-official-docs-v1 com preservedDocuments.
+      Manter binding=false operacional=false; G8 oficial BLOCKED.
+
+  - id: F9-PILOT-TECHNICAL
+    fase: F9
+    dominio: D1
+    descricao: Prontidão técnica de piloto assistido sem município aprovado
+    dependencias: [DASHBOARDS-COMPLETE]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.20/
+    versao: "0.3.20"
+    commit: 2aca756
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter /v1/pilot-readiness e /prontidao; technicalReady possível;
+      institutionalReady=false; G9 BLOCKED. Sem município inventado.
+
+  - id: F10-OPS-GOVERNANCE
+    fase: F10
+    dominio: D1
+    descricao: Operação, governança e gates sem fabricar aprovação
+    dependencias: [F2-OBSERVABILITY]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: evidence/releases/0.3.20/
+    versao: "0.3.20"
+    commit: 2aca756
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Manter /v1/ops-governance e /operacao-governanca; canDeploy=false;
+      runbooks locais presentes; G10 BLOCKED. Sem terraform apply.
+
+  - id: DASHBOARDS-COMPLETE
+    fase: D11
+    dominio: D11
+    descricao: Quinze dashboards com backend real, vazios oficiais e testes
+    dependencias: [F3-GOLD-LINEAGE]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: PUBLIC_OPEN
+    fontes_oficiais: []
+    backend: true
+    frontend: true
+    pipeline: false
+    testes: true
+    evidencia: tests/integration/test_dashboards.py
+    versao: "0.3.16"
+    commit: 0c91448
+    ci: null
+    motivo_bloqueio: null
+    next_action: >
+      Rotas dedicadas cobranca/gates ainda usam componentes próprios além do
+      /v1/dashboards/{id}; manter emptySources/lineage nas 13 rotas compartilhadas.
+
+  - id: DOC-HOMOLOGATION-PACKAGE
+    fase: F10
+    dominio: D1
+    descricao: Pacote único final de homologação humana
+    dependencias: [DASHBOARDS-COMPLETE, F3-RREO-BACKFILL, F3-FPM-MUNICIPAL, F8-IBS-CBS]
+    estado_tecnico: TECH_COMPLETE
+    estado_institucional: HUMAN_VALIDATION_PENDING
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN_VALIDATION_PACKAGE.md
+    versao: "0.3.98"
+    commit: 6f58c5d
+    ci: null
+    motivo_bloqueio: null
+    next_action: Pacote técnico consolidado; não solicitar aceite Gold agora. Deploy AWS PROD permanece no gate G10.
+
+  - id: G0-HUMAN
+    fase: G0
+    dominio: D1
+    descricao: Autorização institucional do programa municipal
+    dependencias: []
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Patrocinador, município piloto e DPA ausentes.
+    next_action: Nenhuma ação automática. Não fabricar aprovação.
+
+  - id: G1-HUMAN
+    fase: G1
+    dominio: D5
+    descricao: Homologação institucional do diagnóstico
+    dependencias: [F4-DIAGNOSIS]
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Diagnóstico municipal não homologado.
+    next_action: Nenhuma ação automática.
+
+  - id: G4-HUMAN
+    fase: G4
+    dominio: D5
+    descricao: Homologação especialista ISS
+    dependencias: [F4-AUDIT-RULES]
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: RESTRICTED
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Regras e fórmulas não homologadas.
+    next_action: Nenhuma ação automática.
+
+  - id: G9-HUMAN
+    fase: G9
+    dominio: D1
+    descricao: Aceite de piloto
+    dependencias: [F9-PILOT-TECHNICAL]
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Município e usuários do piloto ausentes.
+    next_action: Nenhuma ação automática.
+
+  - id: G10-HUMAN
+    fase: G10
+    dominio: D1
+    descricao: Autorização de produção
+    dependencias: [F10-OPS-GOVERNANCE]
+    estado_tecnico: NOT_APPLICABLE
+    estado_institucional: BLOCKED
+    dados_necessarios: none
+    fontes_oficiais: []
+    backend: false
+    frontend: false
+    pipeline: false
+    testes: false
+    evidencia: docs/delivery/HUMAN-GATES.md
+    versao: "0.3.15"
+    commit: null
+    ci: null
+    motivo_bloqueio: Segurança, operação e aceite institucional ausentes.
+    next_action: Nenhuma ação automática.

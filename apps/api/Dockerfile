@@ -9,6 +9,8 @@ COPY alembic ./alembic
 COPY apps/api/src ./apps/api/src
 COPY pipelines ./pipelines
 COPY config ./config
+COPY contracts ./contracts
+COPY tests/fixtures/jwt ./var/oidc
 
 RUN pip install --no-cache-dir .
 

@@ -1,0 +1,20 @@
+{
+  "bytes": 852,
+  "competence": "2026",
+  "contentType": "application/json",
+  "coverage": "transfer_type",
+  "dataset": "TESOURO-TRANSFERENCIAS-DICIONARIO",
+  "etag": null,
+  "extractedAtUtc": "2026-09-19T02:39:54.009429+00:00",
+  "httpStatus": 200,
+  "lastModified": null,
+  "layoutVersion": "tesouro-aria-transferencias-v1",
+  "logicalUrl": "https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/transferencias",
+  "officialUrl": "https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/transferencias",
+  "quarantinedCount": 0,
+  "receivedCount": 18,
+  "resolvedUrl": "https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/transferencias",
+  "sha256": "577613b4023277239e5091d0e5b60348211b9f132f037481e7fef004bc39e2b4",
+  "silverCount": 18,
+  "sourceId": "TESOURO-TRANSPARENTE"
+}

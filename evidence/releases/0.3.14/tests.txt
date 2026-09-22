@@ -1,0 +1,4 @@
+pytest tests -q
+106 passed, 1 skipped, 1 warning in 24.60s
+npm test (apps/web)
+16 SUCCESS
