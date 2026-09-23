@@ -29,6 +29,7 @@ sources:
       variavel: "9324"
       localidades: N6[all]
       periodo: "2026"
+      comparison_periodos: ["2024", "2025", "2026"]
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -36,7 +37,10 @@ sources:
     indicator: ibge_population_estimated
     formula: Soma dos valores municipais publicados na tabela SIDRA 6579, variável 9324, localidades N6, competência da série oficial. Sem ajuste, projeção ou interpolação.
     methodology_version: official-sidra-6579-v1
-    notes: Fonte PUBLIC_OPEN verificada em 2026-09-18. Não constitui crédito tributário.
+    notes: >
+      Fonte PUBLIC_OPEN verificada em 2026-09-18. A série estimada 6579 publica
+      2024, 2025 e 2026; 2022 e 2023 não existem nessa tabela. Cada ano entra
+      como carga própria. Não constitui crédito tributário.
 
   - source_id: IBGE-SIDRA-PIB
     name: IBGE/SIDRA — PIB municipal e valor adicionado de serviços (tabela 5938)
@@ -64,6 +68,7 @@ sources:
       variavel: "37|6575"
       localidades: N6[all]
       periodo: "2023"
+      comparison_periodos: ["2021", "2022", "2023"]
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -71,7 +76,9 @@ sources:
     indicator: ibge_gdp_and_services_va
     formula: Valores publicados na tabela SIDRA 5938, variáveis 37 (PIB) e 6575 (VA serviços), localidades N6, competência da série oficial. Células SIDRA '...' são quarentenadas. Sem interpolação.
     methodology_version: official-sidra-5938-v1
-    notes: Último período publicado verificado em 2026-09-18 foi 2023.
+    notes: >
+      Último período publicado verificado em 2026-09-18 foi 2023. Anos 2021 e
+      2022 entram como cargas próprias para o comparativo. Sem interpolação.
 
   - source_id: IBGE-SIDRA-CEMP
     name: IBGE/SIDRA — Cadastro Central de Empresas municipal (tabela 9509)
@@ -101,6 +108,7 @@ sources:
       variavel: "707|662|367"
       localidades: N6[all]
       periodo: "2024"
+      comparison_periodos: ["2022", "2023", "2024"]
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -113,8 +121,9 @@ sources:
       ou 'X' são quarentenadas. Sem interpolação. Não constitui crédito.
     methodology_version: official-sidra-9509-v1
     notes: >
-      PUBLIC_OPEN verificado em 2026-09-20 (competência 2024). Agregados
-      municipais do CEMP; não é microdado RAIS. Homologação humana pendente.
+      PUBLIC_OPEN verificado em 2026-09-20 (competência 2024). A tabela 9509
+      publica 2022, 2023 e 2024. Agregados municipais do CEMP; não é microdado
+      RAIS. Homologação humana pendente.
 
   - source_id: SICONFI-ENTES
     name: SICONFI — cadastro de entes
@@ -1069,6 +1078,8 @@ sources:
     official_domain: www.planalto.gov.br
     official_url: https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm
     endpoint: https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm
+    alternate_endpoints:
+      - https://legis.senado.leg.br/norma/40180341
     documentation_url: https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm
     dataset: PLANALTO-LC-214
     dictionary_url: https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm
@@ -1093,7 +1104,10 @@ sources:
     indicator: regulatory_document_lc214
     formula: Documento HTML oficial preservado. binding=false, operational=false, homologated=false, estado NON_BINDING.
     methodology_version: official-planalto-lc214-v1
-    notes: Documento além da EC 132. Nenhuma regra, alíquota ou prazo é inferido. binding=false.
+    notes: >
+      Planalto pode desconectar; o conector tenta o registro oficial no Legis
+      Senado (norma 40180341). Nenhuma regra, alíquota ou prazo é inferido.
+      binding=false.
 
   - source_id: PORTAL-TRANSPARENCIA-TRANSFERENCIAS
     name: Portal da Transparência da União — transferências

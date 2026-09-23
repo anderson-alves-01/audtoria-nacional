@@ -1,5 +1,8 @@
 import {
+  compactPublishedValue,
+  describePublishedSeries,
   formatPublishedValue,
+  publishedYearSpan,
   humanizeContext,
   humanizeHomologation,
   humanizeIndicator,
@@ -28,6 +31,26 @@ describe('official labels', () => {
     expect(humanizeSource('TESOURO-FPM-VALORES')).toBe('Tesouro Nacional — FPM publicado');
     expect(formatPublishedValue(1000, 'BRL')).toContain('R$');
     expect(formatPublishedValue(18642470, 'UNIT')).not.toContain('R$');
+    expect(compactPublishedValue(10943345420, 'Mil Reais')).toBe('10,9 bi');
+    expect(compactPublishedValue(214211951, 'Pessoas')).toBe('214,2 mi');
+    expect(compactPublishedValue(80600000, 'BRL')).toBe('R$ 80,6 mi');
+    expect(compactPublishedValue(10943345420, 'Mil Reais')).not.toContain('R$');
+    expect(publishedYearSpan([{ x: '2021' }, { x: '2022' }, { x: '2023' }])).toBe('2021 – 2023');
+    const reading = describePublishedSeries(
+      [
+        { x: '2021', y: 100 },
+        { x: '2023', y: 121 },
+      ],
+      'Mil Reais',
+    );
+    expect(reading?.openingValue).toBe('100 Mil Reais');
+    expect(reading?.closingValue).toBe('121 Mil Reais');
+    expect(reading?.change).toBe('+21 (+21,0%)');
+    expect(reading?.note).toContain('Não é projeção');
+    expect(reading?.steps[1].change).toBe('+21 (+21,0%)');
+    expect(describePublishedSeries([{ x: '2021', y: 10 }], 'Pessoas')?.note).toContain(
+      'Somente esta competência',
+    );
     expect(humanizeUnit('Pessoas')).toBe('Pessoas');
     expect(humanizeSessionMode('PUBLIC_OPEN_UI_BOOTSTRAP')).toBe('Consulta pública de referência');
     expect(humanizeSessionMode('PUBLIC_OPEN_UI_BOOTSTRAP')).not.toContain('PUBLIC_OPEN');

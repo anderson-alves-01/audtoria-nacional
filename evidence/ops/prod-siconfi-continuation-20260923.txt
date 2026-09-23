@@ -1,0 +1,22 @@
+started=2026-09-23T13:40:07.968093+00:00
+authorization=PUBLIC_OPEN_SICONFI_SLICE_PROD
+account=332380491162
+region=sa-east-1
+createsTaxCredit=false
+slices_per_source=2
+max_entes_per_post=5
+skipped=TESOURO-FEX-VALORES,ESTADO-MG-ICMS-QUOTA,ESTADO-MG-IPVA-QUOTA,ESTADO-MG-IPI-QUOTA,SICONFI-RGF,MUNICIPAL-ISS-RESTRICTED,MUNICIPAL-IPTU-RESTRICTED,MUNICIPAL-ITBI-RESTRICTED
+phase_c=not_started_dpa_and_municipal_file_not_indicated
+{"sourceId": "SICONFI-RREO", "slice": 1, "httpStatus": 200, "elapsedSec": 10.1, "runId": "2ca936d8-cce6-4d4c-894e-43a25aa57dad", "status": "PUBLISHED", "replay": false, "receivedCount": 2144, "silverCount": 2144, "quarantinedCount": 0, "taxCreditCreated": false, "partitionKey": "2025:6", "backfillCursor": "10", "backfillStatus": "IN_PROGRESS", "cursorDelta": null, "remainingEntes": 5560, "detail": null}
+{"sourceId": "SICONFI-RREO", "slice": 2, "httpStatus": 200, "elapsedSec": 26.8, "runId": "606d2dea-b211-4785-ba70-1fd55809d205", "status": "PUBLISHED", "replay": false, "receivedCount": 10809, "silverCount": 10809, "quarantinedCount": 0, "taxCreditCreated": false, "partitionKey": "2025:6", "backfillCursor": "15", "backfillStatus": "IN_PROGRESS", "cursorDelta": 5, "remainingEntes": 5555, "detail": null}
+{"sourceId": "SICONFI-DCA", "slice": 1, "httpStatus": 200, "elapsedSec": 17.8, "runId": "3445eada-2ee7-4b96-9f47-6ab978632eff", "status": "PUBLISHED", "replay": false, "receivedCount": 5272, "silverCount": 5272, "quarantinedCount": 0, "taxCreditCreated": false, "partitionKey": "2024", "backfillCursor": "35", "backfillStatus": "IN_PROGRESS", "cursorDelta": null, "remainingEntes": 5535, "detail": null}
+{"sourceId": "SICONFI-DCA", "slice": 2, "httpStatus": 200, "elapsedSec": 13.2, "runId": "85068663-2fae-4cdb-a523-9013d4f211ff", "status": "PUBLISHED", "replay": false, "receivedCount": 5207, "silverCount": 5207, "quarantinedCount": 0, "taxCreditCreated": false, "partitionKey": "2024", "backfillCursor": "40", "backfillStatus": "IN_PROGRESS", "cursorDelta": 5, "remainingEntes": 5530, "detail": null}
+finished=2026-09-23T13:41:15.905684+00:00
+failures=0
+prior_rreo_cursor=5
+prior_dca_cursor=30
+rreo_now=15 remaining=5555 status=IN_PROGRESS partition=2025:6
+dca_now=40 remaining=5530 status=IN_PROGRESS partition=2024
+not_posted=FEX 2025-01 blank cells; MG municipio dimension header-only; RGF 2025 period 3 count 0
+phase_c_gate=DPA and municipal file were not indicated; ISS IPTU ITBI were not posted
+pytest=tests/unit/test_public_continuation_bounds.py and tests/unit/test_blocked_datalake_loads.py passed

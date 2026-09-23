@@ -7,7 +7,7 @@ from pathlib import Path
 from urllib.parse import quote
 from uuid import uuid4
 
-from sqlalchemy import func, select
+from sqlalchemy import String, cast, func, select
 from sqlalchemy.orm import Session
 
 from sirta_api.adapters.db.models import (
@@ -93,6 +93,7 @@ from sirta_api.domain.rfb_cnpj import (
     assert_territorial_scope_ready,
     build_rfb_readiness,
 )
+from sirta_api.domain.sidra_periods import catalog_for_sidra_period, sidra_comparison_periods
 
 PARSERS = {
     "ibge_sidra_series": parse_ibge_sidra_series,
@@ -163,6 +164,19 @@ def ingest_official_source(
         raise ForbiddenError("Official connector is waiting territorial scope or credentials")
     if connector in {"", "none"} or endpoint in {"", "none"}:
         raise ForbiddenError("Official connector is not activated for this source")
+    if not catalog.get("_period_expanded"):
+        nxt = _next_sidra_catalog(session, context, source, catalog)
+        if nxt is not None:
+            result = ingest_official_source(
+                session,
+                context=context,
+                source=source,
+                catalog=nxt["catalog"],
+                http_client=http_client,
+            )
+            result["comparisonCompetence"] = nxt["competence"]
+            result["comparisonPending"] = nxt["pending"]
+            return result
     log_ingest_started(
         source_id=source.source_id,
         tenant_id=str(context.tenant_id),
@@ -480,6 +494,13 @@ def ingest_official_source(
     )
     session.flush()
     body = _body(run, source=source, catalog=catalog, replay=False)
+    _attach_backfill(
+        session,
+        context=context,
+        source_id=source.source_id,
+        catalog=catalog,
+        body=body,
+    )
     log_ingest_finished(
         outcome="success",
         source_id=source.source_id,
@@ -673,6 +694,187 @@ def list_official_gold_lines(
         "createsTaxCredit": False,
         "items": items,
     }
+
+
+def list_dashboard_chart_lines(
+    session: Session,
+    *,
+    context: AccessContext,
+    items: list[dict],
+) -> list[dict]:
+    """Detail the latest year. Sum earlier years so the line chart stays in memory."""
+    context.ensure_fiscal_read()
+    latest: dict[str, str] = {}
+    for item in items:
+        source = str(item.get("sourceId") or "")
+        competence = str(item.get("competence") or "")
+        if source and competence >= latest.get(source, ""):
+            latest[source] = competence
+    latest_ids = [
+        str(item["goldId"])
+        for item in items
+        if item.get("goldId")
+        and str(item.get("competence") or "") == latest.get(str(item.get("sourceId") or ""), "")
+    ]
+    older_ids = [
+        str(item["goldId"])
+        for item in items
+        if item.get("goldId") and str(item["goldId"]) not in set(latest_ids)
+    ]
+    lines = _gold_lines_for_ids(session, context, latest_ids)
+    lines.extend(_aggregate_older_lines(session, context, older_ids))
+    return lines
+
+
+def _gold_lines_for_ids(
+    session: Session,
+    context: AccessContext,
+    gold_ids: list[str],
+) -> list[dict]:
+    if not gold_ids:
+        return []
+    rows = session.scalars(
+        select(GoldOfficialLine)
+        .join(GoldOfficial, GoldOfficialLine.gold_id == GoldOfficial.id)
+        .where(
+            GoldOfficial.tenant_id == context.tenant_id,
+            GoldOfficial.territory_id == context.territory_id,
+            GoldOfficial.published.is_(True),
+            GoldOfficialLine.gold_id.in_(gold_ids),
+        )
+        .order_by(GoldOfficialLine.source_id, GoldOfficialLine.silver_row_id)
+    ).all()
+    items: list[dict] = []
+    for row in rows:
+        line = {
+            "id": str(row.id),
+            "goldId": str(row.gold_id),
+            "sourceId": row.source_id,
+            "silverRowId": row.silver_row_id,
+            "bronzeSha256": row.bronze_sha256,
+            "checksumSha256": row.checksum_sha256,
+            "landingManifestPath": row.landing_manifest_path,
+            "officialUrl": row.official_url,
+            "ibgeCode": row.ibge_code,
+            "value": float(row.value) if row.value is not None else None,
+            "unit": row.unit,
+        }
+        assert_gold_lineage_complete(line)
+        items.append({**line, "payload": row.payload})
+    return items
+
+
+def _aggregate_older_lines(
+    session: Session,
+    context: AccessContext,
+    gold_ids: list[str],
+) -> list[dict]:
+    if not gold_ids:
+        return []
+    variable_id = GoldOfficialLine.payload["variableId"].astext
+    variable_name = GoldOfficialLine.payload["variableName"].astext
+    competence = func.coalesce(
+        GoldOfficialLine.payload["competence"].astext,
+        GoldOfficial.competence,
+    )
+    rows = session.execute(
+        select(
+            GoldOfficialLine.source_id,
+            GoldOfficialLine.unit,
+            variable_id,
+            variable_name,
+            competence,
+            func.sum(GoldOfficialLine.value),
+            func.count(GoldOfficialLine.id),
+        )
+        .join(GoldOfficial, GoldOfficialLine.gold_id == GoldOfficial.id)
+        .where(
+            GoldOfficial.tenant_id == context.tenant_id,
+            GoldOfficial.territory_id == context.territory_id,
+            GoldOfficial.published.is_(True),
+            GoldOfficialLine.gold_id.in_(gold_ids),
+        )
+        .group_by(
+            GoldOfficialLine.source_id,
+            GoldOfficialLine.unit,
+            variable_id,
+            variable_name,
+            competence,
+        )
+    ).all()
+    items: list[dict] = []
+    for source_id, unit, variable, name, year, total, count in rows:
+        if total is None:
+            continue
+        items.append(
+            {
+                "id": f"agg-{source_id}-{variable or unit or 'valor'}-{year}",
+                "sourceId": source_id,
+                "ibgeCode": "",
+                "value": float(total),
+                "unit": unit or "",
+                "payload": {
+                    "variableId": variable or "",
+                    "variableName": name or "",
+                    "competence": str(year or ""),
+                    "rowCount": int(count),
+                },
+            }
+        )
+        return items
+
+
+def list_statement_revenue_totals(
+    session: Session,
+    *,
+    context: AccessContext,
+    source_ids: list[str],
+    accounts: frozenset[str],
+) -> list[dict]:
+    """Sum parent revenue cells in SQL. Statement lines stay out of process memory."""
+    context.ensure_fiscal_read()
+    if not source_ids or not accounts:
+        return []
+    account = GoldOfficialLine.payload["account"].astext
+    column = GoldOfficialLine.payload["column"].astext
+    competence = func.coalesce(
+        GoldOfficialLine.payload["competence"].astext,
+        GoldOfficial.competence,
+    )
+    rows = session.execute(
+        select(
+            GoldOfficialLine.source_id,
+            account,
+            column,
+            competence,
+            func.sum(GoldOfficialLine.value),
+            func.min(cast(GoldOfficial.id, String)),
+        )
+        .join(GoldOfficial, GoldOfficialLine.gold_id == GoldOfficial.id)
+        .where(
+            GoldOfficial.tenant_id == context.tenant_id,
+            GoldOfficial.territory_id == context.territory_id,
+            GoldOfficial.published.is_(True),
+            GoldOfficialLine.source_id.in_(source_ids),
+            account.in_(tuple(accounts)),
+        )
+        .group_by(GoldOfficialLine.source_id, account, column, competence)
+    ).all()
+    totals: list[dict] = []
+    for source_id, code, label, year, total, evidence_id in rows:
+        if total is None or not code or not label:
+            continue
+        totals.append(
+            {
+                "sourceId": source_id,
+                "account": code,
+                "column": label,
+                "competence": str(year or ""),
+                "value": float(total),
+                "evidenceId": str(evidence_id) if evidence_id else "",
+            }
+        )
+    return totals
 
 
 def _parse(
@@ -1488,6 +1690,92 @@ def _fetch_pages(
         last_modified=first.last_modified,
         content_type=first.content_type,
     )
+
+
+def _attach_backfill(
+    session: Session,
+    *,
+    context: AccessContext,
+    source_id: str,
+    catalog: dict,
+    body: dict,
+) -> None:
+    if str(catalog.get("connector") or "") != "siconfi_statement":
+        return
+    query = dict((catalog.get("parameters") or {}).get("query") or {})
+    partition_key = statement_partition_key(
+        competence=str(catalog.get("competence") or "current"),
+        query=query,
+    )
+    checkpoint = session.scalar(
+        select(IngestCheckpoint).where(
+            IngestCheckpoint.tenant_id == context.tenant_id,
+            IngestCheckpoint.territory_id == context.territory_id,
+            IngestCheckpoint.source_id == source_id,
+            IngestCheckpoint.partition_key == partition_key,
+        )
+    )
+    if checkpoint is None:
+        return
+    metrics = checkpoint.metrics or {}
+    body["partitionKey"] = checkpoint.partition_key
+    body["backfillCursor"] = checkpoint.cursor
+    body["backfillStatus"] = checkpoint.status
+    body["offset"] = metrics.get("offset")
+    body["remainingEntes"] = metrics.get("remainingEntes")
+
+
+def _next_sidra_catalog(
+    session: Session,
+    context: AccessContext,
+    source: SourceRegistry,
+    catalog: dict,
+) -> dict | None:
+    """Publish one missing official year per call. Years already in Gold are left untouched."""
+    periods = sidra_comparison_periods(catalog)
+    if len(periods) < 2:
+        return None
+    layout = str(catalog.get("layout_version") or source.layout_version)
+    missing = [
+        year
+        for year in periods
+        if not _sidra_competence_published(
+            session,
+            context,
+            source.source_id,
+            layout,
+            year,
+        )
+    ]
+    if not missing:
+        return None
+    return {
+        "catalog": catalog_for_sidra_period(catalog, missing[0]),
+        "competence": missing[0],
+        "pending": missing[1:],
+    }
+
+
+def _sidra_competence_published(
+    session: Session,
+    context: AccessContext,
+    source_id: str,
+    layout: str,
+    competence: str,
+) -> bool:
+    existing = session.scalar(
+        select(DataLoadRun.id)
+        .where(
+            DataLoadRun.tenant_id == context.tenant_id,
+            DataLoadRun.territory_id == context.territory_id,
+            DataLoadRun.source_id == source_id,
+            DataLoadRun.layout_version == layout,
+            DataLoadRun.competence == competence[:7],
+            DataLoadRun.published.is_(True),
+        )
+        .limit(1)
+    )
+    return existing is not None
 
 
 def _body(run: DataLoadRun, *, source: SourceRegistry, catalog: dict, replay: bool) -> dict:

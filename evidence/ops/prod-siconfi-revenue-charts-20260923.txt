@@ -1,0 +1,17 @@
+published SICONFI revenue charts 2026-09-23
+
+No new ingest. No restricted municipal POST. No gap series. createsTaxCredit=false.
+
+api_image=sirta-prod-api:16 tag=0.3.112 digest=sha256:033b22f7df919135d8c5f7a0dd6237a008ddc64fa2ce1d642586d2a9b79e696b
+web_image=sirta-prod-web:14 tag=0.4.7 digest=sha256:d6df6a59a307406b406e2ca726eac0cbf44d3b92115127f00b30f6b802aa5e56
+do_not_rollback_api_to=0.3.111 min(uuid) fails financeiro
+
+charts
+SICONFI-DCA TotalReceitas Receitas Brutas Realizadas 2024 = 10977526015.25 BRL
+SICONFI-RREO ReceitasCorrentes Ate o Bimestre (c) 2025 = 6857146672.50 BRL
+SICONFI-RREO ReceitasCorrentes PREVISAO ATUALIZADA (a) 2025 = 6699975276.07 BRL
+
+excluded=percent columns, SALDO, child accounts, despesa, municipal ISS IPTU ITBI
+note=Soma das linhas de receita ja publicadas nesta carga. Nao e o total nacional e nao e valor a recuperar.
+browser=/financeiro?v=047 shows the three revenue headings and the note
+pytest=tests/unit/test_dashboard_charts.py 6 passed

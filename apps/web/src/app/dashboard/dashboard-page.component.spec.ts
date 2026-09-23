@@ -202,4 +202,80 @@ describe('DashboardPageComponent', () => {
     fixture.destroy();
     httpCtrl.verify();
   });
+
+  it('collapses statement lines without a total when the revenue chart already has the figure', async () => {
+    const fixture = TestBed.createComponent(DashboardPageComponent);
+    const httpCtrl = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    httpCtrl.expectOne('/v1/dashboards/transferencias').flush({
+      title: 'Financeiro e ROI',
+      banner: 'DADOS DE FONTE OFICIAL — REFERÊNCIA HUMANAMENTE VALIDADA — NÃO É CRÉDITO TRIBUTÁRIO',
+      emptyReason: '',
+      published: true,
+      commandsDisabled: true,
+      homologationStatus: 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY',
+      emptySources: [],
+      kpis: [],
+      charts: [
+        {
+          id: 'revenue-siconfi-rreo',
+          title: 'Receita corrente — até o bimestre',
+          type: 'bar',
+          unit: 'BRL',
+          valueKind: 'FISCAL_STATEMENT_LINE',
+          sourceId: 'SICONFI-RREO',
+          note: 'Soma das linhas de receita já publicadas nesta carga. Não é o total nacional e não é valor a recuperar.',
+          series: [{ name: 'Até o bimestre', points: [{ x: '2025', y: 80 }] }],
+          evidenceIds: [],
+        },
+      ],
+      items: [
+        {
+          sourceId: 'SICONFI-RREO',
+          indicator: 'siconfi_rreo_lines',
+          maintainer: 'Tesouro Nacional',
+          dataset: 'SICONFI-RREO',
+          competence: '2025',
+          formula: 'Conta-mãe publicada.',
+          methodologyVersion: 'v1',
+          coverageCount: 2144,
+          qualityLevel: 'TECHNICALLY_VALIDATED',
+          homologationStatus: 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY',
+          officialUrl: 'https://siconfi.tesouro.gov.br/',
+          quarantinedCount: 0,
+          numericTotal: null,
+          valueKind: 'FISCAL_STATEMENT_LINE',
+          presentation: 'Linhas do RREO municipal.',
+          financial: false,
+        },
+        {
+          sourceId: 'SICONFI-RREO',
+          indicator: 'siconfi_rreo_lines_prior',
+          maintainer: 'Tesouro Nacional',
+          dataset: 'SICONFI-RREO',
+          competence: '2024',
+          formula: 'Conta-mãe publicada.',
+          methodologyVersion: 'v1',
+          coverageCount: 1000,
+          qualityLevel: 'TECHNICALLY_VALIDATED',
+          homologationStatus: 'REAL_OFFICIAL_DATA_HUMAN_VALIDATED_REFERENCE_ONLY',
+          officialUrl: 'https://siconfi.tesouro.gov.br/',
+          quarantinedCount: 0,
+          numericTotal: null,
+          valueKind: 'FISCAL_STATEMENT_LINE',
+          presentation: 'Linhas do RREO municipal.',
+          financial: false,
+        },
+      ],
+    });
+    fixture.detectChanges();
+    const text = fixture.nativeElement.textContent as string;
+    expect(text).toContain('Valores da conta-mãe publicados nos gráficos desta fonte.');
+    expect(text).toContain('2024 a 2025');
+    expect(text).not.toContain('Valor não publicado');
+    expect(fixture.nativeElement.querySelectorAll('.source-list li').length).toBe(1);
+    fixture.destroy();
+    httpCtrl.verify();
+  });
 });

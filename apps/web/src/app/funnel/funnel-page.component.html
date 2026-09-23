@@ -1,37 +1,29 @@
 <section aria-labelledby="funnel-title">
-  <h1 id="funnel-title">Indicadores oficiais (Gold)</h1>
-  <p>{{ banner || 'DADOS DE FONTE OFICIAL — PROCESSAMENTO TÉCNICO CONCLUÍDO — HOMOLOGAÇÃO HUMANA PENDENTE' }}</p>
-  <p>Valores públicos alimentam análise. Não há crédito tributário, dívida ou valor exigível neste painel.</p>
+  <h1 id="funnel-title">Funil de recuperação</h1>
+  <p>
+    Etapas do crédito publicado neste território. As contagens não são valor em reais e não autorizam
+    cobrança, inscrição ou notificação.
+  </p>
   @if (state === 'loading') {
-    <p role="status">Carregando Gold oficial…</p>
+    <p role="status">Carregando funil…</p>
   }
   @if (state === 'empty') {
-    <p role="status">Nenhum Gold oficial publicado. O painel permanece vazio; nenhum valor demonstrativo é exibido.</p>
-    @for (source of emptySources; track source.sourceId) {
-      <p>{{ sourceHeading(source.sourceId) }}: {{ prose(source.emptyReason) }}</p>
-    }
+    <app-empty-state
+      title="Funil sem crédito publicado"
+      reason="Não há funil de crédito publicado neste território."
+      hint="A receita municipal já publicada fica em Dinheiro do Município. Essa receita não é valor a recuperar."
+    />
   }
   @if (state === 'ok') {
-    <ul>
-      @for (item of items; track item.sourceId + item.indicator) {
-        <li class="assessed">
-          <strong>{{ readingTitle(item) }}</strong>
-          <span class="tabular">{{ publishedFigure(item) }}</span>
-          <span>Medida: {{ measureText(item) }}.</span>
-          <span>{{ prose(item.presentation) || 'Dado oficial de referência. Não é crédito tributário.' }}</span>
-          <span>Órgão {{ item.maintainer }} · competência {{ item.competence }} · {{ item.coverageCount }} registros na base</span>
-          <span>Conferência: {{ qualityText(item.qualityLevel) }}.</span>
-          <span>Validação: {{ validationText(item.homologationStatus) }}</span>
-          <span>Fórmula publicada: {{ item.formula }}</span>
+    <ol class="funnel">
+      @for (stage of stages; track stage.id) {
+        <li>
+          <strong>{{ stage.label }}</strong>
+          <span class="tabular">{{ stage.figure }}</span>
+          <span>{{ stage.note }}</span>
         </li>
       }
-    </ul>
-    @if (emptySources.length) {
-      <h2>Fontes sem dado oficial publicado</h2>
-      @for (source of emptySources; track source.sourceId) {
-        <p>{{ sourceHeading(source.sourceId) }}: {{ prose(source.emptyReason) }}</p>
-      }
-    }
+    </ol>
   }
   @if (state === 'error') {
     <p role="alert">{{ errorMessage }}</p>

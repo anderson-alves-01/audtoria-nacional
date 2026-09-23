@@ -40,6 +40,9 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["apps/api/src"]
 
+[tool.setuptools.package-data]
+"sirta_api.adapters.ingest" = ["trust/*.pem"]
+
 [tool.pytest.ini_options]
 pythonpath = ["apps/api/src"]
 testpaths = ["tests"]

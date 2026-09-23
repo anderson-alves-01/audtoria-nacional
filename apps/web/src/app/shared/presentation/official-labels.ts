@@ -300,3 +300,124 @@ export function formatPublishedValue(value: number | null | undefined, unit: str
   }
   return value.toLocaleString('pt-BR');
 }
+
+export function compactPublishedValue(value: number, unit?: string | null): string {
+  if (!Number.isFinite(value)) {
+    return '';
+  }
+  const sign = value < 0 ? '-' : '';
+  const abs = Math.abs(value);
+  let scaled = abs;
+  let suffix = '';
+  if (abs >= 1_000_000_000) {
+    scaled = abs / 1_000_000_000;
+    suffix = ' bi';
+  } else if (abs >= 1_000_000) {
+    scaled = abs / 1_000_000;
+    suffix = ' mi';
+  } else if (abs >= 10_000) {
+    scaled = abs / 1_000;
+    suffix = ' mil';
+  }
+  const tenths = Math.round(scaled * 10) / 10;
+  const digits = suffix && tenths % 1 !== 0 ? 1 : 0;
+  const text = scaled.toLocaleString('pt-BR', {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+  if (unit === 'BRL') {
+    return `${sign}R$ ${text}${suffix}`;
+  }
+  return `${sign}${text}${suffix}`;
+}
+
+export interface PublishedStep {
+  label: string;
+  value: string;
+  change: string;
+}
+
+export interface PublishedSeriesReading {
+  openingLabel: string;
+  openingValue: string;
+  closingLabel: string;
+  closingValue: string;
+  change: string;
+  note: string;
+  steps: PublishedStep[];
+}
+
+export function describePublishedSeries(
+  points: { x: string; y: number }[],
+  unit: string | null | undefined,
+): PublishedSeriesReading | null {
+  if (!points.length) {
+    return null;
+  }
+  const steps = points.map((point, index) => {
+    const previous = index > 0 ? points[index - 1] : null;
+    return {
+      label: point.x,
+      value: withUnit(formatPublishedValue(point.y, unit), unit),
+      change: previous
+        ? formatPublishedChange(point.y - previous.y, previous.y, unit)
+        : 'Primeiro ano publicado',
+    };
+  });
+  const first = points[0];
+  const last = points[points.length - 1];
+  if (points.length === 1) {
+    return {
+      openingLabel: first.x,
+      openingValue: withUnit(formatPublishedValue(first.y, unit), unit),
+      closingLabel: '',
+      closingValue: '',
+      change: '',
+      note: 'Somente esta competência tem valor numérico publicado nesta série.',
+      steps,
+    };
+  }
+  return {
+    openingLabel: first.x,
+    openingValue: withUnit(formatPublishedValue(first.y, unit), unit),
+    closingLabel: last.x,
+    closingValue: withUnit(formatPublishedValue(last.y, unit), unit),
+    change: formatPublishedChange(last.y - first.y, first.y, unit),
+    note: 'Variação entre os valores publicados no período. Não é projeção e não é crédito tributário.',
+    steps,
+  };
+}
+
+function withUnit(amount: string, unit: string | null | undefined): string {
+  if (!unit || unit === 'BRL' || unit === 'COUNT' || unit === 'UNIT' || unit === 'MIXED') {
+    return amount;
+  }
+  return `${amount} ${humanizeUnit(unit)}`;
+}
+
+function formatPublishedChange(
+  delta: number,
+  base: number,
+  unit: string | null | undefined,
+): string {
+  const amount = formatPublishedValue(Math.abs(delta), unit);
+  const signed = delta > 0 ? `+${amount}` : delta < 0 ? `-${amount}` : amount;
+  if (!base) {
+    return signed;
+  }
+  const percent = (delta / base) * 100;
+  const percentText = Math.abs(percent).toLocaleString('pt-BR', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+  const percentSign = percent > 0 ? '+' : percent < 0 ? '-' : '';
+  return `${signed} (${percentSign}${percentText}%)`;
+}
+
+export function publishedYearSpan(points: { x: string }[]): string {
+  const years = points.map((point) => point.x).filter((label) => /^\d{4}/.test(label));
+  if (years.length < 2) {
+    return '';
+  }
+  return `${years[0]} – ${years[years.length - 1]}`;
+}

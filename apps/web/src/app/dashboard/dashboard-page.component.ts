@@ -87,6 +87,7 @@ interface ChartPoint {
 interface DashboardChart {
   id: string;
   title: string;
+  note?: string;
   type: string;
   unit: string;
   valueKind: string;
@@ -104,6 +105,21 @@ interface ChartView {
   sourceId: string;
   chartType: 'line' | 'bar';
   series: ChartSeriesInput;
+}
+
+interface PublishedReading {
+  key: string;
+  title: string;
+  measures: PublishedMeasure[];
+  figure: string;
+  presentation: string;
+  valueKind: string;
+  maintainer: string;
+  competence: string;
+  coverageCount: number;
+  qualityLevel: string;
+  homologationStatus: string;
+  formula: string;
 }
 
 interface DashboardResponse {
@@ -142,6 +158,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   state: DashboardViewState = 'loading';
   dashboardId = '';
+  pageTitle = '';
   title = '';
   banner = '';
   emptyReason = '';
@@ -159,7 +176,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     this.sub = this.route.data
       .pipe(
         switchMap((data) => {
-          this.resetView(String(data['dashboardId'] || ''));
+          this.resetView(String(data['dashboardId'] || ''), String(data['title'] || ''));
           return from(this.session.ensureSession()).pipe(
             switchMap(() => this.http.get<DashboardResponse>(`/v1/dashboards/${this.dashboardId}`)),
             catchError((err: HttpErrorResponse) => {
@@ -244,6 +261,56 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     return formatPublishedValue(item.numericTotal, unit);
   }
 
+  publishedReadings(): PublishedReading[] {
+    const groups = new Map<string, DashboardGoldItem[]>();
+    for (const item of this.items) {
+      const bucket = groups.get(item.sourceId) ?? [];
+      bucket.push(item);
+      groups.set(item.sourceId, bucket);
+    }
+    return [...groups.entries()].map(([sourceId, group]) => this.readingFor(sourceId, group));
+  }
+
+  private readingFor(sourceId: string, group: DashboardGoldItem[]): PublishedReading {
+    const withFigure = group.find(
+      (item) => item.numericTotal != null || (item.measures?.length ?? 0) > 1,
+    );
+    const head = withFigure ?? group[0];
+    const measures = this.separateMeasures(head);
+    const chartMoney = this.chartViews.some((chart) => chart.sourceId === sourceId && chart.unit === 'BRL');
+    const competences = [...new Set(group.map((item) => item.competence).filter((value) => value))];
+    const newest = competences[0] || head.competence;
+    const oldest = competences[competences.length - 1] || head.competence;
+    const competence =
+      competences.length > 1 ? `${oldest} a ${newest}` : newest;
+    let figure = measures.length ? '' : this.publishedTotal(head);
+    let presentation =
+      this.prose(head.presentation) || 'Leitura do valor publicado pelo órgão. Não é crédito tributário.';
+    if (!measures.length && head.numericTotal == null && chartMoney) {
+      figure = 'Valores da conta-mãe publicados nos gráficos desta fonte.';
+      presentation =
+        'A lista não soma todas as contas do demonstrativo. O gráfico mostra a conta-mãe já publicada. Não é o total nacional e não é valor a recuperar.';
+    }
+    const title =
+      group.length > 1 && head.numericTotal == null
+        ? this.sourceHeading(sourceId)
+        : this.indicatorTitle(head);
+    return {
+      key: sourceId,
+      title,
+      measures,
+      figure,
+      presentation,
+      valueKind: head.valueKind || '',
+      maintainer: head.maintainer,
+      competence,
+      coverageCount: head.coverageCount,
+      qualityLevel: head.qualityLevel,
+      homologationStatus: head.homologationStatus,
+      formula: head.formula,
+    };
+  }
+
   separateMeasures(item: DashboardGoldItem): PublishedMeasure[] {
     return item.measures && item.measures.length > 1 ? item.measures : [];
   }
@@ -256,8 +323,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     return `${figure} ${measure.unit}`;
   }
 
-  private resetView(dashboardId: string): void {
+  private resetView(dashboardId: string, pageTitle = ''): void {
     this.dashboardId = dashboardId;
+    this.pageTitle = pageTitle;
     this.state = 'loading';
     this.title = '';
     this.banner = '';
@@ -313,7 +381,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         ? ' Pontos de naturezas diferentes ficam no mesmo eixo e não formam um total único.'
         : '';
     const pointWord = points.length === 1 ? 'ponto publicado' : 'pontos publicados';
-    const summary = `${chart.title}: ${points.length} ${pointWord}. ${humanizeValueKind(chart.valueKind)}.${caution}`;
+    const note = chart.note ? ` ${chart.note}` : '';
+    const kind = humanizeValueKind(chart.valueKind);
+    const summary = `${chart.title}: ${points.length} ${pointWord}. ${kind}.${caution}${note}`;
     return {
       id: chart.id,
       title: chart.title,

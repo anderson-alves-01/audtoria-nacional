@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from sirta_api.adapters.ingest.parsers import (
@@ -9,6 +10,7 @@ from sirta_api.adapters.ingest.parsers import (
     parse_cnes_datasus_open,
     parse_epe_open_files,
     parse_ibge_sidra_series,
+    parse_siconfi_statement,
     parse_state_ac_csv,
     parse_state_ac_transparencia_json,
     parse_state_al_xls,
@@ -577,6 +579,61 @@ def test_state_go_csv_joins_name_uf_and_quarantines_territory() -> None:
     assert quarantined[0][1] == "missing IBGE municipality code"
     assert presentation_for("ESTADO-GO-IPVA-QUOTA")["valueKind"] == "TRANSFER_AMOUNT_AS_PUBLISHED"
     assert presentation_for("ESTADO-GO-IPVA-QUOTA")["createsTaxCredit"] is False
+
+
+def test_official_trust_bundle_includes_portal_intermediates() -> None:
+    from sirta_api.adapters.ingest.http_client import TRUST_DIR, official_ssl_context
+
+    names = sorted(path.name for path in TRUST_DIR.glob("*.pem"))
+    assert names == [
+        "globalsign-gcc-r3-dv-tls-ca-2020.pem",
+        "sectigo-public-server-authentication-ca-ov-r36.pem",
+    ]
+    assert official_ssl_context() is not None
+
+
+def test_siconfi_statement_row_id_survives_long_account_names() -> None:
+    account = "TransferenciasCorrentesDosEstadosEDoDistritoFederal"
+    items = []
+    for index, column in enumerate(("Ate o Bimestre", "No Bimestre")):
+        items.append(
+            {
+                "cod_ibge": "1100015",
+                "exercicio": "2025",
+                "cod_conta": account,
+                "coluna": column,
+                "anexo": "01",
+                "valor": 10 + index,
+            }
+        )
+    silver, quarantined = parse_siconfi_statement(
+        json.dumps({"items": items}).encode("utf-8"),
+        dataset="RREO",
+    )
+    assert quarantined == []
+    row_ids = [row["rowId"] for row in silver]
+    assert len(row_ids) == 2
+    assert len(set(row_ids)) == 2
+    assert all(len(row_id) <= 64 for row_id in row_ids)
+    assert {row["account"] for row in silver} == {account}
+
+
+def test_state_go_csv_keeps_multiple_credits_in_the_same_month() -> None:
+    body = (
+        b"_id,VALR_IPVA,VALOR_TOTAL,VALR_IPVA_FUNDEB,DATA_COMPLETA_CREDITO,"
+        b"NUMR_ANO_MES,DATA_COMPLETA_REPASSE,DESC_MUN\n"
+        b"1,10.00,10.00,0,2026-08-04 00:00:00.000,202608,2026-08-04 00:00:00.000,"
+        b"ABADIA DE GOIAS\n"
+        b"2,5.00,5.00,0,2026-08-18 00:00:00.000,202608,2026-08-18 00:00:00.000,"
+        b"ABADIA DE GOIAS\n"
+    )
+    lookup = {("ABADIA DE GOIAS", "GO"): "5200050"}
+    silver, quarantined = parse_state_go_csv(body, tax="IPVA", ibge_lookup=lookup)
+    assert quarantined == []
+    assert len(silver) == 2
+    assert len({row["rowId"] for row in silver}) == 2
+    assert all(len(row["rowId"]) <= 64 for row in silver)
+    assert sum(row["value"] for row in silver) == 15.0
 
 
 def test_state_go_economia_xlsx_joins_name_and_quarantines_territory() -> None:

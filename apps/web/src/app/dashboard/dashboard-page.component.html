@@ -1,11 +1,13 @@
 <section class="dash" aria-labelledby="dashboard-title">
   <header class="dash-hero">
     <p class="dash-kicker">SIRTA · painel oficial</p>
-    <h1 id="dashboard-title">{{ title || (state === 'loading' ? 'Carregando painel…' : 'Painel oficial') }}</h1>
-    @if (banner) {
+    <h1 id="dashboard-title">{{ pageTitle || title || (state === 'loading' ? 'Carregando painel…' : 'Painel oficial') }}</h1>
+    @if (banner && state !== 'loading') {
       <p class="dash-banner">{{ banner }}</p>
     }
-    <p class="dash-status">{{ validationText(homologationStatus) }}</p>
+    @if (state !== 'loading') {
+      <p class="dash-status">{{ validationText(homologationStatus) }}</p>
+    }
     @if (commandsDisabled) {
       <p class="dash-note">Comandos operacionais desativados. Nenhum valor sintético é exibido.</p>
     }
@@ -86,23 +88,23 @@
         </button>
       </div>
       <ul class="source-list">
-        @for (item of items; track item.sourceId + item.indicator) {
-          <li [class.assessed]="!item.financial" [class.collection]="!!item.financial">
-            <strong>{{ indicatorTitle(item) }}</strong>
-            @if (separateMeasures(item).length) {
+        @for (reading of publishedReadings(); track reading.key) {
+          <li [class.assessed]="reading.measures.length === 0" [class.collection]="reading.figure.startsWith('R$')">
+            <strong>{{ reading.title }}</strong>
+            @if (reading.measures.length) {
               <span>Medidas publicadas em separado, sem somar naturezas diferentes.</span>
-              @for (measure of separateMeasures(item); track measure.label) {
+              @for (measure of reading.measures; track measure.label) {
                 <span class="tabular">{{ measure.label }}: {{ formatMeasure(measure) }}</span>
               }
             } @else {
-              <span class="tabular">{{ publishedTotal(item) }}</span>
+              <span class="tabular">{{ reading.figure }}</span>
             }
-            <span>Medida: {{ humanizeValueKind(item.valueKind) }}.</span>
-            <span>{{ prose(item.presentation) || 'Leitura do valor publicado pelo órgão. Não é crédito tributário.' }}</span>
-            <span>Órgão {{ item.maintainer }} · competência {{ item.competence }} · {{ item.coverageCount }} registros na base</span>
-            <span>Conferência: {{ qualityText(item.qualityLevel) }}.</span>
-            <span>Validação: {{ validationText(item.homologationStatus) }}</span>
-            <span>Fórmula publicada: {{ item.formula }}</span>
+            <span>Medida: {{ humanizeValueKind(reading.valueKind) }}.</span>
+            <span>{{ reading.presentation }}</span>
+            <span>Órgão {{ reading.maintainer }} · competência {{ reading.competence }} · {{ reading.coverageCount }} registros na base</span>
+            <span>Conferência: {{ qualityText(reading.qualityLevel) }}.</span>
+            <span>Validação: {{ validationText(reading.homologationStatus) }}</span>
+            <span>Fórmula publicada: {{ reading.formula }}</span>
           </li>
         }
       </ul>

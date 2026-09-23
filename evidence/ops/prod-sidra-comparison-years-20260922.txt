@@ -1,0 +1,25 @@
+started=2026-09-22T23:01:37.837203+00:00
+authorization=prior_years_for_line_charts
+image=sirta-prod-api:0.3.106
+createsTaxCredit=false
+scope=IBGE-SIDRA-PIB 2021-2022; IBGE-SIDRA-CEMP 2022-2023; IBGE-SIDRA 2024-2025
+skipped=already_published_latest_year,FEX,MG,RGF,restricted_municipal,SICONFI_backfill
+{"sourceId": "IBGE-SIDRA-PIB", "expectedCompetence": "2021", "httpStatus": 200, "elapsedSec": 30.7, "runId": "dff36878-2f0c-4100-b1d7-ce7bb34d3c8b", "status": "PUBLISHED", "replay": false, "receivedCount": 11140, "silverCount": 11140, "quarantinedCount": 0, "taxCreditCreated": false, "comparisonCompetence": "2021", "comparisonPending": ["2022"], "landedAfterTimeout": false, "detail": null}
+{"sourceId": "IBGE-SIDRA-PIB", "expectedCompetence": "2022", "httpStatus": 200, "elapsedSec": 24.7, "runId": "faeaa659-ba43-4243-9be1-7ef2890f37a1", "status": "PUBLISHED", "replay": false, "receivedCount": 11140, "silverCount": 5570, "quarantinedCount": 5570, "taxCreditCreated": false, "comparisonCompetence": "2022", "comparisonPending": [], "landedAfterTimeout": false, "detail": null}
+IBGE-SIDRA-PIB complete years=['2021', '2022', '2023']
+{"sourceId": "IBGE-SIDRA-CEMP", "expectedCompetence": "2022", "httpStatus": 200, "elapsedSec": 45.4, "runId": "f070c93e-a46d-45ee-8a39-a58c2409ee68", "status": "PUBLISHED", "replay": false, "receivedCount": 16710, "silverCount": 16710, "quarantinedCount": 0, "taxCreditCreated": false, "comparisonCompetence": "2022", "comparisonPending": ["2023"], "landedAfterTimeout": false, "detail": null}
+{"sourceId": "IBGE-SIDRA-CEMP", "expectedCompetence": "2023", "httpStatus": 200, "elapsedSec": 45.9, "runId": "3cb8c3c4-5c00-4e45-aa87-008df32e4596", "status": "PUBLISHED", "replay": false, "receivedCount": 16710, "silverCount": 16710, "quarantinedCount": 0, "taxCreditCreated": false, "comparisonCompetence": "2023", "comparisonPending": [], "landedAfterTimeout": false, "detail": null}
+IBGE-SIDRA-CEMP complete years=['2022', '2023', '2024']
+{"sourceId": "IBGE-SIDRA", "expectedCompetence": "2024", "httpStatus": 200, "elapsedSec": 14.7, "runId": "2ecb842d-ec8a-43f3-a81f-ab693fec2329", "status": "PUBLISHED", "replay": false, "receivedCount": 5571, "silverCount": 5570, "quarantinedCount": 1, "taxCreditCreated": false, "comparisonCompetence": "2024", "comparisonPending": ["2025"], "landedAfterTimeout": false, "detail": null}
+{"sourceId": "IBGE-SIDRA", "expectedCompetence": "2025", "httpStatus": 200, "elapsedSec": 9.6, "runId": "db4026a4-113f-4ab4-92fb-5e45ebbc7006", "status": "PUBLISHED", "replay": false, "receivedCount": 5571, "silverCount": 5571, "quarantinedCount": 0, "taxCreditCreated": false, "comparisonCompetence": "2025", "comparisonPending": [], "landedAfterTimeout": false, "detail": null}
+IBGE-SIDRA complete years=['2024', '2025', '2026']
+failures=0
+finished=2026-09-22T23:04:51.926090+00:00
+chart_image=sirta-prod-api:12 tag=0.3.108 digest=sha256:a11e2664f48a27c2317314ebb49d614e0c616c9531b8010f04551d81ab2e05f3
+rollback_api=sirta-prod-api:11 image=0.3.107
+note=0.3.106 exhausted memory loading every gold line; 0.3.107 sums earlier years; 0.3.108 shows the latest competence on the headline figure
+verified_executivo=population line 2024 212583750, 2025 213421037, 2026 214211951; CEMP 2022-2024; PIB 2021 9012142031, 2022 10079676379, 2023 10943345420 mil reais
+verified_economia=same series, five charts with 3 points
+services_va=only 2021 (3910158981 mil reais); PIB 2022 quarantined 5570 of 11140
+createsTaxCredit=false
+g10=NO-GO

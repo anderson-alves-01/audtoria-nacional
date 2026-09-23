@@ -261,5 +261,5 @@ gates:
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
 evidence: evidence/releases/0.4.0/ui/
-next_action: Chart reading slice committed. API 0.3.103 and web 0.4.4 live. G10 remains NO-GO. No merge.
+next_action: RREO 2025:6 cursor 125 remaining 5445. DCA 2024 cursor 150 remaining 5420. Coverage RREO 114454 lines and DCA 142139 lines. Parent revenue for loaded entes only, RREO ate o bimestre 28811154367.62, previsao atualizada 26264825083.13, DCA receitas brutas 44466645888.34. Not national totals and not recoverable value. Evidence evidence/ops/prod-siconfi-sequence-20-20260923.txt. API 0.3.112 task sirta-prod-api:16. Web 0.4.7 task sirta-prod-web:14. Do not roll the API back to 0.3.111. Municipal ISS, IPTU and ITBI stay unpublished. G10 remains NO-GO. No merge.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

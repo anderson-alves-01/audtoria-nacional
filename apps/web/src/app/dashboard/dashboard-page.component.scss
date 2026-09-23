@@ -87,6 +87,10 @@
   margin-bottom: 1.25rem;
 }
 
+.dash-charts app-chart-card.evolution {
+  grid-column: 1 / -1;
+}
+
 .chart-panel {
   background: var(--sirta-surface);
   border: 1px solid #d3dee4;

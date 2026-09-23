@@ -1,0 +1,24 @@
+started=2026-09-23T13:57:34.389118+00:00
+authorization=PUBLIC_OPEN_SICONFI_COVERAGE_SLICE
+createsTaxCredit=false
+slices_per_source=2
+max_entes_per_post=5
+skipped=TESOURO-FEX-VALORES,ESTADO-MG,SICONFI-RGF,MUNICIPAL-ISS,MUNICIPAL-IPTU,MUNICIPAL-ITBI
+{"sourceId": "SICONFI-RREO", "slice": 1, "httpStatus": 200, "elapsedSec": 12.4, "runId": "33c095b5-20fe-48b3-9a6e-856c6592a5a4", "status": "PUBLISHED", "replay": false, "receivedCount": 6398, "silverCount": 6398, "quarantinedCount": 0, "taxCreditCreated": false, "partitionKey": "2025:6", "backfillCursor": "20", "backfillStatus": "IN_PROGRESS", "cursorDelta": null, "remainingEntes": 5550, "detail": null}
+{"sourceId": "SICONFI-RREO", "slice": 2, "httpStatus": 200, "elapsedSec": 11.6, "runId": "343c916e-23b0-484b-b182-66a8272acc43", "status": "PUBLISHED", "replay": false, "receivedCount": 2728, "silverCount": 2728, "quarantinedCount": 0, "taxCreditCreated": false, "partitionKey": "2025:6", "backfillCursor": "25", "backfillStatus": "IN_PROGRESS", "cursorDelta": 5, "remainingEntes": 5545, "detail": null}
+{"sourceId": "SICONFI-DCA", "slice": 1, "httpStatus": 200, "elapsedSec": 13.9, "runId": "c1064c7d-db47-4296-b5f2-95f740afebc8", "status": "PUBLISHED", "replay": false, "receivedCount": 4480, "silverCount": 4480, "quarantinedCount": 0, "taxCreditCreated": false, "partitionKey": "2024", "backfillCursor": "45", "backfillStatus": "IN_PROGRESS", "cursorDelta": null, "remainingEntes": 5525, "detail": null}
+{"sourceId": "SICONFI-DCA", "slice": 2, "httpStatus": 200, "elapsedSec": 13.7, "runId": "3f0e2ccc-2a3d-4ac8-8038-1772115c916e", "status": "PUBLISHED", "replay": false, "receivedCount": 4883, "silverCount": 4883, "quarantinedCount": 0, "taxCreditCreated": false, "partitionKey": "2024", "backfillCursor": "50", "backfillStatus": "IN_PROGRESS", "cursorDelta": 5, "remainingEntes": 5520, "detail": null}
+finished=2026-09-23T13:58:26.026843+00:00
+failures=0
+prior_rreo_cursor=15
+prior_dca_cursor=40
+rreo_now=25 remaining=5545 status=IN_PROGRESS partition=2025:6
+dca_now=50 remaining=5520 status=IN_PROGRESS partition=2024
+taxCreditCreated=false
+chart_image=sirta-prod-api:14 tag=0.3.110 digest=sha256:0026660407553c473f9b10b1c1732ee409dd3d7d4e522ceaa324fa39a595e8c1
+previous_image=sirta-prod-api:13 tag=0.3.109 loads every statement line and is not the rollback
+coverage_rreo_lines=27551
+coverage_dca_lines=53749
+coverage_fpm_records=11001
+money_charts=TESOURO-FPM-VALORES only
+browser=/financeiro coverage table shows SICONFI DCA 53.749 and SICONFI RREO 27.551 as counts

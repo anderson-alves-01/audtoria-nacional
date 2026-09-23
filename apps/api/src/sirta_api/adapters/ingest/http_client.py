@@ -1,11 +1,28 @@
 import re
+import ssl
 from dataclasses import dataclass
+from pathlib import Path
 from time import sleep
 from urllib.parse import unquote
 
+import certifi
 import httpx
 
 USER_AGENT = "SIRTA-official-ingest/0.3.43"
+TRUST_DIR = Path(__file__).resolve().parent / "trust"
+
+
+def official_ssl_context() -> ssl.SSLContext:
+    """Trust store plus intermediates omitted by some official portals.
+
+    Roots stay in certifi. The extra PEMs are public CA intermediates
+    (Sectigo R36 and GlobalSign GCC R3 DV TLS CA 2020) required to complete
+    the chain for dados.ba.gov.br and sefaz.ma.gov.br.
+    """
+    context = ssl.create_default_context(cafile=certifi.where())
+    for pem in sorted(TRUST_DIR.glob("*.pem")):
+        context.load_verify_locations(cafile=str(pem))
+    return context
 
 
 @dataclass(frozen=True)
@@ -25,7 +42,10 @@ class OfficialHttpClient:
         for attempt in range(retries):
             try:
                 with httpx.Client(
-                    timeout=timeout, follow_redirects=True, headers=headers
+                    timeout=timeout,
+                    follow_redirects=True,
+                    headers=headers,
+                    verify=official_ssl_context(),
                 ) as client:
                     response = client.get(url)
                     if response.status_code >= 500 and attempt < retries - 1:
@@ -71,6 +91,7 @@ class OfficialHttpClient:
                     follow_redirects=True,
                     headers=base_headers,
                     cookies=cookies or {},
+                    verify=official_ssl_context(),
                 ) as client:
                     response = client.post(url, data=data)
                     if response.status_code >= 500 and attempt < retries - 1:
@@ -101,7 +122,12 @@ class OfficialHttpClient:
     ) -> OfficialHttpResponse:
         """GET HTML page for CSRF cookie/meta, then POST form to official endpoint."""
         headers = {"User-Agent": USER_AGENT, "Accept": "text/html,*/*"}
-        with httpx.Client(timeout=timeout, follow_redirects=True, headers=headers) as client:
+        with httpx.Client(
+            timeout=timeout,
+            follow_redirects=True,
+            headers=headers,
+            verify=official_ssl_context(),
+        ) as client:
             page = client.get(page_url)
             if page.status_code >= 400:
                 return OfficialHttpResponse(
@@ -160,7 +186,12 @@ class OfficialHttpClient:
     ) -> OfficialHttpResponse:
         """GET JSF session pages, consult Repasse WEB, expand DataTable rows, return HTML."""
         headers = {"User-Agent": USER_AGENT, "Accept": "text/html,*/*"}
-        with httpx.Client(timeout=timeout, follow_redirects=True, headers=headers) as client:
+        with httpx.Client(
+            timeout=timeout,
+            follow_redirects=True,
+            headers=headers,
+            verify=official_ssl_context(),
+        ) as client:
             home = client.get(home_url)
             if home.status_code >= 400:
                 return OfficialHttpResponse(

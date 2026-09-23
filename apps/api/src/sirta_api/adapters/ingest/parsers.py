@@ -18,6 +18,13 @@ def sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def bounded_row_id(prefix: str, *parts: object) -> str:
+    """Stable id that stays unique inside the 64-character row key."""
+    identity = "|".join(str(part if part is not None else "") for part in parts)
+    digest = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]
+    return f"{prefix}-{digest}"[:64]
+
+
 def parse_ibge_sidra_series(body: bytes) -> tuple[list[dict], list[tuple[dict, str]]]:
     try:
         payload = json.loads(body.decode("utf-8"))
@@ -2590,7 +2597,11 @@ def parse_state_go_csv(
         ibge = lookup.get((normalize_place(raw_name), normalize_place(uf)), "")
         row_token = str(item.get("_id") or index)
         row = {
-            "rowId": f"go-ipva-{ibge or row_token}-{competence or 'na'}"[:64],
+            "rowId": bounded_row_id(
+                f"go-ipva-{ibge or 'na'}-{competence or 'na'}",
+                row_token,
+                index,
+            ),
             "territoryName": raw_name,
             "uf": uf,
             "ibgeCode": ibge,
@@ -3082,7 +3093,13 @@ def parse_siconfi_statement(
         account = str(item.get("cod_conta") or item.get("conta") or "").strip()
         raw = item.get("valor")
         row = {
-            "rowId": f"{ibge}-{competence}-{account}-{index}"[:64],
+            "rowId": bounded_row_id(
+                f"{ibge}-{competence}",
+                account,
+                item.get("anexo"),
+                item.get("coluna"),
+                index,
+            ),
             "ibgeCode": ibge,
             "competence": competence,
             "account": account,
