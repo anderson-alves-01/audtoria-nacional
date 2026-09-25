@@ -95,8 +95,7 @@ type MapState = 'loading' | 'ok' | 'error';
       @if (state === 'error') {
         <app-error-state
           title="Mapa indisponível"
-          reason="Não foi possível ler as séries publicadas por região."
-          hint="O restante do painel continua disponível."
+          message="Não foi possível ler as séries publicadas por região. O restante do painel continua disponível."
         />
       }
       @if (state === 'ok') {
