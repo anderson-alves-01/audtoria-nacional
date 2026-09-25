@@ -4,6 +4,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, catchError, from, of, switchMap } from 'rxjs';
 import { PublicOpenSessionService } from '../auth/public-open-session.service';
+import { BrazilRegionMapComponent } from './brazil-region-map.component';
 import { ChartCardComponent, ChartSeriesInput } from '../shared/charts/chart-card.component';
 import { EvidenceDrawerComponent } from '../shared/evidence/evidence-drawer.component';
 import {
@@ -140,6 +141,7 @@ interface DashboardResponse {
   standalone: true,
   imports: [
     CommonModule,
+    BrazilRegionMapComponent,
     KpiCardComponent,
     ChartCardComponent,
     EmptyStateComponent,

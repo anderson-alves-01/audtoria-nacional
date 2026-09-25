@@ -453,6 +453,15 @@ def ingest_official_source(
     )
     session.add(gold)
     session.flush()
+    if connector == "tesouro_coint_municipio_csv" and silver:
+        unpublish_prior_official_gold(
+            session,
+            tenant_id=context.tenant_id,
+            territory_id=context.territory_id,
+            source_id=source.source_id,
+            competence=competence,
+            keep_id=gold.id,
+        )
     for row in silver:
         line = {
             "silverRowId": str(row["rowId"])[:64],
@@ -566,6 +575,31 @@ def published_official_enrichment(
         "banner": OFFICIAL_BANNER,
         "note": OFFICIAL_BANNER,
     }
+
+
+def unpublish_prior_official_gold(
+    session: Session,
+    *,
+    tenant_id,
+    territory_id,
+    source_id: str,
+    competence: str,
+    keep_id,
+) -> int:
+    """Stop older Gold of the same source and competence from being summed."""
+    rows = session.scalars(
+        select(GoldOfficial).where(
+            GoldOfficial.tenant_id == tenant_id,
+            GoldOfficial.territory_id == territory_id,
+            GoldOfficial.source_id == source_id,
+            GoldOfficial.competence == competence,
+            GoldOfficial.published.is_(True),
+            GoldOfficial.id != keep_id,
+        )
+    ).all()
+    for row in rows:
+        row.published = False
+    return len(rows)
 
 
 def list_official_gold(session: Session, *, context: AccessContext) -> dict:

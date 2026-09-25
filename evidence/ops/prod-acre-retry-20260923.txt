@@ -1,0 +1,8 @@
+started=2026-09-23T21:00:31.517311+00:00
+authorization=PUBLIC_OPEN_ACRE_RETRY_ONCE
+createsTaxCredit=false
+attempts_per_source=1
+{"sourceId": "ESTADO-AC-ICMS-TRANSPARENCIA-QUOTA", "httpStatus": 200, "elapsedSec": 2.4, "runId": "394ed8ea-2c98-4dda-94f7-e67caa7b46c7", "status": "PUBLISHED", "replay": true, "receivedCount": 22, "silverCount": 20, "quarantinedCount": 2, "taxCreditCreated": false, "detail": null}
+{"sourceId": "ESTADO-AC-IPVA-QUOTA", "httpStatus": 200, "elapsedSec": 2.2, "runId": "8328bbef-67f8-4aed-ac20-16f916a7a2fe", "status": "PUBLISHED", "replay": true, "receivedCount": 22, "silverCount": 20, "quarantinedCount": 2, "taxCreditCreated": false, "detail": null}
+note=Both sources were already in Gold. replay=true adds no rows. taxCreditCreated=false. An earlier client call returned 401 before this confirming POST and did not ingest.
+finished=2026-09-23T21:00:36.188853+00:00

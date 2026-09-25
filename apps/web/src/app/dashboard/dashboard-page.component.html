@@ -13,6 +13,10 @@
     }
   </header>
 
+  @if (dashboardId === 'executivo') {
+    <app-brazil-region-map />
+  }
+
   @if (state === 'loading') {
     <app-skeleton />
   }

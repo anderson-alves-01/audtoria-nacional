@@ -364,6 +364,68 @@ def test_tesouro_coint_fundeb_wide_csv() -> None:
     )
 
 
+def test_tesouro_coint_without_max_rows_keeps_every_municipality() -> None:
+    header = "COD_MUN;Município;UF;Município - UF;Mês;2025\n"
+    lines = []
+    lookup = {}
+    for index in range(10):
+        name = f"Cidade{index}"
+        code = f"1{index:06d}"
+        lookup[(name.upper(), "AC")] = code
+        lines.append(f"{index};{name};AC;{name} - AC;1;1.000,00\n")
+    silver, quarantined = parse_tesouro_coint_municipio_csv(
+        (header + "".join(lines)).encode("latin-1"),
+        ibge_lookup=lookup,
+        transfer_name="CIDE",
+        competence="2025-01",
+    )
+    assert quarantined == []
+    assert len(silver) == 10
+    capped, _ = parse_tesouro_coint_municipio_csv(
+        (header + "".join(lines)).encode("latin-1"),
+        ibge_lookup=lookup,
+        transfer_name="CIDE",
+        competence="2025-01",
+        max_rows=8,
+    )
+    assert len(capped) == 8
+
+
+def test_unpublish_prior_coint_gold_stops_the_sample_from_the_sum() -> None:
+    from sirta_api.application.official_ingest import unpublish_prior_official_gold
+
+    class _Gold:
+        def __init__(self) -> None:
+            self.published = True
+
+    class _Result:
+        def __init__(self, rows: list[_Gold]) -> None:
+            self._rows = rows
+
+        def all(self) -> list[_Gold]:
+            return self._rows
+
+    class _Session:
+        def __init__(self, rows: list[_Gold]) -> None:
+            self.rows = rows
+
+        def scalars(self, _query: object) -> _Result:
+            return _Result(self.rows)
+
+    prior = _Gold()
+    changed = unpublish_prior_official_gold(
+        _Session([prior]),  # type: ignore[arg-type]
+        tenant_id="tenant",
+        territory_id="territory",
+        source_id="TESOURO-CIDE-VALORES",
+        competence="2025-01",
+        keep_id="new-gold",
+    )
+    assert changed == 1
+    assert prior.published is False
+    assert presentation_for("TESOURO-CIDE-VALORES")["createsTaxCredit"] is False
+
+
 def test_tesouro_coint_cide_fex_wide_csv() -> None:
     lookup = {
         ("ACRELANDIA", "AC"): "1200013",

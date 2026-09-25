@@ -1,0 +1,13 @@
+started=2026-09-25T13:44:26.026749+00:00
+authorization=COINT_V2_REPLACES_EIGHT_ROW_SAMPLE
+createsTaxCredit=false
+skipped=TESOURO-FEX-VALORES
+{"sourceId": "TESOURO-FUNDEB-VALORES", "httpStatus": 200, "elapsedSec": 20.1, "runId": "c1e095af-1155-404d-a8c9-649013fcdc96", "status": "PUBLISHED", "replay": false, "receivedCount": 5568, "silverCount": 5545, "quarantinedCount": 23, "taxCreditCreated": false}
+{"sourceId": "TESOURO-CIDE-VALORES", "httpStatus": 200, "elapsedSec": 17.6, "runId": "f4747652-7cad-451e-a114-c689a8750302", "status": "PUBLISHED", "replay": false, "receivedCount": 5568, "silverCount": 5545, "quarantinedCount": 23, "taxCreditCreated": false}
+{"sourceId": "TESOURO-LC87-VALORES", "httpStatus": 200, "elapsedSec": 17.9, "runId": "788eab63-4c8c-414d-aa9c-fb705f2dd9d7", "status": "PUBLISHED", "replay": false, "receivedCount": 5568, "silverCount": 5545, "quarantinedCount": 23, "taxCreditCreated": false}
+{"sourceId": "TESOURO-FPM-COINT-VALORES", "httpStatus": 200, "elapsedSec": 19.3, "runId": "7d2d76da-b8bc-414a-a92d-2ba3c0be8070", "status": "PUBLISHED", "replay": false, "receivedCount": 5570, "silverCount": 5547, "quarantinedCount": 23, "taxCreditCreated": false}
+{"sourceId": "TESOURO-ITR-COINT-VALORES", "httpStatus": 200, "elapsedSec": 176.1, "runId": "c81f1ba9-2a89-47ca-9d6d-866fef5ca651", "status": "PUBLISHED", "replay": false, "receivedCount": 5070, "silverCount": 5050, "quarantinedCount": 20, "taxCreditCreated": false}
+{"sourceId": "TESOURO-IOF-OURO-COINT-VALORES", "httpStatus": 200, "elapsedSec": 7.3, "runId": "d57b4d4c-e7bf-4272-b273-9575db4a020f", "status": "PUBLISHED", "replay": false, "receivedCount": 40, "silverCount": 40, "quarantinedCount": 0, "taxCreditCreated": false}
+{"sourceId": "TESOURO-LC176-COINT-VALORES", "httpStatus": 200, "elapsedSec": 225.5, "runId": "8a781127-4137-4dbe-9519-588930ae0103", "status": "PUBLISHED", "replay": false, "receivedCount": 5425, "silverCount": 5402, "quarantinedCount": 23, "taxCreditCreated": false}
+finished=2026-09-25T13:52:29.855837+00:00
+failures=0

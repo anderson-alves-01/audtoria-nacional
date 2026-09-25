@@ -547,7 +547,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: tesouro_coint_municipio_csv
-    layout_version: tesouro-ckan-coint-fundeb-municipio-v1
+    layout_version: tesouro-ckan-coint-fundeb-municipio-v2
     periodicity: monthly
     competence: "2025-01"
     granularity: municipality
@@ -560,7 +560,6 @@ sources:
       join: siconfi_entes_ibge_by_name_uf
       competence: "2025-01"
       transfer_name: FUNDEB
-      max_rows: 8
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -575,8 +574,9 @@ sources:
     notes: >
       Probe 2026-09-21: HTTP 200, ~19,7 MiB, layout wide anos 2007–2026,
       competência 2025-01 com valores municipais. Distinto de
-      TESOURO-FUNDEB-COMPLEMENT-VALORES (CSV mensal COUN/AJUSTE). max_rows=8
-      no ciclo técnico; sem carga nacional ilimitada. Sem crédito.
+      TESOURO-FUNDEB-COMPLEMENT-VALORES (CSV mensal COUN/AJUSTE). Leiaute v2
+      publica o mês da competência inteiro e substitui a amostra v1 de 8 linhas.
+      Sem crédito.
 
   - source_id: TESOURO-LC87-VALORES
     name: Tesouro Nacional — LC 87/96 por município (CKAN COINT)
@@ -597,7 +597,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: tesouro_coint_municipio_csv
-    layout_version: tesouro-ckan-coint-lc87-municipio-v1
+    layout_version: tesouro-ckan-coint-lc87-municipio-v2
     periodicity: monthly
     competence: "2018-01"
     granularity: municipality
@@ -610,7 +610,6 @@ sources:
       join: siconfi_entes_ibge_by_name_uf
       competence: "2018-01"
       transfer_name: "LC 87/96"
-      max_rows: 8
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -626,8 +625,9 @@ sources:
       Probe 2026-09-21: HTTP 200, ~17,4 MiB, layout wide anos 1996–2020,
       valores municipais não nulos observados até 2018 (colunas 2019–2020
       publicadas vazias). Série histórica oficial; competência técnica
-      2018-01. Distinto de TESOURO-LC176-VALORES (CSV mensal). max_rows=8
-      no ciclo técnico; sem carga nacional ilimitada. Sem crédito.
+      2018-01. Distinto de TESOURO-LC176-VALORES (CSV mensal). Leiaute v2
+      publica o mês da competência inteiro e substitui a amostra v1 de 8 linhas.
+      Sem crédito.
 
   - source_id: TESOURO-FPM-COINT-VALORES
     name: Tesouro Nacional — FPM por município (CKAN COINT)
@@ -648,7 +648,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: tesouro_coint_municipio_csv
-    layout_version: tesouro-ckan-coint-fpm-municipio-v1
+    layout_version: tesouro-ckan-coint-fpm-municipio-v2
     periodicity: monthly
     competence: "2025-01"
     granularity: municipality
@@ -661,7 +661,6 @@ sources:
       join: siconfi_entes_ibge_by_name_uf
       competence: "2025-01"
       transfer_name: FPM
-      max_rows: 8
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -675,8 +674,9 @@ sources:
     methodology_version: official-tesouro-coint-fpm-v1
     notes: >
       Probe 2026-09-21: HTTP 200, layout wide 1996–2026, competência 2025-01
-      com valores. Distinto de TESOURO-FPM-VALORES (CSV mensal). max_rows=8.
-      Sem carga nacional. Sem crédito.
+      com valores. Distinto de TESOURO-FPM-VALORES (CSV mensal). Leiaute v2
+      publica o mês da competência inteiro e substitui a amostra v1 de 8 linhas.
+      Sem crédito.
 
   - source_id: TESOURO-ITR-COINT-VALORES
     name: Tesouro Nacional — ITR por município (CKAN COINT)
@@ -697,7 +697,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: tesouro_coint_municipio_csv
-    layout_version: tesouro-ckan-coint-itr-municipio-v1
+    layout_version: tesouro-ckan-coint-itr-municipio-v2
     periodicity: monthly
     competence: "2025-01"
     granularity: municipality
@@ -710,7 +710,6 @@ sources:
       join: siconfi_entes_ibge_by_name_uf
       competence: "2025-01"
       transfer_name: ITR
-      max_rows: 8
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -724,8 +723,8 @@ sources:
     methodology_version: official-tesouro-coint-itr-v1
     notes: >
       Probe 2026-09-21: HTTP 200, layout wide 1996–2026. Distinto de
-      TESOURO-ITR-VALORES (CSV mensal). max_rows=8. Sem carga nacional.
-      Sem crédito.
+      TESOURO-ITR-VALORES (CSV mensal). Leiaute v2 publica o mês da competência
+      inteiro e substitui a amostra v1 de 8 linhas. Sem crédito.
 
   - source_id: TESOURO-IOF-OURO-COINT-VALORES
     name: Tesouro Nacional — IOF-Ouro por município (CKAN COINT)
@@ -746,7 +745,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: tesouro_coint_municipio_csv
-    layout_version: tesouro-ckan-coint-iof-ouro-municipio-v1
+    layout_version: tesouro-ckan-coint-iof-ouro-municipio-v2
     periodicity: monthly
     competence: "2014-07"
     granularity: municipality
@@ -759,7 +758,6 @@ sources:
       join: siconfi_entes_ibge_by_name_uf
       competence: "2014-07"
       transfer_name: IOF-Ouro
-      max_rows: 8
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -775,7 +773,8 @@ sources:
       Probe 2026-09-21: HTTP 200, layout wide 1998–2026; muitos municípios sem
       valores. Competência técnica 2014-07 com valores observados (ex.
       Brasiléia/AC). Distinto de TESOURO-IOF-OURO-VALORES (CSV mensal).
-      max_rows=8. Sem carga nacional. Sem crédito.
+      Leiaute v2 publica o mês da competência inteiro e substitui a amostra v1
+      de 8 linhas. Sem crédito.
 
   - source_id: TESOURO-LC176-COINT-VALORES
     name: Tesouro Nacional — LC 176/2020 por município (CKAN COINT)
@@ -796,7 +795,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: tesouro_coint_municipio_csv
-    layout_version: tesouro-ckan-coint-lc176-municipio-v1
+    layout_version: tesouro-ckan-coint-lc176-municipio-v2
     periodicity: monthly
     competence: "2025-01"
     granularity: municipality
@@ -809,7 +808,6 @@ sources:
       join: siconfi_entes_ibge_by_name_uf
       competence: "2025-01"
       transfer_name: "LC 176/2020"
-      max_rows: 8
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -824,7 +822,8 @@ sources:
     notes: >
       Probe 2026-09-21: HTTP 200, layout wide 2020–2026. Distinto de
       TESOURO-LC176-VALORES (CSV mensal) e de TESOURO-LC87-VALORES.
-      max_rows=8. Sem carga nacional. Sem crédito.
+      Leiaute v2 publica o mês da competência inteiro e substitui a amostra v1
+      de 8 linhas. Sem crédito.
 
   - source_id: TESOURO-CIDE-VALORES
     name: Tesouro Nacional — CIDE-Combustíveis por município (CKAN COINT)
@@ -843,7 +842,7 @@ sources:
     status: TECHNICALLY_APPROVED
     fixture_kind: OFFICIAL
     connector: tesouro_coint_municipio_csv
-    layout_version: tesouro-ckan-coint-cide-municipio-v1
+    layout_version: tesouro-ckan-coint-cide-municipio-v2
     periodicity: monthly
     competence: "2025-01"
     granularity: municipality
@@ -856,7 +855,6 @@ sources:
       join: siconfi_entes_ibge_by_name_uf
       competence: "2025-01"
       transfer_name: CIDE
-      max_rows: 8
     authentication: none
     rate_limit: not_published
     personal_data: false
@@ -871,7 +869,8 @@ sources:
     notes: >
       Alternativa ao CSV mensal constitucional (sem CIDE). Probe 2026-09-21:
       HTTP 200, layout wide anos 2004–2026, latin-1, delimitador ';'.
-      max_rows=8 no ciclo técnico; sem carga nacional ilimitada. Sem crédito.
+      Leiaute v2 publica o mês da competência inteiro e substitui a amostra v1
+      de 8 linhas. Sem crédito.
 
   - source_id: TESOURO-FEX-VALORES
     name: Tesouro Nacional — FEX por município (CKAN COINT)
