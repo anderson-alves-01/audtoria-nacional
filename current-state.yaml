@@ -261,5 +261,5 @@ gates:
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
 evidence: evidence/releases/0.4.0/ui/
-next_action: Local executive map on /executivo reads GET /v1/dashboards/executivo/geography (IBGE population, GDP and CEMP by region and UF). Not deployed. COINT v2 published for FUNDEB, CIDE, LC87, FPM-COINT, ITR-COINT, IOF-OURO-COINT and LC176-COINT. FEX 2025-01 not reloaded. RREO 2025:6 COMPLETE. DCA 2024 still running. Do not reload FEX 2025-01, MG header-only files, or RGF period 3. Municipal ISS, IPTU and ITBI stay unpublished. G0, G4, G7 official and G10 remain NO-GO. API 0.3.113. Web 0.4.7. No merge.
+next_action: Executive map published on /executivo. API image 0.3.114 task sirta-prod-api:18. Web image 0.4.8 task sirta-prod-web:15. Evidence evidence/ops/prod-map-20260925.txt. COINT v2 remains published. FEX 2025-01 not reloaded. RREO 2025:6 COMPLETE. DCA 2024 may still be running. Do not reload FEX 2025-01, MG header-only files, or RGF period 3. Municipal ISS, IPTU and ITBI stay unpublished. G0, G4, G7 official and G10 remain NO-GO. No merge.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md

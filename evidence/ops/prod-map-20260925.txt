@@ -1,0 +1,12 @@
+2026-09-25 executive map publish
+branch feat/professional-ui-v1 commit 28b09a0
+api image 332380491162.dkr.ecr.sa-east-1.amazonaws.com/sirta-prod-api:0.3.114
+api digest sha256:d638a8c35b58425422cc5b3e3fb794ff05f3697dc363c318317979fab8e2e307
+api task sirta-prod-api:18 rollout COMPLETED
+web image 332380491162.dkr.ecr.sa-east-1.amazonaws.com/sirta-prod-web:0.4.8
+web digest sha256:eecdb1821e00cc76411a5c80b77a1ef12e72dd9427e70d7aa6f7d7589dd1f180
+web task sirta-prod-web:15 rollout COMPLETED
+GET /health 200 implementationVersion 0.3.101
+GET /v1/dashboards/executivo/geography 401 without a token
+GET / 200
+createsTaxCredit remains false
