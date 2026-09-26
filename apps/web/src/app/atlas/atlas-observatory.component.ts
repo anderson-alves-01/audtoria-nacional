@@ -60,7 +60,9 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
   toast = '';
   flashUf = '';
   lineTip = '';
+  kpiDisplay: string[] = ['—', '—', '—', '—'];
   private drawQueued = false;
+  private kpiToken = 0;
 
   ngOnInit(): void {
     this.http.get<GeographyPayload>('/v1/dashboards/executivo/geography').subscribe({
@@ -72,6 +74,7 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
         this.year = this.years().at(-1) ?? '';
         this.loading = false;
         this.queueDraw();
+        this.refreshKpis();
       },
       error: (_error: HttpErrorResponse) => {
         this.failed = true;
@@ -109,6 +112,47 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
       this.year = years.at(-1) ?? '';
     }
     this.queueDraw();
+    this.refreshKpis();
+  }
+
+  setYear(year: string): void {
+    this.year = year;
+    this.queueDraw();
+    this.refreshKpis();
+  }
+
+  refreshKpis(): void {
+    const token = ++this.kpiToken;
+    const slots = this.kpis();
+    const reduced =
+      typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) {
+      this.kpiDisplay = slots.map((slot) => slot.value);
+      return;
+    }
+    const targets = this.metrics.slice(0, 4).map((metric) => ({
+      metric,
+      value: this.national(metric.id, this.yearOf(metric.id)),
+    }));
+    const started = performance.now();
+    const tick = (now: number) => {
+      if (token !== this.kpiToken) {
+        return;
+      }
+      const progress = Math.min(1, (now - started) / 900);
+      const eased = 1 - (1 - progress) ** 3;
+      this.kpiDisplay = slots.map((slot, index) => {
+        const target = targets[index];
+        if (!target || target.value === null) {
+          return slot.value;
+        }
+        return formatMetric(target.metric, target.value * eased);
+      });
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      }
+    };
+    requestAnimationFrame(tick);
   }
 
   queueDraw(): void {
@@ -302,6 +346,7 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
   open(state: AtlasState): void {
     this.drawer = state;
     this.queueDraw();
+    setTimeout(() => document.getElementById('atlas-drawer-close')?.focus(), 30);
   }
 
   goRanking(uf: string): void {
@@ -309,6 +354,9 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
     this.flashUf = uf;
     this.drawer = null;
     this.queueDraw();
+    setTimeout(() => {
+      document.querySelector(`tr[data-uf="${uf}"]`)?.scrollIntoView({ block: 'center' });
+    }, 40);
   }
 
   addCompared(uf: string): void {
@@ -410,6 +458,15 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
       'stroke-dasharray': '3 3',
     });
     cursor.setAttribute('visibility', 'hidden');
+    const tip = this.svg(svg, 'g', {});
+    tip.setAttribute('visibility', 'hidden');
+    const tipBg = this.svg(tip, 'rect', { fill: '#1A1913', rx: '6', height: '22', y: '-18' });
+    const tipText = this.svg(tip, 'text', {
+      fill: '#F4F0E5',
+      'font-size': '12',
+      'font-weight': '600',
+      y: '-3',
+    });
     points.forEach((point, index) => {
       this.svg(svg, 'circle', { cx: String(x(index)), cy: String(y(point.value)), r: '3.5', fill: '#1E4D3B' });
       const label = this.svg(svg, 'text', {
@@ -438,14 +495,23 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
           nearest = index;
         }
       });
+      const point = points[nearest];
+      const label = `${point.year}: ${formatMetric(this.metric(), point.value)}`;
       cursor.setAttribute('x1', String(x(nearest)));
       cursor.setAttribute('x2', String(x(nearest)));
       cursor.setAttribute('visibility', 'visible');
-      const point = points[nearest];
-      this.lineTip = `${point.year}: ${formatMetric(this.metric(), point.value)}`;
+      tipText.textContent = label;
+      const textWidth = Math.max(72, label.length * 6.4);
+      tipBg.setAttribute('width', String(textWidth + 16));
+      tipBg.setAttribute('x', String(-8));
+      const tipX = Math.min(x(nearest) - textWidth / 2, width - margin.r - textWidth);
+      tip.setAttribute('transform', `translate(${Math.max(margin.l, tipX)} ${y(point.value) - 8})`);
+      tip.setAttribute('visibility', 'visible');
+      this.lineTip = label;
     });
     hit.addEventListener('mouseleave', () => {
       cursor.setAttribute('visibility', 'hidden');
+      tip.setAttribute('visibility', 'hidden');
       this.lineTip = '';
     });
   }

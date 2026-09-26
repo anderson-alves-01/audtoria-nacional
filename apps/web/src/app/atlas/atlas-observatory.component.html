@@ -28,7 +28,7 @@
         </select>
       </label>
       <label>Ano
-        <select [ngModel]="year" (ngModelChange)="year = $event; queueDraw()" name="year">
+        <select [ngModel]="year" (ngModelChange)="setYear($event)" name="year">
           @for (item of years(); track item) {
             <option [value]="item">{{ item }}</option>
           }
@@ -36,10 +36,10 @@
       </label>
     </div>
     <div class="kpis">
-      @for (kpi of kpis(); track kpi.label) {
+      @for (kpi of kpis(); track kpi.label; let index = $index) {
         <article class="kpi">
           <span class="kpi-label">{{ kpi.label }}</span>
-          <strong class="kpi-value">{{ kpi.value }}</strong>
+          <strong class="kpi-value">{{ kpiDisplay[index] || kpi.value }}</strong>
           <span class="kpi-sub">{{ kpi.sub }}</span>
         </article>
       }
@@ -138,7 +138,7 @@
         </thead>
         <tbody>
           @for (state of tableRows(); track state.uf) {
-            <tr [class.row-flash]="flashUf === state.uf" (click)="open(state)">
+            <tr [attr.data-uf]="state.uf" [class.row-flash]="flashUf === state.uf" (click)="open(state)">
               <td class="l">{{ state.nome }}</td>
               <td>{{ state.uf }}</td>
               @for (metric of metrics; track metric.id) {
@@ -210,7 +210,7 @@
   @if (drawer) {
     <button type="button" class="drawer-back" aria-label="Fechar detalhes" (click)="drawer = null"></button>
     <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="atlas-drawer-title">
-      <button type="button" (click)="drawer = null">Fechar</button>
+      <button id="atlas-drawer-close" type="button" (click)="drawer = null">Fechar</button>
       <h2 id="atlas-drawer-title" class="sec-title">{{ drawer.nome }}</h2>
       <p class="sec-sub">{{ drawer.uf }} · {{ regionName(drawer) }}</p>
       @for (metric of metrics; track metric.id) {
