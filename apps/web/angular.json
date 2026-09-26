@@ -32,7 +32,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/atlas.css"
             ],
             "scripts": []
           },
@@ -91,7 +92,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/atlas.css"
             ],
             "scripts": [],
             "karmaConfig": "karma.conf.js"

@@ -1,0 +1,229 @@
+<section class="atlas" aria-label="Observatório por estado">
+  <div class="atlas-tabs" role="tablist" aria-label="Seções do observatório">
+    <button #tabBtn type="button" class="tab-btn" role="tab" data-tab="visao" [attr.aria-selected]="tab === 'visao'" (click)="selectTab('visao')">Visão geral</button>
+    <button #tabBtn type="button" class="tab-btn" role="tab" data-tab="mapa" [attr.aria-selected]="tab === 'mapa'" (click)="selectTab('mapa')">Mapa</button>
+    <button #tabBtn type="button" class="tab-btn" role="tab" data-tab="rankings" [attr.aria-selected]="tab === 'rankings'" (click)="selectTab('rankings')">Rankings</button>
+    <button #tabBtn type="button" class="tab-btn" role="tab" data-tab="comparar" [attr.aria-selected]="tab === 'comparar'" (click)="selectTab('comparar')">Comparador</button>
+    <button #tabBtn type="button" class="tab-btn" role="tab" data-tab="metodo" [attr.aria-selected]="tab === 'metodo'" (click)="selectTab('metodo')">Metodologia</button>
+    <span class="tab-indicator" [style.left.px]="indicatorLeft" [style.width.px]="indicatorWidth"></span>
+  </div>
+
+  @if (loading) {
+    <p class="sec-sub" role="status">Lendo as séries publicadas…</p>
+  }
+  @if (failed) {
+    <p class="sec-sub" role="alert">Não foi possível ler a geografia publicada. Nenhum número foi estimado.</p>
+  }
+
+  <section class="panel" [class.active]="tab === 'visao'" role="tabpanel">
+    <p class="kicker"><b>01</b> Visão geral</p>
+    <h2 class="sec-title">O que já está publicado, por estado.</h2>
+    <p class="sec-sub">Totais oficiais da visão executiva. Onde não há linha publicada, o painel mostra travessão.</p>
+    <div class="filters">
+      <label>Indicador
+        <select [ngModel]="metricId" (ngModelChange)="onMetric($event)" name="metric">
+          @for (metric of metrics; track metric.id) {
+            <option [value]="metric.id">{{ metric.label }}</option>
+          }
+        </select>
+      </label>
+      <label>Ano
+        <select [ngModel]="year" (ngModelChange)="year = $event; queueDraw()" name="year">
+          @for (item of years(); track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
+    </div>
+    <div class="kpis">
+      @for (kpi of kpis(); track kpi.label) {
+        <article class="kpi">
+          <span class="kpi-label">{{ kpi.label }}</span>
+          <strong class="kpi-value">{{ kpi.value }}</strong>
+          <span class="kpi-sub">{{ kpi.sub }}</span>
+        </article>
+      }
+    </div>
+    <div class="grid-2">
+      <article class="card pad">
+        <div class="chart-head">
+          <h3>Série publicada</h3>
+          <span>{{ metric()?.unit }}</span>
+        </div>
+        <svg #lineChart class="line-chart" viewBox="0 0 780 280" role="img" [attr.aria-label]="'Série de ' + (metric()?.label || 'indicador')"></svg>
+        <p class="map-hint">{{ lineTip || 'Passe o cursor sobre a série publicada.' }}</p>
+        @if (series().length < 2) {
+          <p class="map-hint">A série temporal aparece quando há pelo menos dois anos publicados.</p>
+        }
+      </article>
+      <article class="card pad">
+        <div class="chart-head">
+          <h3>Top 10</h3>
+          <span>{{ metric()?.label }}</span>
+        </div>
+        @for (row of top10(); track row.uf) {
+          <button type="button" class="hbar-row" (click)="openUf(row.uf)">
+            <span class="hbar-sig">{{ row.uf }}</span>
+            <span>
+              <span class="hbar-name">{{ row.nome }}</span>
+              <span class="hbar-track"><span class="hbar-fill" [style.width.%]="row.width"></span></span>
+            </span>
+            <span class="hbar-val">{{ row.text }}</span>
+          </button>
+        }
+      </article>
+    </div>
+    <article class="card pad insights" style="margin-top: 22px">
+      @for (item of insights(); track item.label) {
+        <div class="ix">
+          <div class="ix-num">{{ item.num }}<small>{{ item.label }}</small></div>
+          <p>{{ item.text }}</p>
+        </div>
+      }
+    </article>
+  </section>
+
+  <section class="panel" [class.active]="tab === 'mapa'" role="tabpanel">
+    <p class="kicker"><b>02</b> Mapa</p>
+    <h2 class="sec-title">Estados no hexágono do template.</h2>
+    <p class="sec-sub">A cor usa só valores publicados do indicador escolhido. Travessão fica fora dos quantis.</p>
+    <div class="seg" role="group" aria-label="Indicador do mapa">
+      @for (metric of metrics; track metric.id) {
+        <button type="button" class="seg-btn" [attr.aria-pressed]="metric.id === metricId" (click)="onMetric(metric.id)">{{ metric.label }}</button>
+      }
+    </div>
+    <div class="map-layout">
+      <div class="card" style="padding: 8px">
+        <svg #hexmap class="hexmap" viewBox="-40 -58 545 520" role="img" aria-label="Mapa do Brasil em hexágonos"></svg>
+        <p class="map-hint">Posições col e row do template. Malha editorial, não a malha municipal do IBGE.</p>
+      </div>
+      <aside>
+        <article class="card pad">
+          <div class="side-title">{{ metric()?.label || 'Indicador' }}</div>
+          @for (band of legend(); track band.text) {
+            <div class="leg-row"><span class="leg-sw" [style.background]="band.fill"></span><span>{{ band.text }}</span></div>
+          }
+          @if (!legend().length) {
+            <p class="map-hint">Sem valores suficientes para a legenda.</p>
+          }
+        </article>
+        <article class="card pad" style="margin-top: 16px">
+          <div class="side-title">Destaques</div>
+          @for (item of highlights(); track item.label) {
+            <div class="hl-row"><span>{{ item.label }}</span><b class="num">{{ item.text }}</b></div>
+          }
+        </article>
+      </aside>
+    </div>
+  </section>
+
+  <section class="panel" [class.active]="tab === 'rankings'" role="tabpanel">
+    <p class="kicker"><b>03</b> Rankings</p>
+    <div class="toolbar">
+      <label class="search">Busca
+        <input type="search" [(ngModel)]="query" name="busca" placeholder="Nome ou sigla" />
+      </label>
+      <span class="map-hint">{{ tableRows().length }} estados</span>
+    </div>
+    <div class="table-wrap card">
+      <table>
+        <thead>
+          <tr>
+            <th class="l" (click)="sortBy('nome')">Estado</th>
+            <th (click)="sortBy('uf')">Sigla</th>
+            @for (metric of metrics; track metric.id) {
+              <th (click)="sortBy(metric.id)">{{ metric.label }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (state of tableRows(); track state.uf) {
+            <tr [class.row-flash]="flashUf === state.uf" (click)="open(state)">
+              <td class="l">{{ state.nome }}</td>
+              <td>{{ state.uf }}</td>
+              @for (metric of metrics; track metric.id) {
+                <td>{{ cell(state, metric.id) }}</td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" [class.active]="tab === 'comparar'" role="tabpanel">
+    <p class="kicker"><b>04</b> Comparador</p>
+    <p class="sec-sub">Até três estados, com os indicadores publicados na competência escolhida.</p>
+    <div class="chips">
+      @for (state of comparedStates(); track state.uf) {
+        <span class="chip">{{ state.uf }} {{ state.nome }} <button type="button" (click)="removeCompared(state.uf)" [attr.aria-label]="'Remover ' + state.nome">×</button></span>
+      }
+    </div>
+    @if (radar().length) {
+      <svg viewBox="0 0 220 220" class="line-chart" role="img" aria-label="Radar dos indicadores publicados">
+        @for (shape of radar(); track shape.uf) {
+          <polygon [attr.points]="shape.points" fill="#1E4D3B" fill-opacity="0.15" stroke="#1E4D3B" />
+        }
+      </svg>
+    }
+    <div class="table-wrap card" style="margin-top: 16px">
+      <table>
+        <thead>
+          <tr>
+            <th class="l">Indicador</th>
+            @for (state of comparedStates(); track state.uf) {
+              <th>{{ state.uf }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (metric of metrics; track metric.id) {
+            <tr>
+              <td class="l">{{ metric.label }}</td>
+              @for (state of comparedStates(); track state.uf) {
+                <td [class.gold]="best(metric.id) === state.uf">{{ cell(state, metric.id) }}</td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" [class.active]="tab === 'metodo'" role="tabpanel">
+    <p class="kicker"><b>05</b> Metodologia</p>
+    <article class="card pad">
+      <h2 class="sec-title">O que esta tela soma</h2>
+      <p>População, PIB em mil reais e as variáveis do Cadastro Central de Empresas já publicadas na visão executiva. A população em pessoas é mostrada em milhares, só como troca de unidade.</p>
+      <p>Não há, nesta carga, IDH, PIB per capita, educação, saúde, infraestrutura nem o índice IDR do template. Essas células não são estimadas.</p>
+      <p>A posição de cada hexágono é a constante cartográfica do template. A capital não vem da API e não é exibida.</p>
+    </article>
+  </section>
+
+  @if (tip.on) {
+    <div class="tooltip on" [style.left.px]="tip.left" [style.top.px]="tip.top" role="tooltip">
+      <div class="tt-head"><b>{{ tip.uf }}</b> {{ tip.nome }}</div>
+      <div class="tt-m"><span>{{ tip.region }}</span><b>{{ tip.value }}</b></div>
+    </div>
+  }
+
+  @if (drawer) {
+    <button type="button" class="drawer-back" aria-label="Fechar detalhes" (click)="drawer = null"></button>
+    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="atlas-drawer-title">
+      <button type="button" (click)="drawer = null">Fechar</button>
+      <h2 id="atlas-drawer-title" class="sec-title">{{ drawer.nome }}</h2>
+      <p class="sec-sub">{{ drawer.uf }} · {{ regionName(drawer) }}</p>
+      @for (metric of metrics; track metric.id) {
+        <p><strong>{{ metric.label }}</strong> {{ cell(drawer, metric.id) }} <span class="map-hint">{{ rankLabel(drawer, metric.id) }}</span></p>
+      }
+      <p>
+        <button type="button" (click)="goRanking(drawer.uf)">Ver no ranking</button>
+        <button type="button" (click)="addCompared(drawer.uf)">Adicionar ao comparador</button>
+      </p>
+    </aside>
+  }
+
+  @if (toast) {
+    <p class="toast" role="status">{{ toast }}</p>
+  }
+</section>

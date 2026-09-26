@@ -32,22 +32,37 @@
 }
 
 :root {
-  --primary-900: #0b1f3a;
-  --primary-700: #163d63;
-  --teal-600: #0e7490;
-  --green-600: #16845b;
-  --gold-500: #c7962d;
-  --orange-600: #c96820;
-  --red-600: #b63a48;
-  --surface: #ffffff;
-  --background: #f4f7fb;
-  --text: #172033;
-  --muted: #667085;
-  --border: #dde3ec;
+  --paper: #f4f0e5;
+  --paper2: #fbf9f2;
+  --ink: #1a1913;
+  --ink2: #605b4c;
+  --ink3: #8a8471;
+  --line: #e1dbc8;
+  --line2: #cfc8b1;
+  --green: #1e4d3b;
+  --green2: #2d6a4f;
+  --gold: #b98a2f;
+  --terra: #c2542e;
+  --wine: #8c3b4a;
+  --petrol: #3e6b72;
+  --sh: 0 1px 2px rgba(26, 25, 19, 0.05), 0 12px 32px rgba(26, 25, 19, 0.08);
+  --r: 10px;
+  --primary-900: var(--ink);
+  --primary-700: var(--green);
+  --teal-600: var(--gold);
+  --green-600: var(--green2);
+  --gold-500: var(--gold);
+  --orange-600: var(--terra);
+  --red-600: var(--wine);
+  --surface: var(--paper2);
+  --background: var(--paper);
+  --text: var(--ink);
+  --muted: var(--ink3);
+  --border: var(--line);
   --sidebar: 264px;
   --sidebar-collapsed: 80px;
-  --shadow: 0 8px 24px rgba(11, 31, 58, 0.06);
-  --radius: 12px;
+  --shadow: var(--sh);
+  --radius: var(--r);
 }
 
 html,
@@ -57,19 +72,43 @@ body {
 }
 
 body {
-  font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.5;
-  background: var(--background);
-  color: var(--text);
+  font-family: "Archivo", "Source Sans 3", "Segoe UI", sans-serif;
+  font-size: 15.5px;
+  line-height: 1.55;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+}
+
+h1,
+h2,
+.serif {
+  font-family: "Fraunces", serif;
+  font-optical-sizing: auto;
 }
 
 a {
-  color: var(--primary-700);
+  color: var(--green);
 }
 
 :focus-visible {
-  outline: 2px solid var(--teal-600);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
+}
+
+::selection {
+  background: var(--gold);
+  color: #fff;
 }
 
 .tabular {
