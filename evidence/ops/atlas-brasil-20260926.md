@@ -26,4 +26,12 @@ Data: 2026-09-26. Sem alteração de API, modelo ou migration. `template/index.h
 ## Verificação
 
 - `ng test` do adaptador e do painel: 6 sucessos.
-- A tela não foi percorrida no navegador nesta entrega.
+- Navegador local em `/executivo`, com a API publicada: abas, hexágono (Acre 888 mil), drawer, ranking com flash e busca "são" deixando só São Paulo.
+- Larguras 1440, 1024 e 768 sem estouro da página. Em 375 a tabela rola dentro do próprio quadro.
+- `/financeiro` abre com o título Dinheiro do Município. A carga desse painel seguiu lenta na API já publicada.
+
+## Publicação
+
+- Web `sirta-prod-web:0.4.9`, digest sha256:a4bf94d2093bdc9994d54f8d4109c6c2a60e2dc9441924a09f308331f2b784eb.
+- Tarefa `sirta-prod-web:16`, rollout COMPLETED.
+- `GET /executivo` 200. API permanece 0.3.114.
