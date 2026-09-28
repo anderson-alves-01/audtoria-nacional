@@ -285,6 +285,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     const oldest = competences[competences.length - 1] || head.competence;
     const competence =
       competences.length > 1 ? `${oldest} a ${newest}` : newest;
+    const coverageCount = group.reduce((sum, item) => sum + (item.coverageCount || 0), 0);
     let figure = measures.length ? '' : this.publishedTotal(head);
     let presentation =
       this.prose(head.presentation) || 'Leitura do valor publicado pelo órgão. Não é crédito tributário.';
@@ -306,7 +307,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       valueKind: head.valueKind || '',
       maintainer: head.maintainer,
       competence,
-      coverageCount: head.coverageCount,
+      coverageCount,
       qualityLevel: head.qualityLevel,
       homologationStatus: head.homologationStatus,
       formula: head.formula,

@@ -18,7 +18,7 @@ from sirta_api.domain.dashboard_charts import (
     separate_measures,
     statement_revenue_account_codes,
 )
-from sirta_api.domain.dashboards import DASHBOARDS, dashboard_by_id
+from sirta_api.domain.dashboards import DASHBOARDS, dashboard_by_id, fold_statement_gold_items
 from sirta_api.domain.errors import NotVisibleError
 
 
@@ -59,6 +59,7 @@ def get_dashboard(session: Session, *, context: AccessContext, dashboard_id: str
             )
         ),
     ]
+    view["items"] = fold_statement_gold_items(view["items"])
     return view
 
 

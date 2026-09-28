@@ -273,6 +273,7 @@ describe('DashboardPageComponent', () => {
     const text = fixture.nativeElement.textContent as string;
     expect(text).toContain('Valores da conta-mãe publicados nos gráficos desta fonte.');
     expect(text).toContain('2024 a 2025');
+    expect(text).toContain('3144');
     expect(text).not.toContain('Valor não publicado');
     expect(fixture.nativeElement.querySelectorAll('.source-list li').length).toBe(1);
     fixture.destroy();

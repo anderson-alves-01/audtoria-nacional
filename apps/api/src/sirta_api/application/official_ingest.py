@@ -616,14 +616,6 @@ def list_official_gold(session: Session, *, context: AccessContext) -> dict:
     ).all()
     items = []
     published_ids = {row.source_id for row in rows}
-    line_counts = {
-        gold_id: count
-        for gold_id, count in session.execute(
-            select(GoldOfficialLine.gold_id, func.count(GoldOfficialLine.id)).group_by(
-                GoldOfficialLine.gold_id
-            )
-        )
-    }
     for row in rows:
         presentation = presentation_for(row.source_id)
         items.append(
@@ -653,7 +645,7 @@ def list_official_gold(session: Session, *, context: AccessContext) -> dict:
                 "valueKind": presentation["valueKind"],
                 "presentation": presentation["label"],
                 "financial": presentation["financial"],
-                "lineageLineCount": int(line_counts.get(row.id) or 0),
+                "lineageLineCount": int(row.silver_row_count or 0),
             }
         )
     divergence = coverage_divergence(items)

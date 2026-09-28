@@ -231,3 +231,27 @@ def dashboard_by_id(dashboard_id: str) -> dict | None:
         if item["id"] == dashboard_id:
             return item
     return None
+
+
+def fold_statement_gold_items(items: list[dict]) -> list[dict]:
+    """One published figure per statement source and competence.
+
+    Each backfill slice is its own Gold row. The reading surface sums those
+    slices instead of shipping one lineage card per handful of municipalities.
+    """
+    folded: list[dict] = []
+    index: dict[tuple[str, str], dict] = {}
+    for item in items:
+        if item.get("valueKind") != "FISCAL_STATEMENT_LINE":
+            folded.append(item)
+            continue
+        key = (str(item.get("sourceId") or ""), str(item.get("competence") or ""))
+        current = index.get(key)
+        if current is None:
+            current = dict(item)
+            index[key] = current
+            folded.append(current)
+            continue
+        for field in ("coverageCount", "quarantinedCount", "lineageLineCount"):
+            current[field] = int(current.get(field) or 0) + int(item.get(field) or 0)
+    return folded
