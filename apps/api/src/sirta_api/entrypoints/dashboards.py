@@ -5,6 +5,7 @@ from sirta_api.adapters.db.session import get_session
 from sirta_api.adapters.http.deps import get_access_context
 from sirta_api.application.dashboards import get_dashboard, list_dashboards
 from sirta_api.application.executive_geography import list_executive_geography
+from sirta_api.application.finance_geography import list_finance_geography
 from sirta_api.application.official_ingest import list_official_gold_lines
 from sirta_api.domain.authorization import AccessContext
 
@@ -25,6 +26,14 @@ def get_executive_geography(
     session: Session = Depends(get_session),
 ) -> dict:
     return list_executive_geography(session, context=context)
+
+
+@router.get("/v1/dashboards/financeiro/geography")
+def get_finance_geography(
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> dict:
+    return list_finance_geography(session, context=context)
 
 
 @router.get("/v1/dashboards/{dashboardId}")

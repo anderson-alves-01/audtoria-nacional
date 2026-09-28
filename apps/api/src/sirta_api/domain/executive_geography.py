@@ -98,15 +98,23 @@ def aggregate_executive_geography(lines: list[dict]) -> dict:
     return assemble_geography(groups)
 
 
-def assemble_geography(groups: list[dict]) -> dict:
+def assemble_geography(
+    groups: list[dict],
+    *,
+    allowed_sources: tuple[str, ...] | None = None,
+    source_labels: dict[str, str] | None = None,
+) -> dict:
+    allowed = EXECUTIVE_MAP_SOURCES if allowed_sources is None else allowed_sources
+    labels = SOURCE_LABELS if source_labels is None else source_labels
     states: dict[str, dict] = {}
     for group in groups:
         uf_code = str(group.get("ufCode") or "")
         source_id = str(group.get("sourceId") or "")
-        if uf_code not in UF_BY_CODE or source_id not in EXECUTIVE_MAP_SOURCES:
+        if uf_code not in UF_BY_CODE or source_id not in allowed:
             continue
         region_id, _region_name = _REGION_BY_UF_CODE[uf_code]
         uf, uf_name = UF_BY_CODE[uf_code]
+        source_label = labels.get(source_id, source_id)
         state = states.setdefault(
             uf,
             {"uf": uf, "name": uf_name, "regionId": region_id, "measures": []},
@@ -114,8 +122,8 @@ def assemble_geography(groups: list[dict]) -> dict:
         state["measures"].append(
             {
                 "sourceId": source_id,
-                "sourceLabel": SOURCE_LABELS[source_id],
-                "label": str(group.get("label") or SOURCE_LABELS[source_id]),
+                "sourceLabel": source_label,
+                "label": str(group.get("label") or source_label),
                 "unit": str(group.get("unit") or "UNIT"),
                 "competence": str(group.get("competence") or "")[:4],
                 "total": round(float(group["total"]), 4),

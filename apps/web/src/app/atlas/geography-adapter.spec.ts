@@ -1,4 +1,11 @@
-import { adaptGeography, formatMetric, populationInThousands, quantileFill } from './geography-adapter';
+import {
+  adaptGeography,
+  adaptMoneyGeography,
+  formatMetric,
+  formatPublishedReais,
+  populationInThousands,
+  quantileFill,
+} from './geography-adapter';
 
 describe('adaptGeography', () => {
   it('puts Acre population in thousands and keeps PIB in published mil reais', () => {
@@ -46,5 +53,46 @@ describe('adaptGeography', () => {
     const metric = { id: 'pib', label: 'PIB', unit: 'mil reais', sourceLabel: '', ramp: ['#111'] };
     expect(formatMetric(metric, null)).toBe('—');
     expect(quantileFill(null, [1, 2, 3], ['#111', '#222'])).toBeNull();
+  });
+});
+
+describe('adaptMoneyGeography', () => {
+  it('keeps the published reais and ignores population', () => {
+    const view = adaptMoneyGeography({
+      regions: [
+        {
+          states: [
+            {
+              uf: 'AC',
+              measures: [
+                {
+                  sourceId: 'TESOURO-FPM-VALORES',
+                  label: 'FPM publicado',
+                  sourceLabel: 'FPM publicado',
+                  unit: 'BRL',
+                  competence: '2025',
+                  total: 2_500_000,
+                  municipalityCount: 22,
+                },
+                {
+                  sourceId: 'IBGE-SIDRA',
+                  label: 'População',
+                  unit: 'Pessoas',
+                  competence: '2024',
+                  total: 830000,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    const acre = view.states.find((state) => state.uf === 'AC');
+    expect(acre?.points).toEqual([
+      jasmine.objectContaining({ metricId: 'TESOURO-FPM-VALORES', value: 2_500_000, municipalityCount: 22 }),
+    ]);
+    expect(view.metrics.map((metric) => metric.id)).toEqual(['TESOURO-FPM-VALORES']);
+    expect(formatPublishedReais(2_500_000)).toBe('2,5 mi');
+    expect(formatPublishedReais(null)).toBe('—');
   });
 });

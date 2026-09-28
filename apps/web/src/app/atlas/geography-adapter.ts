@@ -23,6 +23,7 @@ export interface MetricPoint {
   unit: string;
   sourceLabel: string;
   label: string;
+  municipalityCount?: number;
 }
 
 export interface AtlasState extends HexCell {
@@ -129,6 +130,71 @@ export function adaptGeography(payload: GeographyPayload): { states: AtlasState[
     return (ia === -1 ? 9 : ia) - (ib === -1 ? 9 : ib) || a.label.localeCompare(b.label, 'pt-BR');
   });
   return { states, metrics: defs };
+}
+
+const MONEY_ALLOWED = new Set(['TESOURO-FPM-VALORES', 'SICONFI-RREO', 'SICONFI-DCA']);
+const MONEY_ORDER = ['TESOURO-FPM-VALORES', 'SICONFI-RREO', 'SICONFI-DCA'];
+
+/** Published reais stay in reais. Population and PIB series are left to the executive map. */
+export function adaptMoneyGeography(payload: GeographyPayload): { states: AtlasState[]; metrics: MetricDef[] } {
+  const byUf = new Map<string, MetricPoint[]>();
+  const metrics = new Map<string, MetricDef>();
+  for (const region of payload.regions ?? []) {
+    for (const state of region.states ?? []) {
+      const uf = (state.uf || '').toUpperCase();
+      for (const measure of state.measures ?? []) {
+        const id = measure.sourceId ?? '';
+        if (!MONEY_ALLOWED.has(id) || measure.total === null || measure.total === undefined) {
+          continue;
+        }
+        const point: MetricPoint = {
+          metricId: id,
+          year: String(measure.competence || '').slice(0, 4),
+          value: Number(measure.total),
+          unit: 'reais',
+          sourceLabel: measure.sourceLabel || measure.label || id,
+          label: measure.label || measure.sourceLabel || id,
+          municipalityCount: measure.municipalityCount,
+        };
+        const list = byUf.get(uf) ?? [];
+        list.push(point);
+        byUf.set(uf, list);
+        if (!metrics.has(id)) {
+          metrics.set(id, {
+            id,
+            label: point.label,
+            unit: 'reais',
+            sourceLabel: point.sourceLabel,
+            ramp: PIB_RAMP,
+          });
+        }
+      }
+    }
+  }
+  const states = HEX_LAYOUT.map((cell) => ({ ...cell, points: byUf.get(cell.uf) ?? [] }));
+  const defs = [...metrics.values()].sort(
+    (a, b) => MONEY_ORDER.indexOf(a.id) - MONEY_ORDER.indexOf(b.id),
+  );
+  return { states, metrics: defs };
+}
+
+export function formatPublishedReais(value: number | null): string {
+  if (value === null || value === undefined || Number.isNaN(value)) {
+    return '—';
+  }
+  const abs = Math.abs(value);
+  const compact = (divisor: number, suffix: string) =>
+    `${(value / divisor).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} ${suffix}`;
+  if (abs >= 1_000_000_000_000) {
+    return compact(1_000_000_000_000, 'tri');
+  }
+  if (abs >= 1_000_000_000) {
+    return compact(1_000_000_000, 'bi');
+  }
+  if (abs >= 1_000_000) {
+    return compact(1_000_000, 'mi');
+  }
+  return `${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} reais`;
 }
 
 export function valueAt(state: AtlasState, metricId: string, year: string): number | null {

@@ -1,0 +1,73 @@
+<section class="atlas money-map" aria-labelledby="money-map-title">
+  <header class="money-map-head">
+    <h2 id="money-map-title">Municípios no mapa</h2>
+    <p>
+      Cada estado mostra a soma do valor já publicado dos seus municípios. Onde não há número, o
+      hexágono fica sem cor. Esta soma não é crédito tributário.
+    </p>
+  </header>
+
+  @if (loading) {
+    <p class="money-map-status">Carregando o mapa dos municípios…</p>
+  }
+  @if (failed) {
+    <p class="money-map-status" role="alert">
+      O mapa não carregou. A lista e os gráficos deste painel continuam abaixo.
+    </p>
+  }
+
+  <div class="money-map-tools">
+    @if (metrics.length) {
+      <label>
+        Série
+        <select [value]="metricId" (change)="selectMetric(selectValue($event))">
+          @for (metric of metrics; track metric.id) {
+            <option [value]="metric.id">{{ metric.label }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Ano
+        <select [value]="year" (change)="selectYear(selectValue($event))">
+          @for (item of years(); track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </label>
+    } @else if (!loading) {
+      <p>Nenhuma série municipal publicada neste recorte.</p>
+    }
+  </div>
+
+  <svg
+    #hexmap
+    class="hexmap"
+    viewBox="-40 -58 545 520"
+    role="img"
+    aria-label="Mapa do Brasil por estado com a soma municipal publicada"
+  ></svg>
+
+  @if (metric()) {
+    <ul class="money-legend" aria-label="Escala da cor">
+      @for (swatch of metric()!.ramp; track swatch) {
+        <li><span [style.background]="swatch"></span></li>
+      }
+      <li><span class="money-empty"></span> sem valor</li>
+    </ul>
+  }
+
+  @if (drawer) {
+    <aside class="money-detail" aria-live="polite">
+      <h3>{{ drawer.nome }}</h3>
+      <p>{{ detailText() }}</p>
+      <button type="button" (click)="close()">Fechar</button>
+    </aside>
+  }
+
+  @if (tip.on) {
+    <div class="money-tip" role="tooltip" [style.left.px]="tip.left" [style.top.px]="tip.top">
+      <strong>{{ tip.nome }}</strong>
+      <span>{{ tip.value }}</span>
+    </div>
+  }
+</section>

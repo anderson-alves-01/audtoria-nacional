@@ -17,6 +17,10 @@
     <app-atlas-observatory />
   }
 
+  @if (dashboardId === 'financeiro') {
+    <app-municipal-money-map />
+  }
+
   @if (state === 'loading') {
     <app-skeleton />
   }

@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription, catchError, from, of, switchMap } from 'rxjs';
 import { PublicOpenSessionService } from '../auth/public-open-session.service';
 import { AtlasObservatoryComponent } from '../atlas/atlas-observatory.component';
+import { MunicipalMoneyMapComponent } from './municipal-money-map.component';
 import { ChartCardComponent, ChartSeriesInput } from '../shared/charts/chart-card.component';
 import { EvidenceDrawerComponent } from '../shared/evidence/evidence-drawer.component';
 import {
@@ -142,6 +143,7 @@ interface DashboardResponse {
   imports: [
     CommonModule,
     AtlasObservatoryComponent,
+    MunicipalMoneyMapComponent,
     KpiCardComponent,
     ChartCardComponent,
     EmptyStateComponent,
