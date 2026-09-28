@@ -26,6 +26,7 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
   private readonly http = inject(HttpClient);
 
   @ViewChild('hexmap') hexmap?: ElementRef<SVGSVGElement>;
+  @ViewChild('popupClose') popupClose?: ElementRef<HTMLButtonElement>;
 
   loading = true;
   failed = false;
@@ -36,6 +37,7 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
   drawer: AtlasState | null = null;
   tip = { on: false, left: 0, top: 0, nome: '', value: '' };
   private drawQueued = false;
+  private focusPopup = false;
 
   ngOnInit(): void {
     this.http.get<GeographyPayload>('/v1/dashboards/financeiro/geography').subscribe({
@@ -54,6 +56,10 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
+    if (this.focusPopup && this.popupClose) {
+      this.focusPopup = false;
+      this.popupClose.nativeElement.focus();
+    }
     if (!this.drawQueued) {
       return;
     }
@@ -93,18 +99,31 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
     return (event.target as HTMLSelectElement).value;
   }
 
-  detailText(): string {
+  regionName(state: AtlasState): string {
+    return REGION_NAME[state.reg];
+  }
+
+  detailLines(): { series: string; value: string; places: string; year: string }[] {
     if (!this.drawer) {
-      return '';
+      return [];
     }
-    const point = this.point(this.drawer);
-    const value = formatPublishedReais(point?.value ?? null);
-    if (!point || point.value === null) {
-      return `${this.drawer.nome} não tem valor publicado nesta série.`;
-    }
-    const count = point.municipalityCount ?? 0;
-    const places = count === 1 ? '1 município na soma' : `${count} municípios na soma`;
-    return `${value}. ${places}. ${point.sourceLabel}. Competência ${point.year}.`;
+    return this.drawer.points
+      .filter((point) => point.value !== null)
+      .sort((left, right) => {
+        const selected = (point: { metricId: string; year: string }) =>
+          point.metricId === this.metricId && point.year === this.year ? 1 : 0;
+        return selected(right) - selected(left) || right.year.localeCompare(left.year);
+      })
+      .map((point) => {
+        const count = point.municipalityCount ?? 0;
+        const places = count === 1 ? '1 município' : `${count} municípios`;
+        return {
+          series: point.label,
+          value: formatPublishedReais(point.value),
+          places,
+          year: point.year,
+        };
+      });
   }
 
   private apply(view: { states: AtlasState[]; metrics: MetricDef[] }): void {
@@ -116,10 +135,6 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
 
   private queueDraw(): void {
     this.drawQueued = true;
-  }
-
-  private point(state: AtlasState) {
-    return state.points.find((item) => item.metricId === this.metricId && item.year === this.year);
   }
 
   private drawMap(): void {
@@ -183,7 +198,9 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
   }
 
   private open(state: AtlasState): void {
+    this.tip = { ...this.tip, on: false };
     this.drawer = state;
+    this.focusPopup = true;
     this.queueDraw();
   }
 

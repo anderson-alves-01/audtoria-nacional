@@ -43,7 +43,14 @@ describe('MunicipalMoneyMapComponent', () => {
     expect(acre.getAttribute('aria-label')).toContain('2,5 mi');
     acre.dispatchEvent(new Event('click'));
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('22 municípios na soma');
-    expect(fixture.nativeElement.textContent).toContain('não é crédito tributário');
+    const popup = fixture.nativeElement.querySelector('[role="dialog"]') as HTMLElement;
+    expect(popup.getAttribute('aria-modal')).toBe('true');
+    expect(popup.textContent).toContain('Acre');
+    expect(popup.textContent).toContain('2,5 mi');
+    expect(popup.textContent).toContain('22');
+    expect(popup.textContent).toContain('não é crédito tributário');
+    popup.parentElement?.dispatchEvent(new Event('click'));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="dialog"]')).toBeNull();
   });
 });

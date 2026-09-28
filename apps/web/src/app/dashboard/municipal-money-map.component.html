@@ -57,11 +57,35 @@
   }
 
   @if (drawer) {
-    <aside class="money-detail" aria-live="polite">
-      <h3>{{ drawer.nome }}</h3>
-      <p>{{ detailText() }}</p>
-      <button type="button" (click)="close()">Fechar</button>
-    </aside>
+    <div class="money-popup-backdrop" (click)="close()">
+      <div
+        class="money-popup"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="money-popup-title"
+        (click)="$event.stopPropagation()"
+      >
+        <header>
+          <p>{{ regionName(drawer) }}</p>
+          <h3 id="money-popup-title">{{ drawer.nome }}</h3>
+        </header>
+        @if (detailLines().length) {
+          <ul>
+            @for (line of detailLines(); track line.series) {
+              <li>
+                <span>{{ line.series }}</span>
+                <strong>{{ line.value }}</strong>
+                <small>{{ line.places }} · {{ line.year }}</small>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p>{{ drawer.nome }} não tem valor publicado.</p>
+        }
+        <p class="money-popup-note">Soma do valor já publicado. Esta soma não é crédito tributário.</p>
+        <button #popupClose type="button" (click)="close()">Fechar</button>
+      </div>
+    </div>
   }
 
   @if (tip.on) {

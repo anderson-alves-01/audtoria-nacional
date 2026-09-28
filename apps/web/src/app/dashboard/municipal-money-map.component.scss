@@ -40,7 +40,7 @@
 }
 
 .money-map-tools select:focus-visible,
-.money-detail button:focus-visible {
+.money-popup button:focus-visible {
   outline: 2px solid var(--gold, #b98a2f);
   outline-offset: 2px;
 }
@@ -66,20 +66,75 @@
   background: #e1dbc8;
 }
 
-.money-detail {
-  margin-top: 12px;
-  padding: 12px 14px;
+.money-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(26, 25, 19, 0.45);
+}
+
+.money-popup {
+  width: min(420px, 100%);
+  max-height: min(80vh, 560px);
+  overflow: auto;
+  padding: 18px 18px 16px;
   border: 1px solid var(--line, #e1dbc8);
-  background: #fffdf8;
+  background: var(--paper, #f4f0e5);
+  color: var(--ink, #1a1913);
+  box-shadow: 0 16px 40px rgba(26, 25, 19, 0.18);
 }
 
-.money-detail h3 {
-  margin: 0 0 6px;
+.money-popup header p {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.money-popup h3 {
+  margin: 2px 0 12px;
   font-family: Fraunces, serif;
+  font-size: 1.8rem;
+  font-weight: 560;
 }
 
-.money-detail button {
-  min-height: 36px;
+.money-popup ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.money-popup li {
+  display: grid;
+  gap: 2px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line, #e1dbc8);
+}
+
+.money-popup li span,
+.money-popup li small,
+.money-popup-note {
+  color: var(--ink2, #3d3a32);
+}
+
+.money-popup li strong {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.35rem;
+}
+
+.money-popup-note {
+  margin: 8px 0 14px;
+  font-size: 0.85rem;
+}
+
+.money-popup button {
+  min-height: 40px;
+  padding: 0 14px;
   border: 1px solid var(--ink, #1a1913);
   background: transparent;
   color: var(--ink, #1a1913);
