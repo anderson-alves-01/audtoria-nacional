@@ -1,0 +1,11 @@
+prod money map 2026-09-28
+
+commit 4574f58
+api image 0.3.116 task sirta-prod-api:20 digest sha256:f8e6da582b4ac078bca8d790711371830a288dd075278e267a5cc11a3c845f72
+web image 0.4.11 task sirta-prod-web:18 digest sha256:e8da71a41b60dc8cccc9f2520ae10017f9804959b21cf8a44ee59e136a844ff4
+
+GET /health 200 implementationVersion 0.3.101
+GET /v1/dashboards/financeiro/geography 200 in 64.5s, 16565 bytes, createsTaxCredit false, 5 regions, 27 states with measures, sources SICONFI-DCA SICONFI-RREO TESOURO-FPM-VALORES
+GET /financeiro 200
+
+Browser /financeiro: 27 state hexes, series FPM publicado year 2026. Acre click showed 83,3 mi and 22 municipios na soma. No merge.
