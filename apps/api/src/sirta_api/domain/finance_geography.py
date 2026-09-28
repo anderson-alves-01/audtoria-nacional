@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from sirta_api.domain.dashboard_charts import is_statement_revenue_cell
-from sirta_api.domain.executive_geography import assemble_geography
+from sirta_api.domain.executive_geography import UF_BY_CODE, assemble_geography
+
+_UF_CODE = {uf: code for code, (uf, _name) in UF_BY_CODE.items()}
 
 FINANCE_MAP_SOURCES = (
     "TESOURO-FPM-VALORES",
@@ -83,6 +85,46 @@ def _collapse(cells: list[dict]) -> list[dict]:
             }
         )
     return groups
+
+
+def finance_summary_records(view: dict) -> list[dict]:
+    """One stored row per state, source and year. Empty states are omitted."""
+    records = []
+    for region in view.get("regions") or []:
+        for state in region.get("states") or []:
+            uf_code = _UF_CODE.get(str(state.get("uf") or ""))
+            if not uf_code:
+                continue
+            for measure in state.get("measures") or []:
+                records.append(
+                    {
+                        "sourceId": str(measure.get("sourceId") or ""),
+                        "ufCode": uf_code,
+                        "label": str(measure.get("label") or ""),
+                        "unit": str(measure.get("unit") or "BRL"),
+                        "competence": str(measure.get("competence") or "")[:4],
+                        "total": float(measure["total"]),
+                        "municipalityCount": int(measure.get("municipalityCount") or 0),
+                    }
+                )
+    return records
+
+
+def replace_summary_snapshot(_current: dict, incoming: list[dict]) -> dict:
+    """The new rollup replaces the previous one. A second run does not append."""
+    snapshot = {}
+    for row in incoming:
+        key = (row["sourceId"], row["ufCode"], row["competence"])
+        snapshot[key] = row
+    return snapshot
+
+
+def view_from_summary(rows: list[dict]) -> dict:
+    return assemble_geography(
+        rows,
+        allowed_sources=FINANCE_MAP_SOURCES,
+        source_labels=FINANCE_SOURCE_LABELS,
+    )
 
 
 def _preferred(source_id: str, group: list[dict]) -> list[dict]:

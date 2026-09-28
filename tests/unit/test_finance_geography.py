@@ -1,4 +1,9 @@
-from sirta_api.domain.finance_geography import aggregate_finance_geography
+from sirta_api.domain.finance_geography import (
+    aggregate_finance_geography,
+    finance_summary_records,
+    replace_summary_snapshot,
+    view_from_summary,
+)
 
 
 def test_map_keeps_one_realized_figure_per_state_and_ignores_forecast():
@@ -126,3 +131,46 @@ def test_empty_money_map_still_lists_every_region_without_a_number():
     assert all(
         state["measures"] == [] for region in view["regions"] for state in region["states"]
     )
+
+
+def test_gold_summary_roundtrip_replaces_and_does_not_append():
+    view = aggregate_finance_geography(
+        [
+            {
+                "sourceId": "TESOURO-FPM-VALORES",
+                "ufCode": "12",
+                "account": "",
+                "column": "",
+                "unit": "BRL",
+                "competence": "2025",
+                "total": 15,
+                "municipalityCount": 2,
+            }
+        ]
+    )
+    first = finance_summary_records(view)
+    stale = {
+        ("SICONFI-DCA", "35", "2024"): {
+            "sourceId": "SICONFI-DCA",
+            "ufCode": "35",
+            "competence": "2024",
+            "label": "Receitas brutas realizadas",
+            "unit": "BRL",
+            "total": 1.0,
+            "municipalityCount": 1,
+        }
+    }
+    stored = replace_summary_snapshot(stale, first)
+    assert list(stored) == [("TESOURO-FPM-VALORES", "12", "2025")]
+    assert stored[("TESOURO-FPM-VALORES", "12", "2025")]["total"] == 15.0
+    assert stored[("TESOURO-FPM-VALORES", "12", "2025")]["municipalityCount"] == 2
+    restored = view_from_summary(list(stored.values()))
+    acre = next(
+        state
+        for region in restored["regions"]
+        if region["id"] == "norte"
+        for state in region["states"]
+        if state["uf"] == "AC"
+    )
+    assert acre["measures"][0]["total"] == 15.0
+    assert restored["createsTaxCredit"] is False

@@ -343,6 +343,27 @@ class GoldOfficialLine(Base):
     payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
 
 
+class GoldFinanceStateSummary(Base):
+    """Published municipal money already summed by state. The map reads this, not the lines."""
+
+    __tablename__ = "gold_finance_state_summaries"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "territory_id", "source_id", "uf_code", "competence"),
+    )
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    uf_code: Mapped[str] = mapped_column(String(2), nullable=False)
+    competence: Mapped[str] = mapped_column(String(4), nullable=False)
+    label: Mapped[str] = mapped_column(String(128), nullable=False)
+    unit: Mapped[str] = mapped_column(String(32), nullable=False)
+    total: Mapped[float] = mapped_column(Numeric(24, 4), nullable=False)
+    municipality_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    refreshed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
 class IngestCheckpoint(Base):
     __tablename__ = "ingest_checkpoints"
     __table_args__ = (UniqueConstraint("tenant_id", "territory_id", "source_id", "partition_key"),)

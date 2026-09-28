@@ -1,22 +1,111 @@
-"""Read published municipal money grouped by state."""
+"""Read the state summary of published municipal money.
 
-from sqlalchemy import func, or_, select
+The map does not scan statement lines. A refresh writes one Gold row per
+state, source and year, and the next refresh replaces that snapshot.
+"""
+
+from datetime import UTC, datetime
+from uuid import UUID, uuid4
+
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.orm import Session
 
-from sirta_api.adapters.db.models import GoldOfficial, GoldOfficialLine
+from sirta_api.adapters.db.models import GoldFinanceStateSummary, GoldOfficial, GoldOfficialLine
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.dashboard_charts import statement_revenue_account_codes
 from sirta_api.domain.executive_geography import UF_BY_CODE
-from sirta_api.domain.finance_geography import aggregate_finance_geography
+from sirta_api.domain.finance_geography import (
+    FINANCE_MAP_SOURCES,
+    aggregate_finance_geography,
+    finance_summary_records,
+    replace_summary_snapshot,
+    view_from_summary,
+)
 
 
 def list_finance_geography(session: Session, *, context: AccessContext) -> dict:
     context.ensure_fiscal_read()
-    cells = _fpm_cells(session, context) + _statement_cells(session, context)
-    return aggregate_finance_geography(cells)
+    rows = session.scalars(
+        select(GoldFinanceStateSummary).where(
+            GoldFinanceStateSummary.tenant_id == context.tenant_id,
+            GoldFinanceStateSummary.territory_id == context.territory_id,
+        )
+    ).all()
+    return view_from_summary([_group(row) for row in rows])
 
 
-def _fpm_cells(session: Session, context: AccessContext) -> list[dict]:
+def refresh_finance_state_summary(session: Session, *, tenant_id: UUID, territory_id: UUID) -> int:
+    """Replace the stored state totals for one tenant and territory."""
+    cells = _fpm_cells(session, tenant_id, territory_id) + _statement_cells(
+        session, tenant_id, territory_id
+    )
+    incoming = finance_summary_records(aggregate_finance_geography(cells))
+    current = {
+        (row.source_id, row.uf_code, row.competence): row
+        for row in session.scalars(
+            select(GoldFinanceStateSummary).where(
+                GoldFinanceStateSummary.tenant_id == tenant_id,
+                GoldFinanceStateSummary.territory_id == territory_id,
+            )
+        ).all()
+    }
+    snapshot = replace_summary_snapshot(current, incoming)
+    session.execute(
+        delete(GoldFinanceStateSummary).where(
+            GoldFinanceStateSummary.tenant_id == tenant_id,
+            GoldFinanceStateSummary.territory_id == territory_id,
+        )
+    )
+    refreshed_at = datetime.now(UTC)
+    for row in snapshot.values():
+        session.add(
+            GoldFinanceStateSummary(
+                id=uuid4(),
+                tenant_id=tenant_id,
+                territory_id=territory_id,
+                source_id=row["sourceId"],
+                uf_code=row["ufCode"],
+                competence=row["competence"],
+                label=row["label"],
+                unit=row["unit"],
+                total=row["total"],
+                municipality_count=row["municipalityCount"],
+                refreshed_at=refreshed_at,
+            )
+        )
+    return len(snapshot)
+
+
+def refresh_published_finance_summaries(session: Session) -> int:
+    pairs = session.execute(
+        select(GoldOfficial.tenant_id, GoldOfficial.territory_id)
+        .where(
+            GoldOfficial.published.is_(True),
+            GoldOfficial.source_id.in_(FINANCE_MAP_SOURCES),
+        )
+        .distinct()
+    ).all()
+    total = 0
+    for tenant_id, territory_id in pairs:
+        total += refresh_finance_state_summary(
+            session, tenant_id=tenant_id, territory_id=territory_id
+        )
+    return total
+
+
+def _group(row: GoldFinanceStateSummary) -> dict:
+    return {
+        "sourceId": row.source_id,
+        "ufCode": row.uf_code,
+        "label": row.label,
+        "unit": row.unit,
+        "competence": row.competence,
+        "total": float(row.total),
+        "municipalityCount": row.municipality_count,
+    }
+
+
+def _fpm_cells(session: Session, tenant_id: UUID, territory_id: UUID) -> list[dict]:
     uf_code = func.substr(GoldOfficialLine.ibge_code, 1, 2)
     year = _year()
     modality = GoldOfficialLine.payload["modality"].astext
@@ -29,8 +118,8 @@ def _fpm_cells(session: Session, context: AccessContext) -> list[dict]:
         )
         .join(GoldOfficial, GoldOfficialLine.gold_id == GoldOfficial.id)
         .where(
-            GoldOfficial.tenant_id == context.tenant_id,
-            GoldOfficial.territory_id == context.territory_id,
+            GoldOfficial.tenant_id == tenant_id,
+            GoldOfficial.territory_id == territory_id,
             GoldOfficial.published.is_(True),
             GoldOfficial.source_id == "TESOURO-FPM-VALORES",
             GoldOfficialLine.value.is_not(None),
@@ -47,7 +136,7 @@ def _fpm_cells(session: Session, context: AccessContext) -> list[dict]:
     return cells
 
 
-def _statement_cells(session: Session, context: AccessContext) -> list[dict]:
+def _statement_cells(session: Session, tenant_id: UUID, territory_id: UUID) -> list[dict]:
     uf_code = func.substr(GoldOfficialLine.ibge_code, 1, 2)
     year = _year()
     account = GoldOfficialLine.payload["account"].astext
@@ -64,8 +153,8 @@ def _statement_cells(session: Session, context: AccessContext) -> list[dict]:
         )
         .join(GoldOfficial, GoldOfficialLine.gold_id == GoldOfficial.id)
         .where(
-            GoldOfficial.tenant_id == context.tenant_id,
-            GoldOfficial.territory_id == context.territory_id,
+            GoldOfficial.tenant_id == tenant_id,
+            GoldOfficial.territory_id == territory_id,
             GoldOfficial.published.is_(True),
             GoldOfficial.source_id.in_(("SICONFI-RREO", "SICONFI-DCA")),
             account.in_(tuple(statement_revenue_account_codes())),
