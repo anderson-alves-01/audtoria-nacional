@@ -261,5 +261,5 @@ gates:
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
 evidence: evidence/releases/0.4.0/ui/
-next_action: SICONFI-DCA 2024 partition is COMPLETE at cursor 5570, remaining 0, taxCreditCreated false. Evidence appended to evidence/ops/prod-siconfi-finish-20260924.txt. API stays 0.3.114 and web stays 0.4.9. No merge.
+next_action: Financeiro dashboard is served by API image 0.3.115 task sirta-prod-api:19 and web image 0.4.10 task sirta-prod-web:17. Statement slices are folded per source. GET /v1/dashboards/financeiro returned 200 in 16.6s with 3 items. No merge.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md
