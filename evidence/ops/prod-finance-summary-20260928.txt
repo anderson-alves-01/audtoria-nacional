@@ -1,0 +1,16 @@
+prod finance state summary 2026-09-28
+
+commit 7023424
+api image 0.3.117 task sirta-prod-api:21 digest sha256:02fe73a50505dd60bf9c41a17e5fc57a51658dd0c762263818677ef97b86e02c
+web unchanged 0.4.11 task sirta-prod-web:18
+
+refresh task cb722534574a4cd9a88610b2c80167ed exit 0
+FINANCE_STATE_SUMMARY rows=79
+
+GET /v1/dashboards/financeiro/geography 200 in 0.21s then 0.16s
+bytes=16565 createsTaxCredit false states=27 withMeasures=27
+sources SICONFI-DCA SICONFI-RREO TESOURO-FPM-VALORES
+
+Browser /financeiro painted 27 hexes without staying on the loading line.
+The summary is a replaceable snapshot. A later municipal load needs the same refresh before the map changes.
+No merge.

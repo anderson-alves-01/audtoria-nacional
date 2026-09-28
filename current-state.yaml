@@ -261,5 +261,5 @@ gates:
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
 evidence: evidence/releases/0.4.0/ui/
-next_action: "Municipal money map is served by API image 0.3.116 task sirta-prod-api:20 and web image 0.4.11 task sirta-prod-web:18. GET /v1/dashboards/financeiro/geography returned 200 in 64.5s with 27 states and createsTaxCredit false. Browser /financeiro showed the FPM hex map and the Acre detail. No merge."
+next_action: "Municipal money map reads gold_finance_state_summaries on API image 0.3.117 task sirta-prod-api:21. The refresh wrote 79 rows. GET /v1/dashboards/financeiro/geography returned 200 in 0.21s with 27 states and createsTaxCredit false. A later municipal load needs the same refresh before the map changes. No merge."
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md
