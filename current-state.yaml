@@ -261,5 +261,5 @@ gates:
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
 evidence: evidence/releases/0.4.0/ui/
-next_action: Atlas observatory is on /executivo in web image 0.4.9 task sirta-prod-web:16. API stays 0.3.114. Population, PIB in mil reais and CEMP only. IDH, per-capita GDP and IDR are not invented. Evidence evidence/ops/atlas-brasil-20260926.md. No merge.
+next_action: SICONFI-DCA 2024 partition is COMPLETE at cursor 5570, remaining 0, taxCreditCreated false. Evidence appended to evidence/ops/prod-siconfi-finish-20260924.txt. API stays 0.3.114 and web stays 0.4.9. No merge.
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md
