@@ -1,0 +1,8 @@
+prod map popup 2026-09-28
+
+commit 090826c
+web image 0.4.12 task sirta-prod-web:19 digest sha256:0540177d4398d4e55b97a7ebb1a790aa8c19887dba0f95164701fd405bbfe6ae
+api unchanged 0.3.117 task sirta-prod-api:21
+
+Browser click on Acre at /financeiro opened a dialog with FPM 83,3 mi 2026, receita corrente 4,5 bi 2025 and receitas brutas realizadas 4,9 bi 2024. 22 municipios. createsTaxCredit stays false. Esc and the backdrop close the dialog.
+No merge.
