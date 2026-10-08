@@ -26,6 +26,16 @@ class Settings(BaseSettings):
         default=None,
         validation_alias=AliasChoices("OIDC_SIGNING_KEY_PATH", "SIRTA_OIDC_SIGNING_KEY_PATH"),
     )
+    admin_password: str | None = Field(
+        default=None,
+        repr=False,
+        validation_alias=AliasChoices("SIRTA_ADMIN_PASSWORD"),
+    )
+    admin_totp_secret: str | None = Field(
+        default=None,
+        repr=False,
+        validation_alias=AliasChoices("SIRTA_ADMIN_TOTP_SECRET"),
+    )
     public_open_ui_bootstrap: bool = Field(
         default=False,
         validation_alias=AliasChoices("SIRTA_PUBLIC_OPEN_UI_BOOTSTRAP", "PUBLIC_OPEN_UI_BOOTSTRAP"),

@@ -17,6 +17,7 @@ from sirta_api.entrypoints.findings import router as findings_router
 from sirta_api.entrypoints.gates import router as gates_router
 from sirta_api.entrypoints.health import router as health_router
 from sirta_api.entrypoints.human_validation import router as human_validation_router
+from sirta_api.entrypoints.local_login import router as local_login_router
 from sirta_api.entrypoints.municipal_uploads import router as municipal_uploads_router
 from sirta_api.entrypoints.notifications import router as notifications_router
 from sirta_api.entrypoints.ops_governance import router as ops_governance_router
@@ -52,6 +53,7 @@ def create_app() -> FastAPI:
     )
     application.include_router(health_router)
     application.include_router(public_open_session_router)
+    application.include_router(local_login_router)
     application.include_router(tax_credit_router)
     application.include_router(pipeline_router)
     application.include_router(transfer_router)

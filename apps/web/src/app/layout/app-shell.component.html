@@ -77,6 +77,11 @@
         <input type="search" placeholder="Buscar módulo" [value]="query" (input)="query = $any($event.target).value" />
       </label>
       <p class="profile">{{ profileLabel }}</p>
+      @if (operatorLoggedIn) {
+        <button type="button" (click)="leave()">Sair</button>
+      } @else {
+        <a routerLink="/entrar">Entrar</a>
+      }
       @if (localBadge) {
         <span class="env">local</span>
       }

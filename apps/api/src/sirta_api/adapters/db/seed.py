@@ -38,6 +38,7 @@ from sirta_api.adapters.db.synthetic_ids import (
     USER_DEBT_ALPHA,
     USER_VALIDATOR_ALPHA,
 )
+from sirta_api.application.bootstrap_admin import apply_admin_credentials
 
 
 def _ensure(session: Session, model, ident, **fields):
@@ -224,6 +225,7 @@ def run_seed() -> None:
     session = get_session_factory()()
     try:
         seed_identity(session)
+        apply_admin_credentials(session, get_settings())
         if get_settings().allow_synthetic_loads:
             seed_synthetic_fiscal(session)
         session.commit()

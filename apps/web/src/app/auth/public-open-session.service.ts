@@ -8,17 +8,30 @@ export type PublicOpenSession = {
   purposeId: string;
   expiresAt: string;
   mode: string;
+  username?: string;
 };
 
 const STORAGE_KEY = 'sirta.publicOpenSession';
+const OPERATOR_KEY = 'sirta.operatorSession';
 
 @Injectable({ providedIn: 'root' })
 export class PublicOpenSessionService {
   private readonly http = inject(HttpClient);
   private session: PublicOpenSession | null = null;
+  private operator: PublicOpenSession | null = null;
+
+  rememberOperator(session: PublicOpenSession): void {
+    this.operator = session;
+    sessionStorage.setItem(OPERATOR_KEY, JSON.stringify(session));
+  }
+
+  clearOperator(): void {
+    this.operator = null;
+    sessionStorage.removeItem(OPERATOR_KEY);
+  }
 
   async ensureSession(): Promise<void> {
-    const cached = this.readCache();
+    const cached = this.readKey(STORAGE_KEY);
     if (cached && !this.isExpired(cached)) {
       this.session = cached;
       return;
@@ -43,21 +56,27 @@ export class PublicOpenSessionService {
   }
 
   authHeaders(): Record<string, string> | null {
-    if (!this.session || this.isExpired(this.session)) {
+    const current = this.peek();
+    if (!current) {
       return null;
     }
     return {
-      Authorization: `Bearer ${this.session.accessToken}`,
-      'X-Territory-Id': this.session.territoryId,
-      'X-Purpose-Id': this.session.purposeId,
+      Authorization: `Bearer ${current.accessToken}`,
+      'X-Territory-Id': current.territoryId,
+      'X-Purpose-Id': current.purposeId,
     };
   }
 
   peek(): PublicOpenSession | null {
+    const operator = this.operator ?? this.readKey(OPERATOR_KEY);
+    if (operator && !this.isExpired(operator)) {
+      this.operator = operator;
+      return operator;
+    }
     if (this.session && !this.isExpired(this.session)) {
       return this.session;
     }
-    const cached = this.readCache();
+    const cached = this.readKey(STORAGE_KEY);
     if (cached && !this.isExpired(cached)) {
       this.session = cached;
       return cached;
@@ -65,9 +84,9 @@ export class PublicOpenSessionService {
     return null;
   }
 
-  private readCache(): PublicOpenSession | null {
+  private readKey(key: string): PublicOpenSession | null {
     try {
-      const raw = sessionStorage.getItem(STORAGE_KEY);
+      const raw = sessionStorage.getItem(key);
       if (!raw) {
         return null;
       }

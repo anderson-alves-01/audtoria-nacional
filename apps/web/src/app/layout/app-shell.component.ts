@@ -53,7 +53,20 @@ export class AppShellComponent {
   }
 
   get profileLabel(): string {
-    return humanizeSessionMode(this.session.peek()?.mode);
+    const current = this.session.peek();
+    if (current?.mode === 'OPERATOR_LOGIN' && current.username) {
+      return current.username;
+    }
+    return humanizeSessionMode(current?.mode);
+  }
+
+  get operatorLoggedIn(): boolean {
+    return this.session.peek()?.mode === 'OPERATOR_LOGIN';
+  }
+
+  leave(): void {
+    this.session.clearOperator();
+    void this.router.navigateByUrl('/entrar');
   }
 
   visibleGroups(): NavGroup[] {

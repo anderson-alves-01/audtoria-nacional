@@ -54,6 +54,8 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(128), nullable=False)
     role: Mapped[str] = mapped_column(String(32), nullable=False)
     active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    password_hash: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    totp_secret: Mapped[str | None] = mapped_column(String(64), nullable=True)
     territories: Mapped[list[Territory]] = relationship(
         secondary="user_territories",
         lazy="selectin",

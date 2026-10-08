@@ -280,6 +280,9 @@ export function humanizeSessionMode(mode: string | null | undefined): string {
   if (mode === 'PUBLIC_OPEN_UI_BOOTSTRAP') {
     return 'Consulta pública de referência';
   }
+  if (mode === 'OPERATOR_LOGIN') {
+    return 'Administrador autenticado';
+  }
   return 'Sessão autenticada';
 }
 

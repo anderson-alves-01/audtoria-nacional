@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { LoginPageComponent } from './auth/login-page.component';
 import { AuditCasesPageComponent } from './audit-cases/audit-cases-page.component';
 import { AuditRulesPageComponent } from './audit-rules/audit-rules-page.component';
 import { Cadastro360PageComponent } from './cadastro-360/cadastro-360-page.component';
@@ -44,6 +45,11 @@ export const routes: Routes = [
     path: 'integracao',
     component: TaxBetterIntegrationPageComponent,
     data: { title: 'Entrada e saída', group: integration },
+  },
+  {
+    path: 'entrar',
+    component: LoginPageComponent,
+    data: { title: 'Entrar', group: administration },
   },
   {
     path: 'administracao',
