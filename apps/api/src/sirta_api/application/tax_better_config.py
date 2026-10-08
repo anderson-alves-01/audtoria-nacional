@@ -37,6 +37,7 @@ def list_tax_better_vision(session: Session, *, context: AccessContext) -> dict:
             "organ": row.organ,
             "tax": row.tax,
             "fgo": fgo_label(row.fgo_code),
+            "competence": row.competence,
             "variables": dict(row.variables or {}),
             "operationValue": row.operation_value,
             "operationBase": row.operation_base,

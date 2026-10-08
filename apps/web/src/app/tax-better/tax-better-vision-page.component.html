@@ -1,6 +1,9 @@
-<section aria-labelledby="visao-title">
-  <h1 id="visao-title">Visão geral</h1>
-  <p>Operação e malha vêm do que foi registrado. Medida ausente permanece vazia. Esta leitura não cria crédito.</p>
+<section class="vision" aria-labelledby="visao-title">
+  <header class="vision-hero">
+    <p class="kicker">SIRTA · Tax Better</p>
+    <h1 id="visao-title">Visão geral</h1>
+    <p class="banner">Leitura do que seguiria para a malha. Sem aprovação, nada é exportado. Não é crédito tributário.</p>
+  </header>
 
   @if (state === 'loading') {
     <p role="status">Carregando a visão…</p>
@@ -8,17 +11,99 @@
   @if (state === 'error') {
     <p role="alert">{{ errorMessage }}</p>
   }
-  @if (state === 'ok' && view) {
-    <p>Cria crédito: {{ view.createsTaxCredit ? 'sim' : 'não' }}. Exportação aprovada: {{ view.approvedExport ? 'sim' : 'não' }}.</p>
-    @if (view.rows.length === 0) {
-      <p role="status">{{ view.emptyReason || 'Ainda não há arquivo autorizado na visão.' }}</p>
+  @if (state === 'ok' && view && view.rows.length === 0) {
+    <app-empty-state
+      title="Visão aberta — sem arquivo neste recorte"
+      [reason]="view.emptyReason || 'Ainda não há arquivo autorizado na visão.'"
+      hint="Os filtros e os gráficos aparecem quando houver linha gravada. Nenhum valor é inventado."
+    />
+    <p>Cria crédito: não. Exportação aprovada: não.</p>
+  }
+  @if (state === 'ok' && view && view.rows.length > 0) {
+    <form class="filters" aria-label="Filtros da malha">
+      <label>
+        Imposto
+        <select name="imposto" [(ngModel)]="filterImposto">
+          <option value="">Todos</option>
+          @for (option of options('imposto'); track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Fato gerador
+        <select name="fgo" [(ngModel)]="filterFgo">
+          <option value="">Todos</option>
+          @for (option of options('fgo'); track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Órgão
+        <select name="orgao" [(ngModel)]="filterOrgao">
+          <option value="">Todos</option>
+          @for (option of options('orgao'); track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Período
+        <select name="periodo" [(ngModel)]="filterPeriodo">
+          <option value="">Todos</option>
+          @for (option of options('periodo'); track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Variável
+        <input name="variavel" [(ngModel)]="filterVariavel" type="search" placeholder="Cidade, contribuinte ou outra coluna" />
+      </label>
+    </form>
+
+    <section class="kpis" aria-label="Indicadores do recorte">
+      <app-kpi-card label="Linhas no recorte" [value]="filtered.length + ''" meta="Depois dos filtros" kind="Não é crédito" />
+      <app-kpi-card
+        label="Prontas para a malha"
+        [value]="approvedCount + ''"
+        meta="Sem aprovação, nada é exportado"
+        kind="Não é crédito"
+      />
+      <app-kpi-card label="Valor da operação" [value]="sum('operacao', 'valor')" meta="Soma só do que foi gravado" kind="Não é crédito" />
+      <app-kpi-card label="Valor da malha" [value]="sum('malha', 'valor')" meta="Medida ausente fica de fora" kind="Não é crédito" />
+    </section>
+
+    <section class="charts" aria-label="Gráficos do recorte">
+      @if (operationChart(); as operation) {
+        <article>
+          <h2>Operação por imposto</h2>
+          <div echarts [options]="operation" class="canvas" role="img" aria-label="Valor da operação por imposto no filtro"></div>
+        </article>
+      }
+      @if (malhaChart(); as malha) {
+        <article>
+          <h2>Malha por fato gerador</h2>
+          <div echarts [options]="malha" class="canvas" role="img" aria-label="Valor da malha por fato gerador no filtro"></div>
+        </article>
+      }
+      @if (!operationChart() && !malhaChart()) {
+        <p role="status">Neste filtro não há valor gravado para o gráfico.</p>
+      }
+    </section>
+
+    @if (filtered.length === 0) {
+      <p role="status">Nenhuma linha neste filtro.</p>
     } @else {
       <table>
-        <caption>Imposto, fato gerador, variáveis, operação e malha</caption>
+        <caption>O que seguiria para a malha neste filtro. Sem aprovação, a saída não acontece.</caption>
         <thead>
           <tr>
+            <th scope="col">Órgão</th>
             <th scope="col">Imposto</th>
             <th scope="col">Fato gerador</th>
+            <th scope="col">Período</th>
             <th scope="col">Variáveis</th>
             <th scope="col">Operação — valor</th>
             <th scope="col">Operação — base</th>
@@ -30,10 +115,12 @@
           </tr>
         </thead>
         <tbody>
-          @for (row of view.rows; track $index) {
+          @for (row of filtered; track $index) {
             <tr>
+              <td>{{ row.orgao || '—' }}</td>
               <td>{{ row.imposto }}</td>
               <td>{{ row.fgo }}</td>
+              <td>{{ row.periodo || '—' }}</td>
               <td>{{ variables(row) }}</td>
               <td>{{ measure(row.operacao.valor) }}</td>
               <td>{{ measure(row.operacao.baseCalculo) }}</td>
@@ -47,5 +134,6 @@
         </tbody>
       </table>
     }
+    <p>Cria crédito: não. Exportação aprovada: não.</p>
   }
 </section>

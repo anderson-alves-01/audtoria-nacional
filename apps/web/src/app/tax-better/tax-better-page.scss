@@ -34,3 +34,33 @@ caption {
   text-align: left;
   margin-bottom: 0.5rem;
 }
+
+.vision-hero .kicker,
+.vision-hero .banner {
+  margin: 0 0 0.5rem;
+}
+
+.vision-hero h1 {
+  margin: 0 0 0.5rem;
+}
+
+.filters,
+.kpis,
+.charts {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.filters,
+.kpis {
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+
+.charts {
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.canvas {
+  height: 16rem;
+}

@@ -59,4 +59,47 @@ describe('TaxBetterVisionPageComponent', () => {
     expect(text).toContain('Cria crédito: não');
     http.verify();
   });
+
+  it('filters the malha reading by tax', () => {
+    const fixture = TestBed.createComponent(TaxBetterVisionPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http.expectOne('/v1/tax-better/vision').flush({
+      createsTaxCredit: false,
+      approvedExport: false,
+      emptyReason: null,
+      rows: [
+        {
+          orgao: 'DETRAN',
+          imposto: 'ICMS',
+          fgo: 'VENDA PJ',
+          periodo: '2026-01',
+          variables: { cidade: 'Brasília' },
+          operacao: { valor: '150', baseCalculo: null, imposto: null },
+          malha: { valor: '10', baseCalculo: null, imposto: null },
+          approved: false,
+        },
+        {
+          orgao: 'OUTRO',
+          imposto: 'ISS',
+          fgo: 'FORA DF',
+          periodo: '2026-02',
+          variables: { cidade: 'Taguatinga' },
+          operacao: { valor: '20', baseCalculo: null, imposto: null },
+          malha: { valor: null, baseCalculo: null, imposto: null },
+          approved: false,
+        },
+      ],
+    });
+    fixture.detectChanges();
+    fixture.componentInstance.filterImposto = 'ISS';
+    fixture.detectChanges();
+    const text = fixture.nativeElement.textContent as string;
+    expect(text).toContain('ISS');
+    expect(text).toContain('cidade: Taguatinga');
+    expect(text).not.toContain('cidade: Brasília');
+    expect(text).toContain('Prontas para a malha');
+    expect(text).toContain('Sem aprovação, nada é exportado');
+    http.verify();
+  });
 });

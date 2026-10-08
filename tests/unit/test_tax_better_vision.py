@@ -63,6 +63,7 @@ def test_stored_lines_keep_the_vision_without_credit():
     assert view["approvedExport"] is False
     assert view["emptyReason"] is None
     assert view["rows"][0]["approved"] is False
+    assert view["rows"][0]["orgao"] == "DETRAN"
     assert view["rows"][0]["operacao"]["valor"] == "150"
     assert view["rows"][0]["operacao"]["baseCalculo"] is None
     assert view["rows"][0]["malha"]["imposto"] == "4"

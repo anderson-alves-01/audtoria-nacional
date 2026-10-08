@@ -97,7 +97,8 @@ def receive_lines(lines: list[dict]) -> dict:
             str(key): str(value)
             for key, value in dict(line.get("variables") or {}).items()
         }
-        key = (tax, label, tuple(sorted(variables.items())))
+        competence = str(line.get("competence") or "").strip()
+        key = (organ, tax, label, competence, tuple(sorted(variables.items())))
         bucket = grouped.setdefault(
             key,
             {"operacao": dict(_EMPTY), "malha": dict(_EMPTY)},
@@ -109,11 +110,13 @@ def receive_lines(lines: list[dict]) -> dict:
         _add(bucket["malha"], "baseCalculo", line.get("malhaBase"))
         _add(bucket["malha"], "imposto", line.get("malhaTax"))
     rows = []
-    for (tax, label, pairs), measures in grouped.items():
+    for (organ, tax, label, competence, pairs), measures in grouped.items():
         rows.append(
             {
+                "orgao": organ,
                 "imposto": tax,
                 "fgo": label,
+                "periodo": competence or None,
                 "variables": dict(pairs),
                 "operacao": measures["operacao"],
                 "malha": measures["malha"],
@@ -162,6 +165,8 @@ def _public_row(row: dict) -> dict:
     return {
         "imposto": row["imposto"],
         "fgo": row["fgo"],
+        "orgao": row.get("orgao") or "",
+        "periodo": row.get("periodo"),
         "variables": row["variables"],
         "operacao": _plain_side(row["operacao"]),
         "malha": _plain_side(row["malha"]),
