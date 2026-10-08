@@ -1,0 +1,12 @@
+prod operator login 2026-10-08
+
+commit 06fa71e
+api image 0.3.121 task sirta-prod-api:25 digest sha256:e625e5a894448205c8d63bcb9c786c9f4e838544f79a06ed72810521713de46e
+web image 0.4.16 task sirta-prod-web:23 digest sha256:ec113ecc93483b260f9472cc521041940e38707653928771b6dc493688bfd744
+
+GET /health 200 implementationVersion 0.3.101
+GET /entrar bundle main-BVBSCSBQ.js contains the authenticator field
+POST /v1/auth/login 200 mode OPERATOR_LOGIN username admin.alpha createsTaxCredit false
+GET /v1/admin/users 200 canManage true createsTaxCredit false
+admin secret stored as a hash; the value is not in this file
+No merge.
