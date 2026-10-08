@@ -1,0 +1,11 @@
+prod tax better 2026-10-08
+
+commit 1a4e744
+api image 0.3.118 task sirta-prod-api:22 digest sha256:c612232e26cbdca6b8b462dd94cb2e3b2c3d49def9413f885e61de2168dc21f4
+web image 0.4.13 task sirta-prod-web:20 digest sha256:98497778374b712549fd342876aaa43160a24daade51107f8417e88f34c01bbf
+
+GET /health 200 implementationVersion 0.3.101
+GET / title contains Tax Better
+GET /v1/tax-better/vision 200 createsTaxCredit false approvedExport false rows 0
+emptyReason: Ainda não há arquivo autorizado na visão.
+Migrations 0104 and 0105 run on API startup. No DETRAN call. No merge.
