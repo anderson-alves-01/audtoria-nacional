@@ -1,0 +1,12 @@
+prod users admin 2026-10-08
+
+commit f90282f
+api image 0.3.120 task sirta-prod-api:24 digest sha256:4e73b0c08553607c30befdce095c89d01abe8d207470b1219887f6f2abb1304e
+web image 0.4.15 task sirta-prod-web:22 digest sha256:623a86b1d6792a622e5ed1a7f9999fbc0776c6f695ae6377ac796bd189b543dd
+
+GET /health 200 implementationVersion 0.3.101
+GET / bundle main-LLOKOZ23.js contains Criar usuario
+GET /v1/admin/users 200 canManage false createsTaxCredit false users 5
+public session does not manage users
+no password in the response
+No merge.
