@@ -1,0 +1,10 @@
+prod login gate 2026-10-08
+
+commit b7bf4bc
+web image 0.4.17 task sirta-prod-web:24 digest sha256:4093556c98c7c10490cc0e71a00843fbbc6b4b166d2d1373be8185e4644dd77b
+api task sirta-prod-api:26 image 0.3.121 public bootstrap false
+
+GET / bundle main-5J7OS5QZ.js contains the login gate sentence
+GET /v1/auth/public-open-session 403
+POST /v1/auth/login 200 mode OPERATOR_LOGIN createsTaxCredit false
+No merge.
