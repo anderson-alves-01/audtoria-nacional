@@ -1,0 +1,10 @@
+prod tax better vision filters 2026-10-08
+
+commit 2d11772
+api image 0.3.119 task sirta-prod-api:23 digest sha256:70b43c2239d4b523bb4e65e404fad39e9ea643b18e64c5d814286a9c7d395518
+web image 0.4.14 task sirta-prod-web:21 digest sha256:47a4a5ff0d25155a266b918e42c6094774bed93018595cb715877a4ba5f11405
+
+GET /health 200 implementationVersion 0.3.101
+GET / bundle main-BQRCCELN.js contains "Prontas para a malha" and "Nenhuma linha neste filtro"
+GET /v1/tax-better/vision 200 createsTaxCredit false approvedExport false rows 0
+No merge.
