@@ -98,7 +98,7 @@ O operador grava o canal (arquivo ou API) e o mapa de campos na tela de fontes, 
 
 ### Administração
 
-Usuário, acessos e papéis.
+A tela Usuários e acessos lista usuários, papéis, territórios e finalidades do tenant. O administrador técnico cria, altera e encerra o acesso. A sessão pública de consulta vê a lista com os botões desligados. Senha não é gravada. Encerrar acesso desativa o usuário. O último administrador técnico ativo permanece. Finalidades ficam só para leitura. Nenhum cadastro cria crédito.
 
 ## Fora do roadmap de engenharia
 

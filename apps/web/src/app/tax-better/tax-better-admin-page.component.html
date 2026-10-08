@@ -3,5 +3,96 @@
   <p>Território <strong>{{ territoryLabel }}</strong>.</p>
   <p>Finalidade <strong>{{ purposeLabel }}</strong>.</p>
   <p>Modo <strong>{{ profileLabel }}</strong>.</p>
-  <p>Usuários, acessos e papéis aguardam o ato. Esta tela não concede acesso.</p>
+  <p>O cadastro guarda nome, papel e territórios. Senha não entra nesta tela. Nenhum acesso cria crédito.</p>
+
+  @if (state === 'loading') {
+    <p role="status">Carregando usuários…</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ message }}</p>
+  }
+  @if (state === 'ok' && directory) {
+    @if (!directory.canManage) {
+      <p role="status">{{ directory.manageReason }}</p>
+    }
+
+    <form (ngSubmit)="save()">
+      <fieldset [disabled]="!directory.canManage">
+        <legend>{{ editingId ? 'Alterar acesso' : 'Novo usuário' }}</legend>
+        <label>
+          Nome
+          <input name="username" [(ngModel)]="username" autocomplete="off" />
+        </label>
+        <label>
+          Papel
+          <select name="role" [(ngModel)]="role">
+            @for (option of directory.roles; track option.code) {
+              <option [value]="option.code">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+        <fieldset>
+          <legend>Territórios de acesso</legend>
+          @for (territory of directory.territories; track territory.id) {
+            <label>
+              <input
+                type="checkbox"
+                [name]="'territory-' + territory.id"
+                [checked]="territoryChecked(territory.id)"
+                (change)="toggleTerritory(territory.id, $any($event.target).checked)"
+              />
+              {{ territory.name }}
+            </label>
+          }
+        </fieldset>
+        <label>
+          <input type="checkbox" name="active" [(ngModel)]="active" />
+          Acesso ativo
+        </label>
+        <button type="submit" [disabled]="!directory.canManage">{{ editingId ? 'Gravar alteração' : 'Criar usuário' }}</button>
+        @if (editingId) {
+          <button type="button" (click)="resetForm()">Cancelar edição</button>
+        }
+      </fieldset>
+    </form>
+
+    <h2>Usuários do tenant</h2>
+    <table>
+      <caption>Nome, papel, territórios e situação do acesso</caption>
+      <thead>
+        <tr>
+          <th scope="col">Nome</th>
+          <th scope="col">Papel</th>
+          <th scope="col">Territórios</th>
+          <th scope="col">Situação</th>
+          <th scope="col">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of directory.users; track user.id) {
+          <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.roleLabel }}</td>
+            <td>{{ territoryNames(user) }}</td>
+            <td>{{ user.active ? 'ativo' : 'encerrado' }}</td>
+            <td>
+              <button type="button" [disabled]="!directory.canManage" (click)="edit(user)">Alterar</button>
+              <button type="button" [disabled]="!directory.canManage || !user.active" (click)="deactivate(user)">Encerrar acesso</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <h2>Finalidades registradas</h2>
+    <ul>
+      @for (purpose of directory.purposes; track purpose.id) {
+        <li>{{ purpose.description }}</li>
+      }
+    </ul>
+    <p>Cria crédito: não.</p>
+  }
+  @if (message && state === 'ok') {
+    <p role="status">{{ message }}</p>
+  }
 </section>

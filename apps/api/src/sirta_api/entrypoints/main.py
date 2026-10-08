@@ -33,6 +33,7 @@ from sirta_api.entrypoints.transfer_reconciliation import (
     router as transfer_reconciliation_router,
 )
 from sirta_api.entrypoints.transfers import router as transfer_router
+from sirta_api.entrypoints.users_admin import router as users_admin_router
 
 
 def create_app() -> FastAPI:
@@ -76,6 +77,7 @@ def create_app() -> FastAPI:
     application.include_router(dashboard_router)
     application.include_router(gates_router)
     application.include_router(audit_router)
+    application.include_router(users_admin_router)
 
     @application.exception_handler(ProblemError)
     async def problem_handler(request: Request, exc: ProblemError):

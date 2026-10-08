@@ -53,6 +53,7 @@ class User(Base):
     subject: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
     username: Mapped[str] = mapped_column(String(128), nullable=False)
     role: Mapped[str] = mapped_column(String(32), nullable=False)
+    active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     territories: Mapped[list[Territory]] = relationship(
         secondary="user_territories",
         lazy="selectin",

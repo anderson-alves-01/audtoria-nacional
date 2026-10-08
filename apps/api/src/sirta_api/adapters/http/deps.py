@@ -37,6 +37,8 @@ def get_access_context(
     user = session.scalar(select(User).where(User.subject == subject))
     if user is None:
         raise ForbiddenError("User is not provisioned")
+    if not user.active:
+        raise ForbiddenError("User access is inactive")
     try:
         token_tenant = UUID(str(tenant_claim))
     except ValueError as exc:
@@ -63,6 +65,7 @@ def get_access_context(
         role=Role(user.role),
         purpose_expires_at=None,
         username=user.username,
+        session_mode=str(claims.get("sirta_session") or ""),
     )
     context.ensure_territory_allowed(allowed)
 
@@ -77,6 +80,7 @@ def get_access_context(
         role=Role(user.role),
         purpose_expires_at=purpose.expires_at,
         username=user.username,
+        session_mode=str(claims.get("sirta_session") or ""),
     )
     context.ensure_purpose_active(datetime.now(UTC))
     request.state.access_context = context

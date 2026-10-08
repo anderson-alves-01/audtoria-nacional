@@ -15,6 +15,7 @@ class AccessContext:
     role: Role
     purpose_expires_at: datetime | None
     username: str = ""
+    session_mode: str = ""
 
     def ensure_purpose_active(self, now: datetime) -> None:
         if self.purpose_expires_at is not None and self.purpose_expires_at <= now:
@@ -32,6 +33,12 @@ class AccessContext:
 
     def ensure_fiscal_write(self) -> None:
         self.ensure_fiscal_read()
+
+    def ensure_can_manage_users(self) -> None:
+        if self.session_mode == "PUBLIC_OPEN_UI_BOOTSTRAP":
+            raise ForbiddenError("A sessão de consulta não altera usuários nem acessos.")
+        if self.role != Role.TECH_ADMIN:
+            raise ForbiddenError("Somente o administrador técnico altera usuários e acessos.")
 
     def ensure_can_validate(self) -> None:
         if self.role != Role.VALIDATOR:

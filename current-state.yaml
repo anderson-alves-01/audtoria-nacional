@@ -263,5 +263,5 @@ gates:
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
 evidence: evidence/releases/0.4.0/ui/
-next_action: "Tax Better is the active scope in docs/product/TAX-BETTER.md, roadmap 1.3. The shell opens Integração, Visão and Administração. Published panels stay under Referência publicada. The sources tool stores the file or API channel and the field map for TAX-BETTER-ENTRADA. A live organ fetch stays blocked until the act. Next delivery, when an authorized file exists, is the vehicle ICMS rule from DETRAN plus FIPE, with human approval before any malha export. Gates unchanged. No merge."
+next_action: "Tax Better is the active scope in docs/product/TAX-BETTER.md, roadmap 1.3. The shell opens Integração, Visão and Administração. Administração lists users, roles, territories and purposes; only a technical administrator outside the public bootstrap session can create, update or deactivate access. Passwords are not stored. Published panels stay under Referência publicada. The sources tool stores the file or API channel and the field map for TAX-BETTER-ENTRADA. A live organ fetch stays blocked until the act. Next delivery, when an authorized file exists, is the vehicle ICMS rule from DETRAN plus FIPE, with human approval before any malha export. Gates unchanged. No merge."
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md
