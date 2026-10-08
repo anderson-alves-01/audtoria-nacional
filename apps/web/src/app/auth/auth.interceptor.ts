@@ -5,6 +5,7 @@ import { PublicOpenSessionService } from './public-open-session.service';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (
     req.url.startsWith('/health') ||
+    req.url.includes('/v1/auth/login') ||
     req.url.includes('/v1/auth/public-open-session')
   ) {
     return next(req);

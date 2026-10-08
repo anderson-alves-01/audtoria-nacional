@@ -74,7 +74,7 @@ export class TaxBetterAdminPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    void this.session.ensureSession().then(() => this.load()).catch(() => this.load());
+    this.load();
   }
 
   load(): void {

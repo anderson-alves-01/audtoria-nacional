@@ -54,14 +54,10 @@ export class AppShellComponent {
 
   get profileLabel(): string {
     const current = this.session.peek();
-    if (current?.mode === 'OPERATOR_LOGIN' && current.username) {
+    if (current?.username) {
       return current.username;
     }
     return humanizeSessionMode(current?.mode);
-  }
-
-  get operatorLoggedIn(): boolean {
-    return this.session.peek()?.mode === 'OPERATOR_LOGIN';
   }
 
   leave(): void {

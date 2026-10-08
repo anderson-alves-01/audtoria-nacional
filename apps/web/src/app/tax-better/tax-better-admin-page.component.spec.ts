@@ -3,16 +3,6 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { TaxBetterAdminPageComponent } from './tax-better-admin-page.component';
 
-function flushSession(http: HttpTestingController): void {
-  http.expectOne('/v1/auth/public-open-session').flush({
-    accessToken: 'token',
-    territoryId: 'territory',
-    purposeId: 'purpose',
-    expiresAt: '2099-01-01T00:00:00Z',
-    mode: 'PUBLIC_OPEN_UI_BOOTSTRAP',
-  });
-}
-
 describe('TaxBetterAdminPageComponent', () => {
   beforeEach(async () => {
     sessionStorage.clear();
@@ -22,12 +12,10 @@ describe('TaxBetterAdminPageComponent', () => {
     }).compileComponents();
   });
 
-  it('shows the directory and keeps the public session from granting access', async () => {
+  it('shows the directory and keeps the public session from granting access', () => {
     const fixture = TestBed.createComponent(TaxBetterAdminPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
-    flushSession(http);
-    await fixture.whenStable();
     http.expectOne('/v1/admin/users').flush({
       createsTaxCredit: false,
       canManage: false,
@@ -58,12 +46,10 @@ describe('TaxBetterAdminPageComponent', () => {
     http.verify();
   });
 
-  it('creates a user without sending a password', async () => {
+  it('creates a user without sending a password', () => {
     const fixture = TestBed.createComponent(TaxBetterAdminPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
-    flushSession(http);
-    await fixture.whenStable();
     http.expectOne('/v1/admin/users').flush({
       createsTaxCredit: false,
       canManage: true,

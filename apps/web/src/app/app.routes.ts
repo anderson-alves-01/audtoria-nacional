@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginPageComponent } from './auth/login-page.component';
+import { loginGuard, operatorGuard } from './auth/operator.guard';
 import { AuditCasesPageComponent } from './audit-cases/audit-cases-page.component';
 import { AuditRulesPageComponent } from './audit-rules/audit-rules-page.component';
 import { Cadastro360PageComponent } from './cadastro-360/cadastro-360-page.component';
@@ -10,6 +11,7 @@ import { FunnelPageComponent } from './funnel/funnel-page.component';
 import { HealthPageComponent } from './health/health-page.component';
 import { HumanValidationPageComponent } from './human-validation/human-validation-page.component';
 import { AboutPageComponent } from './layout/about-page.component';
+import { AppShellComponent } from './layout/app-shell.component';
 import { StatusPageComponent } from './layout/status-page.component';
 import { MunicipalUploadsPageComponent } from './municipal-uploads/municipal-uploads-page.component';
 import { NotificationsPageComponent } from './notifications/notifications-page.component';
@@ -34,7 +36,7 @@ const integration = 'Integração';
 const vision = 'Visão';
 const administration = 'Administração';
 
-export const routes: Routes = [
+const shellRoutes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'visao' },
   {
     path: 'visao',
@@ -45,11 +47,6 @@ export const routes: Routes = [
     path: 'integracao',
     component: TaxBetterIntegrationPageComponent,
     data: { title: 'Entrada e saída', group: integration },
-  },
-  {
-    path: 'entrar',
-    component: LoginPageComponent,
-    data: { title: 'Entrar', group: administration },
   },
   {
     path: 'administracao',
@@ -234,5 +231,19 @@ export const routes: Routes = [
       message: 'O endereço não corresponde a um módulo do SIRTA.',
       group: governance,
     },
+  },
+];
+
+export const routes: Routes = [
+  {
+    path: 'entrar',
+    component: LoginPageComponent,
+    canActivate: [loginGuard],
+  },
+  {
+    path: '',
+    component: AppShellComponent,
+    canActivate: [operatorGuard],
+    children: shellRoutes,
   },
 ];

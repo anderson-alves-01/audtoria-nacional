@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 export type PublicOpenSession = {
   accessToken: string;
@@ -16,43 +14,21 @@ const OPERATOR_KEY = 'sirta.operatorSession';
 
 @Injectable({ providedIn: 'root' })
 export class PublicOpenSessionService {
-  private readonly http = inject(HttpClient);
   private session: PublicOpenSession | null = null;
-  private operator: PublicOpenSession | null = null;
 
   rememberOperator(session: PublicOpenSession): void {
-    this.operator = session;
+    this.session = session;
     sessionStorage.setItem(OPERATOR_KEY, JSON.stringify(session));
   }
 
   clearOperator(): void {
-    this.operator = null;
+    this.session = null;
     sessionStorage.removeItem(OPERATOR_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
   }
 
   async ensureSession(): Promise<void> {
-    const cached = this.readKey(STORAGE_KEY);
-    if (cached && !this.isExpired(cached)) {
-      this.session = cached;
-      return;
-    }
-    const body = await firstValueFrom(
-      this.http.get<{
-        accessToken: string;
-        territoryId: string;
-        purposeId: string;
-        expiresAt: string;
-        mode: string;
-      }>('/v1/auth/public-open-session'),
-    );
-    this.session = {
-      accessToken: body.accessToken,
-      territoryId: body.territoryId,
-      purposeId: body.purposeId,
-      expiresAt: body.expiresAt,
-      mode: body.mode,
-    };
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.session));
+    return;
   }
 
   authHeaders(): Record<string, string> | null {
@@ -68,20 +44,12 @@ export class PublicOpenSessionService {
   }
 
   peek(): PublicOpenSession | null {
-    const operator = this.operator ?? this.readKey(OPERATOR_KEY);
-    if (operator && !this.isExpired(operator)) {
-      this.operator = operator;
-      return operator;
+    const operator = this.session ?? this.readKey(OPERATOR_KEY);
+    if (!operator || operator.mode !== 'OPERATOR_LOGIN' || this.isExpired(operator)) {
+      return null;
     }
-    if (this.session && !this.isExpired(this.session)) {
-      return this.session;
-    }
-    const cached = this.readKey(STORAGE_KEY);
-    if (cached && !this.isExpired(cached)) {
-      this.session = cached;
-      return cached;
-    }
-    return null;
+    this.session = operator;
+    return operator;
   }
 
   private readKey(key: string): PublicOpenSession | null {

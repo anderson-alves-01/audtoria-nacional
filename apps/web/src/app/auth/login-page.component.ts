@@ -21,6 +21,20 @@ interface LoginResponse {
   imports: [CommonModule, FormsModule],
   templateUrl: './login-page.component.html',
   styleUrl: '../tax-better/tax-better-page.scss',
+  styles: [
+    `
+      :host {
+        display: grid;
+        min-height: 100vh;
+        background: var(--paper, #f4f0e5);
+        color: var(--ink, #1a1913);
+      }
+      section {
+        width: min(28rem, 100%);
+        margin: auto;
+      }
+    `,
+  ],
 })
 export class LoginPageComponent {
   private readonly http = inject(HttpClient);
@@ -54,7 +68,7 @@ export class LoginPageComponent {
             username: body.username,
           });
           this.submitting = false;
-          void this.router.navigateByUrl('/administracao');
+          void this.router.navigateByUrl('/visao');
         },
         error: () => {
           this.password = '';
