@@ -23,11 +23,18 @@ describe('AppComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const sidebar = compiled.querySelector('aside[aria-label="Navegação principal"]');
     expect(sidebar?.textContent).toContain('SIRTA');
-    expect(sidebar?.textContent).toContain('Visão executiva');
-    expect(sidebar?.textContent).toContain('Cobrança');
+    expect(sidebar?.textContent).toContain('Tax Better');
+    expect(sidebar?.textContent).toContain('Integração');
+    expect(sidebar?.textContent).toContain('Visão');
+    expect(sidebar?.textContent).toContain('Administração');
+    expect(sidebar?.textContent).toContain('Referência publicada');
+    expect(sidebar?.textContent).not.toContain('Cobrança');
+    expect(compiled.querySelector('header')?.textContent).not.toContain('Alertas');
     expect(compiled.querySelector('header')?.textContent).not.toContain('0.3.');
     expect(compiled.querySelectorAll('aside nav, aside a[routerlink], aside a').length).toBeGreaterThan(0);
-    const labels = APP_NAV_GROUPS.flatMap((group) => group.links).length;
-    expect(compiled.querySelectorAll('aside a[href], aside a').length).toBeGreaterThanOrEqual(labels);
+    const openLabels = APP_NAV_GROUPS.filter((group) => group.id !== 'reference').flatMap(
+      (group) => group.links,
+    ).length;
+    expect(compiled.querySelectorAll('aside a[href], aside a').length).toBeGreaterThanOrEqual(openLabels);
   });
 });

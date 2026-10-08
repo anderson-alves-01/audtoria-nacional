@@ -104,4 +104,74 @@ describe('SourcesPageComponent', () => {
     expect(text).not.toContain('Cria crédito: sim');
     http.verify();
   });
+
+  it('saves the Tax Better field map and never sends a secret value', () => {
+    const fixture = TestBed.createComponent(SourcesPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http.expectOne('/v1/data-sources').flush({
+      items: [
+        {
+          sourceId: 'TAX-BETTER-ENTRADA',
+          name: 'Tax Better',
+          sourceRole: 'PRIMARY_FISCAL',
+          accessClassification: 'RESTRICTED',
+          status: 'CREDENTIAL_REQUIRED',
+          ingestAllowed: false,
+          createsTaxCredit: false,
+          connector: 'tax_better_intake',
+        },
+      ],
+    });
+    fixture.detectChanges();
+    http.expectOne('/v1/indicators/source-enrichment?sourceId=IBGE-SIDRA').flush({
+      sourceId: 'IBGE-SIDRA',
+      published: false,
+      indicatorCount: 0,
+      createsTaxCredit: false,
+    });
+    http.expectOne('/v1/data-sources/TAX-BETTER-ENTRADA/tax-better-config').flush({
+      sourceId: 'TAX-BETTER-ENTRADA',
+      channel: 'api',
+      fieldMap: {
+        organ: 'orgao',
+        tax: 'imposto',
+        fgo: 'fgo',
+        operationValue: 'op_valor',
+        operationBase: 'op_base',
+        operationTax: 'op_imposto',
+        malhaValue: 'malha_valor',
+        malhaBase: 'malha_base',
+        malhaTax: 'malha_imposto',
+      },
+      endpoint: 'https://example.invalid',
+      secretName: 'DETRAN_API_KEY',
+      createsTaxCredit: false,
+    });
+    fixture.detectChanges();
+    const text = fixture.nativeElement.textContent as string;
+    expect(text).toContain('Nome do segredo');
+    expect(text).toContain('Cria crédito: não');
+    const save = Array.from(fixture.nativeElement.querySelectorAll('button')).find((node) =>
+      (node as HTMLButtonElement).textContent?.includes('Gravar mapa'),
+    ) as HTMLButtonElement;
+    save.click();
+    const saved = http.expectOne('/v1/data-sources/TAX-BETTER-ENTRADA/tax-better-config');
+    expect(saved.request.method).toBe('PUT');
+    expect(saved.request.body.secretName).toBe('DETRAN_API_KEY');
+    expect(saved.request.body.secret).toBeUndefined();
+    expect(saved.request.body.secretValue).toBeUndefined();
+    saved.flush({
+      sourceId: 'TAX-BETTER-ENTRADA',
+      channel: 'api',
+      fieldMap: saved.request.body.fieldMap,
+      endpoint: 'https://example.invalid',
+      secretName: 'DETRAN_API_KEY',
+      createsTaxCredit: false,
+    });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Nenhum crédito foi criado');
+    expect(fixture.nativeElement.textContent).not.toContain('Cria crédito: sim');
+    http.verify();
+  });
 });

@@ -25,6 +25,20 @@ _PREFERRED_ACCOUNT = {
 }
 
 
+RECOVERY_REASON = "Sem valor elegível validado e sem valor recebido conciliado."
+
+
+def recovery_reading(_published: dict) -> dict:
+    """Published municipal sums do not become a recoverable amount."""
+    return {
+        "eligibleTotal": None,
+        "recoveredTotal": None,
+        "municipalityCount": 0,
+        "createsTaxCredit": False,
+        "reason": RECOVERY_REASON,
+    }
+
+
 def aggregate_finance_geography(cells: list[dict]) -> dict:
     """One published municipal series per state.
 

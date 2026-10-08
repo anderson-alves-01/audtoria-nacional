@@ -97,6 +97,7 @@ def _to_item(row: SourceRegistry) -> dict:
         "methodologyVersion": catalog.get("methodology_version"),
         "verifiedAt": catalog.get("verified_at"),
         "notes": row.notes,
+        "connector": catalog.get("connector"),
     }
 
 

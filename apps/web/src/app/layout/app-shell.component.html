@@ -7,12 +7,12 @@
 
   <aside class="sidebar" aria-label="Navegação principal">
     <div class="brand-row">
-      <a class="brand" routerLink="/executivo">
+      <a class="brand" routerLink="/visao">
         <span class="mark" aria-hidden="true">S</span>
         @if (!collapsed) {
           <span>
             <strong>SIRTA</strong>
-            <small>Municipal</small>
+            <small>Tax Better</small>
           </span>
         }
       </a>
@@ -26,7 +26,7 @@
         <button
           type="button"
           class="group-toggle"
-          [attr.aria-expanded]="expanded.has(group.id)"
+          [attr.aria-expanded]="groupIsOpen(group)"
           (click)="toggleGroup(group.id)"
         >
           @if (!collapsed) {
@@ -35,7 +35,7 @@
             <span class="sr">{{ group.label }}</span>
           }
         </button>
-        @if (expanded.has(group.id)) {
+        @if (groupIsOpen(group)) {
           <ul>
             @for (link of group.links; track link.path) {
               <li>
@@ -76,7 +76,6 @@
         <span class="sr">Buscar na navegação</span>
         <input type="search" placeholder="Buscar módulo" [value]="query" (input)="query = $any($event.target).value" />
       </label>
-      <a class="alerts" routerLink="/notificacoes">Alertas</a>
       <p class="profile">{{ profileLabel }}</p>
       @if (localBadge) {
         <span class="env">local</span>
@@ -84,17 +83,17 @@
     </header>
 
     <div class="context-bar">
-      <span>Atualização conforme a API do painel</span>
-      <span>Fonte oficial catalogada</span>
-      <span>Qualidade exibida no painel</span>
-      <span>Homologação de referência · sem crédito</span>
+      <span>Leitura da visão gravada</span>
+      <span>Fonte configurada na integração</span>
+      <span>Malha sem aprovação</span>
+      <span>Sem crédito tributário</span>
     </div>
 
     <main id="conteudo-principal" class="content">
       <router-outlet />
     </main>
     <footer class="shell-foot">
-      <p>SIRTA Municipal · referência oficial publicada · sem crédito tributário</p>
+      <p>SIRTA · Tax Better · visão sem crédito tributário</p>
     </footer>
   </div>
 </div>

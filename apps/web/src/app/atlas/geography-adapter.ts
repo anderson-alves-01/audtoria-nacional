@@ -10,10 +10,19 @@ export interface PublishedMeasure {
   municipalityCount?: number;
 }
 
+export interface RecoveryReading {
+  eligibleTotal?: number | null;
+  recoveredTotal?: number | null;
+  municipalityCount?: number;
+  createsTaxCredit?: boolean;
+  reason?: string;
+}
+
 export interface GeographyPayload {
   regions?: {
     states?: { uf?: string; measures?: PublishedMeasure[] }[];
   }[];
+  recovery?: RecoveryReading;
 }
 
 export interface MetricPoint {

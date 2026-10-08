@@ -1,0 +1,70 @@
+<section aria-labelledby="integracao-title">
+  <h1 id="integracao-title">Entrada e saída</h1>
+  <p>O canal e o mapa de campos ficam nesta tela. A chave do órgão não é gravada e nenhuma busca é feita.</p>
+
+  @if (state === 'loading') {
+    <p role="status">Carregando a configuração…</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ message }}</p>
+  }
+  @if (state === 'ok' && draft) {
+    <form (ngSubmit)="saveConfig()">
+      <fieldset>
+        <legend>Canal e mapa de campos</legend>
+        <label>
+          Canal
+          <select name="channel" [(ngModel)]="draft.channel">
+            <option value="file">Arquivo com leiaute</option>
+            <option value="api">API</option>
+          </select>
+        </label>
+        <label>
+          Período
+          <input name="competence" [(ngModel)]="competence" autocomplete="off" />
+        </label>
+        @for (field of intakeFields; track field.key) {
+          <label>
+            {{ field.label }}
+            <input [name]="field.key" [(ngModel)]="draft.fieldMap[field.key]" autocomplete="off" />
+          </label>
+        }
+        @if (draft.channel === 'api') {
+          <label>
+            URL
+            <input name="endpoint" [(ngModel)]="draft.endpoint" autocomplete="off" />
+          </label>
+          <label>
+            Nome do segredo
+            <input name="secretName" [(ngModel)]="draft.secretName" autocomplete="off" />
+          </label>
+          <p>A chave não é gravada. A busca ao órgão continua bloqueada até o ato.</p>
+        }
+        <button type="submit">Gravar mapa</button>
+      </fieldset>
+    </form>
+
+    @if (draft.channel === 'file') {
+      <label>
+        Linhas do arquivo
+        <textarea name="fileText" [(ngModel)]="fileText" rows="4"></textarea>
+      </label>
+      <button type="button" (click)="stageFile()">Registrar arquivo</button>
+    }
+    @if (draft.channel === 'api') {
+      <label>
+        Resposta recebida
+        <textarea name="apiBody" [(ngModel)]="apiBody" rows="4"></textarea>
+      </label>
+      <button type="button" (click)="stageApi()">Registrar resposta</button>
+    }
+
+    <section aria-labelledby="saida-title">
+      <h2 id="saida-title">Saída para a malha</h2>
+      <p>Sem aprovação, não há exportação para a malha fiscal. Esta tela não envia notificação.</p>
+    </section>
+  }
+  @if (message && state === 'ok') {
+    <p role="status">{{ message }}</p>
+  }
+</section>

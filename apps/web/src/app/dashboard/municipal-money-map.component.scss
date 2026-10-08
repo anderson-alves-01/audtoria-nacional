@@ -132,6 +132,29 @@
   font-size: 0.85rem;
 }
 
+.money-recovery {
+  margin: 0 0 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line, #e1dbc8);
+}
+
+.money-recovery h4 {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.money-recovery p {
+  margin: 0 0 4px;
+  color: var(--ink2, #3d3a32);
+}
+
+.money-recovery-figure {
+  font-family: Fraunces, serif;
+  font-size: 1.6rem;
+  color: var(--ink, #1a1913);
+}
+
 .money-popup button {
   min-height: 40px;
   padding: 0 14px;

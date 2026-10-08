@@ -10,10 +10,10 @@ describe('routes', () => {
     });
   });
 
-  it('opens the executive view from the root path', async () => {
+  it('opens the Tax Better vision from the root path', async () => {
     const router = TestBed.inject(Router);
     await router.navigateByUrl('/');
-    expect(router.url).toBe('/executivo');
+    expect(router.url).toBe('/visao');
   });
 
   it('keeps legacy dashboard and sectoral urls', () => {
@@ -22,5 +22,7 @@ describe('routes', () => {
     expect(paths).toContain('financeiro');
     expect(paths).toContain('saude');
     expect(paths).toContain('procuradoria');
+    expect(paths).toContain('integracao');
+    expect(paths).toContain('administracao');
   });
 });

@@ -4239,3 +4239,39 @@ sources:
       (uf alfabético não filtra). Ativação técnica UF=MS, limit=8 e fixture
       JSON mínima. Homologação humana pendente. Não constitui crédito.
 
+  - source_id: TAX-BETTER-ENTRADA
+    name: Tax Better — entrada de fato gerador omisso
+    maintainer: Órgão configurado na ferramenta de fontes
+    official_domain: none
+    official_url: official://tax-better-entrada
+    endpoint: none
+    documentation_url: docs/product/TAX-BETTER.md
+    dataset: TAX-BETTER-ENTRADA
+    dictionary_url: none
+    purpose: Receber arquivo ou API já mapeados para a visão de operação e malha
+    legal_basis: Exige autorização do controlador e finalidade registrada
+    license_terms: não aplicável até o ato
+    source_role: PRIMARY_FISCAL
+    access_classification: RESTRICTED
+    status: CREDENTIAL_REQUIRED
+    fixture_kind: NONE
+    connector: tax_better_intake
+    layout_version: tax-better-operator-map-v1
+    periodicity: as_published
+    competence: unknown
+    granularity: event
+    parameters:
+      channel_configured_in_tool: true
+      fetch_forbidden_until_authorized: true
+    authentication: credential_required
+    rate_limit: none
+    personal_data: true
+    retention: blocked
+    indicator: none
+    formula: none
+    methodology_version: tax-better-intake-v1
+    notes: >
+      Modelo de entrada. O operador grava canal e mapa de campos na ferramenta
+      de fontes. A URL e o nome do segredo ficam nessa configuração. A chave
+      não é gravada. Não busca o DETRAN. Não constitui crédito.
+

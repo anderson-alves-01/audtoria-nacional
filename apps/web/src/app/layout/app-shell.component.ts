@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { PublicOpenSessionService } from '../auth/public-open-session.service';
-import { APP_NAV_GROUPS, NavGroup } from './navigation';
+import { APP_NAV_GROUPS, OPEN_NAV_GROUP_IDS, NavGroup } from './navigation';
 import { humanizeContext, humanizeSessionMode } from '../shared/presentation/official-labels';
 
 @Component({
@@ -20,9 +20,9 @@ export class AppShellComponent {
   collapsed = false;
   mobileOpen = false;
   query = '';
-  breadcrumb = 'Visão executiva';
-  groupLabel = 'Gestão Executiva da Receita';
-  readonly expanded = new Set(APP_NAV_GROUPS.map((group) => group.id));
+  breadcrumb = 'Visão geral';
+  groupLabel = 'Visão';
+  readonly expanded = new Set(OPEN_NAV_GROUP_IDS);
 
   constructor() {
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
@@ -70,6 +70,10 @@ export class AppShellComponent {
         ),
       }))
       .filter((group) => group.links.length > 0);
+  }
+
+  groupIsOpen(group: NavGroup): boolean {
+    return this.query.trim().length > 0 || this.expanded.has(group.id);
   }
 
   toggleGroup(id: string): void {

@@ -83,6 +83,12 @@
           <p>{{ drawer.nome }} não tem valor publicado.</p>
         }
         <p class="money-popup-note">Soma do valor já publicado. Esta soma não é crédito tributário.</p>
+        <section class="money-recovery" aria-label="Valor a recuperar">
+          <h4>Valor a recuperar</h4>
+          <p class="money-recovery-figure">{{ recoveryFigure() }}</p>
+          <p>{{ recoveryPlaces() }}</p>
+          <p>{{ recovery.reason }}</p>
+        </section>
         <button #popupClose type="button" (click)="close()">Fechar</button>
       </div>
     </div>

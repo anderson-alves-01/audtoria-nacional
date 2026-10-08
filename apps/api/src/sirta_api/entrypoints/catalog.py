@@ -8,9 +8,23 @@ from sirta_api.adapters.ingest.http_client import OfficialHttpClient
 from sirta_api.application.catalog import dry_run_source, list_sources
 from sirta_api.application.official_ingest import list_official_gold
 from sirta_api.application.source_ingest import ingest_catalog_source, published_enrichment
+from sirta_api.application.tax_better_config import (
+    get_tax_better_config,
+    list_tax_better_vision,
+    save_tax_better_config,
+    stage_tax_better_intake,
+)
 from sirta_api.domain.authorization import AccessContext
 
 router = APIRouter()
+
+
+@router.get("/v1/tax-better/vision")
+def get_tax_better_vision_route(
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> dict:
+    return list_tax_better_vision(session, context=context)
 
 
 @router.get("/v1/data-sources")
@@ -19,6 +33,35 @@ def get_data_sources(
     session: Session = Depends(get_session),
 ) -> dict:
     return list_sources(session, context=context)
+
+
+@router.get("/v1/data-sources/{sourceId}/tax-better-config")
+def get_tax_better_config_route(
+    sourceId: str,
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> dict:
+    return get_tax_better_config(session, context=context, source_id=sourceId)
+
+
+@router.put("/v1/data-sources/{sourceId}/tax-better-config")
+def put_tax_better_config_route(
+    sourceId: str,
+    payload: dict,
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> dict:
+    return save_tax_better_config(session, context=context, source_id=sourceId, payload=payload)
+
+
+@router.post("/v1/data-sources/{sourceId}/tax-better-intake")
+def post_tax_better_intake_route(
+    sourceId: str,
+    payload: dict,
+    context: AccessContext = Depends(get_access_context),
+    session: Session = Depends(get_session),
+) -> dict:
+    return stage_tax_better_intake(session, context=context, source_id=sourceId, payload=payload)
 
 
 @router.post("/v1/data-sources/{sourceId}/dry-run")

@@ -4,6 +4,7 @@ import {
   AtlasState,
   GeographyPayload,
   MetricDef,
+  RecoveryReading,
   adaptMoneyGeography,
   formatPublishedReais,
   quantileFill,
@@ -15,6 +16,13 @@ import { REGION_LABELS, REGION_NAME } from '../atlas/hex-layout';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const HR = 34;
+const EMPTY_RECOVERY: RecoveryReading = {
+  eligibleTotal: null,
+  recoveredTotal: null,
+  municipalityCount: 0,
+  createsTaxCredit: false,
+  reason: 'Sem valor elegível validado e sem valor recebido conciliado.',
+};
 
 @Component({
   selector: 'app-municipal-money-map',
@@ -30,6 +38,7 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
 
   loading = true;
   failed = false;
+  recovery: RecoveryReading = { ...EMPTY_RECOVERY };
   states: AtlasState[] = [];
   metrics: MetricDef[] = [];
   metricId = '';
@@ -42,11 +51,13 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.http.get<GeographyPayload>('/v1/dashboards/financeiro/geography').subscribe({
       next: (payload) => {
+        this.recovery = { ...EMPTY_RECOVERY, ...(payload.recovery ?? {}) };
         this.apply(adaptMoneyGeography(payload));
         this.loading = false;
         this.queueDraw();
       },
       error: (_error: HttpErrorResponse) => {
+        this.recovery = { ...EMPTY_RECOVERY };
         this.apply(adaptMoneyGeography({}));
         this.failed = true;
         this.loading = false;
@@ -101,6 +112,21 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
 
   regionName(state: AtlasState): string {
     return REGION_NAME[state.reg];
+  }
+
+  recoveryFigure(): string {
+    if (this.recovery.eligibleTotal == null || this.recovery.recoveredTotal == null) {
+      return '—';
+    }
+    return formatPublishedReais(this.recovery.recoveredTotal);
+  }
+
+  recoveryPlaces(): string {
+    const count = this.recovery.municipalityCount ?? 0;
+    if (count === 0) {
+      return 'Nenhum município com valor elegível ou recebido conciliado.';
+    }
+    return count === 1 ? '1 município' : `${count} municípios`;
   }
 
   detailLines(): { series: string; value: string; places: string; year: string }[] {

@@ -24,7 +24,10 @@ const QUALITY: Record<string, string> = {
 
 const CATALOG: Record<string, string> = {
   REFERENCE_ENRICHMENT: 'Enriquecimento de referência',
+  PRIMARY_FISCAL: 'Fonte fiscal primária',
   PUBLIC_OPEN: 'Acesso público aberto',
+  RESTRICTED: 'Acesso restrito',
+  CREDENTIAL_REQUIRED: 'Credencial exigida',
   EMPTY: 'Sem publicação neste recorte',
 };
 
@@ -83,6 +86,7 @@ const SOURCE: Record<string, string> = {
   'SICONFI-RGF': 'SICONFI — RGF',
   'ESTADO-ICMS-QUOTA': 'Estado — quota-parte de ICMS',
   'COVERAGE-DIVERGENCE': 'Divergência de cobertura municipal',
+  'TAX-BETTER-ENTRADA': 'Tax Better — entrada configurada na ferramenta',
 };
 
 const SOURCE_PART: Record<string, string> = {

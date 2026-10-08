@@ -1,0 +1,51 @@
+<section aria-labelledby="visao-title">
+  <h1 id="visao-title">Visão geral</h1>
+  <p>Operação e malha vêm do que foi registrado. Medida ausente permanece vazia. Esta leitura não cria crédito.</p>
+
+  @if (state === 'loading') {
+    <p role="status">Carregando a visão…</p>
+  }
+  @if (state === 'error') {
+    <p role="alert">{{ errorMessage }}</p>
+  }
+  @if (state === 'ok' && view) {
+    <p>Cria crédito: {{ view.createsTaxCredit ? 'sim' : 'não' }}. Exportação aprovada: {{ view.approvedExport ? 'sim' : 'não' }}.</p>
+    @if (view.rows.length === 0) {
+      <p role="status">{{ view.emptyReason || 'Ainda não há arquivo autorizado na visão.' }}</p>
+    } @else {
+      <table>
+        <caption>Imposto, fato gerador, variáveis, operação e malha</caption>
+        <thead>
+          <tr>
+            <th scope="col">Imposto</th>
+            <th scope="col">Fato gerador</th>
+            <th scope="col">Variáveis</th>
+            <th scope="col">Operação — valor</th>
+            <th scope="col">Operação — base</th>
+            <th scope="col">Operação — imposto</th>
+            <th scope="col">Malha — valor</th>
+            <th scope="col">Malha — base</th>
+            <th scope="col">Malha — imposto</th>
+            <th scope="col">Aprovação</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of view.rows; track $index) {
+            <tr>
+              <td>{{ row.imposto }}</td>
+              <td>{{ row.fgo }}</td>
+              <td>{{ variables(row) }}</td>
+              <td>{{ measure(row.operacao.valor) }}</td>
+              <td>{{ measure(row.operacao.baseCalculo) }}</td>
+              <td>{{ measure(row.operacao.imposto) }}</td>
+              <td>{{ measure(row.malha.valor) }}</td>
+              <td>{{ measure(row.malha.baseCalculo) }}</td>
+              <td>{{ measure(row.malha.imposto) }}</td>
+              <td>{{ row.approved ? 'aprovada' : 'sem aprovação' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+</section>

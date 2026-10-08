@@ -49,6 +49,11 @@ describe('MunicipalMoneyMapComponent', () => {
     expect(popup.textContent).toContain('2,5 mi');
     expect(popup.textContent).toContain('22');
     expect(popup.textContent).toContain('não é crédito tributário');
+    expect(popup.textContent).toContain('Valor a recuperar');
+    expect(popup.textContent).toContain('—');
+    expect(popup.textContent).toContain(
+      'Nenhum município com valor elegível ou recebido conciliado.',
+    );
     popup.parentElement?.dispatchEvent(new Event('click'));
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[role="dialog"]')).toBeNull();

@@ -16,19 +16,40 @@ import { OpsGovernancePageComponent } from './ops-governance/ops-governance-page
 import { ProcuradoriaPageComponent } from './procuradoria/procuradoria-page.component';
 import { SectoralEnrichmentPageComponent } from './sectoral-enrichment/sectoral-enrichment-page.component';
 import { SourcesPageComponent } from './sources/sources-page.component';
+import { TaxBetterAdminPageComponent } from './tax-better/tax-better-admin-page.component';
+import { TaxBetterIntegrationPageComponent } from './tax-better/tax-better-integration-page.component';
+import { TaxBetterVisionPageComponent } from './tax-better/tax-better-vision-page.component';
 import { StateTransfersPageComponent } from './state-transfers/state-transfers-page.component';
 import { TransferReconciliationPageComponent } from './transfer-reconciliation/transfer-reconciliation-page.component';
 import { ValidationPageComponent } from './validation/validation-page.component';
 
-const executive = 'Gestão Executiva da Receita';
-const recovery = 'Recuperação Tributária';
-const transfers = 'Auditoria de Repasses';
-const intelligence = 'Inteligência Fiscal';
-const reform = 'Observatório da Reforma Tributária';
-const governance = 'Governança e Operação';
+const executive = 'Referência publicada';
+const recovery = 'Referência publicada';
+const transfers = 'Referência publicada';
+const intelligence = 'Referência publicada';
+const reform = 'Referência publicada';
+const governance = 'Referência publicada';
+const integration = 'Integração';
+const vision = 'Visão';
+const administration = 'Administração';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'executivo' },
+  { path: '', pathMatch: 'full', redirectTo: 'visao' },
+  {
+    path: 'visao',
+    component: TaxBetterVisionPageComponent,
+    data: { title: 'Visão geral', group: vision },
+  },
+  {
+    path: 'integracao',
+    component: TaxBetterIntegrationPageComponent,
+    data: { title: 'Entrada e saída', group: integration },
+  },
+  {
+    path: 'administracao',
+    component: TaxBetterAdminPageComponent,
+    data: { title: 'Usuários e acessos', group: administration },
+  },
   {
     path: 'executivo',
     component: DashboardPageComponent,

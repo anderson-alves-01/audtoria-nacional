@@ -18,6 +18,7 @@ from sirta_api.domain.finance_geography import (
     FINANCE_MAP_SOURCES,
     aggregate_finance_geography,
     finance_summary_records,
+    recovery_reading,
     replace_summary_snapshot,
     view_from_summary,
 )
@@ -31,7 +32,9 @@ def list_finance_geography(session: Session, *, context: AccessContext) -> dict:
             GoldFinanceStateSummary.territory_id == context.territory_id,
         )
     ).all()
-    return view_from_summary([_group(row) for row in rows])
+    view = view_from_summary([_group(row) for row in rows])
+    view["recovery"] = recovery_reading(view)
+    return view
 
 
 def refresh_finance_state_summary(session: Session, *, tenant_id: UUID, territory_id: UUID) -> int:

@@ -1,7 +1,16 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -362,6 +371,69 @@ class GoldFinanceStateSummary(Base):
     total: Mapped[float] = mapped_column(Numeric(24, 4), nullable=False)
     municipality_count: Mapped[int] = mapped_column(Integer, nullable=False)
     refreshed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class TaxBetterTax(Base):
+    __tablename__ = "tax_better_taxes"
+
+    code: Mapped[str] = mapped_column(String(16), primary_key=True)
+
+
+class TaxBetterOrgan(Base):
+    __tablename__ = "tax_better_organs"
+
+    code: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+
+
+class TaxBetterFgo(Base):
+    __tablename__ = "tax_better_fgos"
+
+    code: Mapped[str] = mapped_column(String(32), primary_key=True)
+    tax: Mapped[str] = mapped_column(ForeignKey("tax_better_taxes.code"), nullable=False)
+    label: Mapped[str] = mapped_column(String(64), nullable=False)
+    pdf_item: Mapped[str] = mapped_column(String(16), nullable=False)
+    organ_code: Mapped[str | None] = mapped_column(ForeignKey("tax_better_organs.code"))
+
+
+class TaxBetterIntakeLine(Base):
+    """One received fact. Amounts are summed in the vision; malha stays unapproved."""
+
+    __tablename__ = "tax_better_intake_lines"
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    organ: Mapped[str] = mapped_column(String(64), nullable=False)
+    tax: Mapped[str] = mapped_column(ForeignKey("tax_better_taxes.code"), nullable=False)
+    fgo_code: Mapped[str] = mapped_column(ForeignKey("tax_better_fgos.code"), nullable=False)
+    variables: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    competence: Mapped[str | None] = mapped_column(String(16))
+    operation_value: Mapped[float | None] = mapped_column(Numeric(24, 4))
+    operation_base: Mapped[float | None] = mapped_column(Numeric(24, 4))
+    operation_tax: Mapped[float | None] = mapped_column(Numeric(24, 4))
+    malha_value: Mapped[float | None] = mapped_column(Numeric(24, 4))
+    malha_base: Mapped[float | None] = mapped_column(Numeric(24, 4))
+    malha_tax: Mapped[float | None] = mapped_column(Numeric(24, 4))
+    approved: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class TaxBetterSourceConfig(Base):
+    """Operator-owned channel and field map. The catalog YAML does not hold the columns."""
+
+    __tablename__ = "tax_better_source_configs"
+    __table_args__ = (UniqueConstraint("tenant_id", "territory_id", "source_id"),)
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    channel: Mapped[str] = mapped_column(String(8), nullable=False)
+    field_map: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    endpoint: Mapped[str] = mapped_column(String(512), nullable=False, default="")
+    secret_name: Mapped[str] = mapped_column(String(128), nullable=False, default="")
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
 class IngestCheckpoint(Base):

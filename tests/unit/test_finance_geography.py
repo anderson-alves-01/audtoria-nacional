@@ -1,6 +1,7 @@
 from sirta_api.domain.finance_geography import (
     aggregate_finance_geography,
     finance_summary_records,
+    recovery_reading,
     replace_summary_snapshot,
     view_from_summary,
 )
@@ -174,3 +175,27 @@ def test_gold_summary_roundtrip_replaces_and_does_not_append():
     )
     assert acre["measures"][0]["total"] == 15.0
     assert restored["createsTaxCredit"] is False
+
+
+def test_published_fpm_does_not_become_a_recoverable_amount():
+    view = aggregate_finance_geography(
+        [
+            {
+                "sourceId": "TESOURO-FPM-VALORES",
+                "ufCode": "12",
+                "account": "",
+                "column": "",
+                "unit": "BRL",
+                "competence": "2025",
+                "total": 15,
+                "municipalityCount": 2,
+            }
+        ]
+    )
+    assert recovery_reading(view) == {
+        "eligibleTotal": None,
+        "recoveredTotal": None,
+        "municipalityCount": 0,
+        "createsTaxCredit": False,
+        "reason": "Sem valor elegível validado e sem valor recebido conciliado.",
+    }

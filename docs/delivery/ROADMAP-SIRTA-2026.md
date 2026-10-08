@@ -4,11 +4,12 @@
 
 **SIRTA - Sistema Integrado de Recuperação Tributária e Auditoria**  
 **Lema:** “Auditar. Acompanhar. Recuperar.”  
-**Versão do roadmap:** 1.2  
+**Versão do roadmap:** 1.3  
 **Data-base:** setembro de 2026  
+**Revisão 1.3:** escopo vigente Tax Better. Fila curta: entrada de arquivo, regra de ICMS de veículo, visão da ocorrência e saída aprovada. Texto: `docs/product/TAX-BETTER.md`.  
 **Revisão 1.2:** reconciliação do estado executável 0.3.7, gates locais/oficiais e dívida Alembic  
 **Revisão 1.1:** plano explícito de fontes públicas e ingestão do datalake  
-**Horizonte:** implantação inicial de 6 a 8 meses e evolução contínua
+**Horizonte vigente:** fato gerador omisso em ICMS, ISS, IPTU, IPVA, ITBI e ITCMD. O histórico de 6 a 8 meses permanece abaixo, fora da fila.
 
 ---
 
@@ -20,7 +21,7 @@
 | Versão da implementação local | `0.3.97` |
 | Linha técnica em progresso | F0/S0-S4, G6–G8 locais, Alembic, F3, onda 1 PUBLIC_OPEN, lineage Gold, 15 dashboards, FPM/ITR/IPI-EXP/Royalties/LC176/IOF-Ouro/FUNDEB-COMPLEMENT/FUNDEB-COINT/LC87-COINT/FPM-COINT/ITR-COINT/IOF-COINT/LC176-COINT/CIDE-COINT/FEX-COINT/RREO/DCA/RGF, observabilidade, LC 214, Portal stub, diagnóstico, regras não vinculantes, calendário catalog-official-docs-v1, shells F5–F10, upload municipal, Cadastro 360, setoriais (ANP+ANEEL+EPE+BCB SGS+BCB OLINDA Expectativas anuais+mensais+trimestrais+Selic reunião Copom+Inflacao12/24m+Anatel+CNES ativados), backfill controlado FPM/RREO/DCA, RFB territorial sem carga nacional, PE+BA+MG+ES+MS+RO+AC+CE+RS+AL+RN+MA+PR+SC ICMS (+IPVA/IPI onde publicado) + GO ICMS/IPVA/IPI + ES IPI/CIDE/FRD/Compensação + CE/AL/RN/PE/BA/MG IPI + MA/PR FPEX/IPI-Exportação + MS IPI-Exportação/CIDE + AL/PR royalties + PI IPVA + AC IPVA/ICMS/FUNDEB Transparência + RS Compensação LC194 + PA ICMS Verde + IBGE SIDRA 9509 CEMP TECHNICALLY_APPROVED |
 | Dívida Alembic `0004 -> 0005` | `RESOLVED` (`ALEMBIC_HYGIENE`) |
-| Próximo passo automático | Preferir UF tabular PUBLIC_OPEN restante ou BCB OLINDA Top5; Inflacao12/24m (`ExpectativasMercadoInflacao12Meses`/`24Meses`) ativados; PA cota plena ainda DOE PDF; TO IPM/PDF; AP link SEFAZ 404; RR painel sem split ICMS/IPVA; MT XLSX ≤2015 / corrente PDF; SE/PB PROVENANCE_VERIFIED (PDF); AM HTML-per-município; SP HTML-only; PI ICMS quando Repasse WEB publicar linhas; RJ IP-blocked. IGP/IPA trimestrais vazios na fonte. BCB OLINDA Expectativas anuais+mensais+trimestrais+Selic reunião+Inflacao12/24m ativados. Tesouro COINT municipal completo. RFB sem carga nacional. Sem homologação humana agora. Gates G0/G1/G4/G5/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
+| Próximo passo vigente | Primeira regra de ICMS de veículo (DETRAN + FIPE), quando houver arquivo autorizado, com aprovação humana antes de qualquer saída para a malha. ISS e os demais tributos do Tax Better só avançam com fonte e regra no PDF. A fila antiga de novas UFs e de novas séries do Banco Central fica no histórico. Gates G0/G1/G4/G5/G7-oficial/G8-oficial/G9/G10 permanecem BLOCKED. |
 | Commit de referência local | `feat/official-public-ingest` |
 | Nuvem, produção e dados fiscais restritos | Não autorizados |
 | Estado composto | `OFFICIAL_DATA_WAVE_1_COMPLETE_ROADMAP_IN_PROGRESS` |
@@ -491,6 +492,8 @@ Escopo:
 
 Gate G4: série reconciliada, fórmulas explicáveis e regras homologadas por especialista municipal.
 
+As fases 5 a 10 permanecem neste arquivo como histórico. Saíram da fila vigente na revisão 1.3.
+
 ## Fase 5 - Gestão de casos e cobrança administrativa
 
 **Prazo:** semanas 14-20  
@@ -608,6 +611,12 @@ Gate G10: produção autorizada, rollback testado e responsabilidades operaciona
 ### Onda A - Município piloto do Rio de Janeiro
 
 ISS e carteira selecionada, aproveitando referências de Maricá, São João de Meriti, Teresópolis e Santa Maria Madalena. Valores demonstrativos existentes permanecem como hipóteses até validação das fontes e fórmulas.
+
+### Onda DF - Arrecadação Inteligente
+
+Programa do Distrito Federal sobre o SIRTA, de 2026 a 2033. SIA-GDF nomeia cadastro, documento fiscal, inconsistência, dívida ativa, IBS, cobrança e painel executivo nos domínios já existentes. Texto, cifras em quarentena e cruzamento de contratos, créditos e incentivos: `docs/product/DF-ARRECADACAO-INTELIGENTE.md`. Esta onda não substitui o piloto do Sudeste e não altera gates.
+
+As ondas B a E e a expansão setorial permanecem neste arquivo como histórico. Saíram da fila vigente na revisão 1.3. A política mais larga do Distrito Federal continua em `docs/product/DF-ARRECADACAO-INTELIGENTE.md` e não é o próximo módulo.
 
 ### Onda B - Outros tributos municipais
 
@@ -785,6 +794,13 @@ Nenhuma regra jurídica ou tributária será ativada apenas por inferência da I
 
 ## 16. Próxima ação executiva
 
-Não há próximo item técnico automático na implementação local. A linha `0.3.8`–`0.3.13` em `feat/roadmap-technical-completion` está consolidada em `docs/delivery/TECHNICAL_COMPLETION_REPORT.md`.
+Fila vigente, em `docs/product/TAX-BETTER.md`:
+
+1. Entrada de arquivo autorizado, com imposto, fato gerador e período.
+2. Primeira regra de ICMS de veículo, quando existirem o extrato do DETRAN e a tabela FIPE autorizados.
+3. Visão da ocorrência.
+4. Saída aprovada para a malha. Sem aprovação humana, não há saída.
+
+ISS, IPTU, IPVA, ITBI e ITCMD só avançam quando o PDF ganhar fonte e regra. Não há carga automática de nova UF nem de nova série do Banco Central nesta fila.
 
 G0, G1, G4, G7 oficial, G8 oficial, G9 e G10 permanecem bloqueados. Decisões e evidências exigidas: `docs/delivery/HUMAN_DECISIONS_REQUIRED.md`.
