@@ -1,4 +1,6 @@
-"""Fill the technical administrator secret once. Existing hashes stay."""
+"""Fill the technical administrator secret once. A replace updates the stored hash."""
+
+import os
 
 from sqlalchemy.orm import Session
 
@@ -9,17 +11,20 @@ from sirta_api.config import Settings, get_settings
 from sirta_api.domain.local_login import hash_password, normalize_totp_secret
 
 
-def apply_admin_credentials(session: Session, settings: Settings) -> bool:
+def apply_admin_credentials(session: Session, settings: Settings, *, replace: bool = False) -> bool:
     if not settings.admin_password and not settings.admin_totp_secret:
         return False
     user = session.get(User, USER_ADMIN_ALPHA)
     if user is None:
         return False
     changed = False
-    if settings.admin_password and not user.password_hash:
+    if settings.admin_password and (replace or not user.password_hash):
         user.password_hash = hash_password(settings.admin_password)
         changed = True
-    if settings.admin_totp_secret and not user.totp_secret:
+    if replace and user.totp_secret:
+        user.totp_secret = None
+        changed = True
+    if settings.admin_totp_secret and not user.totp_secret and not replace:
         user.totp_secret = normalize_totp_secret(settings.admin_totp_secret)
         changed = True
     return changed
@@ -28,7 +33,11 @@ def apply_admin_credentials(session: Session, settings: Settings) -> bool:
 def main() -> None:
     session = get_session_factory()()
     try:
-        changed = apply_admin_credentials(session, get_settings())
+        changed = apply_admin_credentials(
+            session,
+            get_settings(),
+            replace=os.environ.get("SIRTA_ADMIN_PASSWORD_REPLACE") == "true",
+        )
         session.commit()
     except Exception:
         session.rollback()

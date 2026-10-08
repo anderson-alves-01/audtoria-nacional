@@ -98,7 +98,7 @@ O operador grava o canal (arquivo ou API) e o mapa de campos na tela de fontes, 
 
 ### Administração
 
-A entrada é a primeira tela. Sem um login bem-sucedido, o restante do sistema permanece fechado. A tela Usuários e acessos lista usuários, papéis, territórios e finalidades do tenant. O administrador técnico informa nome, senha e código do autenticador. Senha não é gravada na tela de usuários. Encerrar acesso desativa o usuário. O último administrador técnico ativo permanece. Finalidades ficam só para leitura. Nenhum cadastro cria crédito.
+A entrada é a primeira tela. Sem um login bem-sucedido, o restante do sistema permanece fechado. A tela Usuários e acessos lista usuários, papéis, territórios e finalidades do tenant. O administrador técnico entra com nome e senha. Senha não é gravada na tela de usuários. Encerrar acesso desativa o usuário. O último administrador técnico ativo permanece. Finalidades ficam só para leitura. Nenhum cadastro cria crédito.
 
 ## Fora do roadmap de engenharia
 

@@ -26,15 +26,14 @@ describe('LoginPageComponent', () => {
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
     fixture.componentInstance.username = 'admin.alpha';
-    fixture.componentInstance.password = 'senha-admin-12';
-    fixture.componentInstance.code = '123456';
+    fixture.componentInstance.password = 'admin2026';
     fixture.detectChanges();
     const button = fixture.nativeElement.querySelector('button[type="submit"]') as HTMLButtonElement;
     button.click();
     const login = http.expectOne('/v1/auth/login');
     expect(login.request.body.username).toBe('admin.alpha');
-    expect(login.request.body.password).toBe('senha-admin-12');
-    expect(JSON.stringify(login.request.body)).not.toContain('secret');
+    expect(login.request.body.password).toBe('admin2026');
+    expect(login.request.body.code).toBeUndefined();
     login.flush({
       accessToken: 'token',
       expiresAt: '2099-01-01T00:00:00Z',
@@ -48,6 +47,8 @@ describe('LoginPageComponent', () => {
     expect(fixture.componentInstance.password).toBe('');
     expect(sessionStorage.getItem('sirta.operatorSession')).toContain('admin.alpha');
     expect(fixture.nativeElement.textContent).toContain('Entrar');
+    expect(fixture.nativeElement.textContent).not.toContain('código do autenticador');
+    expect(fixture.nativeElement.textContent).not.toContain('Nenhum acesso cria crédito');
     http.verify();
   });
 });

@@ -16,8 +16,8 @@ _HASH_ROUNDS = 600_000
 
 
 def hash_password(password: str) -> str:
-    if len(password) < 12:
-        raise ValidationFailedError("A senha precisa ter ao menos 12 caracteres.")
+    if len(password) < 8:
+        raise ValidationFailedError("A senha precisa ter ao menos 8 caracteres.")
     salt = os.urandom(16)
     digest = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, _HASH_ROUNDS)
     encoded_salt = base64.b64encode(salt).decode("ascii")
@@ -63,20 +63,8 @@ def totp_matches(secret: str, code: str, *, now: float | None = None) -> bool:
     return False
 
 
-def confirm_login(
-    *,
-    active: bool,
-    password_hash: str | None,
-    totp_secret: str | None,
-    password: str,
-    code: str,
-    now: float | None = None,
-) -> bool:
+def confirm_login(*, active: bool, password_hash: str | None, password: str) -> bool:
     if not active or not verify_password(password, password_hash):
-        raise UnauthorizedError("Acesso não conferiu.")
-    if not totp_secret:
-        raise UnauthorizedError("Acesso não conferiu.")
-    if not totp_matches(totp_secret, code, now=now):
         raise UnauthorizedError("Acesso não conferiu.")
     return True
 

@@ -22,14 +22,11 @@ from sirta_api.domain.local_login import SESSION_MODE, confirm_login
 def login_operator(session: Session, *, settings: Settings, payload: dict) -> dict:
     username = str(payload.get("username") or "").strip()
     password = str(payload.get("password") or "")
-    code = str(payload.get("code") or "")
     user = session.scalar(select(User).where(User.username == username))
     confirm_login(
         active=bool(user and user.active),
         password_hash=user.password_hash if user else None,
-        totp_secret=user.totp_secret if user else None,
         password=password,
-        code=code,
     )
     if user is None:
         raise UnauthorizedError("Acesso não conferiu.")

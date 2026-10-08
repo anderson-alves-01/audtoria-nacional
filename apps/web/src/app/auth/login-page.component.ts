@@ -42,7 +42,6 @@ export class LoginPageComponent {
   private readonly router = inject(Router);
   username = '';
   password = '';
-  code = '';
   message = '';
   submitting = false;
 
@@ -53,12 +52,10 @@ export class LoginPageComponent {
       .post<LoginResponse>('/v1/auth/login', {
         username: this.username,
         password: this.password,
-        code: this.code,
       })
       .subscribe({
         next: (body) => {
           this.password = '';
-          this.code = '';
           this.session.rememberOperator({
             accessToken: body.accessToken,
             territoryId: body.territoryId,
@@ -72,7 +69,6 @@ export class LoginPageComponent {
         },
         error: () => {
           this.password = '';
-          this.code = '';
           this.message = 'Acesso não conferiu.';
           this.submitting = false;
         },

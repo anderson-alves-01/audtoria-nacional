@@ -1,7 +1,5 @@
 <section aria-labelledby="login-title">
   <h1 id="login-title">Entrar</h1>
-  <p>O administrador técnico informa o nome, a senha e o código do autenticador.</p>
-  <p>As demais telas abrem depois que esta entrada confere. Nenhum acesso cria crédito.</p>
   <form (ngSubmit)="submit()">
     <label>
       Nome
@@ -10,10 +8,6 @@
     <label>
       Senha
       <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" />
-    </label>
-    <label>
-      Código do autenticador
-      <input name="code" inputmode="numeric" autocomplete="one-time-code" [(ngModel)]="code" />
     </label>
     <button type="submit" [disabled]="submitting">Entrar</button>
   </form>
