@@ -40,6 +40,25 @@ def test_tech_admin_cannot_read_fiscal_content() -> None:
         raise AssertionError("expected ForbiddenError")
 
 
+def test_tech_admin_with_operator_login_can_read_screens() -> None:
+    context = AccessContext(
+        user_id=USER_ANALYST_ALPHA,
+        tenant_id=TENANT_ALPHA,
+        territory_id=TERRITORY_ALPHA_CENTRO,
+        purpose_id=PURPOSE_ALPHA_ACTIVE,
+        role=Role.TECH_ADMIN,
+        purpose_expires_at=None,
+        session_mode="OPERATOR_LOGIN",
+    )
+    context.ensure_fiscal_read()
+    context.ensure_fiscal_write()
+    try:
+        context.ensure_can_validate()
+    except ForbiddenError:
+        return
+    raise AssertionError("operator login must not validate credits")
+
+
 def test_expired_purpose_is_rejected() -> None:
     expired = datetime(2020, 1, 1, tzinfo=UTC)
     try:

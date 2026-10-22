@@ -27,6 +27,11 @@ class AccessContext:
 
     def ensure_fiscal_read(self) -> None:
         if self.role == Role.TECH_ADMIN:
+            # Decisão do responsável (2026-10-22): a entrada com nome e senha do administrador
+            # lê as telas. Sessões sem essa entrada seguem sem conteúdo fiscal. Cada leitura
+            # continua com tenant, território, finalidade e evento de auditoria.
+            if self.session_mode == "OPERATOR_LOGIN":
+                return
             raise ForbiddenError("Technical administrator cannot access fiscal content")
         if self.role not in FISCAL_ROLES:
             raise ForbiddenError("Insufficient role")

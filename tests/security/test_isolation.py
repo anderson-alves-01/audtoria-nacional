@@ -30,7 +30,7 @@ def _analyst_headers(**kwargs):
 
 
 # Bootstrap mint endpoint intentionally has no prior access context.
-_PUBLIC_BOOTSTRAP_PATHS = {"/v1/auth/public-open-session"}
+_PUBLIC_BOOTSTRAP_PATHS = {"/v1/auth/public-open-session", "/v1/auth/login"}
 
 
 def test_protected_routes_require_access_context_dependency() -> None:
