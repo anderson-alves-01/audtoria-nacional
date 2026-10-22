@@ -67,4 +67,37 @@ describe('AppComponent', () => {
     expect(compiled.querySelectorAll('aside a[href], aside a').length).toBeGreaterThanOrEqual(openLabels);
     http.verify();
   });
+
+  it('opens the shell with menus when moving from the login screen after sign in', async () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const router = TestBed.inject(Router);
+    const http = TestBed.inject(HttpTestingController);
+    await router.navigateByUrl('/entrar');
+    fixture.detectChanges();
+    sessionStorage.setItem(
+      'sirta.operatorSession',
+      JSON.stringify({
+        accessToken: 'token',
+        territoryId: 'territory',
+        purposeId: 'purpose',
+        expiresAt: '2099-01-01T00:00:00Z',
+        mode: 'OPERATOR_LOGIN',
+        username: 'admin.alpha',
+      }),
+    );
+    await router.navigateByUrl('/visao');
+    fixture.detectChanges();
+    http.expectOne('/v1/tax-better/vision').flush({
+      createsTaxCredit: false,
+      approvedExport: false,
+      emptyReason: null,
+      rows: [],
+    });
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(router.url).toBe('/visao');
+    expect(compiled.querySelector('aside[aria-label="Navegação principal"]')).not.toBeNull();
+    expect(compiled.querySelector('main#conteudo-principal')?.textContent).toContain('Visão geral');
+    http.verify();
+  });
 });

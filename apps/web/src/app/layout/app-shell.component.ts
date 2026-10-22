@@ -98,8 +98,9 @@ export class AppShellComponent {
     while (route.firstChild) {
       route = route.firstChild;
     }
-    const title = route.snapshot.data['title'];
-    const group = route.snapshot.data['group'];
+    const data = route.snapshot?.data ?? {};
+    const title = data['title'];
+    const group = data['group'];
     this.breadcrumb = typeof title === 'string' ? title : 'SIRTA';
     this.groupLabel = typeof group === 'string' ? group : 'SIRTA';
   }
