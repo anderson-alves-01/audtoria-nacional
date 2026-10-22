@@ -1,0 +1,26 @@
+Publicacao 2026-10-22 - menu e pagina principal depois da entrada
+Cluster sirta-prod, regiao sa-east-1
+
+Causa 1 (web): o menu lateral quebrava ao abrir depois da entrada
+  TypeError: Cannot read properties of undefined (reading 'data') em syncTrail
+  Correcao: leitura tolerante da rota em app-shell.component.ts. Commit ac51954.
+  Teste: app.component.spec.ts (falha sem a correcao, passa com ela).
+  Web 0.4.19, task sirta-prod-web:27, digest sha256:fcc938e6b7381731bfe8048840aa30ff9f35051e6d1f2b979ac7ff05489a593a
+
+Causa 2 (API): administrador tecnico recebia 403 em Visao e Integracao
+  Decisao do responsavel em 2026-10-22: liberar as telas ao administrador que entra com nome e senha.
+  Correcao: ensure_fiscal_read libera TECH_ADMIN somente com sessao OPERATOR_LOGIN. Commit 3003501.
+  Sessoes sem essa entrada seguem sem conteudo fiscal (testes existentes de 403 intactos).
+  Validar, cobrar e propor divida ativa seguem nos papeis proprios.
+  API 0.3.123, task sirta-prod-api:29, digest sha256:c3c891bbf1cc6998a8280fc7794a2958823684b2bea46592ee190926eb1af028
+
+Prova no site publicado (navegador, usuario admin.alpha):
+  /visao abre com menu Integracao, Visao, Administracao e Referencia publicada.
+  GET /v1/tax-better/vision 200
+  GET /v1/data-sources/TAX-BETTER-ENTRADA/tax-better-config 200
+  GET /v1/admin/users 200
+  Visao mostra "Visao aberta - sem arquivo neste recorte". Nenhum valor inventado. createsTaxCredit false.
+
+Testes locais: 353 aprovados. 8 falhas ja existiam antes desta mudanca
+  (test_alembic_paths, test_source_ingest, test_official_ingest; banco local com tabela gold_finance_state_summaries ja criada).
+Sem merge. Sem chamada a DETRAN. Sem senha neste arquivo.
