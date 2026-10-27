@@ -73,3 +73,6 @@ crash.log
 coverage/
 test-results/
 playwright-report/
+
+# Planilhas de dados (não versionar)
+docs/data/*.xlsx

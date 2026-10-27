@@ -4275,3 +4275,40 @@ sources:
       de fontes. A URL e o nome do segredo ficam nessa configuração. A chave
       não é gravada. Não busca o DETRAN. Não constitui crédito.
 
+  - source_id: SPED-NFE-UF-CFOP
+    name: SPED NF-e — operações por UF e CFOP (consolidado exploratório 2021–2025)
+    maintainer: SPED / Receita Federal do Brasil (estatísticas públicas)
+    official_domain: gov.br
+    official_url: https://www.gov.br/sped/pt-br/centrais-de-conteudo/estatisticas-sped/nf-e
+    endpoint: none
+    documentation_url: https://www.gov.br/sped/pt-br/centrais-de-conteudo/estatisticas-sped/nf-e/historico-de-quantidades-de-emitentesnf-e-por-cfop-por-uf/nfe-cfop-uf
+    dataset: SPED-NFE-UF-CFOP
+    dictionary_url: https://www.sefaz.pe.gov.br/legislacao/tributaria/documents/legislacao/tabelas/cfop.htm
+    purpose: Referência estatística agregada por UF, CFOP e ano. Não identifica contribuinte, município ou documento
+    legal_basis: Estatísticas públicas do SPED NF-e, agregadas por UF
+    license_terms: termos de uso do portal gov.br/sped
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: TECHNICALLY_APPROVED
+    fixture_kind: OFFICIAL
+    connector: uploaded_xlsx
+    layout_version: sped-nfe-uf-cfop-v1
+    periodicity: annual
+    competence: 2021-25
+    granularity: uf
+    parameters:
+      upload_only: true
+      sheets: ["Consolidado UF", "Série anual", "Base CFOP"]
+      years: [2021, 2022, 2023, 2024, 2025]
+      value_kind: ESTIMATED_ALLOCATION
+    authentication: none
+    rate_limit: none
+    personal_data: false
+    retention: bronze_immutable
+    indicator: sped_operacoes_uf
+    formula: Valor estimado do par UF–CFOP–ano = valor nacional do CFOP no ano × quantidade da UF no CFOP/ano ÷ soma das quantidades das UFs no CFOP/ano. Quantidade é observada. Valor em R$ é rateio estimado e não é somado entre operações.
+    methodology_version: sped-nfe-uf-cfop-v1
+    notes: >
+      Carga por upload de planilha pública agregada. Valores em R$ são
+      estimativa exploratória, não homologada. Sem total entre operações.
+      Não constitui crédito tributário nem identifica contribuinte.

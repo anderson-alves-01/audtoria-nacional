@@ -158,6 +158,7 @@ def ingest_official_source(
         )
     if connector in {
         "restricted_upload",
+        "uploaded_xlsx",
         "state_transfer_adapter",
         "portal_transparencia_api",
     }:
