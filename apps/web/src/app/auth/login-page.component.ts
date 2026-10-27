@@ -20,18 +20,58 @@ interface LoginResponse {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login-page.component.html',
-  styleUrl: '../tax-better/tax-better-page.scss',
   styles: [
     `
       :host {
         display: grid;
         min-height: 100vh;
-        background: var(--paper, #f4f0e5);
-        color: var(--ink, #1a1913);
+        place-items: center;
+        padding: var(--sp-5);
+        background:
+          linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 48px 48px,
+          linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 48px 48px,
+          var(--bg);
+        color: var(--text);
       }
       section {
-        width: min(28rem, 100%);
-        margin: auto;
+        width: min(24rem, 100%);
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-2);
+        padding: var(--sp-6);
+      }
+      .mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: var(--accent);
+        color: var(--on-accent);
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: var(--sp-4);
+      }
+      h1 {
+        margin-bottom: var(--sp-5);
+      }
+      label {
+        display: block;
+        margin-bottom: var(--sp-4);
+      }
+      input {
+        display: block;
+        width: 100%;
+        margin-top: var(--sp-1);
+      }
+      button[type='submit'] {
+        width: 100%;
+        min-height: 40px;
+      }
+      [role='alert'] {
+        margin: var(--sp-4) 0 0;
+        color: var(--danger);
       }
     `,
   ],
