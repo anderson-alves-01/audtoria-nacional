@@ -1,0 +1,114 @@
+<div class="dt">
+  <div class="dt-tools">
+    <p class="dt-count tabular" role="status">{{ processed().length }} de {{ allRows() }} linhas</p>
+    <label class="dt-group">
+      Agrupar por
+      <select [value]="groupBy()" (change)="groupBy.set($any($event.target).value)">
+        <option value="">Sem agrupamento</option>
+        @for (column of allColumns(); track column.id) {
+          <option [value]="column.id">{{ column.label }}</option>
+        }
+      </select>
+    </label>
+    <div class="dt-menu">
+      <button type="button" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()" aria-haspopup="true">Colunas</button>
+      @if (menuOpen()) {
+        <div class="dt-pop" role="group" aria-label="Colunas visíveis">
+          @for (column of allColumns(); track column.id) {
+            <label class="dt-check">
+              <input type="checkbox" [checked]="!hidden().has(column.id)" (change)="toggleColumn(column.id)" />
+              {{ column.label }}
+            </label>
+          }
+        </div>
+      }
+    </div>
+    <button type="button" (click)="exportCsv()" [disabled]="processed().length === 0">Exportar CSV</button>
+  </div>
+
+  <div class="dt-table" role="table" [attr.aria-label]="caption" [attr.aria-rowcount]="lines().length + 1">
+    <div class="dt-head" role="rowgroup">
+      <div class="dt-row dt-header" role="row" [style.grid-template-columns]="gridTemplate()">
+        @for (column of visibleColumns(); track column.id) {
+          <div class="dt-cell dt-th" role="columnheader" [attr.aria-sort]="ariaSort(column)" [class.num]="numeric(column)">
+            <button type="button" class="dt-sort" (click)="toggleSort(column)">
+              {{ column.label }}
+              <span aria-hidden="true">{{ ariaSort(column) === 'ascending' ? '▲' : ariaSort(column) === 'descending' ? '▼' : '' }}</span>
+            </button>
+            <span
+              class="dt-handle"
+              role="separator"
+              tabindex="0"
+              aria-orientation="vertical"
+              [attr.aria-label]="'Largura da coluna ' + column.label"
+              (mousedown)="startResize($event, column)"
+              (keydown)="resizeKey($event, column)"
+            ></span>
+          </div>
+        }
+      </div>
+      <div class="dt-row dt-filters" role="row" [style.grid-template-columns]="gridTemplate()">
+        @for (column of visibleColumns(); track column.id) {
+          <div class="dt-cell" role="columnheader">
+            <input
+              type="search"
+              [attr.aria-label]="'Filtrar ' + column.label"
+              placeholder="Filtrar"
+              [value]="filters()[column.id] || ''"
+              (input)="setFilter(column.id, $any($event.target).value)"
+            />
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (lines().length === 0) {
+      <p class="dt-empty" role="status">Nenhuma linha neste filtro.</p>
+    } @else {
+      <cdk-virtual-scroll-viewport [itemSize]="rowHeight" class="dt-viewport" role="rowgroup">
+        <div
+          *cdkVirtualFor="let line of lines(); trackBy: trackLine"
+          class="dt-row"
+          role="row"
+          [class.is-group]="line.kind === 'group'"
+          [class.is-selected]="line.kind === 'row' && selectedKey() === rowKey(line.row)"
+          [style.grid-template-columns]="gridTemplate()"
+          [style.height.px]="rowHeight"
+        >
+          @if (line.kind === 'group') {
+            @for (column of visibleColumns(); track column.id; let first = $first) {
+              <div class="dt-cell" role="cell" [class.num]="numeric(column)">
+                @if (first) {
+                  <button type="button" class="dt-toggle" [attr.aria-expanded]="line.open" (click)="toggleGroup(line.key)">
+                    {{ line.open ? '▾' : '▸' }} {{ line.key }} <span class="dt-n">({{ line.count }})</span>
+                  </button>
+                } @else if (numeric(column)) {
+                  <span class="tabular">{{ sumText(column, line.sums) }}</span>
+                }
+              </div>
+            }
+          } @else {
+            @for (column of visibleColumns(); track column.id; let first = $first) {
+              <div class="dt-cell" role="cell" [class.num]="numeric(column)" [class.is-empty]="cell(column, line.row) === '—'">
+                @if (first && detail) {
+                  <button type="button" class="dt-link" (click)="select(line.row)" [attr.aria-pressed]="selectedKey() === rowKey(line.row)">
+                    {{ cell(column, line.row) }}
+                  </button>
+                } @else {
+                  <span [class.tabular]="numeric(column)" [attr.title]="cell(column, line.row)">{{ cell(column, line.row) }}</span>
+                }
+              </div>
+            }
+          }
+        </div>
+      </cdk-virtual-scroll-viewport>
+    }
+  </div>
+
+  @if (detail && selectedRow(); as row) {
+    <aside class="dt-detail" aria-label="Detalhe da linha">
+      <ng-container *ngTemplateOutlet="detail; context: { $implicit: row }" />
+      <button type="button" (click)="select(row)">Fechar detalhe</button>
+    </aside>
+  }
+</div>
