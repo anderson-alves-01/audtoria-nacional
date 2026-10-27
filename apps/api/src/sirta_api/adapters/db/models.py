@@ -1,10 +1,14 @@
 from datetime import datetime
+from decimal import Decimal
 from uuid import UUID, uuid4
 
 from sqlalchemy import (
+    BigInteger,
     Boolean,
+    CheckConstraint,
     DateTime,
     ForeignKey,
+    Index,
     Integer,
     Numeric,
     String,
@@ -374,6 +378,39 @@ class GoldFinanceStateSummary(Base):
     total: Mapped[float] = mapped_column(Numeric(24, 4), nullable=False)
     municipality_count: Mapped[int] = mapped_column(Integer, nullable=False)
     refreshed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class SpedOperationFact(Base):
+    """SPED NF-e counts by UF, operation and year.
+
+    R$ is an estimated allocation, not a fiscal value. Level SERIE holds the published
+    annual series (cfop is empty). Level CFOP holds the base lines.
+    """
+
+    __tablename__ = "sped_operation_facts"
+    __table_args__ = (
+        UniqueConstraint("run_id", "level", "ano", "uf", "operacao", "cfop"),
+        Index("ix_sped_facts_scope", "tenant_id", "territory_id", "level", "ano", "uf"),
+        CheckConstraint("level in ('SERIE', 'CFOP')", name="ck_sped_facts_level"),
+        CheckConstraint("quantidade >= 0", name="ck_sped_facts_quantity"),
+    )
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    run_id: Mapped[UUID] = mapped_column(ForeignKey("data_load_runs.id"), nullable=False)
+    tenant_id: Mapped[UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    territory_id: Mapped[UUID] = mapped_column(ForeignKey("territories.id"), nullable=False)
+    level: Mapped[str] = mapped_column(String(8), nullable=False)
+    ano: Mapped[int] = mapped_column(Integer, nullable=False)
+    uf: Mapped[str] = mapped_column(String(2), nullable=False)
+    operacao: Mapped[str] = mapped_column(String(64), nullable=False)
+    cfop: Mapped[str] = mapped_column(String(4), nullable=False, default="", server_default="")
+    quantidade: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    valor_estimado: Mapped[Decimal | None] = mapped_column(Numeric(24, 2), nullable=True)
+    comparable_quantity: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    comparable_share: Mapped[Decimal | None] = mapped_column(Numeric(9, 6), nullable=True)
+    cfop_pairs: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    covered_quantity: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
 class TaxBetterTax(Base):
