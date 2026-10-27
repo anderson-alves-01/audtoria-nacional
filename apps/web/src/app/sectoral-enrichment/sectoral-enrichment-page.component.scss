@@ -23,8 +23,8 @@ h1 {
 
 .notice {
   color: var(--primary-700);
-  background: #fff8ea;
-  border: 1px solid #ead7a4;
+  background: var(--warn-soft);
+  border: 1px solid var(--warn);
   border-radius: 8px;
   padding: 0.6rem 0.75rem;
 }
@@ -58,9 +58,9 @@ h1 {
 }
 
 .tabs button.is-active {
-  background: var(--primary-900);
-  color: #fff;
-  border-color: var(--primary-900);
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
 }
 
 .cards {

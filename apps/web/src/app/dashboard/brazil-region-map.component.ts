@@ -209,7 +209,7 @@ type MapState = 'loading' | 'ok' | 'error';
     }
     .credit,
     .focus {
-      color: var(--ink-700, #334155);
+      color: var(--text-2);
       font-size: 0.875rem;
     }
   `,

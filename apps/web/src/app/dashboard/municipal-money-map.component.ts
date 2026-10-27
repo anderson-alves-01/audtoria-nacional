@@ -190,7 +190,7 @@ export class MunicipalMoneyMapComponent implements OnInit, AfterViewChecked {
       const cy = state.row * sy;
       const value = valueAt(state, this.metricId, this.year);
       const fill = metric ? quantileFill(value, samples, metric.ramp) : null;
-      const paint = fill ?? '#E1DBC8';
+      const paint = fill ?? 'var(--null-fill)';
       const group = this.svg(svg, 'g', {
         class: this.drawer?.uf === state.uf ? 'hexg selected' : 'hexg',
         tabindex: '0',

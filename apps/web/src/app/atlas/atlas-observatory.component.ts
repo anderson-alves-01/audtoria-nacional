@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   AfterViewChecked,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -38,6 +39,7 @@ type TabId = 'visao' | 'mapa' | 'rankings' | 'comparar' | 'metodo';
 })
 export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
   private readonly http = inject(HttpClient);
+  private readonly changes = inject(ChangeDetectorRef);
 
   @ViewChild('hexmap') hexmap?: ElementRef<SVGSVGElement>;
   @ViewChild('lineChart') lineChart?: ElementRef<SVGSVGElement>;
@@ -420,11 +422,13 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
     }
     const left = button.nativeElement.offsetLeft;
     const width = button.nativeElement.offsetWidth;
-    if (left !== this.indicatorLeft) {
-      this.indicatorLeft = left;
-    }
-    if (width !== this.indicatorWidth) {
-      this.indicatorWidth = width;
+    if (left !== this.indicatorLeft || width !== this.indicatorWidth) {
+      // Aplicado depois da verificacao atual: a fonte pode alterar a medida apos o primeiro desenho.
+      queueMicrotask(() => {
+        this.indicatorLeft = left;
+        this.indicatorWidth = width;
+        this.changes.markForCheck();
+      });
     }
   }
 
@@ -450,30 +454,30 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
     const x = (index: number) => margin.l + (index * (width - margin.l - margin.r)) / (points.length - 1);
     const y = (value: number) => margin.t + (1 - (value - lo) / span) * (height - margin.t - margin.b);
     const poly = points.map((point, index) => `${x(index)},${y(point.value)}`).join(' ');
-    this.svg(svg, 'polyline', { points: poly, fill: 'none', stroke: '#1E4D3B', 'stroke-width': '2.5' });
+    this.svg(svg, 'polyline', { points: poly, fill: 'none', stroke: 'var(--accent)', 'stroke-width': '2.5' });
     const cursor = this.svg(svg, 'line', {
       y1: String(margin.t),
       y2: String(height - margin.b),
-      stroke: '#605B4C',
+      stroke: 'var(--muted)',
       'stroke-dasharray': '3 3',
     });
     cursor.setAttribute('visibility', 'hidden');
     const tip = this.svg(svg, 'g', {});
     tip.setAttribute('visibility', 'hidden');
-    const tipBg = this.svg(tip, 'rect', { fill: '#1A1913', rx: '6', height: '22', y: '-18' });
+    const tipBg = this.svg(tip, 'rect', { fill: 'var(--surface-3)', rx: '6', height: '22', y: '-18' });
     const tipText = this.svg(tip, 'text', {
-      fill: '#F4F0E5',
+      fill: 'var(--text)',
       'font-size': '12',
       'font-weight': '600',
       y: '-3',
     });
     points.forEach((point, index) => {
-      this.svg(svg, 'circle', { cx: String(x(index)), cy: String(y(point.value)), r: '3.5', fill: '#1E4D3B' });
+      this.svg(svg, 'circle', { cx: String(x(index)), cy: String(y(point.value)), r: '3.5', fill: 'var(--accent)' });
       const label = this.svg(svg, 'text', {
         x: String(x(index)),
         y: String(height - 8),
         'text-anchor': 'middle',
-        fill: '#605B4C',
+        fill: 'var(--muted)',
         'font-size': '12',
       });
       label.textContent = point.year;
@@ -569,7 +573,7 @@ export class AtlasObservatoryComponent implements OnInit, AfterViewChecked {
       const cy = state.row * sy;
       const value = valueAt(state, this.metricId, this.year);
       const fill = metric ? quantileFill(value, samples, metric.ramp) : null;
-      const paint = fill ?? '#E1DBC8';
+      const paint = fill ?? 'var(--null-fill)';
       const group = this.svg(svg, 'g', {
         class: this.drawer?.uf === state.uf ? 'hexg selected' : 'hexg',
         tabindex: '0',

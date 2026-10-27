@@ -4,7 +4,7 @@
 
 .money-map-head h2 {
   margin: 0 0 6px;
-  font-family: Fraunces, serif;
+  font-family: var(--font-ui);
   font-size: 1.6rem;
   font-weight: 560;
 }
@@ -12,7 +12,7 @@
 .money-map-head p,
 .money-map-status {
   max-width: 68ch;
-  color: var(--ink2, #3d3a32);
+  color: var(--text-2);
 }
 
 .money-map-tools {
@@ -33,15 +33,15 @@
 .money-map-tools select {
   min-height: 40px;
   padding: 6px 10px;
-  border: 1px solid var(--line, #e1dbc8);
-  background: var(--paper, #f4f0e5);
-  color: var(--ink, #1a1913);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
   font: inherit;
 }
 
 .money-map-tools select:focus-visible,
 .money-popup button:focus-visible {
-  outline: 2px solid var(--gold, #b98a2f);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -63,7 +63,7 @@
 }
 
 .money-empty {
-  background: #e1dbc8;
+  background: var(--surface-3);
 }
 
 .money-popup-backdrop {
@@ -74,7 +74,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(26, 25, 19, 0.45);
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .money-popup {
@@ -82,10 +82,10 @@
   max-height: min(80vh, 560px);
   overflow: auto;
   padding: 18px 18px 16px;
-  border: 1px solid var(--line, #e1dbc8);
-  background: var(--paper, #f4f0e5);
-  color: var(--ink, #1a1913);
-  box-shadow: 0 16px 40px rgba(26, 25, 19, 0.18);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-2);
 }
 
 .money-popup header p {
@@ -98,7 +98,7 @@
 
 .money-popup h3 {
   margin: 2px 0 12px;
-  font-family: Fraunces, serif;
+  font-family: var(--font-ui);
   font-size: 1.8rem;
   font-weight: 560;
 }
@@ -113,13 +113,13 @@
   display: grid;
   gap: 2px;
   padding: 10px 0;
-  border-top: 1px solid var(--line, #e1dbc8);
+  border-top: 1px solid var(--line);
 }
 
 .money-popup li span,
 .money-popup li small,
 .money-popup-note {
-  color: var(--ink2, #3d3a32);
+  color: var(--text-2);
 }
 
 .money-popup li strong {
@@ -135,7 +135,7 @@
 .money-recovery {
   margin: 0 0 14px;
   padding-top: 10px;
-  border-top: 1px solid var(--line, #e1dbc8);
+  border-top: 1px solid var(--line);
 }
 
 .money-recovery h4 {
@@ -146,21 +146,21 @@
 
 .money-recovery p {
   margin: 0 0 4px;
-  color: var(--ink2, #3d3a32);
+  color: var(--text-2);
 }
 
 .money-recovery-figure {
-  font-family: Fraunces, serif;
+  font-family: var(--font-ui);
   font-size: 1.6rem;
-  color: var(--ink, #1a1913);
+  color: var(--text);
 }
 
 .money-popup button {
   min-height: 40px;
   padding: 0 14px;
-  border: 1px solid var(--ink, #1a1913);
+  border: 1px solid var(--text);
   background: transparent;
-  color: var(--ink, #1a1913);
+  color: var(--text);
   font: inherit;
   cursor: pointer;
 }
@@ -173,8 +173,8 @@
   gap: 2px;
   max-width: 220px;
   padding: 8px 10px;
-  background: var(--ink, #1a1913);
-  color: var(--paper, #f4f0e5);
+  background: var(--text);
+  color: var(--surface);
   pointer-events: none;
 }
 

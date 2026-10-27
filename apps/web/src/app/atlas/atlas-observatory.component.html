@@ -162,7 +162,7 @@
     @if (radar().length) {
       <svg viewBox="0 0 220 220" class="line-chart" role="img" aria-label="Radar dos indicadores publicados">
         @for (shape of radar(); track shape.uf) {
-          <polygon [attr.points]="shape.points" fill="#1E4D3B" fill-opacity="0.15" stroke="#1E4D3B" />
+          <polygon [attr.points]="shape.points" fill="var(--accent)" fill-opacity="0.15" stroke="var(--accent)" />
         }
       </svg>
     }

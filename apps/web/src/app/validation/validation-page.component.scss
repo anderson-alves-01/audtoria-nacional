@@ -18,28 +18,41 @@ button {
   margin-top: 0.25rem;
 }
 
+input[type='checkbox'],
+input[type='radio'] {
+  display: inline-block;
+  width: auto;
+  margin: 0 0.5rem 0 0;
+  vertical-align: middle;
+}
+
+label:has(input[type='checkbox']),
+label:has(input[type='radio']) {
+  font-weight: 500;
+}
+
 button {
   margin-top: 1rem;
   width: auto;
 }
 
 .status-identified {
-  border-left: 4px solid #b45309;
+  border-left: 4px solid var(--warn);
   padding-left: 0.5rem;
 }
 
 .status-validated {
-  border-left: 4px solid #166534;
+  border-left: 4px solid var(--ok);
   padding-left: 0.5rem;
 }
 
 .status-rejected,
 .status-cancelled {
-  border-left: 4px solid #991b1b;
+  border-left: 4px solid var(--danger);
   padding-left: 0.5rem;
 }
 
 .status-under_review {
-  border-left: 4px solid #1e40af;
+  border-left: 4px solid var(--info);
   padding-left: 0.5rem;
 }

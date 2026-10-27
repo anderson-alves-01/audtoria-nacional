@@ -12,11 +12,11 @@ li span {
 }
 
 .estimate {
-  border-left: 4px solid #b45309;
+  border-left: 4px solid var(--warn);
   padding-left: 0.5rem;
 }
 
 .assessed {
-  border-left: 4px solid #166534;
+  border-left: 4px solid var(--ok);
   padding-left: 0.5rem;
 }

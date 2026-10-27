@@ -293,6 +293,30 @@ textarea {
   padding: var(--sp-2) var(--sp-3);
 }
 
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: 0;
+  width: auto;
+  padding: 0;
+  background: transparent;
+  accent-color: var(--accent);
+}
+
+fieldset {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: var(--sp-3) var(--sp-4);
+  margin: 0 0 var(--sp-4);
+  min-width: 0;
+}
+
+legend {
+  padding: 0 var(--sp-2);
+  color: var(--text-2);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
 input::placeholder {
   color: var(--muted);
 }

@@ -1,0 +1,7 @@
+﻿Frontend BI fase 4 (paineis publicados e telas de lista) - 2026-10-27
+Escopo: somente frontend; contratos da API inalterados.
+Mudancas: SCSS de dashboard, mapa de dinheiro, validacao e demais telas migrados de cores fixas para tokens Meridiano (zero hex em *.scss); atlas.css sem fontes antigas; formularios (checkbox/radio/fieldset) estilizados nos dois temas; atlas: corrigido NG0100 do indicador de abas; barra superior sem sobreposicao do atalho Ctrl K.
+Mantido de proposito: rampas sequenciais e cores de regiao do mapa hexagonal (geography-adapter.ts, hex-layout.ts) por exigirem luminancia numerica e estarem cobertas por testes; posicao col/row por UF intacta.
+Testes: ng test 98 SUCCESS. Build ok.
+Verificacao visual: Visao executiva (escuro), Dinheiro do Municipio (claro), Creditos e validacao (escuro); estados vazio/erro sem dado inventado.
+Rollback: git revert do commit da fase.
