@@ -1,0 +1,208 @@
+<section class="sped" aria-labelledby="sped-title">
+  <header class="hero">
+    <p class="kicker">SIRTA · Referência publicada</p>
+    <h1 id="sped-title">Operações por UF (SPED NF-e)</h1>
+    <p class="banner" role="note">
+      <app-badge tone="warn">Exploratório · não homologado</app-badge>
+      {{ banner() }}
+    </p>
+  </header>
+
+  @if (state() === 'loading') {
+    <p role="status">Carregando operações do SPED…</p>
+  }
+  @if (state() === 'error') {
+    <p role="alert">{{ errorMessage() }}</p>
+  }
+  @if (state() === 'ok' && view() && !view()?.run) {
+    <app-empty-state
+      title="Nenhuma carga validada do SPED"
+      reason="Ainda não há planilha SPED validada para este território."
+      hint="Os mapas e gráficos aparecem depois de uma carga validada. Nenhum valor é inventado."
+    />
+  }
+
+  @if (state() === 'ok' && view()?.run; as run) {
+    <form class="filters" aria-label="Filtros do SPED" (submit)="$event.preventDefault()">
+      <label>
+        Ano
+        <select name="ano" [ngModel]="selectedOf('ano')" (ngModelChange)="choose('ano', $event)">
+          <option value="">2021 a 2025</option>
+          @for (year of years(); track year) {
+            <option [value]="'' + year">{{ year }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Operação
+        <select name="operacao" [ngModel]="selectedOf('operacao')" (ngModelChange)="choose('operacao', $event)">
+          <option value="">Padrão ({{ activeOperation() }})</option>
+          @for (operation of operations(); track operation) {
+            <option [value]="operation">{{ operation }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        UF
+        <select name="uf" [ngModel]="selectedOf('uf')" (ngModelChange)="choose('uf', $event)">
+          <option value="">Todas</option>
+          @for (uf of ufs(); track uf) {
+            <option [value]="uf">{{ uf }}</option>
+          }
+        </select>
+      </label>
+    </form>
+
+    <app-filter-bar [chips]="chips()" (removed)="filters.remove($event)" (cleared)="filters.clear()" />
+
+    <section class="kpis" aria-label="Indicadores do recorte">
+      <app-kpi-card
+        label="Operação em foco"
+        [value]="activeOperation()"
+        [meta]="operacao() ? 'Escolhida no filtro' : 'Padrão. Escolha outra no filtro'"
+        kind="Sem total entre operações"
+      />
+      <app-kpi-card
+        label="Quantidade observada"
+        [value]="format(quantity(), 'quantidade')"
+        [meta]="'Ocorrências de ' + activeOperation() + (ano() ? ' em ' + ano() : ' de 2021 a 2025')"
+        kind="Observado"
+      />
+      <app-kpi-card
+        label="Valor estimado (rateio)"
+        [value]="format(estimated(), 'valor')"
+        meta="Estimativa de rateio. Não é valor fiscal efetivo"
+        kind="Estimado"
+        tone="warn"
+      />
+      <app-kpi-card label="UFs com ocorrência" [value]="ufsWithOccurrence() + ' de 27'" [meta]="activeOperation()" kind="Observado" tone="info" />
+    </section>
+
+    <div class="bi-grid">
+      <app-panel
+        title="Quantidade por UF"
+        [subtitle]="activeOperation() + (ano() ? ' · ' + ano() : ' · 2021 a 2025')"
+        source="Quantidade observada · clique em uma UF para filtrar"
+      >
+        <app-sped-hex-map
+          [input]="quantityMap()"
+          [caption]="'Quantidade de ' + activeOperation() + ' por UF'"
+          measure="quantidade"
+          [selected]="uf()"
+          (picked)="onMap($event)"
+        />
+      </app-panel>
+
+      <app-panel
+        title="Valor estimado por UF"
+        [subtitle]="activeOperation() + ' · estimado'"
+        source="Rateio estimado de totais nacionais · não é valor fiscal da UF"
+      >
+        <div panelActions><app-badge tone="warn">Estimado</app-badge></div>
+        <app-sped-hex-map
+          [input]="valueMap()"
+          [caption]="'Valor estimado de ' + activeOperation() + ' por UF'"
+          measure="valor"
+          tone="warn"
+          [selected]="uf()"
+          (picked)="onMap($event)"
+        />
+      </app-panel>
+
+      <app-panel title="Quantidade por operação" subtitle="Cada barra é uma operação. Não há total" source="Quantidade observada · clique escolhe a operação">
+        <app-bi-chart
+          [input]="quantityByOperation()"
+          caption="Quantidade por operação"
+          [height]="300"
+          (picked)="onPick($event, 'operacao')"
+        />
+      </app-panel>
+
+      <app-panel title="Valor estimado por operação" subtitle="Cada barra é uma operação. Não há total" source="Rateio estimado · não é valor fiscal">
+        <div panelActions><app-badge tone="warn">Estimado</app-badge></div>
+        <app-bi-chart
+          [input]="valueByOperation()"
+          caption="Valor estimado por operação"
+          [height]="300"
+          (picked)="onPick($event, 'operacao')"
+        />
+      </app-panel>
+
+      <app-panel title="Quantidade de 2021 a 2025" [subtitle]="activeOperation() + (uf() ? ' · ' + uf() : ' · Brasil, soma das UFs')" source="Quantidade observada · clique escolhe o ano">
+        <app-bi-chart
+          [input]="quantityByYear()"
+          caption="Quantidade por ano"
+          [height]="280"
+          (picked)="onPick($event, 'ano')"
+        />
+      </app-panel>
+
+      <app-panel title="Valor estimado de 2021 a 2025" [subtitle]="activeOperation() + (uf() ? ' · ' + uf() : ' · Brasil, soma das UFs')" source="Rateio estimado · ano sem valor fica em branco">
+        <div panelActions><app-badge tone="warn">Estimado</app-badge></div>
+        <app-bi-chart
+          [input]="valueByYear()"
+          caption="Valor estimado por ano"
+          [height]="280"
+          (picked)="onPick($event, 'ano')"
+        />
+      </app-panel>
+    </div>
+
+    <app-panel
+      title="UF × CFOP"
+      subtitle="Linhas da base com o mesmo recorte dos gráficos"
+      source="Quantidade observada · valor em R$ é rateio estimado · célula vazia significa sem valor"
+    >
+      @if (cfopState() === 'error') {
+        <p role="alert">A tabela por CFOP não pôde ser lida.</p>
+      }
+      @if (cfopView(); as table) {
+        <app-data-table
+          caption="UF por CFOP"
+          exportName="sped-uf-cfop"
+          [columns]="columns"
+          [rows]="table.items"
+          [rowKey]="rowKey"
+        >
+          <ng-template #detail let-row>
+            <h3>Origem do número</h3>
+            <p>{{ row.operacao }} · CFOP {{ row.cfop }} · {{ row.uf }} · {{ row.ano }}</p>
+            <dl class="detail">
+              <dt>Carga (run_id)</dt>
+              <dd>{{ run.runId }}</dd>
+              <dt>Arquivo (sha256)</dt>
+              <dd>{{ run.checksum }}</dd>
+              <dt>Layout</dt>
+              <dd>{{ run.layoutVersion }} · competência {{ run.competence }}</dd>
+              <dt>Quantidade</dt>
+              <dd>{{ row.quantidade | number }} (observada)</dd>
+              <dt>Valor estimado</dt>
+              <dd>{{ row.valorEstimado === null ? '—' : (row.valorEstimado | currency: 'BRL') }} (rateio estimado)</dd>
+              <dt>Fórmula</dt>
+              <dd>{{ table.formula }}</dd>
+            </dl>
+          </ng-template>
+        </app-data-table>
+        <nav class="pager" aria-label="Páginas da tabela">
+          <button type="button" (click)="previous()" [disabled]="page() <= 1">Anterior</button>
+          <span class="tabular" role="status">
+            Página {{ table.page }} de {{ pageCount() }} · {{ table.total | number }} linhas
+          </span>
+          <button type="button" (click)="next()" [disabled]="page() >= pageCount()">Próxima</button>
+        </nav>
+      } @else if (cfopState() === 'loading') {
+        <p role="status">Carregando a tabela…</p>
+      }
+    </app-panel>
+
+    <section class="lineage" aria-label="Origem da carga">
+      <h2>Origem dos dados</h2>
+      <p>
+        Carga {{ run.runId }} · arquivo sha256 {{ run.checksum }} · layout {{ run.layoutVersion }} · competência
+        {{ run.competence }} · {{ run.receivedCount | number }} linhas recebidas.
+      </p>
+      <p>{{ view()?.formula }}</p>
+      <p class="legal">Cria crédito: não. Homologado: não. Publicado: não.</p>
+    </section>
+  }
+</section>

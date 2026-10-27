@@ -159,6 +159,11 @@ const shellRoutes: Routes = [
     data: { title: 'Inteligência Setorial', group: intelligence },
   },
   {
+    path: 'sped-operacoes',
+    loadComponent: () => import('./sped-operacoes/sped-operacoes-page.component').then((m) => m.SpedOperacoesPageComponent),
+    data: { title: 'Operações por UF (SPED)', group: intelligence },
+  },
+  {
     path: 'transferencias-estaduais',
     loadComponent: () => import('./state-transfers/state-transfers-page.component').then((m) => m.StateTransfersPageComponent),
     data: { title: 'ICMS/IPVA estadual', group: transfers },

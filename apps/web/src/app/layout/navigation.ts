@@ -49,6 +49,7 @@ export const APP_NAV_GROUPS: NavGroup[] = [
       { path: '/cadastro-360', label: 'Cadastro 360' },
       { path: '/economia', label: 'Economia' },
       { path: '/setorial', label: 'Inteligência Setorial' },
+      { path: '/sped-operacoes', label: 'Operações por UF (SPED)' },
       { path: '/fontes', label: 'Fontes' },
       { path: '/qualidade', label: 'Qualidade e lineage' },
       { path: '/regras-auditoria', label: 'Regras de auditoria' },
