@@ -1,0 +1,7 @@
+﻿Frontend BI fase 5 (desempenho, acessibilidade, documentacao) - 2026-10-27
+Desempenho: rotas dos modulos com loadComponent. Pacote inicial 653,11 kB -> 402,60 kB brutos (157,21 -> 112,66 kB transferidos). Chunk do ECharts (1,04 MB) segue sob demanda.
+Acessibilidade: varredura de contraste (texto x fundo efetivo, AA) nos temas escuro e claro em Visao geral (dados sinteticos), Visao executiva, Dinheiro do Municipio, Validacao, Integracao, Administracao, Sobre e Entrar: 0 falhas. Controles sem nome acessivel: 0. Marcos main/nav, h1 unico, link de pular, lang pt-BR.
+Testes: ng test 98 SUCCESS. Build ok.
+Documentacao: docs/product/FRONTEND-DESIGN-SYSTEM.md. Estado: current-state.yaml (frontend_bi_meridiano_v1_local_not_published).
+Nao publicado: nenhuma imagem enviada ao ECR, nenhum servico ECS alterado.
+Rollback: git revert dos commits das fases 0 a 5.

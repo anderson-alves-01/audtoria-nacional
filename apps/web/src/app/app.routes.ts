@@ -1,30 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginPageComponent } from './auth/login-page.component';
 import { loginGuard, operatorGuard } from './auth/operator.guard';
-import { AuditCasesPageComponent } from './audit-cases/audit-cases-page.component';
-import { AuditRulesPageComponent } from './audit-rules/audit-rules-page.component';
-import { Cadastro360PageComponent } from './cadastro-360/cadastro-360-page.component';
-import { CalendarPageComponent } from './calendar/calendar-page.component';
-import { DashboardPageComponent } from './dashboard/dashboard-page.component';
-import { DiagnosisPageComponent } from './diagnosis/diagnosis-page.component';
-import { FunnelPageComponent } from './funnel/funnel-page.component';
-import { HealthPageComponent } from './health/health-page.component';
-import { HumanValidationPageComponent } from './human-validation/human-validation-page.component';
-import { AboutPageComponent } from './layout/about-page.component';
 import { AppShellComponent } from './layout/app-shell.component';
-import { StatusPageComponent } from './layout/status-page.component';
-import { MunicipalUploadsPageComponent } from './municipal-uploads/municipal-uploads-page.component';
-import { NotificationsPageComponent } from './notifications/notifications-page.component';
-import { OpsGovernancePageComponent } from './ops-governance/ops-governance-page.component';
-import { ProcuradoriaPageComponent } from './procuradoria/procuradoria-page.component';
-import { SectoralEnrichmentPageComponent } from './sectoral-enrichment/sectoral-enrichment-page.component';
-import { SourcesPageComponent } from './sources/sources-page.component';
-import { TaxBetterAdminPageComponent } from './tax-better/tax-better-admin-page.component';
-import { TaxBetterIntegrationPageComponent } from './tax-better/tax-better-integration-page.component';
-import { TaxBetterVisionPageComponent } from './tax-better/tax-better-vision-page.component';
-import { StateTransfersPageComponent } from './state-transfers/state-transfers-page.component';
-import { TransferReconciliationPageComponent } from './transfer-reconciliation/transfer-reconciliation-page.component';
-import { ValidationPageComponent } from './validation/validation-page.component';
 
 const executive = 'Referência publicada';
 const recovery = 'Referência publicada';
@@ -40,171 +17,171 @@ const shellRoutes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'visao' },
   {
     path: 'visao',
-    component: TaxBetterVisionPageComponent,
+    loadComponent: () => import('./tax-better/tax-better-vision-page.component').then((m) => m.TaxBetterVisionPageComponent),
     data: { title: 'Visão geral', group: vision },
   },
   {
     path: 'integracao',
-    component: TaxBetterIntegrationPageComponent,
+    loadComponent: () => import('./tax-better/tax-better-integration-page.component').then((m) => m.TaxBetterIntegrationPageComponent),
     data: { title: 'Entrada e saída', group: integration },
   },
   {
     path: 'administracao',
-    component: TaxBetterAdminPageComponent,
+    loadComponent: () => import('./tax-better/tax-better-admin-page.component').then((m) => m.TaxBetterAdminPageComponent),
     data: { title: 'Usuários e acessos', group: administration },
   },
   {
     path: 'executivo',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'executivo', title: 'Visão executiva', group: executive },
   },
   {
     path: 'financeiro',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'financeiro', title: 'Dinheiro do Município', group: executive },
   },
   {
     path: 'economia',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'economia', title: 'Economia', group: intelligence },
   },
   {
     path: 'operacao',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'operacao', title: 'Painel de operação', group: governance },
   },
   {
     path: 'achados',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'achados', title: 'Achados', group: recovery },
   },
   {
     path: 'cobranca',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'cobranca', title: 'Cobrança', group: recovery },
   },
   {
     path: 'pagamentos',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'pagamentos', title: 'Pagamentos e parcelamentos', group: recovery },
   },
   {
     path: 'divida-ativa',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'divida-ativa', title: 'Dívida ativa', group: recovery },
   },
   {
     path: 'transferencias',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'transferencias', title: 'Transferências federais', group: transfers },
   },
   {
     path: 'ibs-cbs',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'ibs-cbs', title: 'IBS/CBS', group: reform },
   },
   {
     path: 'qualidade',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'qualidade', title: 'Qualidade e lineage', group: intelligence },
   },
   {
     path: 'auditoria',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'auditoria', title: 'Auditoria', group: intelligence },
   },
   {
     path: 'gates',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'gates', title: 'Gates', group: governance },
   },
   {
     path: 'publico',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'publico', title: 'Painel público', group: executive },
   },
   {
     path: 'prontidao',
-    component: DashboardPageComponent,
+    loadComponent: () => import('./dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
     data: { dashboardId: 'prontidao', title: 'Prontidão', group: reform },
   },
   {
     path: 'validacao',
-    component: ValidationPageComponent,
+    loadComponent: () => import('./validation/validation-page.component').then((m) => m.ValidationPageComponent),
     data: { title: 'Créditos e validação', group: recovery },
   },
   {
     path: 'validacao-humana',
-    component: HumanValidationPageComponent,
+    loadComponent: () => import('./human-validation/human-validation-page.component').then((m) => m.HumanValidationPageComponent),
     data: { title: 'Validação humana', group: governance },
   },
   {
     path: 'notificacoes',
-    component: NotificationsPageComponent,
+    loadComponent: () => import('./notifications/notifications-page.component').then((m) => m.NotificationsPageComponent),
     data: { title: 'Alertas e metas', group: executive },
   },
-  { path: 'funil', component: FunnelPageComponent, data: { title: 'Funil de recuperação', group: executive } },
-  { path: 'calendario', component: CalendarPageComponent, data: { title: 'Calendário', group: reform } },
+  { path: 'funil', loadComponent: () => import('./funnel/funnel-page.component').then((m) => m.FunnelPageComponent), data: { title: 'Funil de recuperação', group: executive } },
+  { path: 'calendario', loadComponent: () => import('./calendar/calendar-page.component').then((m) => m.CalendarPageComponent), data: { title: 'Calendário', group: reform } },
   {
     path: 'diagnostico',
-    component: DiagnosisPageComponent,
+    loadComponent: () => import('./diagnosis/diagnosis-page.component').then((m) => m.DiagnosisPageComponent),
     data: { title: 'Diagnóstico', group: governance },
   },
   {
     path: 'regras-auditoria',
-    component: AuditRulesPageComponent,
+    loadComponent: () => import('./audit-rules/audit-rules-page.component').then((m) => m.AuditRulesPageComponent),
     data: { title: 'Regras de auditoria', group: intelligence },
   },
   {
     path: 'casos-auditoria',
-    component: AuditCasesPageComponent,
+    loadComponent: () => import('./audit-cases/audit-cases-page.component').then((m) => m.AuditCasesPageComponent),
     data: { title: 'Casos de auditoria', group: recovery },
   },
-  { path: 'fontes', component: SourcesPageComponent, data: { title: 'Fontes', group: intelligence } },
+  { path: 'fontes', loadComponent: () => import('./sources/sources-page.component').then((m) => m.SourcesPageComponent), data: { title: 'Fontes', group: intelligence } },
   {
     path: 'operacao-governanca',
-    component: OpsGovernancePageComponent,
+    loadComponent: () => import('./ops-governance/ops-governance-page.component').then((m) => m.OpsGovernancePageComponent),
     data: { title: 'Operação e auditoria técnica', group: governance },
   },
   {
     path: 'upload-municipal',
-    component: MunicipalUploadsPageComponent,
+    loadComponent: () => import('./municipal-uploads/municipal-uploads-page.component').then((m) => m.MunicipalUploadsPageComponent),
     data: { title: 'Upload municipal', group: governance },
   },
   {
     path: 'cadastro-360',
-    component: Cadastro360PageComponent,
+    loadComponent: () => import('./cadastro-360/cadastro-360-page.component').then((m) => m.Cadastro360PageComponent),
     data: { title: 'Cadastro 360', group: intelligence },
   },
   {
     path: 'setorial',
-    component: SectoralEnrichmentPageComponent,
+    loadComponent: () => import('./sectoral-enrichment/sectoral-enrichment-page.component').then((m) => m.SectoralEnrichmentPageComponent),
     data: { title: 'Inteligência Setorial', group: intelligence },
   },
   {
     path: 'transferencias-estaduais',
-    component: StateTransfersPageComponent,
+    loadComponent: () => import('./state-transfers/state-transfers-page.component').then((m) => m.StateTransfersPageComponent),
     data: { title: 'ICMS/IPVA estadual', group: transfers },
   },
   {
     path: 'conciliacao-transferencias',
-    component: TransferReconciliationPageComponent,
+    loadComponent: () => import('./transfer-reconciliation/transfer-reconciliation-page.component').then((m) => m.TransferReconciliationPageComponent),
     data: { title: 'Conciliação', group: transfers },
   },
   {
     path: 'procuradoria',
-    component: ProcuradoriaPageComponent,
+    loadComponent: () => import('./procuradoria/procuradoria-page.component').then((m) => m.ProcuradoriaPageComponent),
     data: { title: 'Procuradoria', group: recovery },
   },
   {
     path: 'saude',
-    component: HealthPageComponent,
+    loadComponent: () => import('./health/health-page.component').then((m) => m.HealthPageComponent),
     data: { title: 'Saúde da plataforma', group: governance },
   },
-  { path: 'sobre', component: AboutPageComponent, data: { title: 'Sobre', group: governance } },
+  { path: 'sobre', loadComponent: () => import('./layout/about-page.component').then((m) => m.AboutPageComponent), data: { title: 'Sobre', group: governance } },
   {
     path: 'erro',
-    component: StatusPageComponent,
+    loadComponent: () => import('./layout/status-page.component').then((m) => m.StatusPageComponent),
     data: {
       code: '500',
       title: 'Falha ao apresentar a página',
@@ -214,7 +191,7 @@ const shellRoutes: Routes = [
   },
   {
     path: 'indisponivel',
-    component: StatusPageComponent,
+    loadComponent: () => import('./layout/status-page.component').then((m) => m.StatusPageComponent),
     data: {
       code: '503',
       title: 'Serviço temporariamente indisponível',
@@ -224,7 +201,7 @@ const shellRoutes: Routes = [
   },
   {
     path: '**',
-    component: StatusPageComponent,
+    loadComponent: () => import('./layout/status-page.component').then((m) => m.StatusPageComponent),
     data: {
       code: '404',
       title: 'Página não encontrada',

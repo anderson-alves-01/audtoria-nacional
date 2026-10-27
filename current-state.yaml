@@ -26,6 +26,7 @@ completed:
     - premium_dashboards_charts_kpis_from_gold
     - professional_ui_v1_shell
     - professional_ui_v1_shell
+    - frontend_bi_meridiano_v1_local_not_published
 
     - ingest_structured_observability
     - regulatory_lc214_document_ingest
@@ -263,5 +264,5 @@ gates:
   terraform_prod_smoke_public_open: GO
 block_next_release: RESOLVED
 evidence: evidence/releases/0.4.0/ui/
-next_action: "Tax Better is the active scope in docs/product/TAX-BETTER.md, roadmap 1.3. The shell opens Integração, Visão and Administração only after a successful operator login with username and password. The public bootstrap session no longer opens the interface. Administração lists users, roles, territories and purposes for the technical administrator. Passwords are stored only as a hash. By decision of 2026-10-22 the operator login of the technical administrator also reads Integração, Visão and the published panels; sessions without that login keep the technical administrator out of fiscal content, and validation, collection and debt proposals stay with their own roles. Published panels stay under Referência publicada. The sources tool stores the file or API channel and the field map for TAX-BETTER-ENTRADA. A live organ fetch stays blocked until the act. Next delivery, when an authorized file exists, is the vehicle ICMS rule from DETRAN plus FIPE, with human approval before any malha export. Gates unchanged. No merge."
+next_action: "Tax Better is the active scope in docs/product/TAX-BETTER.md, roadmap 1.3. The shell opens Integração, Visão and Administração only after a successful operator login with username and password. The public bootstrap session no longer opens the interface. Administração lists users, roles, territories and purposes for the technical administrator. Passwords are stored only as a hash. By decision of 2026-10-22 the operator login of the technical administrator also reads Integração, Visão and the published panels; sessions without that login keep the technical administrator out of fiscal content, and validation, collection and debt proposals stay with their own roles. Published panels stay under Referência publicada. The sources tool stores the file or API channel and the field map for TAX-BETTER-ENTRADA. A live organ fetch stays blocked until the act. Next delivery, when an authorized file exists, is the vehicle ICMS rule from DETRAN plus FIPE, with human approval before any malha export. Gates unchanged. No merge. Frontend BI overhaul (design system Meridiano, interactive Visão geral, step-based Integração, Administração with side panel, lazy routes, docs/product/FRONTEND-DESIGN-SYSTEM.md) is committed on feat/professional-ui-v1 and not yet published; publication waits for the explicit order."
 human_gates: docs/delivery/HUMAN_DECISIONS_REQUIRED.md
