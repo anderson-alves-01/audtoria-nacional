@@ -1,0 +1,7 @@
+﻿Frontend BI fase 3 (Visao geral, Integracao, Administracao) - 2026-10-27
+Escopo: somente frontend. Contratos e endpoints da API inalterados.
+Testes: ng test 98 SUCCESS (vision: filtro cruzado, detalhamento, comparacao sem zero; intake-preview; integracao; admin).
+Build: ng build ok (main 603.94 kB, lazy echarts 1.04 MB).
+Verificacao visual: captura headless com dados sinteticos (sem dados reais, sem credenciais).
+Regras mantidas: ausente exibido como '—' e fora das somas; Nao e credito tributario; Cria credito: nao; sem exportacao para a malha.
+Rollback: git revert do commit da fase.

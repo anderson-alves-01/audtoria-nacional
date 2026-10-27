@@ -1,6 +1,9 @@
-<section aria-labelledby="integracao-title">
-  <h1 id="integracao-title">Entrada e saída</h1>
-  <p>O canal e o mapa de campos ficam nesta tela. A chave do órgão não é gravada e nenhuma busca é feita.</p>
+<section class="vision" aria-labelledby="integracao-title">
+  <header class="vision-hero">
+    <p class="kicker">SIRTA · Tax Better</p>
+    <h1 id="integracao-title">Entrada e saída</h1>
+    <p class="banner">O canal e o mapa de campos ficam nesta tela. A chave do órgão não é gravada e nenhuma busca é feita.</p>
+  </header>
 
   @if (state === 'loading') {
     <p role="status">Carregando a configuração…</p>
@@ -9,60 +12,173 @@
     <p role="alert">{{ message }}</p>
   }
   @if (state === 'ok' && draft) {
-    <form (ngSubmit)="saveConfig()">
-      <fieldset>
-        <legend>Canal e mapa de campos</legend>
-        <label>
-          Canal
-          <select name="channel" [(ngModel)]="draft.channel">
-            <option value="file">Arquivo com leiaute</option>
-            <option value="api">API</option>
-          </select>
-        </label>
-        <label>
-          Período
-          <input name="competence" [(ngModel)]="competence" autocomplete="off" />
-        </label>
-        @for (field of intakeFields; track field.key) {
-          <label>
-            {{ field.label }}
-            <input [name]="field.key" [(ngModel)]="draft.fieldMap[field.key]" autocomplete="off" />
-          </label>
-        }
-        @if (draft.channel === 'api') {
-          <label>
-            URL
-            <input name="endpoint" [(ngModel)]="draft.endpoint" autocomplete="off" />
-          </label>
-          <label>
-            Nome do segredo
-            <input name="secretName" [(ngModel)]="draft.secretName" autocomplete="off" />
-          </label>
-          <p>A chave não é gravada. A busca ao órgão continua bloqueada até o ato.</p>
-        }
-        <button type="submit">Gravar mapa</button>
-      </fieldset>
-    </form>
+    <nav class="steps" aria-label="Etapas da integração">
+      @for (item of steps; track item.id) {
+        <button type="button" [class.on]="step === item.id" [attr.aria-current]="step === item.id ? 'step' : null" (click)="go(item.id)">
+          {{ item.label }}
+        </button>
+      }
+    </nav>
 
-    @if (draft.channel === 'file') {
-      <label>
-        Linhas do arquivo
-        <textarea name="fileText" [(ngModel)]="fileText" rows="4"></textarea>
-      </label>
-      <button type="button" (click)="stageFile()">Registrar arquivo</button>
-    }
-    @if (draft.channel === 'api') {
-      <label>
-        Resposta recebida
-        <textarea name="apiBody" [(ngModel)]="apiBody" rows="4"></textarea>
-      </label>
-      <button type="button" (click)="stageApi()">Registrar resposta</button>
-    }
+    <div class="wizard">
+      <div class="wizard-main">
+        @if (step === 'layout') {
+          <app-panel title="Canal e mapa de campos" subtitle="Diga qual coluna do arquivo alimenta cada campo" source="Todos os nove campos são obrigatórios">
+            <form (ngSubmit)="saveConfig()">
+              <fieldset>
+                <legend>Canal e mapa de campos</legend>
+                <div class="form-grid">
+                  <label>
+                    Canal
+                    <select name="channel" [(ngModel)]="draft.channel">
+                      <option value="file">Arquivo com leiaute</option>
+                      <option value="api">API</option>
+                    </select>
+                  </label>
+                  <label>
+                    Período
+                    <input name="competence" [(ngModel)]="competence" autocomplete="off" />
+                  </label>
+                  @for (field of intakeFields; track field.key) {
+                    <label>
+                      {{ field.label }}
+                      <input [name]="field.key" [(ngModel)]="draft.fieldMap[field.key]" autocomplete="off" />
+                    </label>
+                  }
+                  @if (draft.channel === 'api') {
+                    <label>
+                      URL
+                      <input name="endpoint" [(ngModel)]="draft.endpoint" autocomplete="off" />
+                    </label>
+                    <label>
+                      Nome do segredo
+                      <input name="secretName" [(ngModel)]="draft.secretName" autocomplete="off" />
+                    </label>
+                  }
+                </div>
+                @if (draft.channel === 'api') {
+                  <p class="hint">A chave não é gravada. A busca ao órgão continua bloqueada até o ato.</p>
+                }
+                <button type="submit">Gravar mapa</button>
+                <button type="button" class="ghost" (click)="go('sample')">Próxima etapa: amostra</button>
+              </fieldset>
+            </form>
+          </app-panel>
+        }
 
-    <section aria-labelledby="saida-title">
-      <h2 id="saida-title">Saída para a malha</h2>
-      <p>Sem aprovação, não há exportação para a malha fiscal. Esta tela não envia notificação.</p>
-    </section>
+        @if (step === 'sample') {
+          <app-panel title="Amostra e validação" subtitle="Veja como o leiaute lê as linhas antes de registrar" source="Prévia local: nada é gravado nem enviado">
+            @if (draft.channel === 'file') {
+              <label>
+                Linhas do arquivo
+                <textarea name="fileText" [(ngModel)]="fileText" rows="6" placeholder="Cabeçalho na primeira linha, colunas separadas por vírgula"></textarea>
+              </label>
+            }
+            @if (draft.channel === 'api') {
+              <label>
+                Resposta recebida
+                <textarea name="apiBody" [(ngModel)]="apiBody" rows="6" placeholder="Lista JSON com um objeto por linha"></textarea>
+              </label>
+            }
+
+            @if (preview.error) {
+              <p role="status" class="hint">{{ preview.error }}</p>
+            }
+
+            <table class="checks">
+              <caption>Campos do leiaute contra as colunas encontradas</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Campo</th>
+                  <th scope="col">Coluna mapeada</th>
+                  <th scope="col">Situação</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (check of preview.checks; track check.key) {
+                  <tr>
+                    <th scope="row">{{ check.label }}</th>
+                    <td>{{ check.column || '—' }}</td>
+                    <td>
+                      @if (check.status === 'ok') {
+                        <app-badge tone="ok">Encontrada</app-badge>
+                      } @else if (check.status === 'sem-mapa') {
+                        <app-badge tone="danger">Sem mapa</app-badge>
+                      } @else {
+                        <app-badge tone="warn">Coluna não encontrada</app-badge>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+            @if (preview.totalRows > 0) {
+              <p>
+                {{ preview.totalRows }} linha(s) lida(s).
+                @if (preview.incompleteRows > 0) {
+                  {{ preview.incompleteRows }} iria(m) para a quarentena por campo vazio.
+                } @else {
+                  Nenhuma com campo vazio.
+                }
+                <span class="hint">O servidor valida de novo no registro.</span>
+              </p>
+              <div class="scroll">
+                <table>
+                  <caption>Primeiras linhas</caption>
+                  <thead>
+                    <tr>
+                      @for (header of preview.headers; track header) {
+                        <th scope="col">{{ header }}</th>
+                      }
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of preview.rows; track $index) {
+                      <tr>
+                        @for (header of preview.headers; track header) {
+                          <td>{{ row[header] || '—' }}</td>
+                        }
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+            <button type="button" class="ghost" (click)="go('layout')">Voltar ao leiaute</button>
+            <button type="button" (click)="go('register')" [disabled]="!previewReady">Próxima etapa: registro</button>
+          </app-panel>
+        }
+
+        @if (step === 'register') {
+          <app-panel title="Registro" subtitle="Grava as linhas aceitas e põe as demais em quarentena" source="O registro não cria crédito tributário">
+            @if (!previewReady) {
+              <p class="hint">Volte à amostra: o leiaute ainda não lê todas as colunas.</p>
+            }
+            @if (draft.channel === 'file') {
+              <button type="button" (click)="stageFile()">Registrar arquivo</button>
+            }
+            @if (draft.channel === 'api') {
+              <button type="button" (click)="stageApi()">Registrar resposta</button>
+            }
+            <button type="button" class="ghost" (click)="go('sample')">Voltar à amostra</button>
+          </app-panel>
+        }
+      </div>
+
+      <aside class="wizard-side" aria-label="Situação da integração">
+        <app-panel title="Situação" subtitle="Leiaute desta fonte">
+          <p>
+            Campos com mapa: <strong class="tabular">{{ mappedCount }}</strong> de {{ intakeFields.length }}
+          </p>
+          <progress [value]="mappedCount" [max]="intakeFields.length" aria-label="Campos mapeados"></progress>
+        </app-panel>
+        <div role="region" aria-labelledby="saida-title" class="out">
+          <h2 id="saida-title">Saída para a malha</h2>
+          <p>Sem aprovação, não há exportação para a malha fiscal. Esta tela não envia notificação.</p>
+        </div>
+      </aside>
+    </div>
   }
   @if (message && state === 'ok') {
     <p role="status">{{ message }}</p>

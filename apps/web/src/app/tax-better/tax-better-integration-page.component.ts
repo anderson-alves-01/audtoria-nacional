@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { BadgeComponent } from '../shared/ui/badge.component';
+import { PanelComponent } from '../shared/ui/panel.component';
+import { PreviewResult, previewApi, previewFile, previewIsReady } from './intake-preview';
 
 interface TaxBetterDraft {
   sourceId: string;
@@ -15,7 +18,7 @@ interface TaxBetterDraft {
 @Component({
   selector: 'app-tax-better-integration-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PanelComponent, BadgeComponent],
   templateUrl: './tax-better-integration-page.component.html',
   styleUrl: './tax-better-page.scss',
 })
@@ -39,6 +42,14 @@ export class TaxBetterIntegrationPageComponent implements OnInit {
   fileText = '';
   apiBody = '';
   message = '';
+  step: 'layout' | 'sample' | 'register' = 'layout';
+  readonly steps: { id: 'layout' | 'sample' | 'register'; label: string }[] = [
+    { id: 'layout', label: '1. Canal e leiaute' },
+    { id: 'sample', label: '2. Amostra e validação' },
+    { id: 'register', label: '3. Registro' },
+  ];
+  private cacheKey = '';
+  private cached: PreviewResult | null = null;
 
   ngOnInit(): void {
     this.http.get<Partial<TaxBetterDraft>>(`/v1/data-sources/${this.sourceId}/tax-better-config`).subscribe({
@@ -51,6 +62,33 @@ export class TaxBetterIntegrationPageComponent implements OnInit {
         this.state = 'error';
       },
     });
+  }
+
+  get mappedCount(): number {
+    return this.draft ? this.intakeFields.filter((field) => (this.draft?.fieldMap[field.key] ?? '').trim()).length : 0;
+  }
+
+  /** Previa local do que foi colado. Nao grava nem envia nada. */
+  get preview(): PreviewResult {
+    const draft = this.draft;
+    const body = draft?.channel === 'api' ? this.apiBody : this.fileText;
+    const key = JSON.stringify([draft?.channel, body, draft?.fieldMap]);
+    if (!draft) {
+      return previewFile('', this.intakeFields, {});
+    }
+    if (key !== this.cacheKey || !this.cached) {
+      this.cacheKey = key;
+      this.cached = draft.channel === 'api' ? previewApi(body, this.intakeFields, draft.fieldMap) : previewFile(body, this.intakeFields, draft.fieldMap);
+    }
+    return this.cached;
+  }
+
+  get previewReady(): boolean {
+    return previewIsReady(this.preview);
+  }
+
+  go(step: 'layout' | 'sample' | 'register'): void {
+    this.step = step;
   }
 
   saveConfig(): void {

@@ -4,6 +4,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PublicOpenSessionService } from '../auth/public-open-session.service';
 import { humanizeContext, humanizeSessionMode } from '../shared/presentation/official-labels';
+import { BadgeComponent } from '../shared/ui/badge.component';
+import { KpiCardComponent } from '../shared/ui/kpi-card.component';
+import { PanelComponent } from '../shared/ui/panel.component';
 
 interface RoleOption {
   code: string;
@@ -45,7 +48,7 @@ interface Directory {
 @Component({
   selector: 'app-tax-better-admin-page',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PanelComponent, BadgeComponent, KpiCardComponent],
   templateUrl: './tax-better-admin-page.component.html',
   styleUrl: './tax-better-page.scss',
 })
@@ -60,6 +63,33 @@ export class TaxBetterAdminPageComponent implements OnInit {
   role = 'analyst';
   active = true;
   territoryIds: string[] = [];
+  search = '';
+  roleFilter = '';
+  statusFilter: '' | 'active' | 'closed' = '';
+
+  get visibleUsers(): UserRow[] {
+    const term = this.search.trim().toLowerCase();
+    return (this.directory?.users ?? []).filter((user) => {
+      if (term && !user.username.toLowerCase().includes(term)) {
+        return false;
+      }
+      if (this.roleFilter && user.role !== this.roleFilter) {
+        return false;
+      }
+      if (this.statusFilter === 'active' && !user.active) {
+        return false;
+      }
+      return !(this.statusFilter === 'closed' && user.active);
+    });
+  }
+
+  get activeCount(): number {
+    return (this.directory?.users ?? []).filter((user) => user.active).length;
+  }
+
+  get closedCount(): number {
+    return (this.directory?.users ?? []).filter((user) => !user.active).length;
+  }
 
   get territoryLabel(): string {
     return humanizeContext('territory', this.session.peek()?.territoryId);

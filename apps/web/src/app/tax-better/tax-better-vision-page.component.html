@@ -5,135 +5,181 @@
     <p class="banner">Leitura do que seguiria para a malha. Sem aprovação, nada é exportado. Não é crédito tributário.</p>
   </header>
 
-  @if (state === 'loading') {
+  @if (state() === 'loading') {
     <p role="status">Carregando a visão…</p>
   }
-  @if (state === 'error') {
-    <p role="alert">{{ errorMessage }}</p>
+  @if (state() === 'error') {
+    <p role="alert">{{ errorMessage() }}</p>
   }
-  @if (state === 'ok' && view && view.rows.length === 0) {
+  @if (state() === 'ok' && view() && allRows().length === 0) {
     <app-empty-state
       title="Visão aberta — sem arquivo neste recorte"
-      [reason]="view.emptyReason || 'Ainda não há arquivo autorizado na visão.'"
+      [reason]="view()?.emptyReason || 'Ainda não há arquivo autorizado na visão.'"
       hint="Os filtros e os gráficos aparecem quando houver linha gravada. Nenhum valor é inventado."
     />
-    <p>Cria crédito: não. Exportação aprovada: não.</p>
+    <p class="legal">Cria crédito: não. Exportação aprovada: não.</p>
   }
-  @if (state === 'ok' && view && view.rows.length > 0) {
-    <form class="filters" aria-label="Filtros da malha">
-      <label>
-        Imposto
-        <select name="imposto" [(ngModel)]="filterImposto">
-          <option value="">Todos</option>
-          @for (option of options('imposto'); track option) {
-            <option [value]="option">{{ option }}</option>
-          }
-        </select>
-      </label>
-      <label>
-        Fato gerador
-        <select name="fgo" [(ngModel)]="filterFgo">
-          <option value="">Todos</option>
-          @for (option of options('fgo'); track option) {
-            <option [value]="option">{{ option }}</option>
-          }
-        </select>
-      </label>
-      <label>
-        Órgão
-        <select name="orgao" [(ngModel)]="filterOrgao">
-          <option value="">Todos</option>
-          @for (option of options('orgao'); track option) {
-            <option [value]="option">{{ option }}</option>
-          }
-        </select>
-      </label>
-      <label>
-        Período
-        <select name="periodo" [(ngModel)]="filterPeriodo">
-          <option value="">Todos</option>
-          @for (option of options('periodo'); track option) {
-            <option [value]="option">{{ option }}</option>
-          }
-        </select>
-      </label>
+
+  @if (state() === 'ok' && view() && allRows().length > 0) {
+    <form class="filters" aria-label="Filtros da malha" (submit)="$event.preventDefault()">
+      @for (dim of dimensions; track dim) {
+        <label>
+          {{ labels[dim] }}
+          <select [name]="dim" [ngModel]="selectedOf(dim)" (ngModelChange)="choose(dim, $event)">
+            <option value="">Todos</option>
+            @for (option of options(dim); track option) {
+              <option [value]="option">{{ option }}</option>
+            }
+          </select>
+        </label>
+      }
       <label>
         Variável
-        <input name="variavel" [(ngModel)]="filterVariavel" type="search" placeholder="Cidade, contribuinte ou outra coluna" />
+        <input name="variavel" [ngModel]="search()" (ngModelChange)="search.set($event)" type="search" placeholder="Cidade, contribuinte ou outra coluna" />
       </label>
     </form>
 
+    <div class="saved">
+      <label>
+        Salvar esta visão
+        <span class="saved-row">
+          <input name="viewName" [(ngModel)]="viewName" type="text" placeholder="Nome da visão" />
+          <button type="button" (click)="saveView()" [disabled]="!viewName.trim()">Salvar</button>
+        </span>
+      </label>
+      @if (savedViews().length > 0) {
+        <ul class="saved-list" aria-label="Visões salvas">
+          @for (saved of savedViews(); track saved.name) {
+            <li>
+              <button type="button" (click)="applyView(saved.name)">{{ saved.name }}</button>
+              <button type="button" class="x" [attr.aria-label]="'Remover visão ' + saved.name" (click)="removeView(saved.name)">×</button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <app-filter-bar [chips]="chips()" (removed)="filters.remove($event)" (cleared)="filters.clear()" />
+
     <section class="kpis" aria-label="Indicadores do recorte">
-      <app-kpi-card label="Linhas no recorte" [value]="filtered.length + ''" meta="Depois dos filtros" kind="Não é crédito" />
+      <app-kpi-card label="Linhas no recorte" [value]="rows().length + ''" meta="Depois dos filtros" kind="Não é crédito" />
       <app-kpi-card
         label="Prontas para a malha"
-        [value]="approvedCount + ''"
+        [value]="approvedCount() + ''"
         meta="Sem aprovação, nada é exportado"
         kind="Não é crédito"
+        tone="warn"
       />
-      <app-kpi-card label="Valor da operação" [value]="sum('operacao', 'valor')" meta="Soma só do que foi gravado" kind="Não é crédito" />
-      <app-kpi-card label="Valor da malha" [value]="sum('malha', 'valor')" meta="Medida ausente fica de fora" kind="Não é crédito" />
+      <app-kpi-card label="Valor da operação" [value]="measure(sumOperation())" meta="Soma só do que foi gravado" kind="Não é crédito" tone="info" />
+      <app-kpi-card label="Valor da malha" [value]="measure(sumMalha())" meta="Medida ausente fica de fora" kind="Não é crédito" />
     </section>
 
-    <section class="charts" aria-label="Gráficos do recorte">
-      @if (operationChart(); as operation) {
-        <article>
-          <h2>Operação por imposto</h2>
-          <div echarts [options]="operation" class="canvas" role="img" aria-label="Valor da operação por imposto no filtro"></div>
-        </article>
-      }
-      @if (malhaChart(); as malha) {
-        <article>
-          <h2>Malha por fato gerador</h2>
-          <div echarts [options]="malha" class="canvas" role="img" aria-label="Valor da malha por fato gerador no filtro"></div>
-        </article>
-      }
-      @if (!operationChart() && !malhaChart()) {
-        <p role="status">Neste filtro não há valor gravado para o gráfico.</p>
-      }
-    </section>
-
-    @if (filtered.length === 0) {
+    @if (rows().length === 0) {
       <p role="status">Nenhuma linha neste filtro.</p>
-    } @else {
-      <table>
-        <caption>O que seguiria para a malha neste filtro. Sem aprovação, a saída não acontece.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Órgão</th>
-            <th scope="col">Imposto</th>
-            <th scope="col">Fato gerador</th>
-            <th scope="col">Período</th>
-            <th scope="col">Variáveis</th>
-            <th scope="col">Operação — valor</th>
-            <th scope="col">Operação — base</th>
-            <th scope="col">Operação — imposto</th>
-            <th scope="col">Malha — valor</th>
-            <th scope="col">Malha — base</th>
-            <th scope="col">Malha — imposto</th>
-            <th scope="col">Aprovação</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of filtered; track $index) {
-            <tr>
-              <td>{{ row.orgao || '—' }}</td>
-              <td>{{ row.imposto }}</td>
-              <td>{{ row.fgo }}</td>
-              <td>{{ row.periodo || '—' }}</td>
-              <td>{{ variables(row) }}</td>
-              <td>{{ measure(row.operacao.valor) }}</td>
-              <td>{{ measure(row.operacao.baseCalculo) }}</td>
-              <td>{{ measure(row.operacao.imposto) }}</td>
-              <td>{{ measure(row.malha.valor) }}</td>
-              <td>{{ measure(row.malha.baseCalculo) }}</td>
-              <td>{{ measure(row.malha.imposto) }}</td>
-              <td>{{ row.approved ? 'aprovada' : 'sem aprovação' }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
     }
-    <p>Cria crédito: não. Exportação aprovada: não.</p>
+
+    <div class="bi-grid">
+      <app-panel
+        class="span-2"
+        [title]="'Operação e malha por ' + labels[mainDimension()].toLowerCase()"
+        subtitle="Clique seleciona, Shift soma, duplo clique detalha, arraste no eixo para escolher uma faixa"
+        source="Fonte: arquivo recebido na Integração · soma só do que foi gravado"
+      >
+        <div panelActions class="drill">
+          @if (filters.drillPath().length > 0) {
+            <button type="button" (click)="filters.drillUp()">Subir um nível</button>
+          }
+          @if (filters.currentLevel) {
+            <app-badge tone="accent">Nível: {{ labels[mainDimension()] }}</app-badge>
+          } @else {
+            <app-badge>Último nível</app-badge>
+          }
+        </div>
+        <app-bi-chart
+          [input]="mainChart()"
+          [caption]="'Valor por ' + labels[mainDimension()].toLowerCase()"
+          [height]="320"
+          (picked)="onPick($event, mainDimension())"
+          (drilled)="drill($event)"
+          (brushed)="onBrush($event, mainDimension())"
+        />
+      </app-panel>
+
+      <app-panel title="Por fato gerador" subtitle="Valor da operação" source="Seleção cruzada com os demais painéis">
+        <app-bi-chart [input]="fgoChart()" caption="Valor da operação por fato gerador" [height]="300" (picked)="onPick($event, 'fgo')" />
+      </app-panel>
+
+      <app-panel title="Evolução por período" subtitle="Operação e malha" source="Período vem do arquivo; sem período a linha fica de fora">
+        <app-bi-chart [input]="periodChart()" caption="Valor por período" [height]="300" (picked)="onPick($event, 'periodo')" />
+      </app-panel>
+
+      <app-panel title="Peso de cada órgão" subtitle="Valor da operação" source="Linhas sem valor não aparecem no mapa de áreas">
+        <app-bi-chart [input]="orgaoTreemap()" caption="Valor da operação por órgão" [height]="300" (picked)="onPick($event, 'orgao')" />
+      </app-panel>
+
+      <app-panel title="Imposto por período" subtitle="Valor da operação" source="Célula vazia significa sem valor gravado">
+        <app-bi-chart [input]="heatmap()" caption="Valor da operação por imposto e período" [height]="300" (picked)="onPick($event, 'periodo')" />
+      </app-panel>
+    </div>
+
+    @if (periods().length > 1) {
+      <app-panel title="Comparar períodos" subtitle="Escolha um período no filtro e outro aqui" source="Diferença só existe quando os dois lados têm valor gravado">
+        <label class="compare-pick">
+          Comparar com
+          <select name="comparar" [ngModel]="compareWith()" (ngModelChange)="compareWith.set($event)">
+            <option value="">Nenhum</option>
+            @for (option of periods(); track option) {
+              <option [value]="option">{{ option }}</option>
+            }
+          </select>
+        </label>
+        @if (comparison(); as cmp) {
+          <table>
+            <caption>Operação por imposto: {{ cmp.current }} contra {{ cmp.previous }}</caption>
+            <thead>
+              <tr>
+                <th scope="col">Imposto</th>
+                <th scope="col">{{ cmp.current }}</th>
+                <th scope="col">{{ cmp.previous }}</th>
+                <th scope="col">Diferença</th>
+                <th scope="col">Variação</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (line of cmp.rows; track line.category) {
+                <tr>
+                  <th scope="row">{{ line.category }}</th>
+                  <td class="tabular">{{ measure(line.current) }}</td>
+                  <td class="tabular">{{ measure(line.previous) }}</td>
+                  <td class="tabular">{{ measure(line.delta) }}</td>
+                  <td class="tabular">{{ line.deltaPct === null ? '—' : (line.deltaPct | number: '1.0-1') + '%' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <p class="hint">Filtre um único período e escolha outro em “Comparar com”.</p>
+        }
+      </app-panel>
+    }
+
+    <app-panel title="O que seguiria para a malha neste filtro" subtitle="Sem aprovação, a saída não acontece" source="Tabela com a mesma seleção dos gráficos">
+      <app-data-table caption="O que seguiria para a malha neste filtro" exportName="visao-malha" [columns]="columns" [rows]="rows()" [rowKey]="rowKey">
+        <ng-template #detail let-row>
+          <h3>Detalhe da linha</h3>
+          <p>{{ row.imposto }} · {{ row.fgo }} · {{ row.orgao || 'Órgão não informado' }} · {{ row.periodo || 'Período não informado' }}</p>
+          <dl class="detail">
+            @for (entry of variableEntries(row); track entry.key) {
+              <dt>{{ entry.key }}</dt>
+              <dd>{{ entry.value }}</dd>
+            }
+            <dt>Aprovação</dt>
+            <dd>{{ row.approved ? 'aprovada' : 'sem aprovação' }}</dd>
+          </dl>
+        </ng-template>
+      </app-data-table>
+    </app-panel>
+
+    <p class="legal">Cria crédito: não. Exportação aprovada: não.</p>
   }
 </section>

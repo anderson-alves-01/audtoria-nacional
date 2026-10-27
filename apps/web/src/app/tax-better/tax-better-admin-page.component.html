@@ -1,9 +1,14 @@
-<section aria-labelledby="admin-title">
-  <h1 id="admin-title">Usuários e acessos</h1>
-  <p>Território <strong>{{ territoryLabel }}</strong>.</p>
-  <p>Finalidade <strong>{{ purposeLabel }}</strong>.</p>
-  <p>Modo <strong>{{ profileLabel }}</strong>.</p>
-  <p>O cadastro guarda nome, papel e territórios. Senha não entra nesta tela. Nenhum acesso cria crédito.</p>
+<section class="vision" aria-labelledby="admin-title">
+  <header class="vision-hero">
+    <p class="kicker">SIRTA · Administração</p>
+    <h1 id="admin-title">Usuários e acessos</h1>
+    <p class="context">
+      <app-badge tone="accent">Território <strong>{{ territoryLabel }}</strong></app-badge>
+      <app-badge>Finalidade <strong>{{ purposeLabel }}</strong></app-badge>
+      <app-badge>Modo <strong>{{ profileLabel }}</strong></app-badge>
+    </p>
+    <p class="banner">O cadastro guarda nome, papel e territórios. Senha não entra nesta tela. Nenhum acesso cria crédito.</p>
+  </header>
 
   @if (state === 'loading') {
     <p role="status">Carregando usuários…</p>
@@ -16,81 +21,129 @@
       <p role="status">{{ directory.manageReason }}</p>
     }
 
-    <form (ngSubmit)="save()">
-      <fieldset [disabled]="!directory.canManage">
-        <legend>{{ editingId ? 'Alterar acesso' : 'Novo usuário' }}</legend>
-        <label>
-          Nome
-          <input name="username" [(ngModel)]="username" autocomplete="off" />
-        </label>
-        <label>
-          Papel
-          <select name="role" [(ngModel)]="role">
-            @for (option of directory.roles; track option.code) {
-              <option [value]="option.code">{{ option.label }}</option>
+    <section class="kpis" aria-label="Resumo dos acessos">
+      <app-kpi-card label="Usuários" [value]="directory.users.length + ''" meta="No tenant" kind="Cadastro" />
+      <app-kpi-card label="Acessos ativos" [value]="activeCount + ''" meta="Podem entrar" kind="Cadastro" tone="info" />
+      <app-kpi-card label="Acessos encerrados" [value]="closedCount + ''" meta="Sem entrada" kind="Cadastro" tone="warn" />
+    </section>
+
+    <div class="wizard">
+      <app-panel title="Usuários do tenant" subtitle="Nome, papel, territórios e situação do acesso" source="Diretório do tenant">
+        <div class="filters inline" role="search" aria-label="Filtrar usuários">
+          <label>
+            Buscar por nome
+            <input name="busca" type="search" [(ngModel)]="search" autocomplete="off" />
+          </label>
+          <label>
+            Papel
+            <select name="papel" [(ngModel)]="roleFilter">
+              <option value="">Todos</option>
+              @for (option of directory.roles; track option.code) {
+                <option [value]="option.code">{{ option.label }}</option>
+              }
+            </select>
+          </label>
+          <label>
+            Situação
+            <select name="situacao" [(ngModel)]="statusFilter">
+              <option value="">Todas</option>
+              <option value="active">Ativo</option>
+              <option value="closed">Encerrado</option>
+            </select>
+          </label>
+        </div>
+
+        <table>
+          <caption>Nome, papel, territórios e situação do acesso</caption>
+          <thead>
+            <tr>
+              <th scope="col">Nome</th>
+              <th scope="col">Papel</th>
+              <th scope="col">Territórios</th>
+              <th scope="col">Situação</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of visibleUsers; track user.id) {
+              <tr [class.editing]="editingId === user.id">
+                <td>{{ user.username }}</td>
+                <td>{{ user.roleLabel }}</td>
+                <td>{{ territoryNames(user) }}</td>
+                <td>
+                  @if (user.active) {
+                    <app-badge tone="ok">ativo</app-badge>
+                  } @else {
+                    <app-badge tone="warn">encerrado</app-badge>
+                  }
+                </td>
+                <td>
+                  <button type="button" [disabled]="!directory.canManage" (click)="edit(user)">Alterar</button>
+                  <button type="button" [disabled]="!directory.canManage || !user.active" (click)="deactivate(user)">Encerrar acesso</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5">Nenhum usuário neste filtro.</td>
+              </tr>
             }
-          </select>
-        </label>
-        <fieldset>
-          <legend>Territórios de acesso</legend>
-          @for (territory of directory.territories; track territory.id) {
-            <label>
-              <input
-                type="checkbox"
-                [name]="'territory-' + territory.id"
-                [checked]="territoryChecked(territory.id)"
-                (change)="toggleTerritory(territory.id, $any($event.target).checked)"
-              />
-              {{ territory.name }}
-            </label>
-          }
-        </fieldset>
-        <label>
-          <input type="checkbox" name="active" [(ngModel)]="active" />
-          Acesso ativo
-        </label>
-        <button type="submit" [disabled]="!directory.canManage">{{ editingId ? 'Gravar alteração' : 'Criar usuário' }}</button>
-        @if (editingId) {
-          <button type="button" (click)="resetForm()">Cancelar edição</button>
-        }
-      </fieldset>
-    </form>
+          </tbody>
+        </table>
+      </app-panel>
 
-    <h2>Usuários do tenant</h2>
-    <table>
-      <caption>Nome, papel, territórios e situação do acesso</caption>
-      <thead>
-        <tr>
-          <th scope="col">Nome</th>
-          <th scope="col">Papel</th>
-          <th scope="col">Territórios</th>
-          <th scope="col">Situação</th>
-          <th scope="col">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (user of directory.users; track user.id) {
-          <tr>
-            <td>{{ user.username }}</td>
-            <td>{{ user.roleLabel }}</td>
-            <td>{{ territoryNames(user) }}</td>
-            <td>{{ user.active ? 'ativo' : 'encerrado' }}</td>
-            <td>
-              <button type="button" [disabled]="!directory.canManage" (click)="edit(user)">Alterar</button>
-              <button type="button" [disabled]="!directory.canManage || !user.active" (click)="deactivate(user)">Encerrar acesso</button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+      <aside class="wizard-side" aria-label="Edição de acesso">
+        <app-panel [title]="editingId ? 'Alterar acesso' : 'Novo usuário'" subtitle="Painel lateral de edição">
+          <form (ngSubmit)="save()">
+            <fieldset [disabled]="!directory.canManage">
+              <legend>{{ editingId ? 'Alterar acesso' : 'Novo usuário' }}</legend>
+              <label>
+                Nome
+                <input name="username" [(ngModel)]="username" autocomplete="off" />
+              </label>
+              <label>
+                Papel
+                <select name="role" [(ngModel)]="role">
+                  @for (option of directory.roles; track option.code) {
+                    <option [value]="option.code">{{ option.label }}</option>
+                  }
+                </select>
+              </label>
+              <fieldset class="group">
+                <legend class="vis">Territórios de acesso</legend>
+                @for (territory of directory.territories; track territory.id) {
+                  <label class="check">
+                    <input
+                      type="checkbox"
+                      [name]="'territory-' + territory.id"
+                      [checked]="territoryChecked(territory.id)"
+                      (change)="toggleTerritory(territory.id, $any($event.target).checked)"
+                    />
+                    {{ territory.name }}
+                  </label>
+                }
+              </fieldset>
+              <label class="check">
+                <input type="checkbox" name="active" [(ngModel)]="active" />
+                Acesso ativo
+              </label>
+              <button type="submit" [disabled]="!directory.canManage">{{ editingId ? 'Gravar alteração' : 'Criar usuário' }}</button>
+              @if (editingId) {
+                <button type="button" class="ghost" (click)="resetForm()">Cancelar edição</button>
+              }
+            </fieldset>
+          </form>
+        </app-panel>
+      </aside>
+    </div>
 
-    <h2>Finalidades registradas</h2>
-    <ul>
-      @for (purpose of directory.purposes; track purpose.id) {
-        <li>{{ purpose.description }}</li>
-      }
-    </ul>
-    <p>Cria crédito: não.</p>
+    <app-panel title="Finalidades registradas" subtitle="Para que os acessos podem ser usados">
+      <ul>
+        @for (purpose of directory.purposes; track purpose.id) {
+          <li>{{ purpose.description }}</li>
+        }
+      </ul>
+    </app-panel>
+    <p class="legal">Cria crédito: não.</p>
   }
   @if (message && state === 'ok') {
     <p role="status">{{ message }}</p>
