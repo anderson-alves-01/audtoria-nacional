@@ -64,13 +64,13 @@
       />
       <app-kpi-card
         label="Quantidade observada"
-        [value]="format(quantity(), 'quantidade')"
+        [value]="compact(quantity(), 'quantidade')"
         [meta]="'Ocorrências de ' + activeOperation() + (ano() ? ' em ' + ano() : ' de 2021 a 2025')"
         kind="Observado"
       />
       <app-kpi-card
         label="Valor estimado (rateio)"
-        [value]="format(estimated(), 'valor')"
+        [value]="compact(estimated(), 'valor')"
         meta="Estimativa de rateio. Não é valor fiscal efetivo"
         kind="Estimado"
         tone="warn"

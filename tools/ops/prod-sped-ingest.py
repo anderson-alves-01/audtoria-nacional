@@ -16,7 +16,7 @@ import os
 import sys
 import urllib.error
 import urllib.request
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -122,7 +122,68 @@ def login(base: str) -> dict:
     return body
 
 
-def execute(body: bytes, file: Path, *, base: str, confirm: str, expect_tenant: str) -> int:
+def _fixture_token(subject, tenant_id) -> str:
+    import jwt
+
+    from sirta_api.adapters.db.synthetic_ids import AUDIENCE, ISSUER
+
+    key = (ROOT / "tests" / "fixtures" / "jwt" / "private.pem").read_bytes()
+    now = datetime.now(UTC)
+    return jwt.encode(
+        {
+            "sub": str(subject),
+            "iss": ISSUER,
+            "aud": AUDIENCE,
+            "iat": now,
+            "exp": now + timedelta(hours=1),
+            "tenant_id": str(tenant_id),
+            "amr": ["pwd", "mfa"],
+        },
+        key,
+        algorithm="RS256",
+        headers={"kid": "sirta-test"},
+    )
+
+
+def fixture_session() -> dict:
+    """Same path as the earlier ops scripts: a synthetic token signed with the key that ships
+    in the image. It carries tenant, territory and purpose and writes no secret."""
+    from sirta_api.adapters.db.synthetic_ids import (
+        PURPOSE_ALPHA_ACTIVE,
+        TENANT_ALPHA,
+        TERRITORY_ALPHA_CENTRO,
+        USER_ADMIN_ALPHA,
+    )
+
+    return {
+        "accessToken": _fixture_token(USER_ADMIN_ALPHA, TENANT_ALPHA),
+        "tenantId": str(TENANT_ALPHA),
+        "territoryId": str(TERRITORY_ALPHA_CENTRO),
+        "purposeId": str(PURPOSE_ALPHA_ACTIVE),
+        "role": "tech_admin",
+    }
+
+
+def reader_scope(base: str) -> dict[str, str]:
+    """Read-back as the analyst role. The technical administrator cannot read fiscal screens."""
+    del base
+    from sirta_api.adapters.db.synthetic_ids import (
+        PURPOSE_ALPHA_ACTIVE,
+        TENANT_ALPHA,
+        TERRITORY_ALPHA_CENTRO,
+        USER_ANALYST_ALPHA,
+    )
+
+    return {
+        "Authorization": f"Bearer {_fixture_token(USER_ANALYST_ALPHA, TENANT_ALPHA)}",
+        "X-Territory-Id": str(TERRITORY_ALPHA_CENTRO),
+        "X-Purpose-Id": str(PURPOSE_ALPHA_ACTIVE),
+    }
+
+
+def execute(
+    body: bytes, file: Path, *, base: str, confirm: str, expect_tenant: str, auth: str
+) -> int:
     summary, _messages = local_summary(body)
     if not summary["reconciliationOk"]:
         print("Local reconciliation failed. Nothing was sent.")
@@ -130,7 +191,7 @@ def execute(body: bytes, file: Path, *, base: str, confirm: str, expect_tenant: 
     if confirm != summary["sha256"]:
         print("--confirm does not match the sha256 of the file. Nothing was sent.")
         return 1
-    session = login(base)
+    session = login(base) if auth == "login" else fixture_session()
     if session["tenantId"] != expect_tenant:
         print("Signed-in tenant differs from --expect-tenant. Nothing was sent.")
         return 1
@@ -176,8 +237,9 @@ def execute(body: bytes, file: Path, *, base: str, confirm: str, expect_tenant: 
     )
     ok = status == 200 and upload.get("status") == "VALIDATED"
     if ok:
+        read_scope = scope if auth == "login" else reader_scope(base)
         read_status, read = call(
-            "GET", f"{base}/v1/sped-operacoes?level=SERIE&pageSize=1000", headers=scope
+            "GET", f"{base}/v1/sped-operacoes?level=SERIE&pageSize=1000", headers=read_scope
         )
         items = read.get("items") or []
         read_quantity = sum(int(item["quantidade"]) for item in items)
@@ -217,6 +279,7 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--dry-run", action="store_true", help="default")
     mode.add_argument("--execute", action="store_true")
+    parser.add_argument("--auth", choices=["login", "fixture-jwt"], default="login")
     parser.add_argument(
         "--confirm", default="", help="sha256 of the file (required with --execute)"
     )
@@ -237,6 +300,7 @@ def main() -> int:
         base=args.base.rstrip("/"),
         confirm=args.confirm,
         expect_tenant=args.expect_tenant,
+        auth=args.auth,
     )
 
 

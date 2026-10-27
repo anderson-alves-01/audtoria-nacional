@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnInit, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BiChartInput } from '../shared/bi/bi-chart-options';
+import { compactPublishedValue } from '../shared/presentation/official-labels';
 import { BiChartComponent, ChartPick } from '../shared/bi/bi-chart.component';
 import { BiFilters, syncFiltersWithUrl } from '../shared/bi/bi-filters';
 import { DataTableComponent } from '../shared/bi/data-table.component';
@@ -182,6 +183,14 @@ export class SpedOperacoesPageComponent implements OnInit {
 
   format(value: number | null, measure: 'quantidade' | 'valor'): string {
     return formatMeasure(value, measure);
+  }
+
+  /** Valor grande em forma curta para o cartão. O valor exato fica na tabela. */
+  compact(value: number | null, measure: 'quantidade' | 'valor'): string {
+    if (value === null) {
+      return EMPTY;
+    }
+    return compactPublishedValue(value, measure === 'valor' ? 'BRL' : 'COUNT');
   }
 
   previous(): void {
