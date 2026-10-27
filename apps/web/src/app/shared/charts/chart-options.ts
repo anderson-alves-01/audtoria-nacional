@@ -4,6 +4,7 @@ import {
   formatPublishedValue,
   humanizeUnit,
 } from '../presentation/official-labels';
+import { ChartTheme, readChartTheme } from './chart-theme';
 
 export interface ChartPoint {
   x: string;
@@ -15,13 +16,21 @@ export function buildChartOptions(input: {
   seriesName: string;
   points: ChartPoint[];
   unit: string;
+  theme?: ChartTheme;
 }): EChartsOption {
+  const theme = input.theme ?? readChartTheme();
   const line = input.chartType === 'line';
   const values = input.points.map((point) => point.y);
   return {
-    color: ['#0f766e'],
+    color: [theme.accent],
+    textStyle: { fontFamily: theme.fontUi, color: theme.text2 },
+    animationDuration: 300,
     tooltip: {
       trigger: 'axis',
+      backgroundColor: theme.surface,
+      borderColor: theme.line,
+      textStyle: { color: theme.text },
+      axisPointer: { type: 'line', lineStyle: { color: theme.muted, type: 'dashed' } },
       formatter: (params: unknown) => formatChartTooltip(params, input.unit),
     },
     legend: {
@@ -31,25 +40,26 @@ export function buildChartOptions(input: {
       icon: 'roundRect',
       itemWidth: 18,
       itemHeight: 4,
-      textStyle: { color: '#172033' },
+      textStyle: { color: theme.text2 },
     },
     grid: { left: 72, right: 24, top: line ? 72 : 36, bottom: 36 },
     xAxis: {
       type: 'category',
       data: input.points.map((point) => point.x),
       boundaryGap: !line,
-      axisLine: { lineStyle: { color: '#d5deea' } },
+      axisLine: { lineStyle: { color: theme.line } },
       axisTick: { show: false },
-      axisLabel: { color: '#172033', rotate: input.points.length > 8 ? 35 : 0 },
+      axisLabel: { color: theme.text2, rotate: input.points.length > 8 ? 35 : 0 },
     },
     yAxis: {
       type: 'value',
       scale: line,
       axisLabel: {
-        color: '#5c6b7a',
+        color: theme.muted,
+        fontFamily: theme.fontNum,
         formatter: (value: number) => compactPublishedValue(value, input.unit),
       },
-      splitLine: { lineStyle: { color: '#e7edf4' } },
+      splitLine: { lineStyle: { color: theme.line, type: 'dashed' } },
     },
     series: [
       {
@@ -59,18 +69,22 @@ export function buildChartOptions(input: {
         smooth: 0.35,
         symbol: 'circle',
         symbolSize: line ? 8 : 0,
-        lineStyle: { width: 3, color: '#0f766e' },
-        itemStyle: { color: '#0f766e' },
-        areaStyle: line ? { color: 'rgba(15, 118, 110, 0.14)' } : undefined,
+        lineStyle: { width: 3, color: theme.accent },
+        itemStyle: { color: theme.accent, borderRadius: line ? 0 : [4, 4, 0, 0] },
+        areaStyle: line ? { color: theme.accentSoft } : undefined,
+        emphasis: { focus: 'series' },
         barMaxWidth: 36,
         label: {
           show: line,
           position: 'top',
           distance: 8,
-          color: '#0f766e',
-          fontWeight: 650,
-          backgroundColor: '#ecfdf5',
-          borderRadius: 8,
+          color: theme.accent,
+          fontFamily: theme.fontNum,
+          fontWeight: 600,
+          backgroundColor: theme.surface,
+          borderColor: theme.line,
+          borderWidth: 1,
+          borderRadius: 6,
           padding: [3, 6],
           formatter: (params: { value?: unknown }) => {
             const raw = Array.isArray(params.value) ? params.value[1] : params.value;

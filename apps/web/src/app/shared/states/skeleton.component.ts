@@ -18,7 +18,9 @@ import { Component } from '@angular/core';
     .bar {
       height: 0.85rem;
       border-radius: 6px;
-      background: linear-gradient(90deg, #e7edf5, #f7f9fc, #e7edf5);
+      background: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2));
+      background-size: 200% 100%;
+      animation: shimmer 1.4s linear infinite;
       margin-bottom: 0.6rem;
     }
     .wide {
@@ -29,6 +31,15 @@ import { Component } from '@angular/core';
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0.6rem;
+    }
+    p {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    @keyframes shimmer {
+      to {
+        background-position: -200% 0;
+      }
     }
   `,
 })

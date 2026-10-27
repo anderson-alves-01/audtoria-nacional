@@ -17,32 +17,22 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   `,
   styles: `
     .error {
-      background: #fff6f7;
-      border: 1px solid #f0c9ce;
-      border-radius: var(--radius);
-      padding: 1rem 1.1rem;
+      background: var(--danger-soft);
+      border: 1px solid var(--danger);
+      border-radius: var(--r);
+      padding: var(--sp-4);
     }
     h2 {
-      margin: 0 0 0.4rem;
-      color: var(--red-600);
-      font-size: 1.1rem;
+      margin: 0 0 var(--sp-2);
+      color: var(--danger);
+      font-size: 1rem;
     }
     p {
-      margin: 0 0 0.4rem;
+      margin: 0 0 var(--sp-2);
     }
     .meta {
       color: var(--muted);
-      font-size: 0.85rem;
-    }
-    button {
-      margin-top: 0.4rem;
-      background: var(--primary-900);
-      color: #fff;
-      border: 0;
-      border-radius: 8px;
-      min-height: 2.25rem;
-      padding: 0 0.8rem;
-      cursor: pointer;
+      font-size: 0.82rem;
     }
   `,
 })

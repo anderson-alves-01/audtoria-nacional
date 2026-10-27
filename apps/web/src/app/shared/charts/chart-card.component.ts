@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, effect, inject } from '@angular/core';
 import { EChartsOption } from 'echarts';
+import { ThemeService } from '../ui/theme.service';
 import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
 import {
   describePublishedSeries,
@@ -257,6 +258,14 @@ export class ChartCardComponent {
   reading: PublishedSeriesReading | null = null;
   private kind: 'line' | 'bar' = 'bar';
   private measureUnit = '';
+  private readonly themes = inject(ThemeService);
+
+  constructor() {
+    effect(() => {
+      this.themes.theme();
+      queueMicrotask(() => this.redraw());
+    });
+  }
 
   @Input() set series(value: ChartSeriesInput | null) {
     this.seriesName = value?.name || this.seriesName;
