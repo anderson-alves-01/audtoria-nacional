@@ -1,0 +1,21 @@
+started=2026-10-27T21:05:22.491940+00:00
+mode=EXECUTE authorization=SPED_PUBLIC_AGGREGATED_PROD
+base=http://sirta-prod-alb-1369017354.sa-east-1.elb.amazonaws.com
+sourceId=SPED-NFE-UF-CFOP
+tenantId=11111111-1111-4111-8111-111111111111
+territoryId=11111111-1111-4111-8111-111111111021
+sha256=1091967dd768b72152cc4c4a9b01b8637eebe45827c268f658ad462044e02cf3
+createsTaxCredit=false homologated=false published=false
+{"uploadHttp": 200, "runId": "d25c890e-f93c-4b64-b307-247d64799e3f", "status": "VALIDATED", "replay": true, "receivedCount": 47770, "silverCount": 47770, "quarantinedCount": 0, "checksum": "1091967dd768b72152cc4c4a9b01b8637eebe45827c268f658ad462044e02cf3", "detail": null}
+{"readHttp": 200, "total": 945, "quantitySum": 12995656456, "rowsWithoutValue": 142, "runId": "d25c890e-f93c-4b64-b307-247d64799e3f", "valueKind": "ESTIMATED_ALLOCATION", "homologated": false, "published": false, "createsTaxCredit": false}
+readBackMatchesFile=True
+finished=2026-10-27T21:05:24.090554+00:00 ok=True
+note_first_call=A primeira chamada de execucao enviou o arquivo e criou a carga (run d25c890e-f93c-4b64-b307-247d64799e3f). A leitura de conferencia falhou naquela chamada (sessao publica recusada, HTTP 403) e nenhum relatorio foi gravado. A segunda chamada reenviou o mesmo arquivo e recebeu replay=true com o mesmo runId, o que prova a idempotencia. A leitura de conferencia passou a usar o papel analista.
+auth=token sintetico assinado com a chave que ja esta na imagem (mesmo caminho dos scripts de ops anteriores), autorizado pelo responsavel nesta sessao. Nenhuma senha ou token neste arquivo.
+deploy=API sirta-prod-api:0.3.124 (task definition :30, digest sha256:acb060f1be57492c06c50eba81e805593f61e1c15e36601890eb50d56bb6309a, migration 0108 aplicada na partida). Web sirta-prod-web:0.4.22 (task definition :30, digest sha256:cb694a061f5a70f21bd7b5252eb4ee429c3d6e641bf056043ec829f41c1ba87d). Rollouts PRIMARY COMPLETED 1/1.
+deploy_incident=A web 0.4.21 foi construida sem --build-arg NGINX_CONF=nginx.prod.conf; o nginx saiu com host not found in upstream api, as tasks falharam e a task :28 seguiu servindo. Corrigido reconstruindo 0.4.21 e depois 0.4.22 com a configuracao de producao. Sem indisponibilidade.
+panel=/sped-operacoes servindo bundle main-BYRY4V5U.js, 54 hexagonos, tabela UF x CFOP com 500 de 500 linhas na primeira pagina, cartoes em forma curta. Imagem: evidence/ops/prod-sped-panel-20261027.png
+data_quality_finding=A planilha e internamente consistente (reconciliacao ok, diferenca maxima de R$ 0,11), mas os valores por UF sao implausiveis na origem: AC aparece com 5,1 milhoes de Vendas em 2021 e SP com 0,49 milhao; em 2025 RR aparece com 5,4 milhoes e AC com 0,99 milhao. Parece rotulo de UF trocado na planilha de origem. O painel mostra o que a fonte traz, com aviso de base exploratoria nao homologada. Nenhum numero foi corrigido ou inventado. Pendente: conferir a planilha com a fonte primaria do SPED antes de qualquer uso.
+rollback_api=update-service para sirta-prod-api:29 (0.3.123); a tabela sped_operation_facts e aditiva e pode ficar vazia.
+rollback_web=update-service para sirta-prod-web:28 (0.4.20).
+rollback_dados=a carga nao esta publicada (published=false); para retirar da leitura basta marcar a execucao como nao VALIDATED por operacao registrada, sem apagar bytes.
