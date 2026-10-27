@@ -15,8 +15,10 @@ import { KpiCardComponent } from '../shared/ui/kpi-card.component';
 import { PanelComponent } from '../shared/ui/panel.component';
 import { SpedHexMapComponent } from './sped-hex-map.component';
 import {
+  CompareMode,
   DEFAULT_OPERATION,
   EMPTY,
+  comparisonChart,
   SpedCfopItem,
   SpedSerieItem,
   SpedView,
@@ -125,8 +127,20 @@ export class SpedOperacoesPageComponent implements OnInit {
     this.operationChart('quantidade', 'COUNT', 'Quantidade'),
   );
   readonly valueByOperation = computed<BiChartInput>(() => this.operationChart('valor', 'BRL', 'Valor estimado'));
-  readonly quantityByYear = computed<BiChartInput>(() => this.yearChart('quantidade', 'COUNT', 'Quantidade'));
-  readonly valueByYear = computed<BiChartInput>(() => this.yearChart('valor', 'BRL', 'Valor estimado'));
+  readonly compareMode = signal<CompareMode>('eixos');
+  /** Quantidade observada e valor estimado no mesmo grafico, em duas linhas distintas. */
+  readonly compareByYear = computed<BiChartInput>(() => {
+    const years = this.years();
+    const operation = this.activeOperation();
+    return comparisonChart(
+      years.map(String),
+      byYear(this.items(), years, operation, 'quantidade', this.uf()),
+      byYear(this.items(), years, operation, 'valor', this.uf()),
+      this.compareMode(),
+      { quantity: 'Quantidade (observada)', value: 'Valor estimado (rateio)' },
+      { selected: this.ano() ? [this.ano() as string] : [] },
+    );
+  });
 
   readonly columns: BiColumn<SpedCfopItem>[] = [
     { id: 'ano', label: 'Ano', value: (row) => String(row.ano), width: 80 },
@@ -179,6 +193,14 @@ export class SpedOperacoesPageComponent implements OnInit {
 
   onMap(uf: string): void {
     this.filters.toggle('uf', uf, false);
+  }
+
+  clearUf(): void {
+    this.filters.setDimension('uf', []);
+  }
+
+  setMode(mode: CompareMode): void {
+    this.compareMode.set(mode);
   }
 
   format(value: number | null, measure: 'quantidade' | 'valor'): string {
@@ -241,19 +263,4 @@ export class SpedOperacoesPageComponent implements OnInit {
     };
   }
 
-  private yearChart(measure: 'quantidade' | 'valor', unit: string, name: string): BiChartInput {
-    const years = this.years();
-    return {
-      kind: 'line',
-      unit,
-      categories: years.map(String),
-      series: [
-        {
-          name: `${name} · ${this.activeOperation()}`,
-          values: byYear(this.items(), years, this.activeOperation(), measure, this.uf()),
-        },
-      ],
-      selected: this.ano() ? [this.ano() as string] : [],
-    };
-  }
 }

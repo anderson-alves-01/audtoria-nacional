@@ -3,6 +3,7 @@
  * Nada aqui soma operações diferentes e valor ausente nunca vira zero.
  */
 import { HEX_LAYOUT, HexCell } from '../atlas/hex-layout';
+import { BiChartInput, toIndexValues } from '../shared/bi/bi-chart-options';
 
 export interface SpedSerieItem {
   ano: number;
@@ -141,6 +142,49 @@ export function byYear(
   });
 }
 
+export type CompareMode = 'eixos' | 'indice';
+
+export const QUANTITY_UNIT = 'COUNT';
+export const VALUE_UNIT = 'BRL';
+export const INDEX_UNIT = 'INDEX';
+
+/**
+ * Grafico unico com duas linhas: quantidade observada e valor estimado. Em "eixos" cada linha
+ * usa seu proprio eixo (esquerdo e direito). Em "indice" as duas partem de 100 no primeiro
+ * valor existente e dividem o mesmo eixo. Valor ausente continua lacuna.
+ */
+export function comparisonChart(
+  categories: string[],
+  quantity: (number | null)[],
+  value: (number | null)[],
+  mode: CompareMode,
+  names: { quantity: string; value: string },
+  extra: Partial<Pick<BiChartInput, 'selected'>> = {},
+): BiChartInput {
+  if (mode === 'indice') {
+    return {
+      kind: 'line',
+      unit: INDEX_UNIT,
+      categories,
+      series: [
+        { name: `${names.quantity} (índice)`, values: toIndexValues(quantity) },
+        { name: `${names.value} (índice)`, values: toIndexValues(value) },
+      ],
+      ...extra,
+    };
+  }
+  return {
+    kind: 'line',
+    unit: QUANTITY_UNIT,
+    categories,
+    series: [
+      { name: names.quantity, values: quantity, unit: QUANTITY_UNIT },
+      { name: names.value, values: value, axis: 'right', unit: VALUE_UNIT },
+    ],
+    ...extra,
+  };
+}
+
 export interface HexShape {
   cell: HexCell;
   cx: number;
@@ -163,6 +207,36 @@ export function hexShapes(): HexShape[] {
     }
     return { cell, cx, cy, path: `M${points.join('L')}Z` };
   });
+}
+
+/**
+ * Com uma UF escolhida so o hexagono dela fica visivel. Sem escolha, ou com UF desconhecida,
+ * aparecem as 27. Falha aberta so na exibicao: o filtro dos dados nao muda.
+ */
+export function visibleShapes(shapes: HexShape[], selected: string | null): HexShape[] {
+  if (!selected) {
+    return shapes;
+  }
+  const only = shapes.filter((shape) => shape.cell.uf === selected);
+  return only.length > 0 ? only : shapes;
+}
+
+/** Caixa de visualizacao SVG que envolve os hexagonos exibidos. */
+export function viewBoxFor(shapes: HexShape[]): string {
+  if (shapes.length === 0) {
+    return '-40 -48 545 420';
+  }
+  if (shapes.length === HEX_LAYOUT.length) {
+    return '-40 -48 545 420';
+  }
+  const pad = 14;
+  const xs = shapes.map((shape) => shape.cx);
+  const ys = shapes.map((shape) => shape.cy);
+  const minX = Math.min(...xs) - HEX_RADIUS - pad;
+  const minY = Math.min(...ys) - HEX_RADIUS - pad;
+  const width = Math.max(...xs) - Math.min(...xs) + 2 * (HEX_RADIUS + pad);
+  const height = Math.max(...ys) - Math.min(...ys) + 2 * (HEX_RADIUS + pad);
+  return `${minX.toFixed(1)} ${minY.toFixed(1)} ${width.toFixed(1)} ${height.toFixed(1)}`;
 }
 
 /** Faixa de 0 a 1 entre o menor e o maior valor existente. Valor ausente devolve nulo. */

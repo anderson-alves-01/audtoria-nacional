@@ -1,0 +1,28 @@
+Simulador e ajustes do painel SPED (local, NÃO publicado)
+Data: 2026-10-27
+
+Escopo (só frontend, sem API, migration ou carga nova)
+- Menu "Simulador" acima de "Visão", rota /simulador (apps/web/src/app/simulador/).
+- Parte A: UF, operação, impostos (ITCD 6%, ITBI 3%, ISS 5%, ICMS por UF), tipo de bem (rótulo). Mostra quantidade, valor estimado, operação e imposto por ano.
+- Parte B: quantidade e valor desejados, ano de comparação, gráfico com todos os dados mais o ponto "Simulado" e quadro de diferença (absoluta e %).
+- Painel /sped-operacoes: UF escolhida isola o hexágono nos dois mapas; quantidade e valor estimado no mesmo gráfico (eixos separados ou índice 100); texto "Como o valor estimado é calculado".
+- Gráfico compartilhado (shared/bi): eixo direito por série, unidade por série, série tracejada pareada em cor, índice base 100.
+
+Decisões e limites
+- Município: sem fonte pública municipal. Seletor desabilitado com aviso. Só UF nesta fase.
+- Tipo de bem: o dado público (SPED por UF x CFOP x ano) não traz essa dimensão. Serve só como rótulo do cenário.
+- ICMS: alíquota modal interna por UF do anexo (imagem) enviado pelo usuário em 2026-10-27. AC aparece cortado na imagem ("19") e foi lido como 19%: confirmar. Fonte legal e vigência a confirmar.
+- Imposto = valor estimado público x alíquota. Simulação aritmética, não apuração fiscal. Nada é gravado.
+- Gráfico por operação (barras horizontais, 7 categorias) continua com quantidade e valor em painéis separados: não é série temporal e barras horizontais não aceitam eixo duplo.
+
+Verificação
+- npx ng test --watch=false --browsers=ChromeHeadless: 137 de 137 SUCCESS, 0 FAILED. (Uma execução intermediária falhou por erro de sintaxe de template no mapa, corrigido antes do resultado final.)
+- npx ng build: sem warnings nem erros.
+- Pré-visualização local com dados SINTÉTICOS (servidor temporário fora do repositório, sem dado real):
+  - simulador-preview-grafico-20261027.png
+  - simulador-sped-preview-mapa-uf-20261027.png
+  - sped-preview-comparacao-20261027.png
+  Os prints são recortados pela largura da captura; o eixo direito fica fora do recorte.
+
+Rollback
+- Reverter os commits desta entrega. Nenhuma migration, tabela ou dado foi tocado. Produção continua em web 0.4.22 (sirta-prod-web:30) até a publicação autorizada.

@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BiChartInput, alternativeHeaders, alternativeRows, buildBiOptions } from './bi-chart-options';
+import {
+  BiChartInput,
+  alternativeHeaders,
+  alternativeRows,
+  alternativeUnits,
+  buildBiOptions,
+  toIndexValues,
+} from './bi-chart-options';
 import { SavedViews, compareSeries } from './bi-extras';
 import { BiFilters } from './bi-filters';
 import { DataTableComponent } from './data-table.component';
@@ -149,6 +156,57 @@ describe('bi chart options', () => {
       cells: [[0, 0, 3]],
     };
     expect(alternativeRows(heat)).toEqual([{ label: 'ICMS', values: [3] }]);
+  });
+
+  it('puts a series on a secondary right axis with its own unit', () => {
+    const dual: BiChartInput = {
+      kind: 'line',
+      unit: 'COUNT',
+      categories: ['2021', '2022'],
+      series: [
+        { name: 'Quantidade', values: [10, 20] },
+        { name: 'Valor estimado', values: [1000, null], axis: 'right', unit: 'BRL' },
+      ],
+    };
+    const options = buildBiOptions(dual);
+    const yAxis = options.yAxis as { position?: string; splitLine?: { show?: boolean } }[];
+    expect(Array.isArray(yAxis)).toBeTrue();
+    expect(yAxis.length).toBe(2);
+    expect(yAxis[1].position).toBe('right');
+    expect(yAxis[1].splitLine?.show).toBeFalse();
+    const series = options.series as { yAxisIndex: number; data: { value: number | null }[] }[];
+    expect(series.map((entry) => entry.yAxisIndex)).toEqual([0, 1]);
+    expect(series[1].data[1].value).toBeNull();
+    expect(alternativeUnits(dual)).toEqual(['COUNT', 'BRL']);
+  });
+
+  it('pairs a dashed series with the colour of its public counterpart', () => {
+    const options = buildBiOptions({
+      kind: 'line',
+      unit: 'COUNT',
+      categories: ['a', 'b'],
+      series: [
+        { name: 'Publico', values: [1, null] },
+        { name: 'Outro', values: [2, null] },
+        { name: 'Simulado', values: [null, 3], dashed: true, colorLike: 'Publico' },
+      ],
+    });
+    const series = options.series as { color: string; lineStyle: { type: string } }[];
+    expect(series[2].color).toBe(series[0].color);
+    expect(series[2].color).not.toBe(series[1].color);
+    expect(series[2].lineStyle.type).toBe('dashed');
+    expect(series[0].lineStyle.type).toBe('solid');
+  });
+
+  it('keeps a single axis when no series asks for the right one', () => {
+    const options = buildBiOptions(input);
+    expect(Array.isArray(options.yAxis)).toBeFalse();
+  });
+
+  it('rebases a series to 100 at the first existing value and keeps gaps', () => {
+    expect(toIndexValues([null, 50, 100, 25])).toEqual([null, 100, 200, 50]);
+    expect(toIndexValues([0, 10])).toEqual([null, null]);
+    expect(toIndexValues([null, null])).toEqual([null, null]);
   });
 
   it('builds every chart kind without throwing', () => {

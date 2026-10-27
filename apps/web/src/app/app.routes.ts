@@ -11,10 +11,16 @@ const reform = 'Referência publicada';
 const governance = 'Referência publicada';
 const integration = 'Integração';
 const vision = 'Visão';
+const simulator = 'Simulador';
 const administration = 'Administração';
 
 const shellRoutes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'visao' },
+  {
+    path: 'simulador',
+    loadComponent: () => import('./simulador/simulador-page.component').then((m) => m.SimuladorPageComponent),
+    data: { title: 'Simulador', group: simulator },
+  },
   {
     path: 'visao',
     loadComponent: () => import('./tax-better/tax-better-vision-page.component').then((m) => m.TaxBetterVisionPageComponent),

@@ -1,6 +1,15 @@
 import { Component, EventEmitter, Input, Output, computed, signal } from '@angular/core';
-import { HEX_LAYOUT } from '../atlas/hex-layout';
-import { Measure, bounds, formatMeasure, hexShapes, intensity } from './sped-logic';
+import { HEX_LAYOUT, HexCell } from '../atlas/hex-layout';
+import {
+  HexShape,
+  Measure,
+  bounds,
+  formatMeasure,
+  hexShapes,
+  intensity,
+  viewBoxFor,
+  visibleShapes,
+} from './sped-logic';
 
 /**
  * Mapa de hexágonos por UF. A posição de cada UF é a constante cartográfica do template.
@@ -13,13 +22,23 @@ import { Measure, bounds, formatMeasure, hexShapes, intensity } from './sped-log
     <figure class="hex">
       <div class="bar">
         <figcaption>{{ caption }}</figcaption>
-        <button type="button" class="mini" [attr.aria-pressed]="showTable()" (click)="showTable.set(!showTable())">
-          {{ showTable() ? 'Ver mapa' : 'Ver tabela' }}
-        </button>
+        <span class="actions">
+          @if (isolated) {
+            <button type="button" class="mini" (click)="cleared.emit()">Mostrar todas as UFs</button>
+          }
+          <button type="button" class="mini" [attr.aria-pressed]="showTable()" (click)="showTable.set(!showTable())">
+            {{ showTable() ? 'Ver mapa' : 'Ver tabela' }}
+          </button>
+        </span>
       </div>
       @if (!showTable()) {
-        <svg viewBox="-40 -48 545 420" role="group" [attr.aria-label]="caption + '. Use Ver tabela para ler os valores.'">
-          @for (shape of shapes; track shape.cell.uf) {
+        <svg
+          [attr.viewBox]="viewBox"
+          [class.single]="isolated"
+          role="group"
+          [attr.aria-label]="caption + '. Use Ver tabela para ler os valores.'"
+        >
+          @for (shape of shown; track shape.cell.uf) {
             <g
               class="cell"
               [class.selected]="selected === shape.cell.uf"
@@ -34,17 +53,24 @@ import { Measure, bounds, formatMeasure, hexShapes, intensity } from './sped-log
             >
               <title>{{ shape.cell.nome }}: {{ text(shape.cell.uf) }}</title>
               <path [attr.d]="shape.path" [style.fill]="fill(shape.cell.uf)" />
-              <text [attr.x]="shape.cx" [attr.y]="shape.cy + 4" text-anchor="middle">{{ shape.cell.uf }}</text>
+              <text [attr.x]="shape.cx" [attr.y]="shape.cy + (isolated ? -2 : 4)" text-anchor="middle">{{ shape.cell.uf }}</text>
+              @if (isolated) {
+                <text class="val" [attr.x]="shape.cx" [attr.y]="shape.cy + 14" text-anchor="middle">{{ text(shape.cell.uf) }}</text>
+              }
             </g>
           }
         </svg>
         <p class="scale">
-          @if (range(); as r) {
-            <span>menor {{ format(r.min) }}</span>
-            <span class="ramp" aria-hidden="true" [attr.data-tone]="tone"></span>
-            <span>maior {{ format(r.max) }}</span>
+          @if (isolated) {
+            <span>{{ selectedName }}: {{ text(selected ?? '') }}. As demais UFs estão ocultas.</span>
           } @else {
-            <span>Sem valor neste recorte.</span>
+            @if (range(); as r) {
+              <span>menor {{ format(r.min) }}</span>
+              <span class="ramp" aria-hidden="true" [attr.data-tone]="tone"></span>
+              <span>maior {{ format(r.max) }}</span>
+            } @else {
+              <span>Sem valor neste recorte.</span>
+            }
           }
           <span class="none">Hexágono vazio: sem valor gravado.</span>
         </p>
@@ -60,7 +86,7 @@ import { Measure, bounds, formatMeasure, hexShapes, intensity } from './sped-log
               </tr>
             </thead>
             <tbody>
-              @for (cell of cells; track cell.uf) {
+              @for (cell of tableCells; track cell.uf) {
                 <tr>
                   <th scope="row">{{ cell.uf }}</th>
                   <td>{{ cell.nome }}</td>
@@ -97,6 +123,20 @@ import { Measure, bounds, formatMeasure, hexShapes, intensity } from './sped-log
     svg {
       width: 100%;
       max-height: 22rem;
+    }
+    svg.single {
+      max-height: 14rem;
+    }
+    svg.single .cell.selected path {
+      stroke-width: 1.5;
+    }
+    .actions {
+      display: inline-flex;
+      gap: var(--sp-2);
+    }
+    .cell text.val {
+      font-size: 7px;
+      font-weight: 500;
     }
     .cell {
       cursor: pointer;
@@ -180,6 +220,28 @@ export class SpedHexMapComponent {
   @Input() selected: string | null = null;
   @Input() tone: 'accent' | 'warn' = 'accent';
   @Output() picked = new EventEmitter<string>();
+  @Output() cleared = new EventEmitter<void>();
+
+  /** Com UF escolhida e conhecida, so o hexagono dela aparece. */
+  get shown(): HexShape[] {
+    return visibleShapes(this.shapes, this.selected);
+  }
+
+  get isolated(): boolean {
+    return this.shown.length === 1;
+  }
+
+  get viewBox(): string {
+    return viewBoxFor(this.shown);
+  }
+
+  get tableCells(): HexCell[] {
+    return this.isolated ? this.cells.filter((cell) => cell.uf === this.selected) : this.cells;
+  }
+
+  get selectedName(): string {
+    return this.cells.find((cell) => cell.uf === this.selected)?.nome ?? '';
+  }
 
   readonly range = computed(() => bounds(this.data().values()));
 

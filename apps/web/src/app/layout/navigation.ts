@@ -18,6 +18,11 @@ export const APP_NAV_GROUPS: NavGroup[] = [
     links: [{ path: '/integracao', label: 'Entrada e saída' }],
   },
   {
+    id: 'simulador',
+    label: 'Simulador',
+    links: [{ path: '/simulador', label: 'Simulador' }],
+  },
+  {
     id: 'visao',
     label: 'Visão',
     links: [{ path: '/visao', label: 'Visão geral' }],
@@ -72,12 +77,13 @@ export const APP_NAV_GROUPS: NavGroup[] = [
 /** Icones de traco (viewBox 24) por grupo do menu. */
 export const NAV_ICONS: Record<string, string> = {
   integracao: 'M4 8h12M12 4l4 4-4 4M20 16H8M12 12l-4 4 4 4',
+  simulador: 'M5 3h14v18H5zM8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0',
   visao: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
   administracao: 'M16 20v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M10 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6M20 20v-2a3 3 0 0 0-2-2.8M16 4.2a3 3 0 0 1 0 5.6',
   reference: 'M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5',
 };
 
-export const OPEN_NAV_GROUP_IDS = ['integracao', 'visao', 'administracao'];
+export const OPEN_NAV_GROUP_IDS = ['integracao', 'simulador', 'visao', 'administracao'];
 
 export const APP_IMPLEMENTATION_VERSION = '0.4.0';
 export const APP_STATUS_LINE = 'Tax Better · visão sem crédito';

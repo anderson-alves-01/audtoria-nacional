@@ -7,6 +7,26 @@ export type BiChartKind = 'bar' | 'barH' | 'line' | 'area' | 'scatter' | 'treema
 export interface BiSeries {
   name: string;
   values: (number | null)[];
+  /** Eixo vertical da serie. Padrao: esquerdo. O direito aceita outra unidade. */
+  axis?: 'left' | 'right';
+  /** Unidade propria da serie (tooltip, tabela e eixo direito). Padrao: a do grafico. */
+  unit?: string;
+  /** Linha tracejada com ponto maior: usada para cenario simulado. */
+  dashed?: boolean;
+  /** Reaproveita a cor de outra serie (pelo nome), para parear publico e simulado. */
+  colorLike?: string;
+}
+
+/**
+ * Reescala uma serie para base 100 no primeiro valor existente. Vazio continua vazio e
+ * base nula ou zero nao permite indice (tudo fica vazio, nunca inventado).
+ */
+export function toIndexValues(values: (number | null)[]): (number | null)[] {
+  const base = values.find((value): value is number => value !== null);
+  if (base === undefined || base === 0) {
+    return values.map(() => null);
+  }
+  return values.map((value) => (value === null ? null : (value / base) * 100));
 }
 
 export interface BiChartInput {
@@ -61,6 +81,9 @@ function cartesian(input: BiChartInput, theme: ChartTheme): EChartsOption {
   const categories = input.categories ?? [];
   const selected = input.selected ?? [];
   const many = (input.series ?? []).length > 1;
+  const seriesList = input.series ?? [];
+  const rightSeries = seriesList.find((entry) => entry.axis === 'right');
+  const dual = !horizontal && rightSeries !== undefined;
   const valueAxis = {
     type: 'value' as const,
     axisLabel: {
@@ -69,6 +92,16 @@ function cartesian(input: BiChartInput, theme: ChartTheme): EChartsOption {
       formatter: (value: number) => compactPublishedValue(value, input.unit),
     },
     splitLine: { lineStyle: { color: theme.line, type: 'dashed' as const } },
+  };
+  const rightAxis = {
+    type: 'value' as const,
+    position: 'right' as const,
+    axisLabel: {
+      color: theme.muted,
+      fontFamily: theme.fontNum,
+      formatter: (value: number) => compactPublishedValue(value, rightSeries?.unit ?? input.unit),
+    },
+    splitLine: { show: false },
   };
   const categoryAxis = {
     type: 'category' as const,
@@ -80,9 +113,15 @@ function cartesian(input: BiChartInput, theme: ChartTheme): EChartsOption {
   };
   return {
     legend: many
-      ? { show: true, top: 0, icon: 'roundRect', itemWidth: 14, itemHeight: 4, textStyle: { color: theme.text2 } }
+      ? { show: true, top: 28, icon: 'roundRect', itemWidth: 14, itemHeight: 4, textStyle: { color: theme.text2 } }
       : { show: false },
-    grid: { left: horizontal ? 120 : 64, right: 24, top: many ? 40 : 28, bottom: 56 },
+    grid: {
+      left: horizontal ? 120 : 64,
+      right: dual ? 84 : 24,
+      // A legenda fica abaixo da barra de ferramentas e ganha uma linha a cada 3 series.
+      top: many ? 64 + Math.floor((seriesList.length - 1) / 3) * 22 : 28,
+      bottom: 56,
+    },
     toolbox: {
       right: 8,
       top: 0,
@@ -101,23 +140,25 @@ function cartesian(input: BiChartInput, theme: ChartTheme): EChartsOption {
       borderColor: theme.line,
       textStyle: { color: theme.text },
       axisPointer: { type: 'shadow' },
-      formatter: (params: unknown) => axisTooltip(params, input.unit),
+      formatter: (params: unknown) => axisTooltip(params, input),
     },
     xAxis: horizontal ? valueAxis : categoryAxis,
-    yAxis: horizontal ? categoryAxis : valueAxis,
-    series: (input.series ?? []).map((entry, index) => ({
+    yAxis: horizontal ? categoryAxis : dual ? [valueAxis, rightAxis] : valueAxis,
+    series: seriesList.map((entry, index) => ({
       name: entry.name,
+      yAxisIndex: dual && entry.axis === 'right' ? 1 : 0,
       type: line ? ('line' as const) : ('bar' as const),
       stack: input.stacked ? 'total' : undefined,
       smooth: line ? 0.25 : undefined,
       showSymbol: line,
-      symbolSize: 6,
+      symbolSize: entry.dashed ? 11 : 6,
+      symbol: entry.dashed ? ('diamond' as const) : undefined,
       areaStyle: input.kind === 'area' ? { opacity: 0.16 } : undefined,
       barMaxWidth: 40,
       emphasis: { focus: 'series' as const },
-      lineStyle: { width: 2.5 },
+      lineStyle: { width: 2.5, type: entry.dashed ? ('dashed' as const) : ('solid' as const) },
       connectNulls: false,
-      color: theme.categorical[index % theme.categorical.length],
+      color: theme.categorical[colorIndex(seriesList, entry, index) % theme.categorical.length],
       data: entry.values.map((value, i) => ({
         value,
         itemStyle:
@@ -127,6 +168,15 @@ function cartesian(input: BiChartInput, theme: ChartTheme): EChartsOption {
       })),
     })),
   };
+}
+
+/** Indice de cor da serie: o da serie pareada (colorLike) ou o proprio. */
+function colorIndex(all: BiSeries[], entry: BiSeries, own: number): number {
+  if (!entry.colorLike) {
+    return own;
+  }
+  const paired = all.findIndex((candidate) => candidate.name === entry.colorLike);
+  return paired >= 0 ? paired : own;
 }
 
 function scatter(input: BiChartInput, theme: ChartTheme): EChartsOption {
@@ -265,16 +315,18 @@ function heatmap(input: BiChartInput, theme: ChartTheme): EChartsOption {
   };
 }
 
-function axisTooltip(params: unknown, unit: string): string {
+function axisTooltip(params: unknown, input: BiChartInput): string {
   const rows = (Array.isArray(params) ? params : [params]) as {
     axisValueLabel?: string;
     marker?: string;
     seriesName?: string;
+    seriesIndex?: number;
     value?: unknown;
   }[];
   const title = rows[0]?.axisValueLabel ?? '';
   const lines = rows.map((row) => {
     const raw = Array.isArray(row.value) ? row.value[1] : row.value;
+    const unit = (input.series ?? [])[row.seriesIndex ?? 0]?.unit ?? input.unit;
     const text = typeof raw === 'number' ? formatPublishedValue(raw, unit) : '—';
     return `${row.marker ?? ''} ${row.seriesName ?? ''}: <b>${text}</b>`;
   });
@@ -302,6 +354,20 @@ export function alternativeRows(input: BiChartInput): { label: string; values: (
     label,
     values: (input.series ?? []).map((entry) => entry.values[index] ?? null),
   }));
+}
+
+/** Unidade de cada coluna da tabela alternativa (a da serie ou a do grafico). */
+export function alternativeUnits(input: BiChartInput): string[] {
+  if (input.kind === 'scatter') {
+    return [input.unit, input.unit];
+  }
+  if (input.kind === 'heatmap') {
+    return (input.categories ?? []).map(() => input.unit);
+  }
+  if (input.kind === 'treemap' || input.kind === 'funnel') {
+    return [input.unit];
+  }
+  return (input.series ?? []).map((entry) => entry.unit ?? input.unit);
 }
 
 export function alternativeHeaders(input: BiChartInput): string[] {

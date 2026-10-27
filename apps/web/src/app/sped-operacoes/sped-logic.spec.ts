@@ -5,11 +5,14 @@ import {
   byOperation,
   byUf,
   byYear,
+  comparisonChart,
   formatMeasure,
   hexShapes,
   intensity,
   money,
   sumKnown,
+  viewBoxFor,
+  visibleShapes,
 } from './sped-logic';
 
 const items: SpedSerieItem[] = [
@@ -61,6 +64,40 @@ describe('sped logic', () => {
     expect(sp?.cell.col).toBe(3);
     expect(sp?.cell.row).toBe(5);
     expect(new Set(shapes.map((shape) => `${shape.cx.toFixed(1)}|${shape.cy.toFixed(1)}`)).size).toBe(27);
+  });
+
+  it('shows only the selected UF hexagon and all 27 otherwise', () => {
+    const shapes = hexShapes();
+    expect(visibleShapes(shapes, null).length).toBe(27);
+    expect(visibleShapes(shapes, 'SP').map((shape) => shape.cell.uf)).toEqual(['SP']);
+    expect(visibleShapes(shapes, 'XX').length).toBe(27);
+    const one = viewBoxFor(visibleShapes(shapes, 'SP'));
+    expect(one).not.toBe(viewBoxFor(shapes));
+    expect(viewBoxFor(shapes)).toBe('-40 -48 545 420');
+  });
+
+  it('builds the comparison with two axes and two distinct lines', () => {
+    const chart = comparisonChart(['2021', '2022'], [10, 20], [100, null], 'eixos', {
+      quantity: 'Quantidade',
+      value: 'Valor estimado',
+    });
+    expect(chart.kind).toBe('line');
+    expect(chart.series?.length).toBe(2);
+    expect(chart.series?.[0].axis).toBeUndefined();
+    expect(chart.series?.[1].axis).toBe('right');
+    expect(chart.series?.[1].unit).toBe('BRL');
+    expect(chart.series?.[1].values).toEqual([100, null]);
+  });
+
+  it('builds the index comparison from 100 on a single axis', () => {
+    const chart = comparisonChart(['2021', '2022'], [10, 20], [null, 50], 'indice', {
+      quantity: 'Quantidade',
+      value: 'Valor estimado',
+    });
+    expect(chart.unit).toBe('INDEX');
+    expect(chart.series?.every((entry) => entry.axis === undefined)).toBeTrue();
+    expect(chart.series?.[0].values).toEqual([100, 200]);
+    expect(chart.series?.[1].values).toEqual([null, 100]);
   });
 
   it('scales intensity only between existing values', () => {

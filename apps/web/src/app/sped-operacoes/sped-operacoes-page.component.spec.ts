@@ -104,6 +104,73 @@ describe('SpedOperacoesPageComponent', () => {
     http.verify();
   });
 
+  function loaded() {
+    const fixture = TestBed.createComponent(SpedOperacoesPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http
+      .expectOne((req) => req.params.get('level') === 'SERIE')
+      .flush(
+        view([
+          { ano: 2021, uf: 'SP', operacao: 'Vendas', quantidade: 100, valorEstimado: '1000.00' },
+          { ano: 2022, uf: 'SP', operacao: 'Vendas', quantidade: 200, valorEstimado: '3000.00' },
+          { ano: 2021, uf: 'AC', operacao: 'Vendas', quantidade: 10, valorEstimado: '50.00' },
+        ]),
+      );
+    fixture.detectChanges();
+    http.expectOne((req) => req.params.get('level') === 'CFOP').flush(view([], true, 'CFOP'));
+    fixture.detectChanges();
+    return { fixture, http, el: fixture.nativeElement as HTMLElement };
+  }
+
+  it('hides the other UFs in both maps when one is selected and restores them on request', () => {
+    const { fixture, http, el } = loaded();
+    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(54);
+    fixture.componentInstance.choose('uf', 'SP');
+    fixture.detectChanges();
+    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(2);
+    expect(el.querySelector('app-sped-hex-map g.cell')?.textContent).toContain('SP');
+    const restore = Array.from(el.querySelectorAll('app-sped-hex-map button')).find((b) =>
+      (b.textContent ?? '').includes('Mostrar todas as UFs'),
+    ) as HTMLButtonElement;
+    expect(restore).toBeTruthy();
+    restore.click();
+    fixture.detectChanges();
+    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(54);
+    http.match(() => true);
+  });
+
+  it('puts quantity and estimated value in one chart and switches between axes and index', () => {
+    const { fixture, http, el } = loaded();
+    const page = fixture.componentInstance;
+    expect(el.querySelectorAll('app-bi-chart').length).toBe(3);
+    const chart = page.compareByYear();
+    expect(chart.series?.length).toBe(2);
+    expect(chart.series?.[0].name).toContain('Quantidade');
+    expect(chart.series?.[1].name).toContain('Valor estimado');
+    expect(chart.series?.[1].axis).toBe('right');
+    expect(el.textContent).toContain('Eixos separados');
+    expect(el.textContent).toContain('Eixo direito: valor estimado em R$');
+    const index = Array.from(el.querySelectorAll('.mode button')).find((b) =>
+      (b.textContent ?? '').includes('Índice'),
+    ) as HTMLButtonElement;
+    index.click();
+    fixture.detectChanges();
+    const rebased = page.compareByYear();
+    expect(rebased.unit).toBe('INDEX');
+    expect(rebased.series?.[0].values[0]).toBe(100);
+    expect(el.textContent).toContain('partem de 100');
+    http.match(() => true);
+  });
+
+  it('explains how the estimated value is calculated', () => {
+    const { fixture, http, el } = loaded();
+    expect(el.textContent).toContain('Como o valor estimado é calculado');
+    expect(el.textContent).toContain('não é calculado por esta plataforma');
+    expect(fixture.componentInstance).toBeTruthy();
+    http.match(() => true);
+  });
+
   it('shows the lineage of the load and the table with UF by CFOP', () => {
     const fixture = TestBed.createComponent(SpedOperacoesPageComponent);
     const http = TestBed.inject(HttpTestingController);

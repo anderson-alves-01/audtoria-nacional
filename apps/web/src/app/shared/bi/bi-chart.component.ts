@@ -7,6 +7,7 @@ import {
   BiChartInput,
   alternativeHeaders,
   alternativeRows,
+  alternativeUnits,
   buildBiOptions,
 } from './bi-chart-options';
 
@@ -61,7 +62,7 @@ export interface ChartPick {
                 <tr>
                   <th scope="row">{{ row.label }}</th>
                   @for (cell of row.values; track $index) {
-                    <td class="tabular">{{ format(cell) }}</td>
+                    <td class="tabular">{{ format(cell, $index) }}</td>
                   }
                 </tr>
               }
@@ -124,6 +125,7 @@ export class BiChartComponent {
   options: EChartsOption = {};
   showTable = false;
   headers: string[] = [];
+  units: string[] = [];
   rows: { label: string; values: (number | null)[] }[] = [];
 
   constructor() {
@@ -133,11 +135,11 @@ export class BiChartComponent {
     });
   }
 
-  format(value: number | null): string {
+  format(value: number | null, column = 0): string {
     if (value === null || value === undefined) {
       return '—';
     }
-    return formatPublishedValue(value, this.spec?.unit ?? '');
+    return formatPublishedValue(value, this.units[column] ?? this.spec?.unit ?? '');
   }
 
   onClick(event: unknown): void {
@@ -176,6 +178,7 @@ export class BiChartComponent {
     }
     this.options = buildBiOptions(this.spec);
     this.headers = alternativeHeaders(this.spec);
+    this.units = alternativeUnits(this.spec);
     this.rows = alternativeRows(this.spec);
   }
 }

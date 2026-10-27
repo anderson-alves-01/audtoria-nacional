@@ -90,6 +90,7 @@
           measure="quantidade"
           [selected]="uf()"
           (picked)="onMap($event)"
+          (cleared)="clearUf()"
         />
       </app-panel>
 
@@ -106,6 +107,7 @@
           tone="warn"
           [selected]="uf()"
           (picked)="onMap($event)"
+          (cleared)="clearUf()"
         />
       </app-panel>
 
@@ -128,21 +130,33 @@
         />
       </app-panel>
 
-      <app-panel title="Quantidade de 2021 a 2025" [subtitle]="activeOperation() + (uf() ? ' · ' + uf() : ' · Brasil, soma das UFs')" source="Quantidade observada · clique escolhe o ano">
+      <app-panel
+        class="wide"
+        title="Quantidade e valor estimado, 2021 a 2025"
+        [subtitle]="activeOperation() + (uf() ? ' · ' + uf() : ' · Brasil, soma das UFs')"
+        source="Linha de quantidade é observada. Linha de valor é rateio estimado · clique escolhe o ano"
+      >
+        <div panelActions>
+          <div class="mode" role="group" aria-label="Modo de comparação">
+            <button type="button" class="mini" [attr.aria-pressed]="compareMode() === 'eixos'" (click)="setMode('eixos')">
+              Eixos separados
+            </button>
+            <button type="button" class="mini" [attr.aria-pressed]="compareMode() === 'indice'" (click)="setMode('indice')">
+              Índice (ano inicial = 100)
+            </button>
+          </div>
+        </div>
+        <p class="hint" role="note">
+          @if (compareMode() === 'eixos') {
+            Eixo esquerdo: quantidade observada. Eixo direito: valor estimado em R$. As escalas são diferentes de propósito.
+          } @else {
+            As duas linhas partem de 100 no primeiro ano com valor e mostram só a variação relativa. Ano sem valor fica em branco.
+          }
+        </p>
         <app-bi-chart
-          [input]="quantityByYear()"
-          caption="Quantidade por ano"
-          [height]="280"
-          (picked)="onPick($event, 'ano')"
-        />
-      </app-panel>
-
-      <app-panel title="Valor estimado de 2021 a 2025" [subtitle]="activeOperation() + (uf() ? ' · ' + uf() : ' · Brasil, soma das UFs')" source="Rateio estimado · ano sem valor fica em branco">
-        <div panelActions><app-badge tone="warn">Estimado</app-badge></div>
-        <app-bi-chart
-          [input]="valueByYear()"
-          caption="Valor estimado por ano"
-          [height]="280"
+          [input]="compareByYear()"
+          caption="Quantidade e valor estimado por ano"
+          [height]="320"
           (picked)="onPick($event, 'ano')"
         />
       </app-panel>
@@ -202,6 +216,18 @@
         {{ run.competence }} · {{ run.receivedCount | number }} linhas recebidas.
       </p>
       <p>{{ view()?.formula }}</p>
+      <h2>Como o valor estimado é calculado</h2>
+      <p>
+        A quantidade é observada no SPED. O valor em R$ não é calculado por esta plataforma: vem da planilha publicada e é
+        um rateio. Valor do par UF, CFOP e ano = valor nacional do CFOP no ano × quantidade da UF no CFOP e ano ÷ soma das
+        quantidades de todas as UFs no mesmo CFOP e ano.
+      </p>
+      <ul>
+        <li>O valor de uma UF herda qualquer erro da quantidade dela, porque a quantidade define a participação.</li>
+        <li>O total nacional do CFOP não está no arquivo. Aqui ele só é recuperável somando as UFs, então não há conferência independente.</li>
+        <li>A faixa de 0,1x a 10x da planilha é um sinalizador de comparabilidade, não atestado de consistência.</li>
+        <li>Valor ausente fica como "—", nunca zero, e operações diferentes nunca são somadas.</li>
+      </ul>
       <p class="legal">Cria crédito: não. Homologado: não. Publicado: não.</p>
     </section>
   }
