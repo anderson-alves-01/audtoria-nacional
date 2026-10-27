@@ -655,6 +655,55 @@ paths:
       responses:
         '200': {description: Ingest accepted or replayed; taxCreditCreated=false}
         '403': {$ref: '#/components/responses/Forbidden'}
+  /v1/data-sources/{sourceId}/upload:
+    post:
+      operationId: uploadSpedWorkbook
+      description: >
+        Upload of the public aggregated SPED NF-e workbook (source SPED-NFE-UF-CFOP only).
+        Technical administrator only. Raw xlsx body. Idempotent by tenant, checksum and layout.
+        Reconciles the annual series, the CFOP base and the UF consolidated sheet; any divergence
+        quarantines the whole batch. published=false, homologated=false, createsTaxCredit=false.
+      parameters:
+        - name: sourceId
+          in: path
+          required: true
+          schema: {type: string}
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+      requestBody:
+        required: true
+        content:
+          application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+            schema: {type: string, format: binary}
+      responses:
+        '200': {description: 'Run VALIDATED or QUARANTINED; replay of the same checksum'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '404': {description: Source not available for upload}
+        '422': {description: 'Empty file or workbook layout invalid'}
+  /v1/sped-operacoes:
+    get:
+      operationId: listSpedOperations
+      description: >
+        SPED NF-e operations by UF, operation and year (2021-2025). Quantity is observed.
+        valorEstimado is an estimated allocation (valueKind=ESTIMATED_ALLOCATION), exploratory,
+        not homologated, never summed across operations. Null value stays null. level SERIE is
+        the annual series; level CFOP is the base by UF and CFOP and is paginated.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {name: level, in: query, schema: {type: string, enum: [SERIE, CFOP], default: SERIE}}
+        - {name: ano, in: query, schema: {type: integer, minimum: 2021, maximum: 2025}}
+        - {name: uf, in: query, schema: {type: string, minLength: 2, maxLength: 2}}
+        - {name: operacao, in: query, schema: {type: string}}
+        - {name: cfop, in: query, schema: {type: string, pattern: '^[0-9]{4}$'}}
+        - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+        - {name: pageSize, in: query, schema: {type: integer, minimum: 1, maximum: 1000, default: 200}}
+      responses:
+        '200': {description: 'Items of the latest VALIDATED run; run is null when nothing was loaded'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '422': {description: Invalid filter}
   /v1/indicators/official-gold:
     get:
       operationId: getOfficialGold

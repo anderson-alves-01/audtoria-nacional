@@ -28,6 +28,7 @@ from sirta_api.entrypoints.procuradoria_panel import router as procuradoria_pane
 from sirta_api.entrypoints.public_open_session import router as public_open_session_router
 from sirta_api.entrypoints.regulatory import router as regulatory_router
 from sirta_api.entrypoints.sectoral_enrichment import router as sectoral_enrichment_router
+from sirta_api.entrypoints.sped import router as sped_router
 from sirta_api.entrypoints.state_transfers import router as state_transfers_router
 from sirta_api.entrypoints.tax_credits import router as tax_credit_router
 from sirta_api.entrypoints.transfer_reconciliation import (
@@ -60,6 +61,7 @@ def create_app() -> FastAPI:
     application.include_router(regulatory_router)
     application.include_router(diagnosis_router)
     application.include_router(audit_rules_router)
+    application.include_router(sped_router)
     application.include_router(findings_router)
     application.include_router(audit_cases_router)
     application.include_router(human_validation_router)
