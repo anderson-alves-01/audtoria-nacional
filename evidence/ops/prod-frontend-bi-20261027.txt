@@ -1,0 +1,8 @@
+﻿Publicacao 2026-10-27 - Frontend BI Meridiano (web 0.4.20)
+Cluster sirta-prod, regiao sa-east-1. Somente web; API inalterada (0.3.123).
+Branch feat/professional-ui-v1 enviada ate 05a0263.
+Imagem sirta-prod-web:0.4.20, digest sha256:16b09913c4f0784089696ba480d845c7bff3beec112f5ed413fd823ad472cf3a
+Task definition sirta-prod-web:28 (so a imagem mudou em relacao a :27). Rollout PRIMARY COMPLETED, 1/1.
+Prova: /entrar 200, /visao 200; index serve main-EFSGGPDV.js (mesmo nome do build local com rotas sob demanda), fontes Inter/JetBrains Mono e script de tema presentes.
+Rollback: update-service para sirta-prod-web:27 (imagem 0.4.19).
+Sem merge. Sem terraform. Sem senha neste arquivo.
