@@ -1,0 +1,26 @@
+Publicação do Simulador homologável: API 0.3.125 e web 0.4.24
+Data: 2026-10-28
+authorization=usuário, nesta sessão ("push e publique", depois de receber o relatório que listava a aplicação das migrações 0109, 0110 e 0111 na partida da API)
+git=push feat/professional-ui-v1 455cb41..c51d09a (sem force, sem merge)
+escopo=sem ingestão, sem carga nova, sem terraform, sem alteração de dados. A execução d25c890e-f93c-4b64-b307-247d64799e3f segue published=false, homologated=false, createsTaxCredit=false.
+
+api=sirta-prod-api:0.3.125, task definition :31 (anterior :30, 0.3.124), digest sha256:a5fe1d09aa50fd7111e5692f6ec3e1498da02b4a533d7b00ee287bb549175abc. Rollout PRIMARY COMPLETED 1/1.
+migrações aplicadas na partida (log /ecs/sirta-prod/api): 0108_sped_operations -> 0109_tax_rate_versions -> 0110_direction_rate_scope -> 0111_tax_rate_review_fields. Todas aditivas.
+web=sirta-prod-web:0.4.24, task definition :32 (anterior :31, 0.4.23), digest sha256:8f8fe266a723974af830435ccb66c6e5c687cfedfcfe30eaf1a16b468eb3dbd1, construída com --build-arg NGINX_CONF=nginx.prod.conf (0 proxy_pass, como na 0.4.23). Rollout PRIMARY COMPLETED 1/1.
+ordem=API primeiro (migrações), web depois.
+
+verificação_antes=imagem da API construída e testada no Docker: registro de confiabilidade carrega (12 indicadores, níveis EXPLORATORIO e NAO_CONFIAVEL, nenhum CONFERIDO) e as migrações até 0111 estão na imagem.
+verificação_ao_vivo (sem token, sem credencial forjada):
+  GET /health no ALB: 200
+  GET /v1/tax-rates e GET /v1/sped-operacoes sem sessão: 401 (rotas protegidas, aplicação no ar)
+  GET /, /simulador, /sped-operacoes: 200, bundle main-UISNNI7A.js
+  GET /ibge-municipios.json: 200, sha256 f34ffb9469ebb4f37a1ead3768aea7e25de700378819bbb002ccd042f6d0f5d0 (igual ao versionado)
+  chunk-XR4W6TFC.js (Simulador): contém o seletor de município e "apurado nem devido"; não contém "Parte B"
+não verificado ao vivo: respostas autenticadas de /v1/tax-rates, /v1/sped-operacoes e /v1/indicator-reliability, e a tela com sessão de operador. Nenhum token foi gerado. A conferência autenticada fica para um operador com login.
+
+decisões_do_responsável_nesta_sessão=(1) Quantidade NF-e = quantidade de itens, não confirmada pelo SPED; (2) percentuais de ICMS das UFs, ITCD, ITBI e ISS valem como estão só como parâmetro do Simulador. Nenhuma promoção a CONFERIDO, nenhuma homologação, nenhuma aprovação humana registrada em nome de alguém. Registro em config/indicator-reliability.yaml e em docs/homologacao.
+
+efeito_em_produção=o Simulador passa a mostrar só a hipótese informada manualmente (a seção de dados públicos fica fechada porque nenhum indicador é CONFERIDO); a comparação com dados públicos fica desabilitada; o painel /sped-operacoes continua com o aviso de base exploratória.
+
+rollback_web=update-service para sirta-prod-web:31 (0.4.23). Seguro.
+rollback_api=ATENÇÃO. O banco já está em 0111. A imagem 0.3.124 executa alembic upgrade head na partida e não conhece a revisão 0111, então não sobe sozinha. Para voltar a API é preciso antes executar alembic downgrade 0108_sped_operations (só o downgrade da 0111 foi testado; os da 0110 e da 0109 existem mas não foram exercitados, e o da 0109 apaga a tabela tax_rate_versions, que é nova) numa tarefa pontual autorizada, e só então atualizar o serviço para sirta-prod-api:30. Enquanto isso o serviço :31 continua servindo. A mesma ressalva valia para o rollback da 0108 registrado em 2026-10-27.

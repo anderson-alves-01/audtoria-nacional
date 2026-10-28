@@ -116,3 +116,10 @@ Detalhes: `SIMULADOR-HOMOLOGACAO-JURIDICA.md` e `evidence/ops/aliquotas-homologa
 5. Registrar a decisão no modelo `SIMULADOR-ATA-HOMOLOGACAO.md`, preenchido por pessoas identificadas.
 
 Fundamento: 48 de 48 casos executados aprovados, nenhuma regressão (as 8 falhas já existiam), e todos os caminhos que poderiam apresentar um número não conferido como fiscal estão fechados e testados. A recomendação não implica aprovação humana: a ata permanece em branco.
+
+## 12. Atualização de 28/10/2026 (após a decisão do responsável)
+
+- Decisões do responsável: Quantidade NF-e definida como quantidade de itens (sem confirmação do SPED) e percentuais de ICMS das UFs, ITCD, ITBI e ISS valendo como estão, só como parâmetro do Simulador. Nada foi promovido a CONFERIDO nem homologado; a ata continua em branco.
+- Publicação autorizada pelo usuário: API 0.3.125 e web 0.4.24, com as migrações 0109 a 0111 aplicadas na partida. Evidência: evidence/ops/prod-simulador-0.4.24-20261028.txt. O item P-09 (publicação) está atendido; P-01, P-04 a P-06 e P-08 continuam abertos.
+- Em produção o Simulador opera só com hipóteses manuais. A conferência com sessão autenticada ainda precisa ser feita por um operador.
+- O rollback da API exige antes lembic downgrade 0108_sped_operations em tarefa pontual autorizada.
