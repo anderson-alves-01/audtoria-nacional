@@ -1,0 +1,68 @@
+Evidência da homologação do Simulador SIRTA (28/10/2026)
+Ramo: feat/professional-ui-v1. Base dos commits desta fase: 8fdadcd. Último commit de código: 5071ee0 (mais o ajuste do texto de restrições da 0111, no commit seguinte).
+Ambiente: Windows, PowerShell, Python 3.12, PostgreSQL sintético em localhost:55432, Chrome Headless 156. Sem produção, sem push, sem deploy.
+
+== 1. pytest completo ==
+Comando: python -m pytest -q -p no:cacheprovider --junitxml=<tmp>/pytest.xml
+Resultado: 8 failed, 533 passed, 1 skipped (542 coletados), 469,79 s.
+Falhas (as mesmas 8 do baseline, preexistentes e sem relação com o Simulador):
+  tests/integration/test_alembic_paths.py::test_upgrade_base_to_head_on_empty_database
+  tests/integration/test_alembic_paths.py::test_upgrade_0004_to_head_with_valid_seed
+  tests/integration/test_alembic_paths.py::test_upgrade_0004_to_head_after_domain_drop_all
+  tests/integration/test_alembic_paths.py::test_seed_synthetic_is_idempotent
+  tests/integration/test_official_ingest.py::test_siconfi_entes_and_ibge_pib_and_planalto_ingest
+  tests/integration/test_source_ingest.py::test_catalog_ingest_ibge_is_idempotent_and_never_creates_tax_credit
+  tests/integration/test_source_ingest.py::test_analyst_cannot_ingest_but_can_read_enrichment
+  tests/integration/test_source_ingest.py::test_logical_rollback_unpublishes_enrichment
+Causa observada nas 4 de test_alembic_paths: psycopg.errors.DuplicateTable: relation "gold_finance_state_summaries" already exists (migração anterior à 0109).
+Baseline antes desta fase: 470 passaram e as mesmas 8 falharam. Agora: 533 passaram (63 testes novos), as mesmas 8 falham.
+
+Contagens por arquivo do escopo (todas sem falha):
+  tests/integration/test_simulador_access.py: 22
+  tests/integration/test_reliability_bypass.py: 19
+  tests/integration/test_indicator_reliability_api.py: 4
+  tests/integration/test_tax_rates_api.py: 17
+  tests/integration/test_sped_api.py: 11
+  tests/unit/test_indicator_reliability.py: 23
+  tests/unit/test_tax_rates.py: 17
+  tests/unit/test_tax_rates_audit.py: 5
+  tests/unit/test_cfop_transfers.py: 36
+  tests/unit/test_sped_xlsx.py: 13
+  tests/unit/test_sped_omission_audit.py: 6
+  tests/unit/test_sped_source_verify.py: 3
+  tests/unit/test_ibge_municipios.py: 3
+  tests/unit/test_current_state_yaml.py: 1
+
+== 2. Web ==
+Comando (apps/web): npx ng test --watch=false --browsers=ChromeHeadless
+Resultado: Chrome Headless 156.0.0.0 (Windows 10): Executed 218 of 218 SUCCESS. TOTAL: 218 SUCCESS (baseline 178/178).
+Comando (apps/web): npx ng build
+Resultado: Application bundle generation complete (22,8 s). Saída em apps/web/dist/sirta-web.
+
+== 3. Migração 0111 no banco sintético local ==
+Comandos: python -m alembic upgrade head; python -m alembic downgrade -1; python -m alembic upgrade head; python -m alembic current
+Resultado: 0110_direction_rate_scope -> 0111_tax_rate_review_fields; downgrade 0111 -> 0110; novo upgrade 0110 -> 0111; current = 0111_tax_rate_review_fields (head). Repetido após o ajuste do texto de restrições, com o mesmo resultado.
+
+== 4. Ruff e YAML ==
+Arquivos alterados nesta fase (alembic/versions/0111_*.py, domain e application de tax_rates, models.py, tools/ops/tax-rates-audit.py, tools/ops/sped-homologacao-evidence.py, tools/ops/ibge-municipios-fetch.py e os testes novos ou alterados): ruff check e ruff format --check sem apontamento.
+Repositório inteiro (apps/api/src alembic tests tools): 3 apontamentos de ruff check (E402 e E501 em tools/ops/prod-public-open-ingest.py) e 10 arquivos que o ruff format reformataria (users_admin.py, executive_geography.py, tax_better.py, 5 testes e 2 scripts). Nenhum deles foi alterado nesta fase; ficam como dívida preexistente.
+YAML: contracts/openapi/sirta-v1.yaml, config/indicator-reliability.yaml e current-state.yaml carregam com yaml.safe_load (yaml ok). tests/unit/test_current_state_yaml.py: 1 passed.
+
+== 5. Verificações somente leitura ==
+python tools/ops/ibge-municipios-fetch.py --verify -> municipios=5571 sha256=f34ffb9469ebb4f37a1ead3768aea7e25de700378819bbb002ccd042f6d0f5d0
+python tools/ops/sped-source-verify.py ->
+  OK docs/data/originais/Estat_NFe_CFOP_por_UF_2016_a_2025_v1_formatada.ods sha256=195cabcaa4d242fda0794c817116f216119e958dafea3fd12e4224f9e191685a
+  OK docs/data/originais/Estat_NFe_CFOP_2025_v1_formatada.ods sha256=4dc50922f7e9f582fc08ded7a3e4442203a1f1be3a60f603e09fd8202dcf292e
+  OK docs/data/Consolidado_Operacoes_UF_2021_2025_SPED.xlsx sha256=1091967dd768b72152cc4c4a9b01b8637eebe45827c268f658ad462044e02cf3
+git status docs/data/originais: sem alteração.
+python tools/ops/tax-rates-audit.py -> versoes=31 homologadas=0 -> evidence/ops/aliquotas-homologacao-20261028.md
+python tools/ops/sped-homologacao-evidence.py -> 16 de 16 verificações aprovadas (evidence/ops/sped-homologacao-reconciliacao-20261028.md)
+
+== 6. Fonte primária do ICMS AC ==
+https://www.legis.ac.gov.br/detalhar/5461 lida em 28/10/2026 (somente leitura): LC/AC 422/2022, art. 18, I = 19% nas operações e prestações internas; art. 2º = vigência em 01/04/2023; exceções nos incisos II, III, VII, VIII, IX e X; o texto da página omite itens do inciso III.
+
+== 7. Casos de teste ==
+docs/homologacao/SIMULADOR-CASOS-DE-TESTE.md: 57 casos planejados, 48 executados (84,2%), 48 aprovados, 0 reprovados, 9 não executados ou com lacuna (dependem de pessoa, dispositivo, autorização ou definição).
+
+== 8. Não feito, por restrição ==
+Sem push, merge, deploy, terraform, ingestão ou alteração da carga de produção. Nenhum indicador promovido a CONFERIDO. Nenhuma alíquota homologada. Nenhuma aprovação humana registrada.

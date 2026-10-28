@@ -41,7 +41,9 @@ AC_19_RESTRICTIONS = (
     "refrigerantes e águas minerais (com exceção); 27% cervejas e chopes; 30% fumos e derivados; "
     "33% bebidas alcoólicas exceto cervejas e chopes; 17% produtos da cesta básica definidos no "
     "regulamento do ICMS. O texto publicado na página omite itens do inciso III (reticências): "
-    "a lista completa de exceções não foi transcrita e precisa ser conferida pelo revisor."
+    "a lista completa de exceções não foi transcrita e precisa ser conferida pelo revisor. Não "
+    "foram verificados os §§ 1º a 3º do art. 18, que ressalvam a alíquota interestadual, nem "
+    "alíquotas específicas previstas fora do texto lido."
 )
 AC_19_NOTE = (
     "Documentação jurídica completa e exceções registradas. Não homologada: falta a revisão "
