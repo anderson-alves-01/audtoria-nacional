@@ -1,0 +1,10 @@
+Publicacao web 0.4.23 (Simulador e ajustes do painel SPED)
+Data: 2026-10-27
+authorization=usuario, nesta sessao ("push e publique")
+git=push feat/professional-ui-v1 abc022d..4247911 (sem force)
+web=sirta-prod-web:0.4.23 (task definition :31, digest sha256:310cd6b6c7ae6eddce024b8660157b1b5263a4564027f000c4c896af2d87ba73), construida com --build-arg NGINX_CONF=nginx.prod.conf; rollout PRIMARY COMPLETED 1/1.
+api=inalterada (sirta-prod-api:30, 0.3.124). Sem migration, sem carga, sem mudanca de dados.
+verificacao_ao_vivo=GET /simulador, /sped-operacoes e /health no ALB retornam 200; bundle main-IBJDFORH.js; chunk-CAACDVID.js contem "Simule com a sua quantidade e valor" e nao contem "Parte B" nem o seletor de Municipio. Imagem sem proxy_pass no nginx.
+nota_build=A primeira tentativa de docker build falhou no passo npm run build (exit 127) e a repeticao passou sem mudanca no codigo; sem efeito em producao.
+rollback_web=update-service para sirta-prod-web:30 (0.4.22).
+pendencias=confirmar ICMS do AC (19% lido de imagem cortada) e fonte legal/vigencia da tabela de ICMS; conferir anomalia de UF na planilha SPED com a fonte primaria.
