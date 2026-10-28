@@ -21,6 +21,14 @@ import {
 } from '../shared/reliability/indicator-reliability';
 import { DEFAULT_OPERATION, EMPTY, SpedSerieItem, SpedView } from '../sped-operacoes/sped-logic';
 import {
+  MUNICIPALITY_CATALOG_URL,
+  MunicipalityCatalog,
+  MunicipalityEntry,
+  municipalitiesOf,
+  municipalityBelongsTo,
+  municipalityName,
+} from './simulador-municipios';
+import {
   GOODS_TYPES,
   RATE_CAVEAT,
   RATE_SOURCE,
@@ -107,6 +115,18 @@ export class SimuladorPageComponent implements OnInit {
 
   // Escolhas
   readonly uf = signal<string>('');
+  /** Municipio (codigo IBGE de 7 digitos). Depende da UF: zera ao trocar de UF. */
+  readonly municipality = signal<string>('');
+  /** Lista de municipios do IBGE, lida uma vez do arquivo versionado quando a primeira UF e escolhida. */
+  readonly municipalityCatalog = signal<MunicipalityEntry[] | null>(null);
+  readonly municipalityState = signal<'idle' | 'loading' | 'ok' | 'error'>('idle');
+  readonly municipalityOptions = computed(() => municipalitiesOf(this.municipalityCatalog(), this.ufOrNull()));
+  /** So vale um municipio da lista que pertence a UF escolhida. */
+  readonly municipalityOrNull = computed(() => {
+    const code = this.municipality();
+    return municipalityBelongsTo(this.municipalityCatalog(), this.ufOrNull(), code) ? code : null;
+  });
+  readonly municipalityLabel = computed(() => municipalityName(this.municipalityCatalog(), this.municipalityOrNull()));
   readonly operation = signal<string>(DEFAULT_OPERATION);
   readonly goods = signal<string>('');
   readonly selectedTaxes = signal<TaxId[]>(['ITCD', 'ITBI', 'ISS', 'ICMS']);
@@ -182,7 +202,14 @@ export class SimuladorPageComponent implements OnInit {
   );
 
   readonly comparison = computed<Comparison[]>(() =>
-    scenarioComparison(this.reference(), this.scenario(), this.activeTaxes(), this.ufOrNull(), this.book()),
+    scenarioComparison(
+      this.reference(),
+      this.scenario(),
+      this.activeTaxes(),
+      this.ufOrNull(),
+      this.book(),
+      this.municipalityOrNull(),
+    ),
   );
 
   /** Imposto do cenario informado, um por imposto escolhido. Nunca ha total entre impostos. */
@@ -212,13 +239,29 @@ export class SimuladorPageComponent implements OnInit {
           this.hasScenario() ? this.scenario() : null,
           this.book(),
           this.scenarioYear(),
+          this.municipalityOrNull(),
         )
-      : hypothesisChart(this.scenario(), this.activeTaxes(), this.ufOrNull(), this.book(), this.scenarioYear()),
+      : hypothesisChart(
+          this.scenario(),
+          this.activeTaxes(),
+          this.ufOrNull(),
+          this.book(),
+          this.scenarioYear(),
+          this.municipalityOrNull(),
+        ),
   );
 
   /** Parte A: so dados publicos, sem o ponto simulado. */
   readonly publicChart = computed<BiChartInput>(() =>
-    simulatorChart(this.rows(), this.activeTaxes(), this.ufOrNull(), null, this.book()),
+    simulatorChart(
+      this.rows(),
+      this.activeTaxes(),
+      this.ufOrNull(),
+      null,
+      this.book(),
+      referenceFallbackYear,
+      this.municipalityOrNull(),
+    ),
   );
 
   readonly icmsNeedsUf = computed(() => this.selectedTaxes().includes('ICMS') && !this.uf());
@@ -268,7 +311,7 @@ export class SimuladorPageComponent implements OnInit {
     if (!query) {
       return;
     }
-    this.uf.set(allowedParam(query.get('uf'), this.ufs(), ''));
+    this.setUf(allowedParam(query.get('uf'), this.ufs(), ''));
     this.operation.set(allowedParam(query.get('operacao'), this.operations(), DEFAULT_OPERATION));
   }
 
@@ -311,11 +354,41 @@ export class SimuladorPageComponent implements OnInit {
 
   /** Aliquota vigente no ano para o imposto e a UF escolhidos. */
   resolved(tax: TaxId, year: number): ResolvedRate {
-    return resolveRate(this.book(), tax, this.ufOrNull(), year);
+    return resolveRate(this.book(), tax, this.ufOrNull(), year, this.municipalityOrNull());
   }
 
   amountOf(row: PublicYear, tax: TaxId): number | null {
     return this.isBlocked(tax) ? null : taxAmount(row.value, this.resolved(tax, row.year).rate);
+  }
+
+  /** Troca a UF: o municipio escolhido deixa de valer e a lista do IBGE e lida na primeira escolha. */
+  setUf(value: string): void {
+    this.uf.set(value);
+    this.municipality.set('');
+    if (value) {
+      this.loadMunicipalities();
+    }
+  }
+
+  setMunicipality(value: string): void {
+    this.municipality.set(municipalityBelongsTo(this.municipalityCatalog(), this.ufOrNull(), value) ? value : '');
+  }
+
+  private loadMunicipalities(): void {
+    if (this.municipalityState() !== 'idle') {
+      return;
+    }
+    this.municipalityState.set('loading');
+    this.http.get<MunicipalityCatalog>(MUNICIPALITY_CATALOG_URL).subscribe({
+      next: (body) => {
+        this.municipalityCatalog.set(body.municipios ?? []);
+        this.municipalityState.set('ok');
+      },
+      error: () => {
+        this.municipalityCatalog.set(null);
+        this.municipalityState.set('error');
+      },
+    });
   }
 
   /** ICMS de uma transferencia sem opt-in: nao incide por padrao, fica em branco. */

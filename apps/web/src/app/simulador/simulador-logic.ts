@@ -44,8 +44,9 @@ export function taxByYear(
   tax: TaxId,
   uf: string | null,
   book: RateVersion[],
+  municipality: string | null = null,
 ): (number | null)[] {
-  return rows.map((row) => taxAmount(row.value, resolveRate(book, tax, uf, row.year).rate));
+  return rows.map((row) => taxAmount(row.value, resolveRate(book, tax, uf, row.year, municipality).rate));
 }
 
 /** Rotulo curto da aliquota no quadro: percentual e situacao (pendente, mudou no ano, ausente). */
@@ -140,6 +141,7 @@ export function scenarioComparison(
   taxes: TaxId[],
   uf: string | null,
   book: RateVersion[],
+  municipality: string | null = null,
 ): Comparison[] {
   const rows: Comparison[] = [
     compare('Quantidade', 'COUNT', reference?.quantity ?? null, scenario.quantity),
@@ -147,7 +149,7 @@ export function scenarioComparison(
   ];
   for (const tax of taxes) {
     // A aliquota e a vigente no ano de comparacao, para o publico e para o cenario.
-    const resolved = resolveRate(book, tax, uf, reference?.year ?? referenceFallbackYear);
+    const resolved = resolveRate(book, tax, uf, reference?.year ?? referenceFallbackYear, municipality);
     rows.push(
       compare(
         rateLabel(tax, resolved),
@@ -175,6 +177,7 @@ export function simulatorChart(
   scenario: ScenarioInput | null,
   book: RateVersion[],
   scenarioYear: number = referenceFallbackYear,
+  municipality: string | null = null,
 ): BiChartInput {
   const years = rows.map((row) => String(row.year));
   const withScenario = scenario !== null && (scenario.quantity !== null || scenario.value !== null);
@@ -187,7 +190,7 @@ export function simulatorChart(
   for (const tax of taxes) {
     series.push({
       name: `${tax} apurado`,
-      values: pad(taxByYear(rows, tax, uf, book)),
+      values: pad(taxByYear(rows, tax, uf, book, municipality)),
       axis: 'right',
       unit: 'BRL',
     });
@@ -212,7 +215,7 @@ export function simulatorChart(
     for (const tax of taxes) {
       series.push({
         name: `${tax} simulado`,
-        values: simulatedOnly(size, taxAmount(scenario.value, resolveRate(book, tax, uf, scenarioYear).rate)),
+        values: simulatedOnly(size, taxAmount(scenario.value, resolveRate(book, tax, uf, scenarioYear, municipality).rate)),
         axis: 'right',
         unit: 'BRL',
         dashed: true,
@@ -236,6 +239,7 @@ export function hypothesisChart(
   uf: string | null,
   book: RateVersion[],
   year: number = referenceFallbackYear,
+  municipality: string | null = null,
 ): BiChartInput {
   const series: BiChartInput['series'] = [
     { name: 'Quantidade (hipótese)', values: [scenario.quantity], unit: 'COUNT', dashed: true },
@@ -244,7 +248,7 @@ export function hypothesisChart(
   for (const tax of taxes) {
     series.push({
       name: `${tax} (hipótese)`,
-      values: [taxAmount(scenario.value, resolveRate(book, tax, uf, year).rate)],
+      values: [taxAmount(scenario.value, resolveRate(book, tax, uf, year, municipality).rate)],
       axis: 'right',
       unit: 'BRL',
       dashed: true,

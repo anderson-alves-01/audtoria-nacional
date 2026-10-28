@@ -155,9 +155,9 @@ function levelOf(version: RateVersion): 'UF' | 'MUNICIPIO' | 'SIMULACAO' {
 
 /**
  * ITBI e ISS sao municipais: sem municipio na escolha, so o parametro de simulacao serve. ITCD e
- * estadual: uma linha da UF vence o parametro. Linha de municipio nunca casa so pela UF.
+ * estadual: uma linha da UF vence o parametro. Linha de municipio so casa com o codigo IBGE escolhido, nunca so pela UF.
  */
-function matches(version: RateVersion, tax: TaxId, uf: string | null): boolean {
+function matches(version: RateVersion, tax: TaxId, uf: string | null, municipality: string | null): boolean {
   if (version.status === 'REVOGADO' || version.tax !== tax || !USABLE_KINDS.includes(version.rateKind)) {
     return false;
   }
@@ -169,7 +169,7 @@ function matches(version: RateVersion, tax: TaxId, uf: string | null): boolean {
     return tax !== 'ICMS' && version.uf === FLAT_UF;
   }
   if (level === 'MUNICIPIO') {
-    return false;
+    return (tax === 'ITBI' || tax === 'ISS') && municipality !== null && version.municipalityIbgeCode === municipality;
   }
   return (tax === 'ICMS' || tax === 'ITCD') && uf !== null && version.uf === uf;
 }
@@ -185,10 +185,16 @@ function overlaps(version: RateVersion, start: string, end: string): boolean {
  * Aliquota do imposto para a UF no ano. Validada vence pendente. Se a aliquota validada muda
  * dentro do ano, nao ha taxa anual: devolve nulo com changedWithinYear. Sem aliquota, nulo.
  */
-export function resolveRate(versions: RateVersion[], tax: TaxId, uf: string | null, year: number): ResolvedRate {
+export function resolveRate(
+  versions: RateVersion[],
+  tax: TaxId,
+  uf: string | null,
+  year: number,
+  municipality: string | null = null,
+): ResolvedRate {
   const start = `${year}-01-01`;
   const end = `${year}-12-31`;
-  const found = versions.filter((version) => matches(version, tax, uf) && overlaps(version, start, end));
+  const found = versions.filter((version) => matches(version, tax, uf, municipality) && overlaps(version, start, end));
   if (found.length === 0) {
     return NO_RATE;
   }

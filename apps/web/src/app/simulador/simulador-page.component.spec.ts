@@ -248,8 +248,11 @@ describe('SimuladorPageComponent', () => {
       for (const goods of ['Veículos', 'Imóveis', 'Eletrodomésticos', 'Alimentos e Bebidas', 'Outros Bens', 'Serviços Gerais']) {
         expect(text).toContain(goods);
       }
-      expect(el.querySelector('select[name="municipio"]')).toBeNull();
-      expect(text).not.toContain('Município');
+      // O município depende da UF: sem UF, o campo existe mas fica desabilitado.
+      const city = el.querySelector('select[name="municipio"]') as HTMLSelectElement;
+      expect(city).toBeTruthy();
+      expect(city.disabled).toBeTrue();
+      expect(text).toContain('Escolha uma UF primeiro');
       http.verify();
     });
 
@@ -543,6 +546,8 @@ describe('SimuladorPageComponent opened from the SPED panel', () => {
     const { page, http } = open({ uf: 'SP', operacao: 'Compras' });
     expect(page.uf()).toBe('SP');
     expect(page.operation()).toBe('Compras');
+    // Escolher uma UF (aqui pela URL) lê a lista de municípios uma única vez.
+    http.expectOne('/ibge-municipios.json').flush({ municipios: [] });
     http.verify();
   });
 
@@ -550,6 +555,135 @@ describe('SimuladorPageComponent opened from the SPED panel', () => {
     const { page, http } = open({ uf: 'XX', operacao: '<img src=x>' });
     expect(page.uf()).toBe('');
     expect(page.operation()).toBe('Vendas');
+    http.verify();
+  });
+});
+
+describe('SimuladorPageComponent municipality', () => {
+  const CITIES = [
+    { uf: 'AC', ibge: '1200401', nome: 'Rio Branco' },
+    { uf: 'AC', ibge: '1200013', nome: 'Acrelândia' },
+    { uf: 'SP', ibge: '3550308', nome: 'São Paulo' },
+  ];
+  const cityRate = (tax: string, rate: number, ibge: string) => ({
+    ...flat(tax, rate),
+    uf: 'AC',
+    jurisdictionLevel: 'MUNICIPIO',
+    municipalityIbgeCode: ibge,
+    status: 'PENDENTE',
+  });
+
+  function start(rates: unknown[] = RATES) {
+    TestBed.configureTestingModule({
+      imports: [SimuladorPageComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
+    const fixture = TestBed.createComponent(SimuladorPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http.expectOne(isProbe).flush(view([]));
+    flushRates(http, rates);
+    fixture.detectChanges();
+    return { fixture, http, page: fixture.componentInstance, el: fixture.nativeElement as HTMLElement };
+  }
+
+  function select(fixture: { detectChanges(): void }, el: HTMLElement, name: string, value: string): void {
+    const field = el.querySelector(`select[name="${name}"]`) as HTMLSelectElement;
+    field.value = value;
+    field.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+  }
+
+  it('does not read the municipality list until a UF is chosen', () => {
+    const { http } = start();
+    http.expectNone('/ibge-municipios.json');
+    http.verify();
+  });
+
+  it('lists only the municipalities of the chosen UF, in alphabetical order', async () => {
+    const { fixture, http, page, el } = start();
+    page.setUf('AC');
+    fixture.detectChanges();
+    http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(page.municipalityOptions().map((city) => city.nome)).toEqual(['Acrelândia', 'Rio Branco']);
+    const field = el.querySelector('select[name="municipio"]') as HTMLSelectElement;
+    expect(field.disabled).toBeFalse();
+    expect(Array.from(field.options).map((option) => option.text)).not.toContain('São Paulo');
+    http.verify();
+  });
+
+  it('reads the list once, even when the UF changes', () => {
+    const { fixture, http, page } = start();
+    page.setUf('AC');
+    fixture.detectChanges();
+    http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
+    page.setUf('SP');
+    fixture.detectChanges();
+    http.expectNone('/ibge-municipios.json');
+    http.verify();
+  });
+
+  it('clears the municipality when the UF changes and refuses a code from another UF', () => {
+    const { fixture, http, page, el } = start();
+    page.setUf('AC');
+    fixture.detectChanges();
+    http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
+    page.setMunicipality('1200401');
+    expect(page.municipalityOrNull()).toBe('1200401');
+    page.setUf('SP');
+    expect(page.municipality()).toBe('');
+    expect(page.municipalityOrNull()).toBeNull();
+    page.setMunicipality('1200401');
+    expect(page.municipalityOrNull()).toBeNull();
+    page.setMunicipality('<script>');
+    expect(page.municipality()).toBe('');
+    http.verify();
+  });
+
+  it('uses a registered municipal ITBI rate only for that municipality, never for the whole UF', () => {
+    const { fixture, http, page, el } = start([...RATES, cityRate('ITBI', 2, '1200401')]);
+    page.setUf('AC');
+    fixture.detectChanges();
+    http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
+    expect(page.resolved('ITBI', 2024).rate).toBe(3);
+    expect(page.resolved('ITBI', 2024).isSimulation).toBeTrue();
+    page.setMunicipality('1200013');
+    expect(page.resolved('ITBI', 2024).rate).toBe(3);
+    page.setMunicipality('1200401');
+    expect(page.resolved('ITBI', 2024).rate).toBe(2);
+    expect(page.resolved('ITBI', 2024).isSimulation).toBeFalse();
+    expect(page.resolved('ISS', 2024).rate).toBe(5);
+    http.verify();
+  });
+
+  it('says that no municipal rate is registered and keeps ITBI and ISS as simulation parameters', () => {
+    const { fixture, http, page, el } = start();
+    page.setUf('AC');
+    fixture.detectChanges();
+    http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
+    page.setMunicipality('1200401');
+    fixture.detectChanges();
+    const note = el.querySelector('[data-testid="municipality-note"]') as HTMLElement;
+    expect(note.textContent).toContain('Rio Branco');
+    expect(note.textContent).toContain('não é alíquota do município');
+    expect(page.resolved('ITBI', 2024).isSimulation).toBeTrue();
+    expect(page.rateMeta(page.resolved('ISS', 2024), 2024)).toContain('Parâmetro de simulação');
+    http.verify();
+  });
+
+  it('keeps working by UF when the municipality list cannot be read', () => {
+    const { fixture, http, page, el } = start();
+    page.setUf('AC');
+    fixture.detectChanges();
+    http.expectOne('/ibge-municipios.json').flush('x', { status: 404, statusText: 'nf' });
+    fixture.detectChanges();
+    expect(el.querySelector('[data-testid="municipality-error"]')).toBeTruthy();
+    expect((el.querySelector('select[name="municipio"]') as HTMLSelectElement).disabled).toBeTrue();
+    page.valueInput.set(1000);
+    expect(page.resolved('ICMS', 2024).rate).toBe(19);
     http.verify();
   });
 });

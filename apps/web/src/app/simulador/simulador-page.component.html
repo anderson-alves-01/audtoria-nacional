@@ -27,10 +27,25 @@
   <form class="filters" aria-label="Escolhas do simulador" (submit)="$event.preventDefault()">
     <label>
       UF
-      <select name="uf" [ngModel]="uf()" (ngModelChange)="uf.set($event)">
+      <select name="uf" data-testid="uf" [ngModel]="uf()" (ngModelChange)="setUf($event)">
         <option value="">Brasil (soma das UFs)</option>
         @for (item of ufs(); track item) {
           <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Município
+      <select
+        name="municipio"
+        data-testid="municipality"
+        [ngModel]="municipality()"
+        (ngModelChange)="setMunicipality($event)"
+        [attr.disabled]="!uf() || municipalityState() !== 'ok' ? '' : null"
+      >
+        <option value="">{{ uf() ? 'Todos os municípios da UF' : 'Escolha uma UF primeiro' }}</option>
+        @for (item of municipalityOptions(); track item.ibge) {
+          <option [value]="item.ibge">{{ item.nome }}</option>
         }
       </select>
     </label>
@@ -102,6 +117,17 @@
       @if (publicOpen() && !transferDirection()) {
         Escolha a direção para ver dados públicos de transferência.
       }
+    </p>
+  }
+  @if (municipalityState() === 'error') {
+    <p class="hint" role="alert" data-testid="municipality-error">
+      A lista de municípios não pôde ser lida. A escolha de município fica indisponível e o simulador continua por UF.
+    </p>
+  }
+  @if (municipalityOrNull()) {
+    <p class="hint" role="note" data-testid="municipality-note">
+      Município escolhido: {{ municipalityLabel() }} ({{ municipality() }}). Nenhuma alíquota municipal de ITBI ou ISS está
+      cadastrada: esses impostos usam o parâmetro de simulação, que não é alíquota do município.
     </p>
   }
   @if (icmsNeedsUf()) {

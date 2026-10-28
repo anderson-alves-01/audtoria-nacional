@@ -1,0 +1,8 @@
+Lista de municípios do IBGE (referência territorial, sem dado fiscal)
+Fonte: https://servicodados.ibge.gov.br/api/v1/localidades/municipios
+Obtida em: 2026-10-28 (uma chamada, sem credencial)
+Municípios: 5571 em 27 UFs
+sha256 da resposta: 86ecdccdf97d72e7e5e46f0854cfcea8bacc28154cc1bc4ed0e6110e3a6c9c02
+sha256 do arquivo gravado: f34ffb9469ebb4f37a1ead3768aea7e25de700378819bbb002ccd042f6d0f5d0
+Arquivo: apps/web/public/ibge-municipios.json
+Conferência: python tools/ops/ibge-municipios-fetch.py --verify
