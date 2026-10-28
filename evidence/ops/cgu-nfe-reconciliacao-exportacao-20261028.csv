@@ -1,0 +1,13 @@
+﻿Verificação;Resultado;Detalhe
+CSV por_uf: notas;OK;"exportado=187530; banco=187530"
+CSV por_uf: valor das notas;OK;"exportado=687972694674; banco=687972694674"
+CSV municipios: notas;OK;"exportado=187530; banco=187530"
+CSV municipios: valor das notas;OK;"exportado=687972694674; banco=687972694674"
+CSV bens_servicos_completo: itens;OK;"exportado=935250; banco=935250"
+CSV bens_servicos_completo: valor dos itens;OK;"exportado=756680804842; banco=756680804842"
+CSV serie_historica: notas dos meses com dados;OK;"exportado=187530; banco=187530"
+CSV serie_historica: 60 meses;OK;linhas=60
+XLSX: seis abas na ordem prevista;OK;Consolidado por UF, Municípios, Bens e serviços, Série histórica, Auditoria, Fontes e metodologia
+XLSX por UF: notas e valor;OK;"notas=187530/187530; valor=6879726946.74/6879726946.74"
+XLSX serie histórica: 60 linhas de meses;OK;linhas=60
+XLSX bens e serviços: itens;OK;itens=935250/935250

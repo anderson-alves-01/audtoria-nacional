@@ -4317,3 +4317,47 @@ sources:
       mas as duas publicações do SPED não concordam por CFOP nem por entrada e
       saída. Quantidade por UF e CFOP e valor rateado são NAO_CONFIAVEL.
       Homologação bloqueada até o SPED esclarecer a definição.
+  - source_id: CGU-NFE
+    name: CGU — Notas fiscais eletrônicas (NF-e) disponibilizadas no Portal da Transparência, 2021–2025
+    maintainer: Controladoria-Geral da União (CGU)
+    official_domain: portaldatransparencia.gov.br
+    official_url: https://portaldatransparencia.gov.br/download-de-dados/notas-fiscais
+    endpoint: https://dadosabertos-download.cgu.gov.br/PortalDaTransparencia/saida/nfe/AAAAMM_NFe.zip
+    documentation_url: https://portaldatransparencia.gov.br/dicionario-de-dados/notas-fiscais
+    dataset: CGU-NFE
+    dictionary_url: https://portaldatransparencia.gov.br/dicionario-de-dados/notas-fiscais
+    purpose: Análise exploratória de fornecimento por UF, NCM, CFOP e unidade declarada nas NF-e do Portal. Não representa todo o mercado, todas as compras públicas nem NFS-e
+    legal_basis: Dados abertos do Portal da Transparência (CGU)
+    license_terms: termos de uso do Portal da Transparência
+    source_role: REFERENCE_ENRICHMENT
+    access_classification: PUBLIC_OPEN
+    status: PROVENANCE_VERIFIED
+    fixture_kind: OFFICIAL
+    connector: cgu_nfe_cli
+    layout_version: cgu-nfe-v1
+    periodicity: monthly
+    competence: 2021-01..2025-12
+    granularity: uf_municipio_ncm_cfop
+    parameters:
+      cli_only: true
+      command: python -m sirta_api.adapters.ingest.cgu_nfe
+      storage: SQLite local e arquivos em var/datalake/cgu-nfe (fora do Git e do Postgres)
+      tables: [NotaFiscal, NotaFiscalItem, NotaFiscalEvento]
+      encoding: windows-1252
+      delimiter: ";"
+      human_verification_wall: true
+    authentication: none
+    rate_limit: bloqueio por verificação humana (AWS WAF, HTTP 405) em GET programático; HEAD funciona
+    personal_data: true
+    retention: bronze_immutable
+    indicator: cgu_nfe_fornecimento
+    formula: Contagem e soma de valores de documentos fiscais por ano, UF do emitente, NCM, CFOP e unidade, em centavos exatos. Quantidade é a declarada comercialmente e não é somada entre unidades. Valor de nota não é pagamento.
+    methodology_version: cgu-nfe-v1
+    notes: >
+      Fora da ingestão genérica por catálogo (status não ingerível). O
+      processamento roda somente pela CLI própria, que guarda agregados e
+      digests de chave; CPF/CNPJ e nomes permanecem apenas nos ZIPs do bronze
+      local. O download programático é barrado por verificação humana e o
+      bloqueio é registrado, nunca contornado; ZIPs oficiais baixados no
+      navegador entram por import-zip com as mesmas validações. Ver
+      docs/data/CGU-NFE.md.

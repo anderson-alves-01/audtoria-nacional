@@ -1,0 +1,10 @@
+﻿Executado em 2026-10-28. Dados sinteticos identificados (tests/helpers/cgu_nfe_synthetic.py); nenhum teste usa dado oficial real, exceto a leitura do pacote de referencia em docs/data.
+== pytest (testes CGU NF-e) ==
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+104 passed, 1 warning in 11.95s
+== pytest completo (tests/) ==
+8 failed, 637 passed, 1 skipped em 385,81s. As 8 falhas ja existiam antes desta mudanca (test_alembic_paths x4, test_official_ingest x1, test_source_ingest x3), nao tocam CGU NF-e.
+== ruff ==
+[1;32mAll checks passed![0m
+17 files already formatted

@@ -59,3 +59,13 @@ Fonte pública agregada, carga por upload do xlsx (conector `uploaded_xlsx`, nun
 - Nenhum indicador é CONFERIDO (6 NAO_CONFIAVEL e 6 EXPLORATORIO). O Simulador segue limitado a hipóteses informadas manualmente.
 - Municípios: lista oficial do IBGE (5.571 municípios, sha256 34ffb9469ebb4f37a1ead3768aea7e25de700378819bbb002ccd042f6d0f5d0) em pps/web/public/ibge-municipios.json, gerada por 	ools/ops/ibge-municipios-fetch.py. É referência territorial, sem dado fiscal.
 - Alíquotas: migração 0111 (estrictions, eviewed_by, eviewed_at). ICMS AC 19% cita a fonte primária https://www.legis.ac.gov.br/detalhar/5461 e registra as exceções lidas, sem homologar. Homologadas: 0 de 31.
+
+
+## CGU NF-e 2021 a 2025 (CGU-NFE)
+
+Pipeline local de ZIPs mensais da CGU, fora do Postgres e fora da ingestão genérica por catálogo.
+Fluxo: landing (download ou `import-zip`) → bronze (ZIP validado e imutável) → silver (SQLite com
+agregados, digests de chave, quarentena e auditoria) → gold (XLSX e CSVs em `exports/`). Fica em
+`var/datalake/cgu-nfe/`. Idempotente por SHA-256 e versão `cgu-nfe-v1`, rastreável por `run_id`.
+O bloqueio de verificação humana do portal é registrado e nunca contornado; os ZIPs oficiais
+entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-NFE.md`.
