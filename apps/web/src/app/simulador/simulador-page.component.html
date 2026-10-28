@@ -6,6 +6,10 @@
       <app-badge tone="warn">Simulação · não é apuração fiscal</app-badge>
       {{ banner() }}
     </p>
+    <p class="banner" role="note" data-testid="reliability">
+      <app-badge tone="warn">{{ reliability.label }}</app-badge>
+      {{ reliability.note }}
+    </p>
   </header>
 
   @if (state() === 'loading') {
@@ -52,12 +56,18 @@
             (change)="toggleTax(def.id, $any($event.target).checked)"
           />
           {{ def.label }}
-          <span class="rate">{{ rateText(rateForUf(def.id)) }}</span>
+          <span class="rate">{{ rateText(resolved(def.id, scenarioYear())) }}</span>
         </label>
       }
     </fieldset>
   </form>
 
+  <p class="hint" role="note" data-testid="rate-note">
+    Alíquotas do ano {{ scenarioYear() }}. {{ rateCaveat }}
+    @if (ratesFallback()) {
+      A tabela de alíquotas não pôde ser lida: todas aparecem como pendentes de validação jurídica.
+    }
+  </p>
   @if (icmsNeedsUf()) {
     <p class="hint" role="note">Escolha uma UF para calcular o ICMS. Sem UF o imposto fica em "—".</p>
   }
@@ -83,7 +93,7 @@
         <app-kpi-card
           [label]="row.tax + ' apurado'"
           [value]="compact(row.amount, 'BRL')"
-          [meta]="'Alíquota ' + rateText(row.rate) + ' sobre o valor'"
+          [meta]="rateMeta(row.resolved, latest()?.year ?? null)"
           kind="Simulado"
           tone="warn"
         />
@@ -192,7 +202,7 @@
         <app-kpi-card
           [label]="row.tax + ' do cenário'"
           [value]="money(row.simulated)"
-          [meta]="'Alíquota ' + rateText(row.rate) + ' · público ' + reference()?.year + ': ' + money(row.published)"
+          [meta]="rateMeta(row.resolved, scenarioYear()) + ' · público ' + (reference()?.year ?? '—') + ': ' + money(row.published)"
           kind="Simulado"
           tone="warn"
         />

@@ -4312,3 +4312,8 @@ sources:
       Carga por upload de planilha pública agregada. Valores em R$ são
       estimativa exploratória, não homologada. Sem total entre operações.
       Não constitui crédito tributário nem identifica contribuinte.
+      Conferência de 2026-10-27 contra os originais de gov.br/sped (ver
+      docs/data/SPED-CONFIABILIDADE.md): a planilha repete o histórico original,
+      mas as duas publicações do SPED não concordam por CFOP nem por entrada e
+      saída. Quantidade por UF e CFOP e valor rateado são NAO_CONFIAVEL.
+      Homologação bloqueada até o SPED esclarecer a definição.

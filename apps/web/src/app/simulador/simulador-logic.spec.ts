@@ -1,5 +1,12 @@
 import { SpedSerieItem } from '../sped-operacoes/sped-logic';
-import { GOODS_TYPES, ICMS_RATE_BY_UF, TAXES, rateFor } from './simulador-aliquotas';
+import {
+  GOODS_TYPES,
+  ICMS_RATE_BY_UF,
+  RateVersion,
+  TAXES,
+  fallbackVersions,
+  resolveRate,
+} from './simulador-aliquotas';
 import {
   allowedParam,
   publicByYear,
@@ -8,6 +15,7 @@ import {
   scenarioComparison,
   simulatorChart,
   taxAmount,
+  rateLabel,
   taxByYear,
 } from './simulador-logic';
 import { HEX_LAYOUT } from '../atlas/hex-layout';
@@ -19,20 +27,59 @@ const items: SpedSerieItem[] = [
   { ano: 2021, uf: 'AC', operacao: 'Vendas', quantidade: 10, valorEstimado: '50.00' },
 ];
 
+const book = fallbackVersions();
+
+function acre(): RateVersion[] {
+  const common = { tax: 'ICMS' as const, uf: 'AC', rateKind: 'MODAL', legalBasis: 'LC/AC 422/2022', officialUrl: null, status: 'VALIDADO' as const, note: null };
+  return [
+    { ...common, rate: 17, validFrom: null, validTo: '2023-03-31' },
+    { ...common, rate: 19, validFrom: '2023-04-01', validTo: null },
+  ];
+}
+
 describe('simulador aliquotas', () => {
-  it('uses the fixed rates from the requirement', () => {
-    expect(rateFor('ITCD', null)).toBe(6);
-    expect(rateFor('ITBI', 'SP')).toBe(3);
-    expect(rateFor('ISS', null)).toBe(5);
+  it('uses the fixed rates from the requirement, all pending legal validation', () => {
+    expect(resolveRate(book, 'ITCD', null, 2024).rate).toBe(6);
+    expect(resolveRate(book, 'ITBI', 'SP', 2024).rate).toBe(3);
+    expect(resolveRate(book, 'ISS', null, 2024).rate).toBe(5);
+    expect(resolveRate(book, 'ITCD', null, 2024).status).toBe('PENDENTE');
   });
 
-  it('has an ICMS rate for each of the 27 UFs and fails closed for the rest', () => {
+  it('has an ICMS rate for each of the 27 UFs in the fallback and fails closed for the rest', () => {
     expect(Object.keys(ICMS_RATE_BY_UF).sort()).toEqual(HEX_LAYOUT.map((cell) => cell.uf).sort());
-    expect(rateFor('ICMS', 'SP')).toBe(18);
-    expect(rateFor('ICMS', 'MA')).toBe(23);
-    expect(rateFor('ICMS', 'PI')).toBe(22.5);
-    expect(rateFor('ICMS', null)).toBeNull();
-    expect(rateFor('ICMS', 'XX')).toBeNull();
+    expect(resolveRate(book, 'ICMS', 'SP', 2024).rate).toBe(18);
+    expect(resolveRate(book, 'ICMS', 'MA', 2024).rate).toBe(23);
+    expect(resolveRate(book, 'ICMS', 'PI', 2024).rate).toBe(22.5);
+    expect(resolveRate(book, 'ICMS', null, 2024).rate).toBeNull();
+    expect(resolveRate(book, 'ICMS', 'XX', 2024).rate).toBeNull();
+    expect(book.every((version) => version.status === 'PENDENTE' && version.legalBasis === null)).toBeTrue();
+  });
+
+  it('uses the Acre rate in force in each year and leaves the year of the change empty', () => {
+    const ac = acre();
+    expect(resolveRate(ac, 'ICMS', 'AC', 2021)).toEqual(jasmine.objectContaining({ rate: 17, status: 'VALIDADO' }));
+    expect(resolveRate(ac, 'ICMS', 'AC', 2022).rate).toBe(17);
+    const changed = resolveRate(ac, 'ICMS', 'AC', 2023);
+    expect(changed.rate).toBeNull();
+    expect(changed.changedWithinYear).toBeTrue();
+    expect(resolveRate(ac, 'ICMS', 'AC', 2024).rate).toBe(19);
+    expect(resolveRate(ac, 'ICMS', 'AC', 2025).rate).toBe(19);
+  });
+
+  it('prefers a validated rate over a pending one and ignores revoked versions', () => {
+    const pending = fallbackVersions().filter((version) => version.uf === 'AC');
+    const merged = [...pending, ...acre()];
+    expect(resolveRate(merged, 'ICMS', 'AC', 2024).status).toBe('VALIDADO');
+    expect(resolveRate(merged, 'ICMS', 'AC', 2024).rate).toBe(19);
+    const revoked = acre().map((version) => ({ ...version, status: 'REVOGADO' as const }));
+    expect(resolveRate(revoked, 'ICMS', 'AC', 2024).rate).toBeNull();
+  });
+
+  it('labels the rate with its status', () => {
+    expect(rateLabel('ICMS', resolveRate(book, 'ICMS', 'SP', 2024))).toBe('ICMS 18% (pendente)');
+    expect(rateLabel('ICMS', resolveRate(acre(), 'ICMS', 'AC', 2024))).toBe('ICMS 19%');
+    expect(rateLabel('ICMS', resolveRate(acre(), 'ICMS', 'AC', 2023))).toBe('ICMS (alíquota mudou no ano)');
+    expect(rateLabel('ICMS', resolveRate(book, 'ICMS', null, 2024))).toBe('ICMS (sem alíquota)');
   });
 
   it('lists the taxes and the goods types of the requirement', () => {
@@ -65,14 +112,14 @@ describe('simulador logic', () => {
       { year: 2022, quantity: 200, value: null },
       { year: 2023, quantity: null, value: null },
     ]);
-    expect(taxByYear(rows, 'ITCD', 'SP')).toEqual([60, null, null]);
-    expect(taxByYear(rows, 'ICMS', null)).toEqual([null, null, null]);
+    expect(taxByYear(rows, 'ITCD', 'SP', book)).toEqual([60, null, null]);
+    expect(taxByYear(rows, 'ICMS', null, book)).toEqual([null, null, null]);
   });
 
   it('compares the scenario with the public year and the tax difference', () => {
     const rows = publicByYear(items, [2021], 'Vendas', 'SP');
-    const table = scenarioComparison(referenceYear(rows, 2021), { quantity: 150, value: 2000 }, ['ITCD', 'ICMS'], 'SP');
-    expect(table.map((row) => row.label)).toEqual(['Quantidade', 'Valor', 'ITCD 6%', 'ICMS 18%']);
+    const table = scenarioComparison(referenceYear(rows, 2021), { quantity: 150, value: 2000 }, ['ITCD', 'ICMS'], 'SP', book);
+    expect(table.map((row) => row.label)).toEqual(['Quantidade', 'Valor', 'ITCD 6% (pendente)', 'ICMS 18% (pendente)']);
     expect(table[0].difference).toBe(50);
     expect(table[0].differencePercent).toBe(50);
     expect(table[1].difference).toBe(1000);
@@ -84,13 +131,32 @@ describe('simulador logic', () => {
 
   it('does not invent a difference when the public side is missing', () => {
     const rows = publicByYear(items, [2022], 'Vendas', 'SP');
-    const table = scenarioComparison(referenceYear(rows, 2022), { quantity: 5, value: 100 }, ['ISS'], 'SP');
+    const table = scenarioComparison(referenceYear(rows, 2022), { quantity: 5, value: 100 }, ['ISS'], 'SP', book);
     expect(table[1].publicValue).toBeNull();
     expect(table[1].difference).toBeNull();
     expect(table[1].differencePercent).toBeNull();
     expect(table[2].difference).toBeNull();
-    const none = scenarioComparison(null, { quantity: null, value: null }, ['ISS'], null);
+    const none = scenarioComparison(null, { quantity: null, value: null }, ['ISS'], null, book);
     expect(none.every((row) => row.simulated === null && row.difference === null)).toBeTrue();
+  });
+
+  it('uses the Acre rate of each year in the table and in the scenario', () => {
+    const acItems: SpedSerieItem[] = [2022, 2023, 2024].map((ano) => ({
+      ano,
+      uf: 'AC',
+      operacao: 'Vendas',
+      quantidade: 10,
+      valorEstimado: '1000.00',
+    }));
+    const rows = publicByYear(acItems, [2022, 2023, 2024], 'Vendas', 'AC');
+    expect(taxByYear(rows, 'ICMS', 'AC', acre())).toEqual([170, null, 190]);
+    const in2024 = scenarioComparison(referenceYear(rows, 2024), { quantity: 1, value: 2000 }, ['ICMS'], 'AC', acre());
+    expect(in2024[2].label).toBe('ICMS 19%');
+    expect(in2024[2].simulated).toBe(380);
+    const in2023 = scenarioComparison(referenceYear(rows, 2023), { quantity: 1, value: 2000 }, ['ICMS'], 'AC', acre());
+    expect(in2023[2].label).toBe('ICMS (alíquota mudou no ano)');
+    expect(in2023[2].simulated).toBeNull();
+    expect(in2023[2].difference).toBeNull();
   });
 
   it('accepts a URL parameter only when it is in the known list', () => {
@@ -108,7 +174,7 @@ describe('simulador logic', () => {
 
   it('builds the chart with all public data and adds the simulated category', () => {
     const rows = publicByYear(items, [2021, 2022], 'Vendas', 'SP');
-    const plain = simulatorChart(rows, ['ITCD'], 'SP', null);
+    const plain = simulatorChart(rows, ['ITCD'], 'SP', null, book);
     expect(plain.categories).toEqual(['2021', '2022']);
     expect(plain.series?.map((entry) => entry.name)).toEqual([
       'Quantidade',
@@ -117,7 +183,7 @@ describe('simulador logic', () => {
     ]);
     expect(plain.series?.[1].axis).toBe('right');
 
-    const chart = simulatorChart(rows, ['ITCD'], 'SP', { quantity: 150, value: 2000 });
+    const chart = simulatorChart(rows, ['ITCD'], 'SP', { quantity: 150, value: 2000 }, book);
     expect(chart.categories).toEqual(['2021', '2022', 'Simulado']);
     expect(chart.series?.length).toBe(6);
     const names = chart.series?.map((entry) => entry.name);
@@ -130,7 +196,7 @@ describe('simulador logic', () => {
 
   it('ignores an empty scenario in the chart', () => {
     const rows = publicByYear(items, [2021], 'Vendas', 'SP');
-    const chart = simulatorChart(rows, [], 'SP', { quantity: null, value: null });
+    const chart = simulatorChart(rows, [], 'SP', { quantity: null, value: null }, book);
     expect(chart.categories).toEqual(['2021']);
   });
 });

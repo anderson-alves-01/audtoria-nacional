@@ -1,0 +1,11 @@
+started=2026-10-28T01:06:45.121306+00:00
+mode=EXECUTE
+historico_cfop_uf: Histórico de quantidades de emitentes/NF-e por CFOP por UF (2016 a 2025)
+  url=https://www.gov.br/sped/pt-br/centrais-de-conteudo/estatisticas-sped/nf-e/historico-de-quantidades-de-emitentesnf-e-por-cfop-por-uf/nfe-cfop-uf/@@download/file
+  file=docs/data/originais/Estat_NFe_CFOP_por_UF_2016_a_2025_v1_formatada.ods
+  bytes=2108322 sha256=195cabcaa4d242fda0794c817116f216119e958dafea3fd12e4224f9e191685a
+cfop_mes_2025: Planilha de Valores Totais e Quantidade de NF-e por CFOP/Mês (2025)
+  url=https://www.gov.br/sped/pt-br/centrais-de-conteudo/estatisticas-sped/nf-e/2025/quantidade-nfe-cfopmes/estat_nfe_cfop_2025_v1_formatada.ods/@@download/file
+  file=docs/data/originais/Estat_NFe_CFOP_2025_v1_formatada.ods
+  bytes=312703 sha256=4dc50922f7e9f582fc08ded7a3e4442203a1f1be3a60f603e09fd8202dcf292e
+access=GET público somente leitura, sem credenciais, só as duas URLs acima

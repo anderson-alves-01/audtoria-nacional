@@ -31,6 +31,7 @@ from sirta_api.entrypoints.sectoral_enrichment import router as sectoral_enrichm
 from sirta_api.entrypoints.sped import router as sped_router
 from sirta_api.entrypoints.state_transfers import router as state_transfers_router
 from sirta_api.entrypoints.tax_credits import router as tax_credit_router
+from sirta_api.entrypoints.tax_rates import router as tax_rates_router
 from sirta_api.entrypoints.transfer_reconciliation import (
     router as transfer_reconciliation_router,
 )
@@ -62,6 +63,7 @@ def create_app() -> FastAPI:
     application.include_router(diagnosis_router)
     application.include_router(audit_rules_router)
     application.include_router(sped_router)
+    application.include_router(tax_rates_router)
     application.include_router(findings_router)
     application.include_router(audit_cases_router)
     application.include_router(human_validation_router)

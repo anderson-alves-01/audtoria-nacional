@@ -11,13 +11,27 @@ import { BadgeComponent } from '../shared/ui/badge.component';
 import { KpiCardComponent } from '../shared/ui/kpi-card.component';
 import { PanelComponent } from '../shared/ui/panel.component';
 import { compactPublishedValue, formatPublishedValue } from '../shared/presentation/official-labels';
-import { DEFAULT_OPERATION, EMPTY, SpedSerieItem, SpedView } from '../sped-operacoes/sped-logic';
-import { GOODS_TYPES, RATE_SOURCE, SPED_OPERATIONS, SPED_YEARS, TAXES, TaxId, rateFor } from './simulador-aliquotas';
+import { DEFAULT_OPERATION, EMPTY, SPED_RELIABILITY, SpedSerieItem, SpedView } from '../sped-operacoes/sped-logic';
+import {
+  GOODS_TYPES,
+  RATE_CAVEAT,
+  RATE_SOURCE,
+  RateVersion,
+  ResolvedRate,
+  SPED_OPERATIONS,
+  SPED_YEARS,
+  TAXES,
+  TaxId,
+  fallbackVersions,
+  rateStatusLabel,
+  resolveRate,
+} from './simulador-aliquotas';
 import {
   Comparison,
   PublicYear,
   allowedParam,
   publicByYear,
+  referenceFallbackYear,
   referenceYear,
   sanitize,
   scenarioComparison,
@@ -52,9 +66,17 @@ export class SimuladorPageComponent implements OnInit {
   readonly taxes = TAXES;
   readonly goodsTypes = GOODS_TYPES;
   readonly rateSource = RATE_SOURCE;
+  readonly rateCaveat = RATE_CAVEAT;
+  readonly reliability = SPED_RELIABILITY;
 
   readonly state = signal<'loading' | 'ok' | 'error'>('loading');
   readonly view = signal<SpedView<SpedSerieItem> | null>(null);
+
+  /** Versoes de aliquota lidas de /v1/tax-rates. Nulo enquanto carrega ou se a leitura falhar. */
+  readonly rateVersions = signal<RateVersion[] | null>(null);
+  /** Verdadeiro so quando a leitura terminou com erro (nao enquanto carrega). */
+  readonly ratesFallback = signal(false);
+  readonly book = computed<RateVersion[]>(() => this.rateVersions() ?? fallbackVersions());
 
   // Escolhas
   readonly uf = signal<string>('');
@@ -83,12 +105,16 @@ export class SimuladorPageComponent implements OnInit {
 
   readonly latest = computed<PublicYear | null>(() => this.rows()[this.rows().length - 1] ?? null);
 
+  /** Ano da aliquota do cenario: o ano de comparacao, ou o ultimo ano conhecido. */
+  readonly scenarioYear = computed(
+    () => this.reference()?.year ?? this.referenceYearInput() ?? this.latest()?.year ?? referenceFallbackYear,
+  );
+
   readonly taxRows = computed(() =>
-    this.selectedTaxes().map((tax) => ({
-      tax,
-      rate: rateFor(tax, this.ufOrNull()),
-      amount: taxAmount(this.latest()?.value ?? null, rateFor(tax, this.ufOrNull())),
-    })),
+    this.selectedTaxes().map((tax) => {
+      const resolved = this.resolved(tax, this.latest()?.year ?? referenceFallbackYear);
+      return { tax, resolved, rate: resolved.rate, amount: taxAmount(this.latest()?.value ?? null, resolved.rate) };
+    }),
   );
 
   readonly scenario = computed(() => ({
@@ -107,29 +133,37 @@ export class SimuladorPageComponent implements OnInit {
   );
 
   readonly comparison = computed<Comparison[]>(() =>
-    scenarioComparison(this.reference(), this.scenario(), this.selectedTaxes(), this.ufOrNull()),
+    scenarioComparison(this.reference(), this.scenario(), this.selectedTaxes(), this.ufOrNull(), this.book()),
   );
 
   /** Imposto do cenario informado, um por imposto escolhido. Nunca ha total entre impostos. */
   readonly simulatedTaxes = computed(() =>
     this.selectedTaxes().map((tax) => {
-      const rate = rateFor(tax, this.ufOrNull());
+      const resolved = this.resolved(tax, this.scenarioYear());
       return {
         tax,
-        rate,
-        simulated: taxAmount(this.scenario().value, rate),
-        published: taxAmount(this.reference()?.value ?? null, rate),
+        resolved,
+        rate: resolved.rate,
+        simulated: taxAmount(this.scenario().value, resolved.rate),
+        published: taxAmount(this.reference()?.value ?? null, resolved.rate),
       };
     }),
   );
 
   readonly chart = computed<BiChartInput>(() =>
-    simulatorChart(this.rows(), this.selectedTaxes(), this.ufOrNull(), this.hasScenario() ? this.scenario() : null),
+    simulatorChart(
+      this.rows(),
+      this.selectedTaxes(),
+      this.ufOrNull(),
+      this.hasScenario() ? this.scenario() : null,
+      this.book(),
+      this.scenarioYear(),
+    ),
   );
 
   /** Parte A: so dados publicos, sem o ponto simulado. */
   readonly publicChart = computed<BiChartInput>(() =>
-    simulatorChart(this.rows(), this.selectedTaxes(), this.ufOrNull(), null),
+    simulatorChart(this.rows(), this.selectedTaxes(), this.ufOrNull(), null, this.book()),
   );
 
   readonly icmsNeedsUf = computed(() => this.selectedTaxes().includes('ICMS') && !this.uf());
@@ -142,6 +176,13 @@ export class SimuladorPageComponent implements OnInit {
         this.state.set('ok');
       },
       error: () => this.state.set('error'),
+    });
+    this.http.get<{ items: RateVersion[] }>('/v1/tax-rates').subscribe({
+      next: (body) => this.rateVersions.set(body.items ?? []),
+      error: () => {
+        this.rateVersions.set(null);
+        this.ratesFallback.set(true);
+      },
     });
     // As listas de UF e operacao do contrato ja valem antes da leitura terminar.
     this.applyQuery();
@@ -194,15 +235,33 @@ export class SimuladorPageComponent implements OnInit {
       : `${value.toLocaleString('pt-BR', { maximumFractionDigits: 1, minimumFractionDigits: 1 })}%`;
   }
 
-  rateForUf(tax: TaxId): number | null {
-    return rateFor(tax, this.ufOrNull());
+  /** Aliquota vigente no ano para o imposto e a UF escolhidos. */
+  resolved(tax: TaxId, year: number): ResolvedRate {
+    return resolveRate(this.book(), tax, this.ufOrNull(), year);
   }
 
   amountOf(row: PublicYear, tax: TaxId): number | null {
-    return taxAmount(row.value, rateFor(tax, this.ufOrNull()));
+    return taxAmount(row.value, this.resolved(tax, row.year).rate);
   }
 
-  rateText(rate: number | null): string {
-    return rate === null ? 'pendente' : `${rate.toLocaleString('pt-BR')}%`;
+  /** Percentual da aliquota, ou o motivo de nao haver um. */
+  rateText(resolved: ResolvedRate): string {
+    if (resolved.changedWithinYear) {
+      return 'muda no ano';
+    }
+    return resolved.rate === null ? 'sem alíquota' : `${resolved.rate.toLocaleString('pt-BR')}%`;
+  }
+
+  /** Percentual mais a situacao jurídica da aliquota. */
+  rateMeta(resolved: ResolvedRate, year: number | null): string {
+    if (resolved.changedWithinYear) {
+      return `A alíquota validada mudou em ${year ?? 'no ano'}; o dado é anual e não pode ser dividido. Imposto em branco.`;
+    }
+    const status = rateStatusLabel(resolved.status);
+    return resolved.rate === null ? 'Sem alíquota para esta escolha' : `Alíquota ${this.rateText(resolved)} · ${status}`;
+  }
+
+  statusTone(resolved: ResolvedRate): 'ok' | 'warn' {
+    return resolved.status === 'VALIDADO' ? 'ok' : 'warn';
   }
 }

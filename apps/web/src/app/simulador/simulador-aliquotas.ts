@@ -1,7 +1,9 @@
 /**
  * Aliquotas usadas pelo Simulador. Sao parametros de simulacao, nao apuracao fiscal.
- * ITCD, ITBI e ISS tem aliquota unica informada no requisito. O ICMS e a aliquota modal
- * interna por UF do anexo fornecido pelo usuario. Aliquota ausente nunca vira zero.
+ * As aliquotas vem de /v1/tax-rates, versionadas por vigencia, com status VALIDADO (base legal
+ * registrada) ou PENDENTE (sem validacao juridica). As tabelas ICMS_RATE_BY_UF e FLAT_RATES abaixo
+ * sao so o reserva quando a leitura falha e entram sempre como PENDENTE. Aliquota ausente nunca
+ * vira zero. ICMS e a aliquota modal: excecoes por mercadoria e operacao nao estao modeladas.
  */
 export type TaxId = 'ITCD' | 'ITBI' | 'ISS' | 'ICMS';
 
@@ -20,9 +22,12 @@ export const TAXES: TaxDef[] = [
 ];
 
 export const RATE_SOURCE =
-  'Alíquotas informadas no requisito do Simulador (ITCD 6%, ITBI 3%, ISS 5%) e anexo de ICMS por UF fornecido pelo usuário em 27/10/2026. Vigência e fonte legal a confirmar.';
+  'Alíquotas lidas da tabela versionada por vigência. Só as marcadas Validado têm base legal registrada (hoje, o ICMS modal do Acre). As demais estão Pendentes de validação jurídica e não devem ser tratadas como validadas.';
 
-/** ICMS: aliquota modal interna por UF, em %. */
+export const RATE_CAVEAT =
+  'Alíquota modal: exceções por mercadoria e operação não estão modeladas.';
+
+/** Reserva: ICMS modal interna por UF (anexo enviado pelo usuario), sempre PENDENTE. */
 export const ICMS_RATE_BY_UF: Record<string, number> = {
   AC: 19,
   AL: 20.5,
@@ -79,17 +84,97 @@ export const SPED_OPERATIONS = [
 
 export const SPED_YEARS = [2021, 2022, 2023, 2024, 2025] as const;
 
-/** Aliquota em % do imposto para a UF. Sem aliquota conhecida devolve nulo (falha fechada). */
-export function rateFor(tax: TaxId, uf: string | null): number | null {
-  const def = TAXES.find((entry) => entry.id === tax);
-  if (!def) {
-    return null;
+export type RateStatus = 'VALIDADO' | 'PENDENTE';
+
+/** Versao de aliquota no formato de /v1/tax-rates. Data nula significa desconhecida ou aberta. */
+export interface RateVersion {
+  tax: TaxId;
+  uf: string;
+  rateKind: string;
+  rate: number;
+  validFrom: string | null;
+  validTo: string | null;
+  legalBasis: string | null;
+  officialUrl: string | null;
+  status: RateStatus | 'REVOGADO';
+  note: string | null;
+}
+
+export interface ResolvedRate {
+  rate: number | null;
+  status: RateStatus | null;
+  /** A aliquota validada mudou dentro do ano: nao existe taxa anual unica. */
+  changedWithinYear: boolean;
+  version: RateVersion | null;
+}
+
+export const NO_RATE: ResolvedRate = { rate: null, status: null, changedWithinYear: false, version: null };
+
+const FLAT_UF = 'BR';
+const USABLE_KINDS = ['MODAL', 'UNICA'];
+
+/** Reserva quando /v1/tax-rates falha: tudo PENDENTE, sem data, sem base legal. */
+export function fallbackVersions(): RateVersion[] {
+  const base = { validFrom: null, validTo: null, legalBasis: null, officialUrl: null, status: 'PENDENTE' as const };
+  const flat = TAXES.filter((def) => def.fixedRate !== null).map<RateVersion>((def) => ({
+    ...base,
+    tax: def.id,
+    uf: FLAT_UF,
+    rateKind: 'UNICA',
+    rate: def.fixedRate as number,
+    note: 'Reserva local; leitura da tabela versionada indisponível.',
+  }));
+  const icms = Object.entries(ICMS_RATE_BY_UF).map<RateVersion>(([uf, rate]) => ({
+    ...base,
+    tax: 'ICMS',
+    uf,
+    rateKind: 'MODAL',
+    rate,
+    note: 'Reserva local; leitura da tabela versionada indisponível.',
+  }));
+  return [...flat, ...icms];
+}
+
+function matches(version: RateVersion, tax: TaxId, uf: string | null): boolean {
+  if (version.status === 'REVOGADO' || version.tax !== tax || !USABLE_KINDS.includes(version.rateKind)) {
+    return false;
   }
-  if (def.fixedRate !== null) {
-    return def.fixedRate;
+  const wanted = tax === 'ICMS' ? uf : FLAT_UF;
+  return wanted !== null && version.uf === wanted;
+}
+
+function overlaps(version: RateVersion, start: string, end: string): boolean {
+  if (version.validFrom !== null && version.validFrom > end) {
+    return false;
   }
-  if (!uf) {
-    return null;
+  return !(version.validTo !== null && version.validTo < start);
+}
+
+/**
+ * Aliquota do imposto para a UF no ano. Validada vence pendente. Se a aliquota validada muda
+ * dentro do ano, nao ha taxa anual: devolve nulo com changedWithinYear. Sem aliquota, nulo.
+ */
+export function resolveRate(versions: RateVersion[], tax: TaxId, uf: string | null, year: number): ResolvedRate {
+  const start = `${year}-01-01`;
+  const end = `${year}-12-31`;
+  const found = versions.filter((version) => matches(version, tax, uf) && overlaps(version, start, end));
+  if (found.length === 0) {
+    return NO_RATE;
   }
-  return ICMS_RATE_BY_UF[uf] ?? null;
+  const validated = found.filter((version) => version.status === 'VALIDADO');
+  const chosen = validated.length > 0 ? validated : found;
+  const status = chosen[0].status as RateStatus;
+  if (new Set(chosen.map((version) => version.rate)).size > 1) {
+    return { rate: null, status, changedWithinYear: true, version: null };
+  }
+  const best = [...chosen].sort((a, b) => (b.validFrom ?? '').localeCompare(a.validFrom ?? ''))[0];
+  return { rate: best.rate, status, changedWithinYear: false, version: best };
+}
+
+/** Texto do selo de uma aliquota. */
+export function rateStatusLabel(status: RateStatus | null): string {
+  if (status === 'VALIDADO') {
+    return 'Validado';
+  }
+  return status === 'PENDENTE' ? 'Pendente de validação jurídica' : '';
 }

@@ -24,7 +24,7 @@ const run = {
   receivedCount: 3,
 };
 
-function view(items: unknown[], withRun = true): Record<string, unknown> {
+function view(items: unknown[], withRun = true, years = [2021, 2022]): Record<string, unknown> {
   return {
     sourceId: 'SPED-NFE-UF-CFOP',
     valueKind: 'ESTIMATED_ALLOCATION',
@@ -37,12 +37,38 @@ function view(items: unknown[], withRun = true): Record<string, unknown> {
     page: 1,
     pageSize: 1000,
     total: items.length,
-    years: [2021, 2022],
+    years,
     operations: OPERATIONS,
     ufs: ['AC', 'SP'],
     run: withRun ? run : null,
     items,
   };
+}
+
+const flat = (tax: string, rate: number) => ({
+  tax, uf: 'BR', rateKind: 'UNICA', rate, validFrom: null, validTo: null,
+  legalBasis: null, officialUrl: null, status: 'PENDENTE', note: null,
+});
+const acre = (rate: number, validFrom: string | null, validTo: string | null) => ({
+  tax: 'ICMS', uf: 'AC', rateKind: 'MODAL', rate, validFrom, validTo,
+  legalBasis: 'LC/AC 422/2022', officialUrl: null, status: 'VALIDADO', note: null,
+});
+const RATES = [
+  flat('ITCD', 6),
+  flat('ITBI', 3),
+  flat('ISS', 5),
+  { ...flat('ICMS', 18), uf: 'SP', rateKind: 'MODAL' },
+  acre(17, null, '2023-03-31'),
+  acre(19, '2023-04-01', null),
+];
+
+function flushRates(http: HttpTestingController, rates: unknown[] | 'error' = RATES): void {
+  const request = http.expectOne('/v1/tax-rates');
+  if (rates === 'error') {
+    request.flush('x', { status: 500, statusText: 'err' });
+  } else {
+    request.flush({ items: rates });
+  }
 }
 
 const ITEMS = [
@@ -64,6 +90,7 @@ describe('SimuladorPageComponent', () => {
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
     http.expectOne((req) => req.url === '/v1/sped-operacoes' && req.params.get('level') === 'SERIE').flush(view(items, withRun));
+    flushRates(http);
     fixture.detectChanges();
     return { fixture, http, page: fixture.componentInstance, el: fixture.nativeElement as HTMLElement };
   }
@@ -204,11 +231,80 @@ describe('SimuladorPageComponent', () => {
     http.verify();
   });
 
+  it('warns that the source is under review and not reliable for fiscal use', () => {
+    const { el, http } = loaded();
+    const note = el.querySelector('[data-testid="reliability"]');
+    expect(note?.textContent).toContain('Fonte em revisão');
+    expect(note?.textContent).toContain('Não use como referência fiscal');
+    http.verify();
+  });
+
+  it('marks the Acre modal rate as Validado and every other rate as pending legal validation', () => {
+    const acItems = [2022, 2023, 2024].map((ano) => ({
+      ano, uf: 'AC', operacao: 'Vendas', quantidade: 10, valorEstimado: '1000.00',
+    }));
+    const fixture = TestBed.createComponent(SimuladorPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http.expectOne((req) => req.params.get('level') === 'SERIE').flush(view(acItems, true, [2022, 2023, 2024]));
+    flushRates(http);
+    const page = fixture.componentInstance;
+    page.uf.set('AC');
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(page.resolved('ICMS', 2022)).toEqual(jasmine.objectContaining({ rate: 17, status: 'VALIDADO' }));
+    expect(page.resolved('ICMS', 2024)).toEqual(jasmine.objectContaining({ rate: 19, status: 'VALIDADO' }));
+    expect(page.resolved('ITCD', 2024)).toEqual(jasmine.objectContaining({ rate: 6, status: 'PENDENTE' }));
+    const rows = page.rows();
+    expect(rows.map((row) => page.amountOf(row, 'ICMS'))).toEqual([170, null, 190]);
+    const text = el.textContent as string;
+    expect(text).toContain('Alíquota 19% · Validado');
+    expect(text).toContain('Alíquota 6% · Pendente de validação jurídica');
+    expect(text).toContain('exceções por mercadoria e operação não estão modeladas');
+    http.verify();
+  });
+
+  it('leaves the 2023 Acre tax empty because the validated rate changed on April first', () => {
+    const acItems = [2023].map((ano) => ({
+      ano, uf: 'AC', operacao: 'Vendas', quantidade: 10, valorEstimado: '1000.00',
+    }));
+    const fixture = TestBed.createComponent(SimuladorPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http.expectOne((req) => req.params.get('level') === 'SERIE').flush(view(acItems, true, [2023]));
+    flushRates(http);
+    const page = fixture.componentInstance;
+    page.uf.set('AC');
+    page.valueInput.set(2000);
+    fixture.detectChanges();
+    const icms = page.simulatedTaxes().find((row) => row.tax === 'ICMS');
+    expect(icms?.simulated).toBeNull();
+    expect(icms?.resolved.changedWithinYear).toBeTrue();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('mudou em 2023');
+    http.verify();
+  });
+
+  it('falls back to pending rates and says so when the rate table cannot be read', () => {
+    const fixture = TestBed.createComponent(SimuladorPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http.expectOne((req) => req.params.get('level') === 'SERIE').flush(view(ITEMS));
+    flushRates(http, 'error');
+    const page = fixture.componentInstance;
+    page.uf.set('AC');
+    fixture.detectChanges();
+    expect(page.ratesFallback()).toBeTrue();
+    expect(page.resolved('ICMS', 2024)).toEqual(jasmine.objectContaining({ rate: 19, status: 'PENDENTE' }));
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('A tabela de alíquotas não pôde ser lida');
+    http.verify();
+  });
+
   it('shows an alert when the read fails but keeps the fields', () => {
     const fixture = TestBed.createComponent(SimuladorPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
     http.expectOne((req) => req.params.get('level') === 'SERIE').flush('x', { status: 500, statusText: 'err' });
+    flushRates(http);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('[role="alert"]')?.textContent).toContain('não puderam ser lidos');
@@ -232,6 +328,7 @@ describe('SimuladorPageComponent opened from the SPED panel', () => {
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
     http.expectOne((req) => req.params.get('level') === 'SERIE').flush(view(ITEMS));
+    flushRates(http);
     fixture.detectChanges();
     return { page: fixture.componentInstance, http };
   }

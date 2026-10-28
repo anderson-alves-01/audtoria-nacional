@@ -54,6 +54,16 @@ export interface SpedFilter {
 }
 
 export const DEFAULT_OPERATION = 'Vendas';
+
+/**
+ * Confiabilidade da fonte, da conferencia de 27/10/2026 (docs/data/SPED-CONFIABILIDADE.md).
+ * Constante ate existir o campo na API. Nenhum indicador esta CONFERIDO.
+ */
+export const SPED_RELIABILITY = {
+  level: 'NAO_CONFIAVEL',
+  label: 'Fonte em revisão',
+  note: 'Conferência com os arquivos originais do SPED: a quantidade por UF e CFOP e o valor rateado a partir dela não são confiáveis, porque as duas publicações do SPED não concordam por CFOP nem por entrada e saída e nenhuma define "Quantidade NF-e". Não use como referência fiscal.',
+} as const;
 export const EMPTY = '—';
 
 export function money(raw: string | null | undefined): number | null {

@@ -6,6 +6,10 @@
       <app-badge tone="warn">Exploratório · não homologado</app-badge>
       {{ banner() }}
     </p>
+    <p class="banner" role="note" data-testid="reliability">
+      <app-badge tone="warn">{{ reliability.label }}</app-badge>
+      {{ reliability.note }}
+    </p>
   </header>
 
   @if (state() === 'loading') {

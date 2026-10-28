@@ -5,9 +5,12 @@
  */
 import { BiChartInput } from '../shared/bi/bi-chart-options';
 import { SpedSerieItem, byYear } from '../sped-operacoes/sped-logic';
-import { TaxId, rateFor } from './simulador-aliquotas';
+import { RateVersion, ResolvedRate, TaxId, resolveRate } from './simulador-aliquotas';
 
 export const SIMULATED_LABEL = 'Simulado';
+
+/** Ano usado para a aliquota quando nao ha ano publico de referencia (sem carga). */
+export const referenceFallbackYear = 2025;
 
 export interface PublicYear {
   year: number;
@@ -35,10 +38,26 @@ export function publicByYear(
   return years.map((year, index) => ({ year, quantity: quantity[index], value: value[index] }));
 }
 
-/** Imposto apurado por ano para cada imposto escolhido. */
-export function taxByYear(rows: PublicYear[], tax: TaxId, uf: string | null): (number | null)[] {
-  const rate = rateFor(tax, uf);
-  return rows.map((row) => taxAmount(row.value, rate));
+/** Imposto apurado por ano para cada imposto escolhido, com a aliquota vigente em cada ano. */
+export function taxByYear(
+  rows: PublicYear[],
+  tax: TaxId,
+  uf: string | null,
+  book: RateVersion[],
+): (number | null)[] {
+  return rows.map((row) => taxAmount(row.value, resolveRate(book, tax, uf, row.year).rate));
+}
+
+/** Rotulo curto da aliquota no quadro: percentual e situacao (pendente, mudou no ano, ausente). */
+export function rateLabel(tax: TaxId, resolved: ResolvedRate): string {
+  if (resolved.changedWithinYear) {
+    return `${tax} (alíquota mudou no ano)`;
+  }
+  if (resolved.rate === null) {
+    return `${tax} (sem alíquota)`;
+  }
+  const percent = `${tax} ${resolved.rate.toLocaleString('pt-BR')}%`;
+  return resolved.status === 'PENDENTE' ? `${percent} (pendente)` : percent;
 }
 
 export interface ScenarioInput {
@@ -78,19 +97,21 @@ export function scenarioComparison(
   scenario: ScenarioInput,
   taxes: TaxId[],
   uf: string | null,
+  book: RateVersion[],
 ): Comparison[] {
   const rows: Comparison[] = [
     compare('Quantidade', 'COUNT', reference?.quantity ?? null, scenario.quantity),
     compare('Valor', 'BRL', reference?.value ?? null, scenario.value),
   ];
   for (const tax of taxes) {
-    const rate = rateFor(tax, uf);
+    // A aliquota e a vigente no ano de comparacao, para o publico e para o cenario.
+    const resolved = resolveRate(book, tax, uf, reference?.year ?? referenceFallbackYear);
     rows.push(
       compare(
-        `${tax}${rate === null ? ' (sem alíquota)' : ' ' + rate.toLocaleString('pt-BR') + '%'}`,
+        rateLabel(tax, resolved),
         'BRL',
-        taxAmount(reference?.value ?? null, rate),
-        taxAmount(scenario.value, rate),
+        taxAmount(reference?.value ?? null, resolved.rate),
+        taxAmount(scenario.value, resolved.rate),
       ),
     );
   }
@@ -110,6 +131,8 @@ export function simulatorChart(
   taxes: TaxId[],
   uf: string | null,
   scenario: ScenarioInput | null,
+  book: RateVersion[],
+  scenarioYear: number = referenceFallbackYear,
 ): BiChartInput {
   const years = rows.map((row) => String(row.year));
   const withScenario = scenario !== null && (scenario.quantity !== null || scenario.value !== null);
@@ -122,7 +145,7 @@ export function simulatorChart(
   for (const tax of taxes) {
     series.push({
       name: `${tax} apurado`,
-      values: pad(taxByYear(rows, tax, uf)),
+      values: pad(taxByYear(rows, tax, uf, book)),
       axis: 'right',
       unit: 'BRL',
     });
@@ -147,7 +170,7 @@ export function simulatorChart(
     for (const tax of taxes) {
       series.push({
         name: `${tax} simulado`,
-        values: simulatedOnly(size, taxAmount(scenario.value, rateFor(tax, uf))),
+        values: simulatedOnly(size, taxAmount(scenario.value, resolveRate(book, tax, uf, scenarioYear).rate)),
         axis: 'right',
         unit: 'BRL',
         dashed: true,

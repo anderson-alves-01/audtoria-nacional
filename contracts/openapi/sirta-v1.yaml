@@ -704,6 +704,28 @@ paths:
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
         '422': {description: Invalid filter}
+  /v1/tax-rates:
+    get:
+      operationId: listTaxRates
+      description: >
+        Versioned tax rates by validity window, with legal basis and status. status VALIDADO means
+        a legal basis is recorded; PENDENTE is a rate from a non-legal source and is not a legal
+        validation; REVOGADO versions are not returned. NULL validFrom or validTo means unknown or
+        open, never a guessed date. ICMS is the modal rate by UF (exceptions by product and
+        operation are not modeled); ITCD, ITBI and ISS use uf BR. When on (YYYY-MM-DD) and tax are
+        given, resolved holds the rate valid on that date or null. For ICMS, uf is also required.
+        Simulation parameter, not a tax assessment.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {name: tax, in: query, schema: {type: string, enum: [ICMS, ITCD, ITBI, ISS]}}
+        - {name: uf, in: query, schema: {type: string, minLength: 2, maxLength: 2}}
+        - {name: 'on', in: query, schema: {type: string, format: date}}
+      responses:
+        '200': {description: 'Rate versions, plus resolved when on is given'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '422': {description: 'Invalid tax, UF or date'}
   /v1/indicators/official-gold:
     get:
       operationId: getOfficialGold

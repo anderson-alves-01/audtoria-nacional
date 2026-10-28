@@ -1,0 +1,30 @@
+SPED: reconciliacao de fonte e ICMS versionado (local, NAO publicado)
+Data: 2026-10-27
+
+Acesso externo
+- Download somente leitura, GET publico, de 2 arquivos em gov.br/sped (lista fixa no script tools/ops/sped-source-fetch.py). Checksums em evidence/ops/sped-originais-20261028.txt. Os arquivos ficam em docs/data/originais/ (fora do git).
+- Nenhuma escrita em producao, nenhum deploy, nenhum push, nenhuma migration aplicada fora do banco local de teste.
+
+Resultado da conferencia (evidence/ops/sped-reconciliacao-20261028.md, docs/data/SPED-CONFIABILIDADE.md)
+- A planilha consolidada repete o historico original: 46.825 de 46.825 celulas UF x CFOP x ano iguais (6.999 sao vazio no original e zero na planilha). Nao ha erro de transformacao nosso.
+- Os numeros citados pelo usuario estao no arquivo original: CFOP 5102, AC 1.782.211 (2024) e 338 (2025); SP 2 e 1; soma das UFs em 2025 = 375.023.
+- A soma de todos os CFOPs e UFs do historico em 2025 (8.333.552.291) bate com o total nacional da planilha mensal (8.333.548.237; diferenca 4.054). Mas por CFOP e por entrada/saida as duas publicacoes divergem muito (ex.: 5102 nacional 1.594.466.710 contra 375.023 nas UFs). Nenhum arquivo traz a definicao de Quantidade NF-e.
+- Classificacao: problema na fonte ou na definicao dela, nao resolvivel por nos. Quantidade por UF e CFOP e valor rateado ficam NAO_CONFIAVEL. Nenhum indicador CONFERIDO. Pendencia: esclarecimento do SPED.
+- 1.041 pares UF x CFOP x ano do original estao fora da planilha sem regra de exclusao que explique; a revisar.
+
+Aliquotas versionadas
+- Migration aditiva 0109_tax_rate_versions (tabela tax_rate_versions: vigencia, base legal, URL, status, quem validou). Ida, volta e reaplicacao testadas no banco local.
+- Seed na propria migration: AC ICMS modal 17% (ate 2023-03-31) e 19% (desde 2023-04-01) VALIDADO (LC/AC 422/2022, informado pelo responsavel; URL oficial a anexar; inicio legal anterior a 2021 nao conferido). Demais 26 UFs e ITCD/ITBI/ISS: PENDENTE, sem lei, data ou URL.
+- Endpoint GET /v1/tax-rates (contrato em contracts/openapi/sirta-v1.yaml). Falha fechada: data fora da janela, UF sem aliquota e REVOGADO nao devolvem taxa; PENDENTE vem rotulado; ano em que a aliquota validada muda (AC 2023) nao tem taxa anual.
+- Simulador: le /v1/tax-rates, usa a aliquota vigente em cada ano, mostra Validado ou Pendente de validacao juridica, deixa em branco o imposto do AC em 2023, e avisa quando a tabela nao pode ser lida (reserva local, tudo pendente). Aviso 'Fonte em revisao' no Simulador e no painel SPED.
+
+Verificacao
+- Python: tests/unit + tests/contract + test_tax_rates_api + test_sped_api = 257 passed. ruff sem erros nos arquivos novos e alterados.
+- Web: ng test 153 de 153 SUCCESS; ng build sem warnings nem erros.
+- Suite Python completa: 386 passed, 9 failed, 1 skipped. Falhas fora do escopo desta mudanca: 4 em test_alembic_paths (esperam head 0101_doc_homolog_aws_prod e falham na migration 0103 em banco vazio) e 4 em test_source_ingest/test_official_ingest (contagens de ingestao IBGE/Siconfi no banco local, ex. 5571 contra 2). O 9o, test_openapi, foi corrigido (aspas em 'on' e na descricao 422) e passa. Nao reproduzi essas 8 falhas em um commit anterior; a causa aparente e o estado do banco local e testes desatualizados, nao esta mudanca.
+
+Publicacao (nao feita)
+- A migration 0109 roda sozinha na partida da API. Publicar a API aplicaria 0109 em producao; a web nova chama /v1/tax-rates e usa a reserva se a API antiga responder 404. Requer autorizacao.
+
+Rollback
+- Reverter os commits. Downgrade 0109 remove so a tabela nova. Producao nao foi tocada (web 0.4.23, API 0.3.124, carga d25c890e-f93c-4b64-b307-247d64799e3f).

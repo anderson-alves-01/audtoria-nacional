@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID, uuid4
 
@@ -6,6 +6,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     CheckConstraint,
+    Date,
     DateTime,
     ForeignKey,
     Index,
@@ -410,6 +411,38 @@ class SpedOperationFact(Base):
     comparable_share: Mapped[Decimal | None] = mapped_column(Numeric(9, 6), nullable=True)
     cfop_pairs: Mapped[int | None] = mapped_column(Integer, nullable=True)
     covered_quantity: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class TaxRateVersion(Base):
+    """One rate of one tax in one UF over a validity window, with legal basis and status.
+
+    PENDENTE means the rate came from a non-legal source (image, requirement) and is not
+    validated. NULL dates mean the start or end is unknown or open, never a guessed date.
+    """
+
+    __tablename__ = "tax_rate_versions"
+    __table_args__ = (
+        CheckConstraint("tax in ('ICMS', 'ITCD', 'ITBI', 'ISS')", name="ck_tax_rate_tax"),
+        CheckConstraint("rate >= 0 and rate <= 100", name="ck_tax_rate_range"),
+        CheckConstraint(
+            "status in ('PENDENTE', 'VALIDADO', 'REVOGADO')", name="ck_tax_rate_status"
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    tax: Mapped[str] = mapped_column(String(8), nullable=False)
+    uf: Mapped[str] = mapped_column(String(2), nullable=False)
+    rate_kind: Mapped[str] = mapped_column(String(16), nullable=False)
+    rate: Mapped[Decimal] = mapped_column(Numeric(7, 4), nullable=False)
+    valid_from: Mapped[date | None] = mapped_column(Date, nullable=True)
+    valid_to: Mapped[date | None] = mapped_column(Date, nullable=True)
+    legal_basis: Mapped[str | None] = mapped_column(Text, nullable=True)
+    official_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(12), nullable=False)
+    validated_by: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    validated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 

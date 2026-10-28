@@ -22,6 +22,7 @@ import {
   comparisonChart,
   SpedCfopItem,
   SpedSerieItem,
+  SPED_RELIABILITY,
   SpedView,
   byOperation,
   byUf,
@@ -101,6 +102,7 @@ export class SpedOperacoesPageComponent implements OnInit {
   readonly years = computed(() => this.view()?.years ?? [2021, 2022, 2023, 2024, 2025]);
   readonly operations = computed(() => this.view()?.operations ?? []);
   readonly ufs = computed(() => this.view()?.ufs ?? []);
+  readonly reliability = SPED_RELIABILITY;
   readonly banner = computed(() => this.view()?.banner || FALLBACK_BANNER);
 
   readonly ano = computed(() => this.filters.selections()['ano']?.[0] ?? null);

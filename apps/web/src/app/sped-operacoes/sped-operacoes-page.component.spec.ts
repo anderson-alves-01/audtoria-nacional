@@ -52,6 +52,14 @@ describe('SpedOperacoesPageComponent', () => {
     }).compileComponents();
   });
 
+  it('warns that the source is under review and not reliable for fiscal use', () => {
+    const { el, http } = loaded();
+    const note = el.querySelector('[data-testid="reliability"]');
+    expect(note?.textContent).toContain('Fonte em revisão');
+    expect(note?.textContent).toContain('Não use como referência fiscal');
+    http.verify();
+  });
+
   it('keeps the exploratory banner and shows an empty state when nothing was loaded', () => {
     const fixture = TestBed.createComponent(SpedOperacoesPageComponent);
     const http = TestBed.inject(HttpTestingController);
