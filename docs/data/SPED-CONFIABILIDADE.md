@@ -62,8 +62,45 @@ Nenhum dado original foi alterado e os dois originais oficiais estão versionado
   incluídas, no DF 22,7 vezes, em MS 3,3 vezes.
 - As exclusões legítimas seguem uma regra escrita na planilha, mas as entradas fora dos grupos somam
   16,7 bilhões de NF-e e limitam o que a base representa (cobertura de 42,7% a 43,8% do histórico por ano).
-- Decisão metodológica pendente: entradas por transferência (1.15x e 2.15x) podem duplicar as saídas
-  por transferência (5.15x e 6.15x). Nada foi reincluído, corrigido ou promovido.
+- Decisão metodológica de 2026-10-28 (ver "Transferências por direção" abaixo): entradas por
+  transferência confirmadas viram "Transferências recebidas" e nunca são somadas às remetidas. Nada foi
+  reincluído, corrigido ou promovido.
+
+## Transferências por direção (decisão de 2026-10-28)
+
+Fonte da classificação: tabela oficial de CFOP (Sefaz-PE, `cfop.htm`), lida em 2026-10-28. Código em
+`domain/sped_operations.py` (`classify_cfop_sirta`). O menu continua "Transferências"; o banco distingue
+`direcao` RECEBIDA e REMETIDA (migração `0110_direction_rate_scope`).
+
+| CFOP | Classificação SIRTA | Estado |
+|---|---|---|
+| 1.151 a 1.154 e 2.151 a 2.154 | Transferências recebidas (não são Compras) | confirmada na tabela oficial |
+| 5.151, 5.152, 5.153, 5.155, 5.156 e 6.151, 6.152, 6.153, 6.155, 6.156 | Transferências remetidas | confirmada na tabela oficial |
+| 1.155 a 1.159, 2.155 a 2.159, 1.190, 2.170 | Pendente de classificação | a tabela consultada não os define |
+| 5.154, 5.157 a 5.199, 6.157 a 6.199, 7.15x a 7.19x | Pendente de classificação | a tabela consultada não os define |
+| Demais CFOPs de compra | Compras | regra publicada na planilha |
+
+Resultados da reaplicação às 1.041 células (`evidence/ops/sped-auditoria-omissoes-20261028.md`, seções 10 e 11):
+
+- 844 células (132.237.096 NF-e, 49,3%) são transferências recebidas confirmadas: não são Compras e estão
+  fora da planilha, que só traz saídas.
+- 197 células (136.080.849 NF-e, 50,7%) estão pendentes de classificação, sobretudo 1.159 (80,97 milhões)
+  e 2.159 (55,09 milhões). O prefixo 15x não basta para chamá-las de transferência.
+- Na planilha, 38.882.859 NF-e (10,2%) das "Transferências" estão em CFOPs que a tabela não lista como
+  transferência (5.159, 5.160, 6.159, 5.192, 6.162 e outros). O indicador publicado fica ressalvado.
+
+Regras:
+
+- Recebidas e remetidas nunca são somadas: o mesmo movimento pode aparecer nas duas direções. Uma contagem
+  distinta exige identificar os documentos ou uma regra de deduplicação comprovada. O código recusa a soma
+  (`assert_single_direction`) e a tela deixa a célula em branco se as linhas misturarem as direções.
+- Os dados recebidos só existem nos `.ods` originais. Carregá-los no banco é ingestão real e exige
+  autorização explícita. Nada foi carregado.
+- O Simulador não aplica ICMS automaticamente a transferências: a LC 204/2023 (informada pelo responsável, a
+  conferir na fonte) alterou a Lei Kandir para a não incidência entre estabelecimentos do mesmo titular,
+  com regras próprias de crédito e uma opção legal de equiparação. O cálculo só ocorre por opt-in
+  explícito, rotulado como hipótese.
+- Indicador novo `sped_transferencias_por_direcao`: NAO_CONFIAVEL, e faz parte do portão dos dados públicos.
 
 ## Política de uso por nível (aplicada desde 2026-10-28)
 
@@ -83,8 +120,16 @@ Registro: `config/indicator-reliability.yaml`. Regras em `domain/indicator_relia
   são lidos nem exibidos, a comparação fica desabilitada e só existe a hipótese informada manualmente,
   rotulada "Hipótese informada manualmente". Ver `apps/web/src/app/shared/reliability/`.
 - Alíquotas: percentual lido de uma imagem não é fundamento legal. Homologada exige VALIDADO mais fundamento
-  legal, URL oficial, responsável e início de vigência. Hoje 0 de 31 versões atendem
+  legal, URL oficial, responsável pela validação, início de vigência e a homologação pelo responsável, etapa
+  humana separada (`homologated_by`): preencher a documentação não homologa. Hoje 0 de 31 versões atendem
   (`evidence/ops/aliquotas-homologacao-20261028.md`).
+- ICMS do Acre: documentação jurídica completa (LC/AC 55/1997 art. 18, I, redação da LC/AC 422/2022, 19%
+  desde 01/04/2023; redação da LC/AC 100/2001, 17% de 01/01/2002 a 31/03/2023), com as páginas da Sefaz/AC
+  registradas. Continua não homologada: falta o revisor e a conferência das condições de aplicação.
+- ITCD (estadual), ITBI e ISS (municipais): 6%, 3% e 5% são parâmetros de simulação (`SIMULACAO`), sempre
+  PENDENTE e nunca homologáveis como alíquota única. O cadastro passou a relacionar imposto, localidade
+  (UF ou município), operação, fundamento legal e vigência, com limites de referência (ITCD até 8%, ISS de
+  2% a 5%) informados pelo responsável, a conferir na fonte.
 
 ## O que não mudou
 

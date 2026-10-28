@@ -1,0 +1,32 @@
+Transferencias por direcao, ICMS do Acre e aliquotas por localidade
+Data: 2026-10-28. Tudo local. Sem push, deploy ou ingestao real.
+
+Comandos e resultados
+- python -m pytest -q -p no:cacheprovider
+    470 passed, 1 skipped, 8 failed. As 8 falhas sao as mesmas de antes e nao tem relacao com a mudanca:
+    tests/integration/test_alembic_paths.py (4, relation gold_finance_state_summaries already exists),
+    tests/integration/test_source_ingest.py (3) e tests/integration/test_official_ingest.py (1).
+- python -m pytest tests/unit/test_cfop_transfers.py tests/unit/test_tax_rates.py tests/unit/test_sped_xlsx.py
+    63 passed
+- python -m pytest tests/integration/test_tax_rates_api.py
+    14 passed
+- python -m pytest tests/integration/test_sped_api.py tests/integration/test_indicator_reliability_api.py
+    15 passed
+- alembic downgrade 0109_tax_rate_versions; alembic upgrade head; alembic current
+    0110_direction_rate_scope (head). Banco local de teste (dados sinteticos), sem erro.
+- python tools/ops/sped-omission-audit.py
+    celulas ausentes=22343 indevidas=1041 (pela regra publicada, sem mudanca)
+    Reclassificacao SIRTA: 844 celulas / 132.237.096 NF-e transferencia recebida confirmada;
+    197 celulas / 136.080.849 NF-e pendente de classificacao.
+    Transferencias da planilha fora da tabela oficial: 38.882.859 de 380.140.367 NF-e (10,2%).
+- python tools/ops/tax-rates-audit.py
+    versoes=31 homologadas=0
+- ruff check e ruff format nos arquivos alterados: limpos.
+- apps/web: npx ng test --watch=false --browsers=ChromeHeadless: Executed 178 of 178 SUCCESS.
+- apps/web: npx ng build: concluido.
+- contracts/openapi/sirta-v1.yaml: YAML valido.
+
+Fonte da classificacao de CFOP: tabela oficial de CFOP da Sefaz-PE (cfop.htm), lida em 2026-10-28.
+Fonte do ICMS do Acre: paginas da Sefaz/AC (LC 422/2022 e LC 55/1997 consolidada).
+
+Producao nao foi tocada: web 0.4.23 (sirta-prod-web:31), API 0.3.124 (sirta-prod-api:30).
