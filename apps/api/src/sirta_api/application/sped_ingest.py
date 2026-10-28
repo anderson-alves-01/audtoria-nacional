@@ -26,15 +26,18 @@ from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.catalog import assert_ingest_allowed
 from sirta_api.domain.errors import ForbiddenError, NotVisibleError, ValidationFailedError
 from sirta_api.domain.sped_operations import (
+    DIRECTION_SENT,
     OPERATIONS,
     SPED_BANNER,
     SPED_COMPETENCE,
     SPED_LAYOUT_VERSION,
     SPED_SOURCE_ID,
     SPED_VALUE_KIND,
+    TRANSFER_OPERATION,
     UFS,
     YEARS,
     SpedWorkbook,
+    classify_cfop_sirta,
     reconcile,
 )
 
@@ -80,6 +83,8 @@ def _report_payload(report) -> dict:
         "consolidatedCells": report.consolidated_cells,
         "maxValueDifference": str(report.max_value_difference),
         "classificationMismatches": report.classification_mismatches,
+        "transferQuantity": report.transfer_quantity,
+        "transferUnconfirmedQuantity": report.transfer_unconfirmed_quantity,
     }
 
 
@@ -105,6 +110,7 @@ def _fact_rows(workbook: SpedWorkbook, *, run_id, context: AccessContext, now) -
             "comparable_share": item.comparable_share,
             "cfop_pairs": item.cfop_pairs,
             "covered_quantity": item.covered_quantity,
+            "direcao": _workbook_direction(item.operation),
         }
         for item in workbook.serie
     ]
@@ -123,10 +129,20 @@ def _fact_rows(workbook: SpedWorkbook, *, run_id, context: AccessContext, now) -
             "comparable_share": None,
             "cfop_pairs": None,
             "covered_quantity": None,
+            "direcao": _workbook_direction(item.operation),
         }
         for item in workbook.base
     )
     return rows
+
+
+def _workbook_direction(operation: str) -> str | None:
+    """The workbook only has outbound CFOPs (5, 6, 7), so its transfers are REMETIDA.
+
+    Received transfers (1.15x and 2.15x) are not in the workbook; they would need a separate,
+    explicitly authorized load of the official history.
+    """
+    return DIRECTION_SENT if operation == TRANSFER_OPERATION else None
 
 
 def ingest_sped_upload(
@@ -370,8 +386,13 @@ def _fact_item(fact: SpedOperationFact, *, level: str) -> dict:
         "quantidade": fact.quantidade,
         "valorEstimado": _money(fact.valor_estimado),
     }
+    if fact.operacao == TRANSFER_OPERATION:
+        item["direcao"] = fact.direcao
     if level == "CFOP":
         item["cfop"] = fact.cfop
+        if fact.operacao == TRANSFER_OPERATION:
+            # Whether the official CFOP table lists this code as a transfer.
+            item["classificacaoCfop"] = classify_cfop_sirta(fact.cfop).status
     else:
         item["comparableQuantity"] = fact.comparable_quantity
         item["comparableShare"] = _money(fact.comparable_share)

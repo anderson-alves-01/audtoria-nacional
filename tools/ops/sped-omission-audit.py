@@ -31,8 +31,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "apps" / "api" / "src"))
 
-from sirta_api.domain.sped_operations import YEARS, classify_cfop  # noqa: E402
+from sirta_api.domain.sped_operations import (  # noqa: E402
+    CFOP_TABLE_SOURCE,
+    CLASS_CONFIRMED,
+    CLASS_PENDING,
+    DIRECTION_RECEIVED,
+    TRANSFER_OPERATION,
+    YEARS,
+    classify_cfop,
+    classify_cfop_sirta,
+)
 
+GROUP_RECEIVED = "TRANSFERENCIA_RECEBIDA"
+GROUP_PENDING = "PENDENTE_CLASSIFICACAO"
 AGREGADOR = "AGREGADOR_00_50"
 ENTRADA_FORA = "ENTRADA_FORA_DOS_GRUPOS"
 SEM_REGRA = "SEM_REGRA_PUBLICADA"
@@ -59,6 +70,21 @@ class Omission:
     rule: str
     klass: str
     operation: str
+    sirta_group: str = ""  # SIRTA methodology of 2026-10-28; never changes klass or the counts
+
+
+def sirta_group_of(cfop: str) -> str:
+    """Where the SIRTA methodology puts a CFOP: received transfer, pending, or its operation."""
+    result = classify_cfop_sirta(cfop)
+    if result.status == CLASS_PENDING:
+        return GROUP_PENDING
+    if (
+        result.status == CLASS_CONFIRMED
+        and result.operation == TRANSFER_OPERATION
+        and result.direction == DIRECTION_RECEIVED
+    ):
+        return GROUP_RECEIVED
+    return result.operation or FORA_DAS_CATEGORIAS
 
 
 def assign_rule(cfop: str) -> str:
@@ -85,7 +111,11 @@ def audit(
             continue
         rule = assign_rule(cfop)
         operation = classify_cfop(cfop) or FORA_DAS_CATEGORIAS
-        result.append(Omission(uf, cfop, year, quantity, rule, RULE_CLASS[rule], operation))
+        result.append(
+            Omission(
+                uf, cfop, year, quantity, rule, RULE_CLASS[rule], operation, sirta_group_of(cfop)
+            )
+        )
     return result
 
 
@@ -125,6 +155,7 @@ def build_report(
     included_by_year: dict[int, int],
     compras_by_uf_year: dict[tuple[str, int], int],
     stamp: str,
+    workbook_transfers: dict[str, int] | None = None,
 ) -> str:
     bad = [o for o in omissions if o.klass == "indevida"]
     lines: list[str] = []
@@ -245,12 +276,57 @@ def build_report(
         "- **Indevidas.** Pela regra publicada, os CFOPs 1.15x, 1.190, 2.15x e 2.170 pertencem a Compras, mas estão ausentes da `Base CFOP` e da `Série anual` em todas as UFs e anos. A omissão atinge as duas abas ao mesmo tempo, por isso a conferência interna da planilha não a detecta."
     )
     add(
-        "- **Decisão metodológica pendente.** Entradas por transferência (1.15x e 2.15x) podem duplicar as saídas por transferência (5.15x e 6.15x). O responsável deve decidir se pertencem a Compras, a uma categoria própria ou à exclusão. Enquanto isso, nada é reincluído nem corrigido."
+        "- **Decisão metodológica (28/10/2026).** Entradas por transferência confirmadas na tabela oficial de CFOP viram `Transferências recebidas`, fora de Compras e nunca somadas às remetidas. Códigos da mesma faixa que a tabela não define ficam `Pendente de classificação`. Ver seção 10. Nada é reincluído nem corrigido nos originais."
     )
     add(
         "- **Efeito.** A planilha não é homologável como está. O indicador de Compras por UF fica `NAO_CONFIAVEL` (ver `config/indicator-reliability.yaml`)."
     )
     add("")
+    add("## 10. Reclassificação SIRTA das células ausentes sem regra publicada")
+    add("")
+    add(
+        f"Fonte da classificação: {CFOP_TABLE_SOURCE}. Só os códigos listados ali como transferência entre estabelecimentos da mesma empresa são confirmados. Os demais códigos das faixas 1.15x, 2.15x e 1.190/2.170 ficam pendentes: o prefixo 15x não basta."
+    )
+    add("")
+    add("| Grupo SIRTA | Células | Quantidade de NF-e | Parcela do total sem regra publicada |")
+    add("| --- | ---: | ---: | ---: |")
+    by_group = totals_by(bad, lambda o: o.sirta_group)
+    bad_qty = sum(v[1] for v in by_group.values())
+    for group in sorted(by_group, key=lambda g: -by_group[g][1]):
+        count, qty = by_group[group]
+        add(f"| {group} | {_fmt(count)} | {_fmt(qty)} | {_pct(qty, bad_qty)} |")
+    add(f"| **Total** | **{_fmt(len(bad))}** | **{_fmt(bad_qty)}** | 100,0% |")
+    add("")
+    add("| CFOP | Grupo SIRTA | Células | Quantidade de NF-e |")
+    add("| --- | --- | ---: | ---: |")
+    for (cfop, group), (count, qty) in sorted(
+        totals_by(bad, lambda o: (o.cfop, o.sirta_group)).items(), key=lambda item: -item[1][1]
+    ):
+        add(f"| {cfop} | {group} | {_fmt(count)} | {_fmt(qty)} |")
+    add("")
+    add(
+        "As transferências recebidas (1.15x e 2.15x) estão fora da planilha, que só traz saídas. Elas existem apenas nos arquivos oficiais e só entram no banco por uma carga explicitamente autorizada. **Recebidas e remetidas não são somadas**: o mesmo movimento pode aparecer nas duas direções e a soma duplicaria a contagem. Uma contagem distinta exige identificar os documentos ou uma regra de deduplicação comprovada."
+    )
+    add("")
+    if workbook_transfers:
+        total = sum(workbook_transfers.values())
+        unconfirmed = {
+            cfop: qty
+            for cfop, qty in workbook_transfers.items()
+            if classify_cfop_sirta(cfop).status != CLASS_CONFIRMED
+        }
+        outside = sum(unconfirmed.values())
+        add("## 11. Transferências remetidas da planilha fora da tabela oficial")
+        add("")
+        add(
+            f"A planilha publica {_fmt(total)} NF-e em `Transferências` (regra 5/6/7.151 a .199). Desse total, {_fmt(outside)} ({_pct(outside, total)}) estão em CFOPs que a tabela oficial não lista como transferência. O indicador publicado fica ressalvado e a direção `REMETIDA` só é afirmada para os CFOPs confirmados."
+        )
+        add("")
+        add("| CFOP | Quantidade de NF-e | Parcela de Transferências |")
+        add("| --- | ---: | ---: |")
+        for cfop, qty in sorted(unconfirmed.items(), key=lambda item: -item[1]):
+            add(f"| {cfop} | {_fmt(qty)} | {_pct(qty, total)} |")
+        add("")
     return "\n".join(lines) + "\n"
 
 
@@ -266,10 +342,13 @@ def write_csv(path: Path, omissions: list[Omission]) -> None:
                 "regra",
                 "classe",
                 "operacao_pela_regra_publicada",
+                "grupo_sirta_20261028",
             ]
         )
         for o in omissions:
-            writer.writerow([o.uf, o.cfop, o.year, o.quantity, o.rule, o.klass, o.operation])
+            writer.writerow(
+                [o.uf, o.cfop, o.year, o.quantity, o.rule, o.klass, o.operation, o.sirta_group]
+            )
 
 
 def main() -> int:
@@ -289,17 +368,22 @@ def main() -> int:
             history_totals[year] += qty
     included: dict[int, int] = defaultdict(int)
     compras: dict[tuple[str, int], int] = defaultdict(int)
+    transfers: dict[str, int] = defaultdict(int)
     for row in workbook.base:
         included[row.year] += row.quantity
         if row.operation == "Compras":
             compras[(row.uf, row.year)] += row.quantity
+        if row.operation == TRANSFER_OPERATION:
+            transfers[row.cfop] += row.quantity
 
     stamp = datetime.now(UTC).strftime("%Y%m%d")
     out_dir = ROOT / "evidence" / "ops"
     report_path = out_dir / f"sped-auditoria-omissoes-{stamp}.md"
     csv_path = out_dir / f"sped-omissoes-1041-{stamp}.csv"
     report_path.write_text(
-        build_report(omissions, dict(history_totals), dict(included), dict(compras), stamp),
+        build_report(
+            omissions, dict(history_totals), dict(included), dict(compras), stamp, dict(transfers)
+        ),
         encoding="utf-8",
         newline="\n",
     )

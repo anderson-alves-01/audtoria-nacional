@@ -74,4 +74,32 @@ def test_real_audit_matches_the_numbers_published_in_the_reconciliation_report()
     assert len(result) == 22343
     assert len(bad) == 1041
     assert sum(item.quantity for item in bad) == 268317945
-    assert {item.operation for item in bad} == {"Compras"}
+    assert {item.operation for item in bad} == {"Compras"}  # by the published rule, unchanged
+
+
+def test_sirta_groups_split_confirmed_received_transfers_from_pending_codes() -> None:
+    mod = _load()
+    assert mod.sirta_group_of("1152") == mod.GROUP_RECEIVED
+    assert mod.sirta_group_of("2154") == mod.GROUP_RECEIVED
+    for pending in ("1159", "2159", "1190", "2170", "1155"):
+        assert mod.sirta_group_of(pending) == mod.GROUP_PENDING
+    assert mod.sirta_group_of("1102") == "Compras"
+    result = mod.audit({("SP", "1152", 2024): (10, 1), ("SP", "2159", 2024): (30, 1)}, set())
+    assert {item.cfop: item.sirta_group for item in result} == {
+        "1152": mod.GROUP_RECEIVED,
+        "2159": mod.GROUP_PENDING,
+    }
+    # The published-rule class and the counts do not move with the new methodology.
+    assert {item.klass for item in result} == {"indevida"}
+
+
+def test_report_section_10_never_adds_received_to_sent() -> None:
+    mod = _load()
+    result = mod.audit({("SP", "1152", 2024): (10, 1), ("SP", "2159", 2024): (30, 1)}, set())
+    text = mod.build_report(result, {2024: 40}, {}, {}, "20261028", {"5159": 50, "5152": 150})
+    assert (
+        "## 10." in text and "TRANSFERENCIA_RECEBIDA" in text and "PENDENTE_CLASSIFICACAO" in text
+    )
+    assert "não são somadas" in text
+    assert "## 11." in text
+    assert "25,0%" in text  # 50 of 200 NF-e in Transferências are outside the official table

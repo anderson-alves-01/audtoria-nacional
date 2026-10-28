@@ -7,6 +7,7 @@ value of the UF. Nothing here sums across operations and nothing creates a tax c
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from decimal import Decimal
 
@@ -78,6 +79,8 @@ class ReconciliationReport:
     consolidated_cells: int = 0
     max_value_difference: Decimal = Decimal("0")
     classification_mismatches: int = 0
+    transfer_quantity: int = 0
+    transfer_unconfirmed_quantity: int = 0
 
     @property
     def ok(self) -> bool:
@@ -114,6 +117,89 @@ def classify_cfop(cfop: str) -> str | None:
     if 300 <= rest <= 399:
         return "Serviços Prestados"
     return "Outras Saídas"
+
+
+# --- Transfer methodology (SIRTA) -------------------------------------------------------
+# Source: official CFOP table (Sefaz-PE, cfop.htm), read 2026-10-28. Only the codes listed
+# there as transfers between establishments of the same company are CONFIRMED. Codes in the
+# same range that the table does not define (1.155-1.159, 1.190, 2.155-2.159, 2.170, 5.154,
+# 5.157-5.199, 6.157-6.199, 7.15x) stay PENDING: nothing is inferred from the 15x prefix.
+DIRECTION_RECEIVED = "RECEBIDA"
+DIRECTION_SENT = "REMETIDA"
+TRANSFER_DIRECTIONS = (DIRECTION_RECEIVED, DIRECTION_SENT)
+CLASS_CONFIRMED = "CONFIRMADA"
+CLASS_PENDING = "PENDENTE_CLASSIFICACAO"
+CLASS_EXCLUDED = "EXCLUIDA"
+TRANSFER_OPERATION = "Transferências"
+CFOP_TABLE_SOURCE = "Tabela oficial de CFOP (Sefaz-PE, cfop.htm), lida em 2026-10-28"
+TRANSFER_RECEIVED_CFOPS = frozenset(
+    {"1151", "1152", "1153", "1154", "2151", "2152", "2153", "2154"}
+)
+TRANSFER_SENT_CFOPS = frozenset(
+    {"5151", "5152", "5153", "5155", "5156", "6151", "6152", "6153", "6155", "6156"}
+)
+# Pending classification codes the user named explicitly, kept for documentation and tests.
+PENDING_NAMED_CFOPS = frozenset({"1159", "2159", "1190", "2170"})
+
+
+@dataclass(frozen=True)
+class CfopClassification:
+    """SIRTA classification of a CFOP: operation, direction and how sure we are."""
+
+    operation: str | None
+    direction: str | None
+    status: str
+    reason: str
+
+
+def classify_cfop_sirta(cfop: str) -> CfopClassification:
+    """Classification by the SIRTA methodology (never by prefix alone for transfers).
+
+    - Confirmed transfers get an operation "Transferências" and a direction.
+    - Codes in the transfer ranges that the official table does not define are PENDING and
+      have no operation: they are not Compras and not Transferências until a source says so.
+    - Everything else follows the rule published with the workbook (`classify_cfop`).
+    """
+    if not re.fullmatch(r"[123567]\d{3}", cfop) or cfop.endswith(("00", "50")):
+        return CfopClassification(None, None, CLASS_EXCLUDED, "Código agregador ou inválido.")
+    if cfop in TRANSFER_RECEIVED_CFOPS:
+        return CfopClassification(
+            TRANSFER_OPERATION, DIRECTION_RECEIVED, CLASS_CONFIRMED, CFOP_TABLE_SOURCE
+        )
+    if cfop in TRANSFER_SENT_CFOPS:
+        return CfopClassification(
+            TRANSFER_OPERATION, DIRECTION_SENT, CLASS_CONFIRMED, CFOP_TABLE_SOURCE
+        )
+    rest = int(cfop[1:])
+    inbound_pending = cfop[0] in "12" and (151 <= rest <= 159 or cfop in PENDING_NAMED_CFOPS)
+    outbound_pending = cfop[0] in "567" and 151 <= rest <= 199
+    if inbound_pending or outbound_pending:
+        return CfopClassification(
+            None,
+            None,
+            CLASS_PENDING,
+            "Código fora da lista de transferências da tabela oficial de CFOP; "
+            "significado não confirmado.",
+        )
+    published = classify_cfop(cfop)
+    if published is None:
+        return CfopClassification(None, None, CLASS_EXCLUDED, "Exclusão publicada na planilha.")
+    return CfopClassification(published, None, CLASS_CONFIRMED, "Regra publicada na planilha.")
+
+
+def assert_single_direction(directions: Iterable[str | None]) -> str | None:
+    """Return the only transfer direction present, or refuse to mix both.
+
+    Received and sent transfers can be the same movement seen from two establishments, so
+    adding them double counts. A distinct count needs document identity or a proven rule.
+    """
+    seen = {direction for direction in directions if direction is not None}
+    if len(seen) > 1:
+        raise ValueError(
+            "Transferências recebidas e remetidas não podem ser somadas: risco de dupla "
+            "contagem. Use uma direção por vez."
+        )
+    return next(iter(seen), None)
 
 
 def _tolerance(parts: int, total: Decimal) -> Decimal:
@@ -232,6 +318,16 @@ def reconcile(workbook: SpedWorkbook) -> ReconciliationReport:
         expected = classify_cfop(row.cfop)
         if expected is not None and expected != row.operation:
             report.classification_mismatches += 1
+        if row.operation == TRANSFER_OPERATION:
+            report.transfer_quantity += row.quantity
+            if classify_cfop_sirta(row.cfop).status != CLASS_CONFIRMED:
+                report.transfer_unconfirmed_quantity += row.quantity
+    if report.transfer_unconfirmed_quantity:
+        share = 100 * report.transfer_unconfirmed_quantity / max(report.transfer_quantity, 1)
+        report.warnings.append(
+            f"{share:.1f}% da quantidade de Transferências está em CFOPs que a tabela oficial "
+            "não lista como transferência (classificação pendente)."
+        )
     if report.classification_mismatches:
         report.warnings.append(
             f"{report.classification_mismatches} linhas da Base CFOP divergem da regra de prefixos "

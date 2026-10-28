@@ -167,6 +167,35 @@ def test_read_returns_series_with_filters_pagination_and_null_values(api_client)
     assert by_cfop["total"] > 0 and all(item["cfop"] == "5102" for item in by_cfop["items"])
 
 
+def test_transfers_carry_direction_and_cfop_classification(api_client, db_session) -> None:
+    body = _upload(api_client, build_sped_workbook()).json()
+    assert body["reconciliation"]["transferQuantity"] > 0
+    assert body["reconciliation"]["transferUnconfirmedQuantity"] == 0  # fixture uses 5152
+
+    rows = db_session.scalars(
+        select(SpedOperationFact).where(SpedOperationFact.operacao == "Transferências")
+    ).all()
+    assert rows and {row.direcao for row in rows} == {"REMETIDA"}
+    others = db_session.scalars(
+        select(SpedOperationFact).where(SpedOperationFact.operacao != "Transferências")
+    ).all()
+    assert others and all(row.direcao is None for row in others)
+
+    cfop = api_client.get(
+        "/v1/sped-operacoes?level=CFOP&operacao=Transferências&pageSize=3", headers=_analyst()
+    ).json()
+    assert cfop["items"] and all(
+        item["direcao"] == "REMETIDA" and item["classificacaoCfop"] == "CONFIRMADA"
+        for item in cfop["items"]
+    )
+    serie = api_client.get(
+        "/v1/sped-operacoes?operacao=Transferências&pageSize=3", headers=_analyst()
+    ).json()
+    assert all(item["direcao"] == "REMETIDA" for item in serie["items"])
+    sales = api_client.get("/v1/sped-operacoes?operacao=Vendas&pageSize=3", headers=_analyst())
+    assert all("direcao" not in item for item in sales.json()["items"])
+
+
 def test_read_rejects_invalid_filters(api_client) -> None:
     for query in ("ano=2019", "uf=XX", "operacao=Qualquer", "cfop=12", "level=OUTRO"):
         response = api_client.get(f"/v1/sped-operacoes?{query}", headers=_analyst())

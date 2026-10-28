@@ -138,6 +138,63 @@ A cobertura baixa decorre das exclusões legítimas (entradas fora dos grupos). 
 
 - **Legítimas.** Seguem uma regra escrita na planilha. Continuam sujeitas à revisão da definição de `Quantidade NF-e` pelo SPED, pois a regra de classificação é, nas palavras da própria planilha, aproximada.
 - **Indevidas.** Pela regra publicada, os CFOPs 1.15x, 1.190, 2.15x e 2.170 pertencem a Compras, mas estão ausentes da `Base CFOP` e da `Série anual` em todas as UFs e anos. A omissão atinge as duas abas ao mesmo tempo, por isso a conferência interna da planilha não a detecta.
-- **Decisão metodológica pendente.** Entradas por transferência (1.15x e 2.15x) podem duplicar as saídas por transferência (5.15x e 6.15x). O responsável deve decidir se pertencem a Compras, a uma categoria própria ou à exclusão. Enquanto isso, nada é reincluído nem corrigido.
+- **Decisão metodológica (28/10/2026).** Entradas por transferência confirmadas na tabela oficial de CFOP viram `Transferências recebidas`, fora de Compras e nunca somadas às remetidas. Códigos da mesma faixa que a tabela não define ficam `Pendente de classificação`. Ver seção 10. Nada é reincluído nem corrigido nos originais.
 - **Efeito.** A planilha não é homologável como está. O indicador de Compras por UF fica `NAO_CONFIAVEL` (ver `config/indicator-reliability.yaml`).
+
+## 10. Reclassificação SIRTA das células ausentes sem regra publicada
+
+Fonte da classificação: Tabela oficial de CFOP (Sefaz-PE, cfop.htm), lida em 2026-10-28. Só os códigos listados ali como transferência entre estabelecimentos da mesma empresa são confirmados. Os demais códigos das faixas 1.15x, 2.15x e 1.190/2.170 ficam pendentes: o prefixo 15x não basta.
+
+| Grupo SIRTA | Células | Quantidade de NF-e | Parcela do total sem regra publicada |
+| --- | ---: | ---: | ---: |
+| PENDENTE_CLASSIFICACAO | 197 | 136.080.849 | 50,7% |
+| TRANSFERENCIA_RECEBIDA | 844 | 132.237.096 | 49,3% |
+| **Total** | **1.041** | **268.317.945** | 100,0% |
+
+| CFOP | Grupo SIRTA | Células | Quantidade de NF-e |
+| --- | --- | ---: | ---: |
+| 1159 | PENDENTE_CLASSIFICACAO | 106 | 80.968.068 |
+| 2159 | PENDENTE_CLASSIFICACAO | 72 | 55.094.683 |
+| 2152 | TRANSFERENCIA_RECEBIDA | 124 | 43.239.168 |
+| 2153 | TRANSFERENCIA_RECEBIDA | 57 | 29.532.913 |
+| 1154 | TRANSFERENCIA_RECEBIDA | 112 | 25.839.590 |
+| 2151 | TRANSFERENCIA_RECEBIDA | 122 | 10.018.559 |
+| 1152 | TRANSFERENCIA_RECEBIDA | 121 | 9.797.136 |
+| 1151 | TRANSFERENCIA_RECEBIDA | 109 | 7.827.152 |
+| 1153 | TRANSFERENCIA_RECEBIDA | 75 | 3.516.916 |
+| 2154 | TRANSFERENCIA_RECEBIDA | 124 | 2.465.662 |
+| 2170 | PENDENTE_CLASSIFICACAO | 5 | 10.716 |
+| 1190 | PENDENTE_CLASSIFICACAO | 4 | 4.223 |
+| 2158 | PENDENTE_CLASSIFICACAO | 5 | 2.349 |
+| 2157 | PENDENTE_CLASSIFICACAO | 5 | 810 |
+
+As transferências recebidas (1.15x e 2.15x) estão fora da planilha, que só traz saídas. Elas existem apenas nos arquivos oficiais e só entram no banco por uma carga explicitamente autorizada. **Recebidas e remetidas não são somadas**: o mesmo movimento pode aparecer nas duas direções e a soma duplicaria a contagem. Uma contagem distinta exige identificar os documentos ou uma regra de deduplicação comprovada.
+
+## 11. Transferências remetidas da planilha fora da tabela oficial
+
+A planilha publica 380.140.367 NF-e em `Transferências` (regra 5/6/7.151 a .199). Desse total, 38.882.859 (10,2%) estão em CFOPs que a tabela oficial não lista como transferência. O indicador publicado fica ressalvado e a direção `REMETIDA` só é afirmada para os CFOPs confirmados.
+
+| CFOP | Quantidade de NF-e | Parcela de Transferências |
+| --- | ---: | ---: |
+| 5159 | 18.435.569 | 4,8% |
+| 5160 | 7.188.922 | 1,9% |
+| 6159 | 5.038.929 | 1,3% |
+| 5192 | 3.171.873 | 0,8% |
+| 6162 | 2.236.053 | 0,6% |
+| 5162 | 897.105 | 0,2% |
+| 6192 | 703.169 | 0,2% |
+| 5161 | 660.618 | 0,2% |
+| 5180 | 321.131 | 0,1% |
+| 6160 | 190.831 | 0,1% |
+| 5191 | 33.594 | 0,0% |
+| 7171 | 3.633 | 0,0% |
+| 6182 | 553 | 0,0% |
+| 6195 | 399 | 0,0% |
+| 6197 | 393 | 0,0% |
+| 6168 | 26 | 0,0% |
+| 6180 | 19 | 0,0% |
+| 6158 | 17 | 0,0% |
+| 6170 | 17 | 0,0% |
+| 6161 | 6 | 0,0% |
+| 6167 | 2 | 0,0% |
 

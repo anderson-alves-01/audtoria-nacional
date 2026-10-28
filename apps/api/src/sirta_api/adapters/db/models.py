@@ -411,6 +411,7 @@ class SpedOperationFact(Base):
     comparable_share: Mapped[Decimal | None] = mapped_column(Numeric(9, 6), nullable=True)
     cfop_pairs: Mapped[int | None] = mapped_column(Integer, nullable=True)
     covered_quantity: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    direcao: Mapped[str | None] = mapped_column(String(8), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
@@ -443,6 +444,15 @@ class TaxRateVersion(Base):
     validated_by: Mapped[str | None] = mapped_column(String(160), nullable=True)
     validated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    jurisdiction_level: Mapped[str] = mapped_column(
+        String(12), nullable=False, default="UF", server_default="UF"
+    )
+    municipality_ibge_code: Mapped[str | None] = mapped_column(String(7), nullable=True)
+    operation_ref: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    reference_min: Mapped[Decimal | None] = mapped_column(Numeric(7, 4), nullable=True)
+    reference_max: Mapped[Decimal | None] = mapped_column(Numeric(7, 4), nullable=True)
+    homologated_by: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    homologated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
