@@ -1,6 +1,6 @@
 # Reconciliação da planilha SPED com as publicações originais
 
-Gerado em 2026-10-28 01:18 UTC. Offline, somente leitura. Nenhum número foi corrigido.
+Gerado em 2026-10-28 14:07 UTC. Offline, somente leitura. Nenhum número foi corrigido.
 
 Fontes: histórico por UF e CFOP (2016 a 2025), planilha mensal por CFOP (2025) e a planilha consolidada do repositório. Checksums em `evidence/ops/sped-originais-*.txt`.
 
