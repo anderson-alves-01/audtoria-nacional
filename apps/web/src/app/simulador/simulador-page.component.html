@@ -12,98 +12,200 @@
     <p role="status">Carregando os dados públicos…</p>
   }
   @if (state() === 'error') {
-    <p role="alert">Os dados públicos do SPED não puderam ser lidos.</p>
+    <p role="alert">
+      Os dados públicos do SPED não puderam ser lidos. O simulador continua disponível, sem a comparação com o dado público.
+    </p>
   }
-  @if (state() === 'ok' && view() && !view()?.run) {
-    <app-empty-state
-      title="Nenhuma carga validada do SPED"
-      reason="Ainda não há dado público validado para simular."
-      hint="O simulador usa só quantidade e valor públicos já carregados. Nenhum valor é inventado."
-    />
+  @if (state() === 'ok' && !hasPublic()) {
+    <p class="hint" role="note">
+      Ainda não há carga validada do SPED. Você pode simular com a sua quantidade e valor; a comparação com o dado público
+      fica em branco.
+    </p>
+  }
+
+  <form class="filters" aria-label="Escolhas do simulador" (submit)="$event.preventDefault()">
+    <label>
+      UF
+      <select name="uf" [ngModel]="uf()" (ngModelChange)="uf.set($event)">
+        <option value="">Brasil (soma das UFs)</option>
+        @for (item of ufs(); track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Município
+      <select name="municipio" disabled aria-describedby="sim-municipio-note">
+        <option>Indisponível</option>
+      </select>
+      <small id="sim-municipio-note">Sem fonte pública municipal. Esta fase usa só UF.</small>
+    </label>
+    <label>
+      Operação
+      <select name="operacao" [ngModel]="operation()" (ngModelChange)="operation.set($event)">
+        @for (item of operations(); track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
+    <fieldset class="taxes">
+      <legend>Impostos</legend>
+      @for (def of taxes; track def.id) {
+        <label class="check">
+          <input
+            type="checkbox"
+            [name]="'tax-' + def.id"
+            [checked]="isTaxSelected(def.id)"
+            (change)="toggleTax(def.id, $any($event.target).checked)"
+          />
+          {{ def.label }}
+          <span class="rate">{{ rateText(rateForUf(def.id)) }}</span>
+        </label>
+      }
+    </fieldset>
+  </form>
+
+  @if (icmsNeedsUf()) {
+    <p class="hint" role="note">Escolha uma UF para calcular o ICMS. Sem UF o imposto fica em "—".</p>
+  }
+
+  <h2 class="part" id="parte-b">Parte B · Simule com a sua quantidade e valor</h2>
+  <form class="filters scenario" aria-labelledby="parte-b" (submit)="$event.preventDefault()">
+    <label>
+      Quantidade desejada
+      <input
+        type="number"
+        name="qtd"
+        min="0"
+        step="1"
+        inputmode="numeric"
+        placeholder="Ex.: 1000"
+        [ngModel]="quantityInput()"
+        (ngModelChange)="quantityInput.set(parse($event))"
+      />
+    </label>
+    <label>
+      Valor desejado (R$)
+      <input
+        type="number"
+        name="valor"
+        min="0"
+        step="0.01"
+        inputmode="decimal"
+        placeholder="Ex.: 500000"
+        [ngModel]="valueInput()"
+        (ngModelChange)="valueInput.set(parse($event))"
+      />
+    </label>
+    <label>
+      Ano de comparação
+      <select
+        name="ano"
+        [ngModel]="referenceYearInput() ?? latest()?.year ?? ''"
+        (ngModelChange)="referenceYearInput.set(parse($event))"
+      >
+        @for (row of rows(); track row.year) {
+          <option [value]="row.year">{{ row.year }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Tipo de bem ou serviço
+      <select name="tipo" [ngModel]="goods()" (ngModelChange)="goods.set($event)" aria-describedby="sim-tipo-note">
+        <option value="">Não informado</option>
+        @for (item of goodsTypes; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+      <small id="sim-tipo-note">O dado público não traz esta dimensão. Serve só como rótulo do cenário.</small>
+    </label>
+  </form>
+  @if (inputInvalid()) {
+    <p role="alert" class="hint">Use apenas números iguais ou maiores que zero. O campo inválido foi ignorado.</p>
+  }
+
+  @if (hasScenario()) {
+    <section class="kpis" aria-label="Imposto do cenário simulado">
+      @for (row of simulatedTaxes(); track row.tax) {
+        <app-kpi-card
+          [label]="row.tax + ' do cenário'"
+          [value]="money(row.simulated)"
+          [meta]="'Alíquota ' + rateText(row.rate) + ' · público ' + reference()?.year + ': ' + money(row.published)"
+          kind="Simulado"
+          tone="warn"
+        />
+      }
+    </section>
+
+    <app-panel
+      title="Todos os dados e o cenário simulado"
+      [subtitle]="operation() + ' · ' + territory() + (goods() ? ' · ' + goods() : '')"
+      source="O ponto Simulado usa a quantidade e o valor que você informou. Imposto = valor × alíquota"
+    >
+      <div panelActions><app-badge tone="warn">Simulado</app-badge></div>
+      <app-bi-chart [input]="chart()" caption="Dados públicos e cenário simulado" [height]="360" />
+    </app-panel>
+
+    <app-panel
+      title="Comparação e diferença do imposto"
+      [subtitle]="'Cenário × ' + (reference()?.year ?? '—') + ' público'"
+      source="Diferença = simulado − público. Sem valor público a diferença fica em branco"
+    >
+      <div class="table-wrap">
+        <table>
+          <caption class="sr">Comparação entre o cenário simulado e o dado público</caption>
+          <thead>
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col" class="num">Público ({{ reference()?.year ?? '—' }})</th>
+              <th scope="col" class="num">Simulado</th>
+              <th scope="col" class="num">Diferença</th>
+              <th scope="col" class="num">Diferença %</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of comparison(); track row.label) {
+              <tr>
+                <th scope="row">{{ row.label }}</th>
+                <td class="num tabular">{{ cell(row.publicValue, row.unit) }}</td>
+                <td class="num tabular">{{ cell(row.simulated, row.unit) }}</td>
+                <td class="num tabular">{{ cell(row.difference, row.unit) }}</td>
+                <td class="num tabular">{{ percent(row.differencePercent) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </app-panel>
+  } @else {
+    <p class="hint" role="note">
+      Preencha a quantidade, o valor ou ambos para ver o imposto do cenário, o gráfico com o ponto Simulado e a diferença para
+      o dado público.
+    </p>
   }
 
   @if (state() === 'ok' && view()?.run; as run) {
-    <form class="filters" aria-label="Escolhas do simulador" (submit)="$event.preventDefault()">
-      <label>
-        UF
-        <select name="uf" [ngModel]="uf()" (ngModelChange)="uf.set($event)">
-          <option value="">Brasil (soma das UFs)</option>
-          @for (item of ufs(); track item) {
-            <option [value]="item">{{ item }}</option>
-          }
-        </select>
-      </label>
-      <label>
-        Município
-        <select name="municipio" disabled aria-describedby="sim-municipio-note">
-          <option>Indisponível</option>
-        </select>
-        <small id="sim-municipio-note">Sem fonte pública municipal. Esta fase usa só UF.</small>
-      </label>
-      <label>
-        Operação
-        <select name="operacao" [ngModel]="operation()" (ngModelChange)="operation.set($event)">
-          @for (item of operations(); track item) {
-            <option [value]="item">{{ item }}</option>
-          }
-        </select>
-      </label>
-      <label>
-        Tipo de bem ou serviço
-        <select name="tipo" [ngModel]="goods()" (ngModelChange)="goods.set($event)" aria-describedby="sim-tipo-note">
-          <option value="">Não informado</option>
-          @for (item of goodsTypes; track item) {
-            <option [value]="item">{{ item }}</option>
-          }
-        </select>
-        <small id="sim-tipo-note">O dado público não traz esta dimensão. Serve só como rótulo do cenário.</small>
-      </label>
-      <fieldset class="taxes">
-        <legend>Impostos</legend>
-        @for (def of taxes; track def.id) {
-          <label class="check">
-            <input
-              type="checkbox"
-              [name]="'tax-' + def.id"
-              [checked]="isTaxSelected(def.id)"
-              (change)="toggleTax(def.id, $any($event.target).checked)"
-            />
-            {{ def.label }}
-            @if (def.fixedRate !== null) {
-              <span class="rate">{{ rateText(def.fixedRate) }}</span>
-            } @else {
-              <span class="rate">{{ rateText(rateForUf(def.id)) }}</span>
-            }
-          </label>
-        }
-      </fieldset>
-    </form>
-
-    @if (icmsNeedsUf()) {
-      <p class="hint" role="note">Escolha uma UF para calcular o ICMS. Sem UF o imposto fica em "—".</p>
-    }
-
     <h2 class="part">Parte A · Dados públicos e imposto apurado</h2>
     <section class="kpis" aria-label="Último ano com dado">
       <app-kpi-card label="Operação" [value]="operation()" [meta]="territory()" kind="Sem total entre operações" />
       <app-kpi-card
-        label="Quantidade observada"
+        label="Quantidade"
         [value]="compact(latest()?.quantity ?? null, 'COUNT')"
         [meta]="'Ano ' + (latest()?.year ?? '—')"
         kind="Observado"
       />
       <app-kpi-card
-        label="Valor estimado (rateio)"
+        label="Valor"
         [value]="compact(latest()?.value ?? null, 'BRL')"
-        [meta]="'Ano ' + (latest()?.year ?? '—') + '. Não é valor fiscal'"
-        kind="Estimado"
+        [meta]="'Ano ' + (latest()?.year ?? '—') + ' · em R$'"
+        kind="Valor"
         tone="warn"
       />
       @for (row of taxRows(); track row.tax) {
         <app-kpi-card
           [label]="row.tax + ' apurado'"
           [value]="compact(row.amount, 'BRL')"
-          [meta]="'Alíquota ' + rateText(row.rate) + ' sobre o valor estimado'"
+          [meta]="'Alíquota ' + rateText(row.rate) + ' sobre o valor'"
           kind="Simulado"
           tone="warn"
         />
@@ -113,10 +215,9 @@
     <app-panel
       title="Quantidade, valor e imposto por ano"
       [subtitle]="operation() + ' · ' + territory()"
-      source="Quantidade observada no eixo esquerdo. Valor estimado e impostos em R$ no eixo direito"
+      source="Quantidade no eixo esquerdo. Valor e impostos em R$ no eixo direito"
     >
-      <div panelActions><app-badge tone="warn">Estimado</app-badge></div>
-      <app-bi-chart [input]="chart()" caption="Quantidade, valor estimado e imposto por ano" [height]="340" />
+      <app-bi-chart [input]="publicChart()" caption="Quantidade, valor e imposto por ano" [height]="340" />
     </app-panel>
 
     <app-panel title="Tabela dos dados" [subtitle]="operation() + ' · ' + territory()" source="Célula vazia significa sem valor gravado">
@@ -127,8 +228,8 @@
             <tr>
               <th scope="col">Ano</th>
               <th scope="col">Operação</th>
-              <th scope="col" class="num">Quantidade (observada)</th>
-              <th scope="col" class="num">Valor estimado (R$)</th>
+              <th scope="col" class="num">Quantidade</th>
+              <th scope="col" class="num">Valor (R$)</th>
               @for (tax of selectedTaxes(); track tax) {
                 <th scope="col" class="num">{{ tax }} apurado (R$)</th>
               }
@@ -151,100 +252,12 @@
       </div>
     </app-panel>
 
-    <h2 class="part">Parte B · Cenário desejado</h2>
-    <form class="filters" aria-label="Cenário simulado" (submit)="$event.preventDefault()">
-      <label>
-        Quantidade desejada
-        <input
-          type="number"
-          name="qtd"
-          min="0"
-          step="1"
-          inputmode="numeric"
-          [ngModel]="quantityInput()"
-          (ngModelChange)="quantityInput.set(parse($event))"
-        />
-      </label>
-      <label>
-        Valor desejado (R$)
-        <input
-          type="number"
-          name="valor"
-          min="0"
-          step="0.01"
-          inputmode="decimal"
-          [ngModel]="valueInput()"
-          (ngModelChange)="valueInput.set(parse($event))"
-        />
-      </label>
-      <label>
-        Ano de comparação
-        <select
-          name="ano"
-          [ngModel]="referenceYearInput() ?? latest()?.year ?? ''"
-          (ngModelChange)="referenceYearInput.set(parse($event))"
-        >
-          @for (row of rows(); track row.year) {
-            <option [value]="row.year">{{ row.year }}</option>
-          }
-        </select>
-      </label>
-    </form>
-    @if (inputInvalid()) {
-      <p role="alert" class="hint">Use apenas números iguais ou maiores que zero. O campo inválido foi ignorado.</p>
-    }
-
-    @if (hasScenario()) {
-      <app-panel
-        title="Todos os dados e o cenário simulado"
-        [subtitle]="operation() + ' · ' + territory() + (goods() ? ' · ' + goods() : '')"
-        source="O ponto Simulado usa a quantidade e o valor que você informou. Impostos = valor × alíquota"
-      >
-        <div panelActions><app-badge tone="warn">Simulado</app-badge></div>
-        <app-bi-chart [input]="chart()" caption="Dados públicos e cenário simulado" [height]="360" />
-      </app-panel>
-
-      <app-panel
-        title="Comparação e diferença do imposto"
-        [subtitle]="'Cenário × ' + (reference()?.year ?? '—') + ' público'"
-        source="Diferença = simulado − público. Sem valor público a diferença fica em branco"
-      >
-        <div class="table-wrap">
-          <table>
-            <caption class="sr">Comparação entre o cenário simulado e o dado público</caption>
-            <thead>
-              <tr>
-                <th scope="col">Item</th>
-                <th scope="col" class="num">Público ({{ reference()?.year ?? '—' }})</th>
-                <th scope="col" class="num">Simulado</th>
-                <th scope="col" class="num">Diferença</th>
-                <th scope="col" class="num">Diferença %</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (row of comparison(); track row.label) {
-                <tr>
-                  <th scope="row">{{ row.label }}</th>
-                  <td class="num tabular">{{ cell(row.publicValue, row.unit) }}</td>
-                  <td class="num tabular">{{ cell(row.simulated, row.unit) }}</td>
-                  <td class="num tabular">{{ cell(row.difference, row.unit) }}</td>
-                  <td class="num tabular">{{ percent(row.differencePercent) }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </app-panel>
-    } @else {
-      <p class="hint" role="note">Informe quantidade, valor ou ambos para ver o gráfico com o cenário e a diferença do imposto.</p>
-    }
-
     <section class="lineage" aria-label="Origem e método">
       <h2>Como é calculado</h2>
       <p>
-        Quantidade: observada no SPED NF-e por UF, operação e ano. Valor: rateio estimado do valor nacional do CFOP pela
-        participação da UF em quantidade, lido da planilha publicada, não calculado aqui. Imposto simulado = valor ×
-        alíquota. O valor de uma UF herda qualquer erro da quantidade dela.
+        Quantidade: observada no SPED NF-e por UF, operação e ano. Valor: lido da planilha publicada, que o obtém por rateio do
+        valor nacional do CFOP pela participação da UF em quantidade; não é calculado aqui. Imposto simulado = valor × alíquota.
+        O valor de uma UF herda qualquer erro da quantidade dela.
       </p>
       <p>{{ rateSource }}</p>
       <p>
@@ -254,6 +267,15 @@
       <p>
         Carga {{ run.runId }} · arquivo sha256 {{ run.checksum }} · layout {{ run.layoutVersion }} · competência
         {{ run.competence }}.
+      </p>
+      <p class="legal">A simulação roda no navegador e não grava nada. Cria crédito: não. Homologado: não. Publicado: não.</p>
+    </section>
+  } @else if (state() !== 'loading') {
+    <section class="lineage" aria-label="Método">
+      <h2>Como é calculado</h2>
+      <p>
+        Imposto simulado = valor × alíquota. ICMS usa a alíquota modal interna da UF; o ICMS real varia por produto, operação
+        interestadual e benefício fiscal. {{ rateSource }}
       </p>
       <p class="legal">A simulação roda no navegador e não grava nada. Cria crédito: não. Homologado: não. Publicado: não.</p>
     </section>

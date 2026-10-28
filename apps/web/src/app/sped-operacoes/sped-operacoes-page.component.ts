@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnInit, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { BiChartInput } from '../shared/bi/bi-chart-options';
 import { compactPublishedValue } from '../shared/presentation/official-labels';
 import { BiChartComponent, ChartPick } from '../shared/bi/bi-chart.component';
@@ -46,6 +47,7 @@ function brl(value: Cell): string {
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     KpiCardComponent,
     EmptyStateComponent,
     PanelComponent,
@@ -106,6 +108,8 @@ export class SpedOperacoesPageComponent implements OnInit {
   readonly operacao = computed(() => this.filters.selections()['operacao']?.[0] ?? null);
   readonly activeOperation = computed(() => this.operacao() ?? DEFAULT_OPERATION);
   readonly chips = computed(() => this.filters.chips(LABELS));
+  /** Parametros que o Simulador le para abrir ja na UF e na operacao deste recorte. */
+  readonly simulatorQuery = computed(() => ({ uf: this.uf() ?? null, operacao: this.activeOperation() }));
   readonly tableKey = computed(() => [this.ano(), this.uf(), this.operacao()].join('|'));
 
   private readonly focused = computed(() =>
@@ -126,9 +130,9 @@ export class SpedOperacoesPageComponent implements OnInit {
   readonly quantityByOperation = computed<BiChartInput>(() =>
     this.operationChart('quantidade', 'COUNT', 'Quantidade'),
   );
-  readonly valueByOperation = computed<BiChartInput>(() => this.operationChart('valor', 'BRL', 'Valor estimado'));
+  readonly valueByOperation = computed<BiChartInput>(() => this.operationChart('valor', 'BRL', 'Valor'));
   readonly compareMode = signal<CompareMode>('eixos');
-  /** Quantidade observada e valor estimado no mesmo grafico, em duas linhas distintas. */
+  /** Quantidade e valor no mesmo grafico, em duas linhas distintas. */
   readonly compareByYear = computed<BiChartInput>(() => {
     const years = this.years();
     const operation = this.activeOperation();
@@ -137,7 +141,7 @@ export class SpedOperacoesPageComponent implements OnInit {
       byYear(this.items(), years, operation, 'quantidade', this.uf()),
       byYear(this.items(), years, operation, 'valor', this.uf()),
       this.compareMode(),
-      { quantity: 'Quantidade (observada)', value: 'Valor estimado (rateio)' },
+      { quantity: 'Quantidade', value: 'Valor' },
       { selected: this.ano() ? [this.ano() as string] : [] },
     );
   });
@@ -147,10 +151,10 @@ export class SpedOperacoesPageComponent implements OnInit {
     { id: 'uf', label: 'UF', value: (row) => row.uf, width: 70 },
     { id: 'operacao', label: 'Operação', value: (row) => row.operacao, width: 210 },
     { id: 'cfop', label: 'CFOP', value: (row) => row.cfop, width: 90 },
-    { id: 'quantidade', label: 'Quantidade (observada)', value: (row) => row.quantidade, numeric: true, width: 170 },
+    { id: 'quantidade', label: 'Quantidade', value: (row) => row.quantidade, numeric: true, width: 170 },
     {
       id: 'valor',
-      label: 'Valor estimado (R$)',
+      label: 'Valor (R$)',
       value: (row) => money(row.valorEstimado),
       numeric: true,
       format: brl,

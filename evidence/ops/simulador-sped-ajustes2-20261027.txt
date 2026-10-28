@@ -1,0 +1,30 @@
+Simulador e painel SPED - segundo ajuste (local, NAO publicado)
+Data: 2026-10-27
+
+Pedido do usuario
+1. O valor estimado e somente valor: rotulos "Valor" / "Valor (R$)".
+2. Quantidade e valor num unico mapa por UF.
+3. Parte B (campos quantidade e valor) nao estava visivel.
+
+Mudancas (so frontend; sem API, migration, tabela ou carga)
+- Rotulos: removidos selos "Estimado" por painel e o texto de rateio nas legendas. Mantidos: banner "Exploratorio - nao homologado", secao "Como o valor e calculado", rodape "Cria credito: nao. Homologado: nao. Publicado: nao."
+- sped-hex-map.component.ts: um mapa; hexagono mostra UF, quantidade e valor; "Colorir por Quantidade | Valor"; tabela com as duas medidas; "Mostrar todas as UFs" ao isolar uma UF.
+- Simulador: Parte B no topo, independente de carga SPED (UF/operacao/ano com listas fixas); Parte A so com carga.
+- Painel SPED: botao "Simular com esta UF e operacao" -> /simulador?uf=..&operacao=.. ; parametros aceitos so se estiverem nas listas permitidas (allowedParam).
+
+Verificacao
+- npx ng test --watch=false --browsers=ChromeHeadless: 144 de 144 SUCCESS.
+- npx ng build: sem warnings nem erros.
+- Previa local com dados SINTETICOS (servidor temporario fora do repo, ja encerrado): /simulador?uf=SP&operacao=Vendas com quantidade 300000 e valor 50000000 deu ITCD 3.000.000,00; ITBI 1.500.000,00; ISS 2.500.000,00; ICMS(SP 18%) 9.000.000,00, ao lado do publico de 2025 (rotulo "Valor").
+  - sped-mapa-unico-preview-20261027.png
+  - simulador-parte-b-campos-preview-20261027.png
+  - simulador-parte-b-grafico-preview-20261027.png
+  Prints recortados pela largura da captura.
+
+Pendencias
+- Confirmar ICMS de AC (19% lido de imagem cortada) e a fonte legal/vigencia da tabela de ICMS.
+- Anomalia de UF no xlsx de origem (ex.: volumes de AC) ainda nao conferida na fonte SPED primaria.
+- Publicacao web 0.4.23 (inclui 9cebc87 e este ajuste) aguarda autorizacao. Producao segue em web 0.4.22 (sirta-prod-web:30).
+
+Rollback
+- Reverter os commits desta entrega. Nada de dados foi tocado.

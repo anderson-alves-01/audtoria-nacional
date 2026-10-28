@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { APP_NAV_GROUPS, OPEN_NAV_GROUP_IDS } from '../layout/navigation';
 import { SimuladorPageComponent } from './simulador-page.component';
 
@@ -76,11 +76,53 @@ describe('SimuladorPageComponent', () => {
     expect(APP_NAV_GROUPS.find((group) => group.id === 'simulador')?.links[0].path).toBe('/simulador');
   });
 
-  it('shows an empty state and the simulation banner when nothing was loaded', () => {
-    const { el, http } = loaded([], false);
+  it('keeps the simulation fields usable even when no public data was loaded', () => {
+    const { page, fixture, el, http } = loaded([], false);
     expect(el.textContent).toContain('Simulação · não é apuração fiscal');
-    expect(el.textContent).toContain('Nenhuma carga validada do SPED');
-    expect(el.querySelector('form[aria-label="Escolhas do simulador"]')).toBeNull();
+    expect(el.textContent).toContain('Ainda não há carga validada do SPED');
+    expect(el.textContent).not.toContain('Parte A');
+    expect(el.querySelector('input[name="qtd"]')).toBeTruthy();
+    expect(el.querySelector('input[name="valor"]')).toBeTruthy();
+    page.uf.set('SP');
+    page.valueInput.set(1000);
+    fixture.detectChanges();
+    // Simulated tax still works (value x rate); the public side stays empty.
+    const itcd = page.simulatedTaxes().find((row) => row.tax === 'ITCD');
+    expect(itcd?.simulated).toBe(60);
+    expect(itcd?.published).toBeNull();
+    const valueRow = page.comparison().find((row) => row.label === 'Valor');
+    expect(valueRow?.publicValue).toBeNull();
+    expect(valueRow?.difference).toBeNull();
+    expect(el.textContent).toContain('Comparação e diferença do imposto');
+    http.verify();
+  });
+
+  it('shows Part B with the quantity and value fields above Part A and before any table', () => {
+    const { el, http } = loaded();
+    const html = el.innerHTML;
+    expect(el.querySelector('input[name="qtd"]')).toBeTruthy();
+    expect(el.querySelector('input[name="valor"]')).toBeTruthy();
+    expect((el.querySelector('input[name="qtd"]') as HTMLInputElement).placeholder).toContain('Ex.');
+    expect(html.indexOf('Parte B')).toBeGreaterThan(-1);
+    expect(html.indexOf('Parte B')).toBeLessThan(html.indexOf('Parte A'));
+    expect(el.textContent).toContain('Preencha a quantidade, o valor ou ambos');
+    http.verify();
+  });
+
+  it('shows the simulated tax of each chosen tax as soon as a value is typed', async () => {
+    const { fixture, page, el, http } = loaded();
+    page.uf.set('SP');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const value = el.querySelector('input[name="valor"]') as HTMLInputElement;
+    value.value = '5000';
+    value.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(page.valueInput()).toBe(5000);
+    expect(page.simulatedTaxes().find((row) => row.tax === 'ITCD')?.simulated).toBe(300);
+    expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(900);
+    expect(el.textContent).toContain('ITCD do cenário');
+    expect(el.textContent).not.toContain('Preencha a quantidade, o valor ou ambos');
     http.verify();
   });
 
@@ -158,13 +200,49 @@ describe('SimuladorPageComponent', () => {
     http.verify();
   });
 
-  it('shows an alert when the read fails', () => {
+  it('shows an alert when the read fails but keeps the fields', () => {
     const fixture = TestBed.createComponent(SimuladorPageComponent);
     const http = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
     http.expectOne((req) => req.params.get('level') === 'SERIE').flush('x', { status: 500, statusText: 'err' });
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).querySelector('[role="alert"]')?.textContent).toContain('não puderam ser lidos');
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('[role="alert"]')?.textContent).toContain('não puderam ser lidos');
+    expect(el.querySelector('input[name="qtd"]')).toBeTruthy();
+    http.verify();
+  });
+});
+
+describe('SimuladorPageComponent opened from the SPED panel', () => {
+  function open(query: Record<string, string>) {
+    TestBed.configureTestingModule({
+      imports: [SimuladorPageComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap(query) } } },
+      ],
+    });
+    const fixture = TestBed.createComponent(SimuladorPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http.expectOne((req) => req.params.get('level') === 'SERIE').flush(view(ITEMS));
+    fixture.detectChanges();
+    return { page: fixture.componentInstance, http };
+  }
+
+  it('pre-fills the UF and the operation from the URL', () => {
+    const { page, http } = open({ uf: 'SP', operacao: 'Compras' });
+    expect(page.uf()).toBe('SP');
+    expect(page.operation()).toBe('Compras');
+    http.verify();
+  });
+
+  it('ignores unknown values in the URL', () => {
+    const { page, http } = open({ uf: 'XX', operacao: '<img src=x>' });
+    expect(page.uf()).toBe('');
+    expect(page.operation()).toBe('Vendas');
     http.verify();
   });
 });

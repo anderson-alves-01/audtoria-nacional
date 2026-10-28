@@ -83,6 +83,31 @@ section.kpis {
   grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
 }
 
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0 0 1rem;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
+  color: var(--accent-strong);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cta:hover,
+.cta:focus-visible {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
 .wide {
   grid-column: 1 / -1;
 }

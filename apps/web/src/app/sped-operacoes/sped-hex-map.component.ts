@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output, computed, signal } from '@angular/core';
 import { HEX_LAYOUT, HexCell } from '../atlas/hex-layout';
+import { compactPublishedValue } from '../shared/presentation/official-labels';
 import {
+  EMPTY,
   HexShape,
   Measure,
   bounds,
@@ -12,8 +14,9 @@ import {
 } from './sped-logic';
 
 /**
- * Mapa de hexágonos por UF. A posição de cada UF é a constante cartográfica do template.
- * UF sem valor fica vazia e nunca recebe cor de zero.
+ * Mapa de hexágonos por UF com quantidade e valor no mesmo hexágono. A posição de cada UF é a
+ * constante cartográfica do template. A cor segue a medida escolhida. UF sem valor fica vazia
+ * e nunca recebe cor de zero.
  */
 @Component({
   selector: 'app-sped-hex-map',
@@ -23,6 +26,15 @@ import {
       <div class="bar">
         <figcaption>{{ caption }}</figcaption>
         <span class="actions">
+          <span class="mode" role="group" aria-label="Colorir por">
+            <span class="lbl">Colorir por</span>
+            <button type="button" class="mini" [attr.aria-pressed]="colorBy() === 'quantidade'" (click)="colorBy.set('quantidade')">
+              Quantidade
+            </button>
+            <button type="button" class="mini" [attr.aria-pressed]="colorBy() === 'valor'" (click)="colorBy.set('valor')">
+              Valor
+            </button>
+          </span>
           @if (isolated) {
             <button type="button" class="mini" (click)="cleared.emit()">Mostrar todas as UFs</button>
           }
@@ -42,37 +54,39 @@ import {
             <g
               class="cell"
               [class.selected]="selected === shape.cell.uf"
-              [class.empty]="values.get(shape.cell.uf) === null || values.get(shape.cell.uf) === undefined"
+              [class.empty]="isEmpty(shape.cell.uf)"
               tabindex="0"
               role="button"
               [attr.aria-pressed]="selected === shape.cell.uf"
-              [attr.aria-label]="shape.cell.nome + ': ' + text(shape.cell.uf)"
+              [attr.aria-label]="label(shape.cell.uf, shape.cell.nome)"
               (click)="picked.emit(shape.cell.uf)"
               (keydown.enter)="picked.emit(shape.cell.uf)"
               (keydown.space)="picked.emit(shape.cell.uf); $event.preventDefault()"
             >
-              <title>{{ shape.cell.nome }}: {{ text(shape.cell.uf) }}</title>
+              <title>{{ label(shape.cell.uf, shape.cell.nome) }}</title>
               <path [attr.d]="shape.path" [style.fill]="fill(shape.cell.uf)" />
-              <text [attr.x]="shape.cx" [attr.y]="shape.cy + (isolated ? -2 : 4)" text-anchor="middle">{{ shape.cell.uf }}</text>
-              @if (isolated) {
-                <text class="val" [attr.x]="shape.cx" [attr.y]="shape.cy + 14" text-anchor="middle">{{ text(shape.cell.uf) }}</text>
-              }
+              <text class="uf" [attr.x]="shape.cx" [attr.y]="shape.cy - 8" text-anchor="middle">{{ shape.cell.uf }}</text>
+              <text class="val q" [attr.x]="shape.cx" [attr.y]="shape.cy + 5" text-anchor="middle">{{ compact(shape.cell.uf, 'quantidade') }}</text>
+              <text class="val v" [attr.x]="shape.cx" [attr.y]="shape.cy + 15" text-anchor="middle">{{ compact(shape.cell.uf, 'valor') }}</text>
             </g>
           }
         </svg>
         <p class="scale">
           @if (isolated) {
-            <span>{{ selectedName }}: {{ text(selected ?? '') }}. As demais UFs estão ocultas.</span>
+            <span>
+              {{ selectedName }}: quantidade {{ text(selected ?? '', 'quantidade') }}, valor {{ text(selected ?? '', 'valor') }}.
+              As demais UFs estão ocultas.
+            </span>
           } @else {
             @if (range(); as r) {
-              <span>menor {{ format(r.min) }}</span>
+              <span>{{ colorBy() === 'valor' ? 'Valor' : 'Quantidade' }}: menor {{ format(r.min) }}</span>
               <span class="ramp" aria-hidden="true" [attr.data-tone]="tone"></span>
               <span>maior {{ format(r.max) }}</span>
             } @else {
               <span>Sem valor neste recorte.</span>
             }
           }
-          <span class="none">Hexágono vazio: sem valor gravado.</span>
+          <span class="none">Cada hexágono mostra UF, quantidade e valor. Vazio: sem valor gravado.</span>
         </p>
       } @else {
         <div class="table-wrap">
@@ -82,7 +96,8 @@ import {
               <tr>
                 <th scope="col">UF</th>
                 <th scope="col">Estado</th>
-                <th scope="col" class="num">{{ measure === 'valor' ? 'Valor estimado' : 'Quantidade' }}</th>
+                <th scope="col" class="num">Quantidade</th>
+                <th scope="col" class="num">Valor</th>
               </tr>
             </thead>
             <tbody>
@@ -90,7 +105,8 @@ import {
                 <tr>
                   <th scope="row">{{ cell.uf }}</th>
                   <td>{{ cell.nome }}</td>
-                  <td class="num tabular">{{ text(cell.uf) }}</td>
+                  <td class="num tabular">{{ text(cell.uf, 'quantidade') }}</td>
+                  <td class="num tabular">{{ text(cell.uf, 'valor') }}</td>
                 </tr>
               }
             </tbody>
@@ -107,6 +123,7 @@ import {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       gap: var(--sp-3);
       margin-bottom: var(--sp-2);
     }
@@ -120,9 +137,22 @@ import {
       font-size: 0.78rem;
       background: transparent;
     }
+    .mini[aria-pressed='true'] {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+    }
+    .mode {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+    .lbl {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
     svg {
       width: 100%;
-      max-height: 22rem;
+      max-height: 26rem;
     }
     svg.single {
       max-height: 14rem;
@@ -132,11 +162,8 @@ import {
     }
     .actions {
       display: inline-flex;
+      flex-wrap: wrap;
       gap: var(--sp-2);
-    }
-    .cell text.val {
-      font-size: 7px;
-      font-weight: 500;
     }
     .cell {
       cursor: pointer;
@@ -151,9 +178,15 @@ import {
     }
     .cell text {
       fill: var(--text);
-      font-size: 11px;
-      font-weight: 600;
       pointer-events: none;
+    }
+    .cell text.uf {
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .cell text.val {
+      font-size: 7px;
+      font-weight: 500;
     }
     .cell:hover path,
     .cell:focus-visible path {
@@ -185,7 +218,7 @@ import {
       margin-left: auto;
     }
     .table-wrap {
-      max-height: 22rem;
+      max-height: 26rem;
       overflow: auto;
       border: 1px solid var(--line);
       border-radius: var(--r-sm);
@@ -210,17 +243,25 @@ export class SpedHexMapComponent {
   readonly cells = HEX_LAYOUT;
   readonly shapes = hexShapes();
   readonly showTable = signal(false);
-  private readonly data = signal<Map<string, number | null>>(new Map());
+  readonly colorBy = signal<Measure>('quantidade');
+  private readonly quantityData = signal<Map<string, number | null>>(new Map());
+  private readonly valueData = signal<Map<string, number | null>>(new Map());
 
-  @Input({ required: true }) set input(value: Map<string, number | null>) {
-    this.data.set(value);
+  @Input({ required: true }) set quantity(value: Map<string, number | null>) {
+    this.quantityData.set(value);
+  }
+  @Input({ required: true }) set value(value: Map<string, number | null>) {
+    this.valueData.set(value);
   }
   @Input() caption = '';
-  @Input() measure: Measure = 'quantidade';
   @Input() selected: string | null = null;
-  @Input() tone: 'accent' | 'warn' = 'accent';
   @Output() picked = new EventEmitter<string>();
   @Output() cleared = new EventEmitter<void>();
+
+  /** Quantidade em tom de destaque; valor em tom de aviso, para nao confundir as duas medidas. */
+  get tone(): 'accent' | 'warn' {
+    return this.colorBy() === 'valor' ? 'warn' : 'accent';
+  }
 
   /** Com UF escolhida e conhecida, so o hexagono dela aparece. */
   get shown(): HexShape[] {
@@ -243,23 +284,38 @@ export class SpedHexMapComponent {
     return this.cells.find((cell) => cell.uf === this.selected)?.nome ?? '';
   }
 
-  readonly range = computed(() => bounds(this.data().values()));
+  private readonly active = computed(() => (this.colorBy() === 'valor' ? this.valueData() : this.quantityData()));
+  readonly range = computed(() => bounds(this.active().values()));
 
-  get values(): Map<string, number | null> {
-    return this.data();
+  private mapOf(measure: Measure): Map<string, number | null> {
+    return measure === 'valor' ? this.valueData() : this.quantityData();
+  }
+
+  isEmpty(uf: string): boolean {
+    return (this.active().get(uf) ?? null) === null;
   }
 
   format(value: number): string {
-    return formatMeasure(value, this.measure);
+    return formatMeasure(value, this.colorBy());
   }
 
-  text(uf: string): string {
-    return formatMeasure(this.data().get(uf) ?? null, this.measure);
+  text(uf: string, measure: Measure): string {
+    return formatMeasure(this.mapOf(measure).get(uf) ?? null, measure);
+  }
+
+  /** Forma curta para caber no hexagono. O valor exato fica na tabela e no rotulo. */
+  compact(uf: string, measure: Measure): string {
+    const value = this.mapOf(measure).get(uf) ?? null;
+    return value === null ? EMPTY : compactPublishedValue(value, measure === 'valor' ? 'BRL' : 'COUNT');
+  }
+
+  label(uf: string, name: string): string {
+    return `${name}: quantidade ${this.text(uf, 'quantidade')}, valor ${this.text(uf, 'valor')}`;
   }
 
   fill(uf: string): string | null {
     const range = this.range();
-    const value = this.data().get(uf) ?? null;
+    const value = this.active().get(uf) ?? null;
     if (!range || value === null) {
       return null;
     }

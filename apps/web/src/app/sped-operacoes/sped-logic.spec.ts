@@ -79,7 +79,7 @@ describe('sped logic', () => {
   it('builds the comparison with two axes and two distinct lines', () => {
     const chart = comparisonChart(['2021', '2022'], [10, 20], [100, null], 'eixos', {
       quantity: 'Quantidade',
-      value: 'Valor estimado',
+      value: 'Valor',
     });
     expect(chart.kind).toBe('line');
     expect(chart.series?.length).toBe(2);
@@ -92,7 +92,7 @@ describe('sped logic', () => {
   it('builds the index comparison from 100 on a single axis', () => {
     const chart = comparisonChart(['2021', '2022'], [10, 20], [null, 50], 'indice', {
       quantity: 'Quantidade',
-      value: 'Valor estimado',
+      value: 'Valor',
     });
     expect(chart.unit).toBe('INDEX');
     expect(chart.series?.every((entry) => entry.axis === undefined)).toBeTrue();

@@ -89,16 +89,17 @@ describe('SpedOperacoesPageComponent', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     const text = el.textContent as string;
-    expect(text).toContain('Quantidade por UF');
-    expect(text).toContain('Valor estimado por UF');
-    expect(text).toContain('Valor estimado (rateio)');
+    expect(text).toContain('Quantidade e valor por UF');
+    expect(text).not.toContain('Valor estimado');
+    expect(text).toContain('Exploratório · não homologado');
     expect(text).toContain('Sem total entre operações');
     expect(text).toContain('Cria crédito: não');
     // Vendas only: 1.200 observed, never 2.000 (Vendas + Compras).
     expect(text).toContain('1.200');
     expect(text).not.toContain('2.000');
-    expect(el.querySelectorAll('app-sped-hex-map').length).toBe(2);
-    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(54);
+    // One single map carries quantity and value together.
+    expect(el.querySelectorAll('app-sped-hex-map').length).toBe(1);
+    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(27);
     // UF with no value stays an empty hexagon, not a zero-coloured one.
     expect(el.querySelectorAll('app-sped-hex-map g.cell.empty').length).toBeGreaterThan(0);
     http.verify();
@@ -123,12 +124,50 @@ describe('SpedOperacoesPageComponent', () => {
     return { fixture, http, el: fixture.nativeElement as HTMLElement };
   }
 
-  it('hides the other UFs in both maps when one is selected and restores them on request', () => {
+  it('shows quantity and value inside the same hexagon and lets the colour follow the chosen measure', () => {
     const { fixture, http, el } = loaded();
-    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(54);
+    const sp = Array.from(el.querySelectorAll('app-sped-hex-map g.cell')).find((g) =>
+      (g.getAttribute('aria-label') ?? '').startsWith('São Paulo'),
+    ) as SVGGElement;
+    // 2021 (100) + 2022 (200) of Vendas in SP.
+    expect(sp.getAttribute('aria-label')).toContain('quantidade 300');
+    expect(sp.getAttribute('aria-label')).toContain('valor');
+    expect(sp.querySelector('text.q')?.textContent).toContain('300');
+    expect(sp.querySelector('text.v')?.textContent).toContain('R$');
+    const colorValue = Array.from(el.querySelectorAll('app-sped-hex-map .mode button')).find(
+      (b) => (b.textContent ?? '').trim() === 'Valor',
+    ) as HTMLButtonElement;
+    expect(colorValue.getAttribute('aria-pressed')).toBe('false');
+    colorValue.click();
+    fixture.detectChanges();
+    expect(colorValue.getAttribute('aria-pressed')).toBe('true');
+    expect(el.querySelector('app-sped-hex-map .scale')?.textContent).toContain('Valor: menor');
+    // The table view carries both measures.
+    (el.querySelector('app-sped-hex-map .actions > button[aria-pressed]') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    const heads = Array.from(el.querySelectorAll('app-sped-hex-map thead th')).map((th) => th.textContent?.trim());
+    expect(heads).toEqual(['UF', 'Estado', 'Quantidade', 'Valor']);
+    http.match(() => true);
+  });
+
+  it('links to the simulator with the UF and the operation of the cut', () => {
+    const { fixture, http, el } = loaded();
     fixture.componentInstance.choose('uf', 'SP');
     fixture.detectChanges();
-    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(2);
+    const link = el.querySelector('a.cta') as HTMLAnchorElement;
+    expect(link.textContent).toContain('Simular');
+    expect(link.getAttribute('href')).toContain('/simulador');
+    expect(link.getAttribute('href')).toContain('uf=SP');
+    expect(link.getAttribute('href')).toContain('operacao=Vendas');
+    http.match(() => true);
+  });
+
+  it('hides the other UFs in the map when one is selected and restores them on request', () => {
+    const { fixture, http, el } = loaded();
+    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(27);
+    fixture.componentInstance.choose('uf', 'SP');
+    fixture.detectChanges();
+    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(1);
     expect(el.querySelector('app-sped-hex-map g.cell')?.textContent).toContain('SP');
     const restore = Array.from(el.querySelectorAll('app-sped-hex-map button')).find((b) =>
       (b.textContent ?? '').includes('Mostrar todas as UFs'),
@@ -136,21 +175,21 @@ describe('SpedOperacoesPageComponent', () => {
     expect(restore).toBeTruthy();
     restore.click();
     fixture.detectChanges();
-    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(54);
+    expect(el.querySelectorAll('app-sped-hex-map g.cell').length).toBe(27);
     http.match(() => true);
   });
 
-  it('puts quantity and estimated value in one chart and switches between axes and index', () => {
+  it('puts quantity and value in one chart and switches between axes and index', () => {
     const { fixture, http, el } = loaded();
     const page = fixture.componentInstance;
     expect(el.querySelectorAll('app-bi-chart').length).toBe(3);
     const chart = page.compareByYear();
     expect(chart.series?.length).toBe(2);
     expect(chart.series?.[0].name).toContain('Quantidade');
-    expect(chart.series?.[1].name).toContain('Valor estimado');
+    expect(chart.series?.[1].name).toBe('Valor');
     expect(chart.series?.[1].axis).toBe('right');
     expect(el.textContent).toContain('Eixos separados');
-    expect(el.textContent).toContain('Eixo direito: valor estimado em R$');
+    expect(el.textContent).toContain('Eixo direito: valor em R$');
     const index = Array.from(el.querySelectorAll('.mode button')).find((b) =>
       (b.textContent ?? '').includes('Índice'),
     ) as HTMLButtonElement;
@@ -163,9 +202,9 @@ describe('SpedOperacoesPageComponent', () => {
     http.match(() => true);
   });
 
-  it('explains how the estimated value is calculated', () => {
+  it('explains how the value is calculated', () => {
     const { fixture, http, el } = loaded();
-    expect(el.textContent).toContain('Como o valor estimado é calculado');
+    expect(el.textContent).toContain('Como o valor é calculado');
     expect(el.textContent).toContain('não é calculado por esta plataforma');
     expect(fixture.componentInstance).toBeTruthy();
     http.match(() => true);

@@ -63,6 +63,22 @@ export const GOODS_TYPES = [
   'Serviços Gerais',
 ] as const;
 
+/**
+ * Operacoes e anos do contrato SPED-NFE-UF-CFOP. Servem de lista quando a leitura do dado
+ * publico falha ou nao ha carga: o simulador continua utilizavel sem inventar numero.
+ */
+export const SPED_OPERATIONS = [
+  'Compras',
+  'Vendas',
+  'Transferências',
+  'Doações / bonificações / brindes',
+  'Serviços Prestados',
+  'Serviços Tomados',
+  'Outras Saídas',
+] as const;
+
+export const SPED_YEARS = [2021, 2022, 2023, 2024, 2025] as const;
+
 /** Aliquota em % do imposto para a UF. Sem aliquota conhecida devolve nulo (falha fechada). */
 export function rateFor(tax: TaxId, uf: string | null): number | null {
   const def = TAXES.find((entry) => entry.id === tax);

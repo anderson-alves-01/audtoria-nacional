@@ -55,6 +55,11 @@
 
     <app-filter-bar [chips]="chips()" (removed)="filters.remove($event)" (cleared)="filters.clear()" />
 
+    <p class="cta-row">
+      <a class="cta" routerLink="/simulador" [queryParams]="simulatorQuery()">Simular com esta UF e operação</a>
+      <span class="hint">Informe quantidade e valor desejados e veja o imposto e a diferença no Simulador.</span>
+    </p>
+
     <section class="kpis" aria-label="Indicadores do recorte">
       <app-kpi-card
         label="Operação em foco"
@@ -69,10 +74,10 @@
         kind="Observado"
       />
       <app-kpi-card
-        label="Valor estimado (rateio)"
+        label="Valor"
         [value]="compact(estimated(), 'valor')"
-        meta="Estimativa de rateio. Não é valor fiscal efetivo"
-        kind="Estimado"
+        [meta]="'Em R$ · ' + activeOperation() + (ano() ? ' em ' + ano() : ' de 2021 a 2025')"
+        kind="Valor"
         tone="warn"
       />
       <app-kpi-card label="UFs com ocorrência" [value]="ufsWithOccurrence() + ' de 27'" [meta]="activeOperation()" kind="Observado" tone="info" />
@@ -80,38 +85,22 @@
 
     <div class="bi-grid">
       <app-panel
-        title="Quantidade por UF"
+        class="wide"
+        title="Quantidade e valor por UF"
         [subtitle]="activeOperation() + (ano() ? ' · ' + ano() : ' · 2021 a 2025')"
-        source="Quantidade observada · clique em uma UF para filtrar"
+        source="Clique em uma UF para filtrar. A cor segue a medida escolhida"
       >
         <app-sped-hex-map
-          [input]="quantityMap()"
-          [caption]="'Quantidade de ' + activeOperation() + ' por UF'"
-          measure="quantidade"
+          [quantity]="quantityMap()"
+          [value]="valueMap()"
+          [caption]="'Quantidade e valor de ' + activeOperation() + ' por UF'"
           [selected]="uf()"
           (picked)="onMap($event)"
           (cleared)="clearUf()"
         />
       </app-panel>
 
-      <app-panel
-        title="Valor estimado por UF"
-        [subtitle]="activeOperation() + ' · estimado'"
-        source="Rateio estimado de totais nacionais · não é valor fiscal da UF"
-      >
-        <div panelActions><app-badge tone="warn">Estimado</app-badge></div>
-        <app-sped-hex-map
-          [input]="valueMap()"
-          [caption]="'Valor estimado de ' + activeOperation() + ' por UF'"
-          measure="valor"
-          tone="warn"
-          [selected]="uf()"
-          (picked)="onMap($event)"
-          (cleared)="clearUf()"
-        />
-      </app-panel>
-
-      <app-panel title="Quantidade por operação" subtitle="Cada barra é uma operação. Não há total" source="Quantidade observada · clique escolhe a operação">
+      <app-panel title="Quantidade por operação" subtitle="Cada barra é uma operação. Não há total" source="Clique escolhe a operação">
         <app-bi-chart
           [input]="quantityByOperation()"
           caption="Quantidade por operação"
@@ -120,11 +109,10 @@
         />
       </app-panel>
 
-      <app-panel title="Valor estimado por operação" subtitle="Cada barra é uma operação. Não há total" source="Rateio estimado · não é valor fiscal">
-        <div panelActions><app-badge tone="warn">Estimado</app-badge></div>
+      <app-panel title="Valor por operação" subtitle="Cada barra é uma operação. Não há total" source="Clique escolhe a operação">
         <app-bi-chart
           [input]="valueByOperation()"
-          caption="Valor estimado por operação"
+          caption="Valor por operação"
           [height]="300"
           (picked)="onPick($event, 'operacao')"
         />
@@ -132,9 +120,9 @@
 
       <app-panel
         class="wide"
-        title="Quantidade e valor estimado, 2021 a 2025"
+        title="Quantidade e valor, 2021 a 2025"
         [subtitle]="activeOperation() + (uf() ? ' · ' + uf() : ' · Brasil, soma das UFs')"
-        source="Linha de quantidade é observada. Linha de valor é rateio estimado · clique escolhe o ano"
+        source="Clique escolhe o ano"
       >
         <div panelActions>
           <div class="mode" role="group" aria-label="Modo de comparação">
@@ -148,14 +136,14 @@
         </div>
         <p class="hint" role="note">
           @if (compareMode() === 'eixos') {
-            Eixo esquerdo: quantidade observada. Eixo direito: valor estimado em R$. As escalas são diferentes de propósito.
+            Eixo esquerdo: quantidade. Eixo direito: valor em R$. As escalas são diferentes de propósito.
           } @else {
             As duas linhas partem de 100 no primeiro ano com valor e mostram só a variação relativa. Ano sem valor fica em branco.
           }
         </p>
         <app-bi-chart
           [input]="compareByYear()"
-          caption="Quantidade e valor estimado por ano"
+          caption="Quantidade e valor por ano"
           [height]="320"
           (picked)="onPick($event, 'ano')"
         />
@@ -165,7 +153,7 @@
     <app-panel
       title="UF × CFOP"
       subtitle="Linhas da base com o mesmo recorte dos gráficos"
-      source="Quantidade observada · valor em R$ é rateio estimado · célula vazia significa sem valor"
+      source="Célula vazia significa sem valor"
     >
       @if (cfopState() === 'error') {
         <p role="alert">A tabela por CFOP não pôde ser lida.</p>
@@ -190,8 +178,8 @@
               <dd>{{ run.layoutVersion }} · competência {{ run.competence }}</dd>
               <dt>Quantidade</dt>
               <dd>{{ row.quantidade | number }} (observada)</dd>
-              <dt>Valor estimado</dt>
-              <dd>{{ row.valorEstimado === null ? '—' : (row.valorEstimado | currency: 'BRL') }} (rateio estimado)</dd>
+              <dt>Valor</dt>
+              <dd>{{ row.valorEstimado === null ? '—' : (row.valorEstimado | currency: 'BRL') }}</dd>
               <dt>Fórmula</dt>
               <dd>{{ table.formula }}</dd>
             </dl>
@@ -216,7 +204,7 @@
         {{ run.competence }} · {{ run.receivedCount | number }} linhas recebidas.
       </p>
       <p>{{ view()?.formula }}</p>
-      <h2>Como o valor estimado é calculado</h2>
+      <h2>Como o valor é calculado</h2>
       <p>
         A quantidade é observada no SPED. O valor em R$ não é calculado por esta plataforma: vem da planilha publicada e é
         um rateio. Valor do par UF, CFOP e ano = valor nacional do CFOP no ano × quantidade da UF no CFOP e ano ÷ soma das

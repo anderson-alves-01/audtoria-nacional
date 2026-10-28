@@ -1,6 +1,7 @@
 import { SpedSerieItem } from '../sped-operacoes/sped-logic';
 import { GOODS_TYPES, ICMS_RATE_BY_UF, TAXES, rateFor } from './simulador-aliquotas';
 import {
+  allowedParam,
   publicByYear,
   referenceYear,
   sanitize,
@@ -92,6 +93,13 @@ describe('simulador logic', () => {
     expect(none.every((row) => row.simulated === null && row.difference === null)).toBeTrue();
   });
 
+  it('accepts a URL parameter only when it is in the known list', () => {
+    expect(allowedParam('SP', ['AC', 'SP'], '')).toBe('SP');
+    expect(allowedParam('XX', ['AC', 'SP'], '')).toBe('');
+    expect(allowedParam(null, ['Vendas'], 'Vendas')).toBe('Vendas');
+    expect(allowedParam('<script>', ['Vendas'], 'Vendas')).toBe('Vendas');
+  });
+
   it('falls back to the latest year when the reference year is unknown', () => {
     const rows = publicByYear(items, [2021, 2022], 'Vendas', 'SP');
     expect(referenceYear(rows, 1999)?.year).toBe(2022);
@@ -103,8 +111,8 @@ describe('simulador logic', () => {
     const plain = simulatorChart(rows, ['ITCD'], 'SP', null);
     expect(plain.categories).toEqual(['2021', '2022']);
     expect(plain.series?.map((entry) => entry.name)).toEqual([
-      'Quantidade (observada)',
-      'Valor estimado (rateio)',
+      'Quantidade',
+      'Valor',
       'ITCD apurado',
     ]);
     expect(plain.series?.[1].axis).toBe('right');

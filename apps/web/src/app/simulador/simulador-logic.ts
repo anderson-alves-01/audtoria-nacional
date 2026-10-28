@@ -1,6 +1,6 @@
 /**
- * Regras puras do Simulador. Imposto = valor x aliquota. Quantidade e observada, valor publico
- * e rateio estimado e o imposto e simulacao aritmetica, nao apuracao fiscal.
+ * Regras puras do Simulador. Imposto = valor x aliquota. Quantidade e observada, o valor
+ * publico vem da planilha (rateio) e o imposto e simulacao aritmetica, nao apuracao fiscal.
  * Nada aqui soma operacoes ou impostos diferentes. Valor ausente nunca vira zero.
  */
 import { BiChartInput } from '../shared/bi/bi-chart-options';
@@ -116,8 +116,8 @@ export function simulatorChart(
   const categories = withScenario ? [...years, SIMULATED_LABEL] : years;
   const pad = (values: (number | null)[]): (number | null)[] => (withScenario ? [...values, null] : values);
   const series: BiChartInput['series'] = [
-    { name: 'Quantidade (observada)', values: pad(rows.map((row) => row.quantity)), unit: 'COUNT' },
-    { name: 'Valor estimado (rateio)', values: pad(rows.map((row) => row.value)), axis: 'right', unit: 'BRL' },
+    { name: 'Quantidade', values: pad(rows.map((row) => row.quantity)), unit: 'COUNT' },
+    { name: 'Valor', values: pad(rows.map((row) => row.value)), axis: 'right', unit: 'BRL' },
   ];
   for (const tax of taxes) {
     series.push({
@@ -134,7 +134,7 @@ export function simulatorChart(
       values: simulatedOnly(size, scenario.quantity),
       unit: 'COUNT',
       dashed: true,
-      colorLike: 'Quantidade (observada)',
+      colorLike: 'Quantidade',
     });
     series.push({
       name: 'Valor simulado',
@@ -142,7 +142,7 @@ export function simulatorChart(
       axis: 'right',
       unit: 'BRL',
       dashed: true,
-      colorLike: 'Valor estimado (rateio)',
+      colorLike: 'Valor',
     });
     for (const tax of taxes) {
       series.push({
@@ -156,6 +156,11 @@ export function simulatorChart(
     }
   }
   return { kind: 'line', unit: 'COUNT', categories, series };
+}
+
+/** Valor vindo da URL so vale se estiver na lista conhecida. Qualquer outro cai no padrao. */
+export function allowedParam(raw: string | null | undefined, allowed: readonly string[], fallback: string): string {
+  return raw && allowed.includes(raw) ? raw : fallback;
 }
 
 /** Linha de referencia da Parte B para o ano escolhido. */
