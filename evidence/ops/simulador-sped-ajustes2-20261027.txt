@@ -9,7 +9,8 @@ Pedido do usuario
 Mudancas (so frontend; sem API, migration, tabela ou carga)
 - Rotulos: removidos selos "Estimado" por painel e o texto de rateio nas legendas. Mantidos: banner "Exploratorio - nao homologado", secao "Como o valor e calculado", rodape "Cria credito: nao. Homologado: nao. Publicado: nao."
 - sped-hex-map.component.ts: um mapa; hexagono mostra UF, quantidade e valor; "Colorir por Quantidade | Valor"; tabela com as duas medidas; "Mostrar todas as UFs" ao isolar uma UF.
-- Simulador: Parte B no topo, independente de carga SPED (UF/operacao/ano com listas fixas); Parte A so com carga.
+- Simulador: dados publicos e imposto primeiro (so com carga); campos de quantidade e valor depois, independentes de carga SPED (listas fixas). Removidos os textos "Parte A"/"Parte B" e o seletor de Municipio (sem fonte publica).
+- Os prints simulador-parte-b-* abaixo foram feitos antes desta inversao de ordem; mostram o layout anterior.
 - Painel SPED: botao "Simular com esta UF e operacao" -> /simulador?uf=..&operacao=.. ; parametros aceitos so se estiverem nas listas permitidas (allowedParam).
 
 Verificacao

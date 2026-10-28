@@ -34,13 +34,6 @@
       </select>
     </label>
     <label>
-      Município
-      <select name="municipio" disabled aria-describedby="sim-municipio-note">
-        <option>Indisponível</option>
-      </select>
-      <small id="sim-municipio-note">Sem fonte pública municipal. Esta fase usa só UF.</small>
-    </label>
-    <label>
       Operação
       <select name="operacao" [ngModel]="operation()" (ngModelChange)="operation.set($event)">
         @for (item of operations(); track item) {
@@ -69,8 +62,77 @@
     <p class="hint" role="note">Escolha uma UF para calcular o ICMS. Sem UF o imposto fica em "—".</p>
   }
 
-  <h2 class="part" id="parte-b">Parte B · Simule com a sua quantidade e valor</h2>
-  <form class="filters scenario" aria-labelledby="parte-b" (submit)="$event.preventDefault()">
+  @if (state() === 'ok' && view()?.run; as run) {
+    <h2 class="part">Dados públicos e imposto apurado</h2>
+    <section class="kpis" aria-label="Último ano com dado">
+      <app-kpi-card label="Operação" [value]="operation()" [meta]="territory()" kind="Sem total entre operações" />
+      <app-kpi-card
+        label="Quantidade"
+        [value]="compact(latest()?.quantity ?? null, 'COUNT')"
+        [meta]="'Ano ' + (latest()?.year ?? '—')"
+        kind="Observado"
+      />
+      <app-kpi-card
+        label="Valor"
+        [value]="compact(latest()?.value ?? null, 'BRL')"
+        [meta]="'Ano ' + (latest()?.year ?? '—') + ' · em R$'"
+        kind="Valor"
+        tone="warn"
+      />
+      @for (row of taxRows(); track row.tax) {
+        <app-kpi-card
+          [label]="row.tax + ' apurado'"
+          [value]="compact(row.amount, 'BRL')"
+          [meta]="'Alíquota ' + rateText(row.rate) + ' sobre o valor'"
+          kind="Simulado"
+          tone="warn"
+        />
+      }
+    </section>
+
+    <app-panel
+      title="Quantidade, valor e imposto por ano"
+      [subtitle]="operation() + ' · ' + territory()"
+      source="Quantidade no eixo esquerdo. Valor e impostos em R$ no eixo direito"
+    >
+      <app-bi-chart [input]="publicChart()" caption="Quantidade, valor e imposto por ano" [height]="340" />
+    </app-panel>
+
+    <app-panel title="Tabela dos dados" [subtitle]="operation() + ' · ' + territory()" source="Célula vazia significa sem valor gravado">
+      <div class="table-wrap">
+        <table>
+          <caption class="sr">Dados públicos e imposto apurado por ano</caption>
+          <thead>
+            <tr>
+              <th scope="col">Ano</th>
+              <th scope="col">Operação</th>
+              <th scope="col" class="num">Quantidade</th>
+              <th scope="col" class="num">Valor (R$)</th>
+              @for (tax of selectedTaxes(); track tax) {
+                <th scope="col" class="num">{{ tax }} apurado (R$)</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.year) {
+              <tr>
+                <th scope="row">{{ row.year }}</th>
+                <td>{{ operation() }}</td>
+                <td class="num tabular">{{ count(row.quantity) }}</td>
+                <td class="num tabular">{{ money(row.value) }}</td>
+                @for (tax of selectedTaxes(); track tax) {
+                  <td class="num tabular">{{ money(amountOf(row, tax)) }}</td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </app-panel>
+  }
+
+  <h2 class="part" id="simule">Simule com a sua quantidade e valor</h2>
+  <form class="filters scenario" aria-labelledby="simule" (submit)="$event.preventDefault()">
     <label>
       Quantidade desejada
       <input
@@ -185,73 +247,6 @@
   }
 
   @if (state() === 'ok' && view()?.run; as run) {
-    <h2 class="part">Parte A · Dados públicos e imposto apurado</h2>
-    <section class="kpis" aria-label="Último ano com dado">
-      <app-kpi-card label="Operação" [value]="operation()" [meta]="territory()" kind="Sem total entre operações" />
-      <app-kpi-card
-        label="Quantidade"
-        [value]="compact(latest()?.quantity ?? null, 'COUNT')"
-        [meta]="'Ano ' + (latest()?.year ?? '—')"
-        kind="Observado"
-      />
-      <app-kpi-card
-        label="Valor"
-        [value]="compact(latest()?.value ?? null, 'BRL')"
-        [meta]="'Ano ' + (latest()?.year ?? '—') + ' · em R$'"
-        kind="Valor"
-        tone="warn"
-      />
-      @for (row of taxRows(); track row.tax) {
-        <app-kpi-card
-          [label]="row.tax + ' apurado'"
-          [value]="compact(row.amount, 'BRL')"
-          [meta]="'Alíquota ' + rateText(row.rate) + ' sobre o valor'"
-          kind="Simulado"
-          tone="warn"
-        />
-      }
-    </section>
-
-    <app-panel
-      title="Quantidade, valor e imposto por ano"
-      [subtitle]="operation() + ' · ' + territory()"
-      source="Quantidade no eixo esquerdo. Valor e impostos em R$ no eixo direito"
-    >
-      <app-bi-chart [input]="publicChart()" caption="Quantidade, valor e imposto por ano" [height]="340" />
-    </app-panel>
-
-    <app-panel title="Tabela dos dados" [subtitle]="operation() + ' · ' + territory()" source="Célula vazia significa sem valor gravado">
-      <div class="table-wrap">
-        <table>
-          <caption class="sr">Dados públicos e imposto apurado por ano</caption>
-          <thead>
-            <tr>
-              <th scope="col">Ano</th>
-              <th scope="col">Operação</th>
-              <th scope="col" class="num">Quantidade</th>
-              <th scope="col" class="num">Valor (R$)</th>
-              @for (tax of selectedTaxes(); track tax) {
-                <th scope="col" class="num">{{ tax }} apurado (R$)</th>
-              }
-            </tr>
-          </thead>
-          <tbody>
-            @for (row of rows(); track row.year) {
-              <tr>
-                <th scope="row">{{ row.year }}</th>
-                <td>{{ operation() }}</td>
-                <td class="num tabular">{{ count(row.quantity) }}</td>
-                <td class="num tabular">{{ money(row.value) }}</td>
-                @for (tax of selectedTaxes(); track tax) {
-                  <td class="num tabular">{{ money(amountOf(row, tax)) }}</td>
-                }
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    </app-panel>
-
     <section class="lineage" aria-label="Origem e método">
       <h2>Como é calculado</h2>
       <p>

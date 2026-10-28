@@ -80,7 +80,7 @@ describe('SimuladorPageComponent', () => {
     const { page, fixture, el, http } = loaded([], false);
     expect(el.textContent).toContain('Simulação · não é apuração fiscal');
     expect(el.textContent).toContain('Ainda não há carga validada do SPED');
-    expect(el.textContent).not.toContain('Parte A');
+    expect(el.textContent).not.toContain('Dados públicos e imposto apurado');
     expect(el.querySelector('input[name="qtd"]')).toBeTruthy();
     expect(el.querySelector('input[name="valor"]')).toBeTruthy();
     page.uf.set('SP');
@@ -97,14 +97,18 @@ describe('SimuladorPageComponent', () => {
     http.verify();
   });
 
-  it('shows Part B with the quantity and value fields above Part A and before any table', () => {
+  it('shows the public data first, then the quantity and value fields, with no "Parte A/B" text', () => {
     const { el, http } = loaded();
     const html = el.innerHTML;
     expect(el.querySelector('input[name="qtd"]')).toBeTruthy();
     expect(el.querySelector('input[name="valor"]')).toBeTruthy();
     expect((el.querySelector('input[name="qtd"]') as HTMLInputElement).placeholder).toContain('Ex.');
-    expect(html.indexOf('Parte B')).toBeGreaterThan(-1);
-    expect(html.indexOf('Parte B')).toBeLessThan(html.indexOf('Parte A'));
+    const publicAt = html.indexOf('Dados públicos e imposto apurado');
+    const simulateAt = html.indexOf('Simule com a sua quantidade e valor');
+    expect(publicAt).toBeGreaterThan(-1);
+    expect(simulateAt).toBeGreaterThan(publicAt);
+    expect(el.textContent).not.toContain('Parte A');
+    expect(el.textContent).not.toContain('Parte B');
     expect(el.textContent).toContain('Preencha a quantidade, o valor ou ambos');
     http.verify();
   });
@@ -138,8 +142,8 @@ describe('SimuladorPageComponent', () => {
     for (const goods of ['Veículos', 'Imóveis', 'Eletrodomésticos', 'Alimentos e Bebidas', 'Outros Bens', 'Serviços Gerais']) {
       expect(text).toContain(goods);
     }
-    const municipality = el.querySelector('select[name="municipio"]') as HTMLSelectElement;
-    expect(municipality.disabled).toBeTrue();
+    expect(el.querySelector('select[name="municipio"]')).toBeNull();
+    expect(text).not.toContain('Município');
     http.verify();
   });
 
@@ -148,7 +152,7 @@ describe('SimuladorPageComponent', () => {
     page.uf.set('SP');
     fixture.detectChanges();
     const text = el.textContent as string;
-    expect(text).toContain('Parte A');
+    expect(text).toContain('Dados públicos e imposto apurado');
     expect(text).toContain('ITCD apurado');
     // Vendas 2022 SP: 200 and R$ 2.000,00 -> ITCD 6% = R$ 120,00. Compras (999) never appears.
     expect(page.latest()?.quantity).toBe(200);
