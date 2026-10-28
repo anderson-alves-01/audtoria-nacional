@@ -135,7 +135,7 @@
   }
 
   @if (state() !== 'loading' && !publicOpen()) {
-    <h2 class="part">Dados públicos e imposto apurado</h2>
+    <h2 class="part">Dados públicos e imposto estimado (simulação)</h2>
     <section class="blocked" aria-label="Dados públicos bloqueados" data-testid="public-blocked">
       <p>
         <app-badge tone="warn">Bloqueado</app-badge>
@@ -168,7 +168,7 @@
   }
 
   @if (publicOpen() && state() === 'ok' && view()?.run; as run) {
-    <h2 class="part">Dados públicos e imposto apurado</h2>
+    <h2 class="part">Dados públicos e imposto estimado (simulação)</h2>
     <section class="kpis" aria-label="Último ano com dado">
       <app-kpi-card label="Operação" [value]="operation()" [meta]="territory()" kind="Sem total entre operações" />
       <app-kpi-card
@@ -186,7 +186,7 @@
       />
       @for (row of taxRows(); track row.tax) {
         <app-kpi-card
-          [label]="row.tax + ' apurado'"
+          [label]="row.tax + ' estimado'"
           [value]="compact(row.amount, 'BRL')"
           [meta]="taxMeta(row.tax, row.resolved, latest()?.year ?? null)"
           kind="Simulado"
@@ -206,7 +206,7 @@
     <app-panel title="Tabela dos dados" [subtitle]="operation() + ' · ' + territory()" source="Célula vazia significa sem valor gravado">
       <div class="table-wrap">
         <table>
-          <caption class="sr">Dados públicos e imposto apurado por ano</caption>
+          <caption class="sr">Dados públicos e imposto estimado por ano</caption>
           <thead>
             <tr>
               <th scope="col">Ano</th>
@@ -214,7 +214,7 @@
               <th scope="col" class="num">Quantidade</th>
               <th scope="col" class="num">Valor (R$)</th>
               @for (tax of selectedTaxes(); track tax) {
-                <th scope="col" class="num">{{ tax }} apurado (R$)</th>
+                <th scope="col" class="num">{{ tax }} estimado (R$)</th>
               }
             </tr>
           </thead>
@@ -239,7 +239,7 @@
   <h2 class="part" id="simule">Simule com a sua quantidade e valor</h2>
   <p class="hint" role="note" data-testid="hypothesis-note">
     <app-badge tone="accent">{{ hypothesisLabel }}</app-badge>
-    Tudo que o simulador calcula parte do que você digita. É uma hipótese, não um dado oficial nem uma apuração.
+    Tudo que o simulador calcula parte do que você digita. É uma hipótese, não é imposto apurado nem devido.
   </p>
   <form class="filters scenario" aria-labelledby="simule" (submit)="$event.preventDefault()">
     <label>

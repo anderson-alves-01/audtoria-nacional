@@ -18,13 +18,26 @@ export interface PublicYear {
   value: number | null;
 }
 
-/** Imposto em reais, arredondado ao centavo. Sem valor ou sem aliquota o resultado e nulo. */
+/**
+ * Imposto em reais, arredondado ao centavo (meio para cima). Sem valor ou sem aliquota o resultado e
+ * nulo. O produto binario carrega ruido (4,06 x 25 da 101,49999999999999), entao ele e limpo a 15
+ * digitos significativos antes de arredondar. Se o resultado nao couber em centavos inteiros num
+ * numero de ponto flutuante, fica nulo: nunca um valor aproximado nem infinito.
+ */
 export function taxAmount(value: number | null, rate: number | null): number | null {
   if (value === null || rate === null || !Number.isFinite(value) || !Number.isFinite(rate)) {
     return null;
   }
-  return Math.round(value * rate) / 100;
+  const product = value * rate;
+  if (!Number.isFinite(product) || Math.abs(product) > MAX_EXACT_CENTS) {
+    return null;
+  }
+  const cents = Math.round(Number(product.toPrecision(15)));
+  return (cents === 0 ? 0 : cents) / 100;
 }
+
+/** Maior produto valor x aliquota (em centavos) que ainda e um inteiro exato: 2^53 - 1. */
+const MAX_EXACT_CENTS = Number.MAX_SAFE_INTEGER;
 
 /** Quantidade e valor publicos por ano para uma UF (ou Brasil) e uma unica operacao. */
 export function publicByYear(
@@ -38,7 +51,7 @@ export function publicByYear(
   return years.map((year, index) => ({ year, quantity: quantity[index], value: value[index] }));
 }
 
-/** Imposto apurado por ano para cada imposto escolhido, com a aliquota vigente em cada ano. */
+/** Imposto estimado por ano (simulacao) para cada imposto escolhido, com a aliquota vigente em cada ano. */
 export function taxByYear(
   rows: PublicYear[],
   tax: TaxId,
@@ -110,7 +123,8 @@ export interface ScenarioInput {
 
 /** Entrada valida: numero finito e nao negativo. Qualquer outra coisa e tratada como ausente. */
 export function sanitize(raw: number | null | undefined): number | null {
-  return typeof raw === 'number' && Number.isFinite(raw) && raw >= 0 ? raw : null;
+  // Somar 0 troca -0 por 0: o Intl mostraria "-R$ 0,00".
+  return typeof raw === 'number' && Number.isFinite(raw) && raw >= 0 ? raw + 0 : null;
 }
 
 export interface Comparison {
@@ -189,7 +203,7 @@ export function simulatorChart(
   ];
   for (const tax of taxes) {
     series.push({
-      name: `${tax} apurado`,
+      name: `${tax} estimado`,
       values: pad(taxByYear(rows, tax, uf, book, municipality)),
       axis: 'right',
       unit: 'BRL',
@@ -219,7 +233,7 @@ export function simulatorChart(
         axis: 'right',
         unit: 'BRL',
         dashed: true,
-        colorLike: `${tax} apurado`,
+        colorLike: `${tax} estimado`,
       });
     }
   }

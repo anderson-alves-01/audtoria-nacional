@@ -17,6 +17,7 @@ import {
   hypothesisChart,
   publicByYear,
   referenceYear,
+  compare,
   sanitize,
   scenarioComparison,
   simulatorChart,
@@ -190,7 +191,7 @@ describe('simulador logic', () => {
     expect(plain.series?.map((entry) => entry.name)).toEqual([
       'Quantidade',
       'Valor',
-      'ITCD apurado',
+      'ITCD estimado',
     ]);
     expect(plain.series?.[1].axis).toBe('right');
 
@@ -252,5 +253,66 @@ describe('transfer rules', () => {
     expect(filterByDirection(both, TRANSFER_OPERATION, 'RECEBIDA')).toEqual([received]);
     expect(filterByDirection([legacy], TRANSFER_OPERATION, 'REMETIDA')).toEqual([]);
     expect(filterByDirection(items, 'Vendas', '')).toEqual(items);
+  });
+});
+
+describe('numeric edge cases (homologação do Simulador)', () => {
+  it('rounds half up to the cent without binary floating-point error', () => {
+    // 4,06 x 25% = 1,015: o produto binário dá 101,49999999999999 e arredondava para R$ 1,01.
+    expect(taxAmount(4.06, 25)).toBe(1.02);
+    expect(taxAmount(8.54, 25)).toBe(2.14);
+    expect(taxAmount(18.9, 25)).toBe(4.73);
+    expect(taxAmount(1.15, 3)).toBe(0.03);
+    expect(taxAmount(0.07, 5)).toBe(0);
+    expect(taxAmount(0.1, 5)).toBe(0.01);
+  });
+
+  it('matches exact decimal arithmetic over a sweep of values and rates', () => {
+    const rates = [2, 2.5, 3, 5, 6, 12, 17, 18, 19, 25, 27, 30, 33];
+    for (let cents = 0; cents <= 60000; cents += 3) {
+      for (const rate of rates) {
+        const exact = Math.floor((cents * Math.round(rate * 100) + 5000) / 10000);
+        expect(Math.round(taxAmount(cents / 100, rate)! * 100)).toBe(exact);
+      }
+    }
+  });
+
+  it('returns zero tax for a zero value and never a negative zero', () => {
+    expect(taxAmount(0, 19)).toBe(0);
+    expect(Object.is(taxAmount(0, 19), 0)).toBeTrue();
+    expect(Object.is(sanitize(-0), 0)).toBeTrue();
+    expect(Object.is(taxAmount(sanitize(-0), 19), 0)).toBeTrue();
+  });
+
+  it('keeps a rate of zero as a zero tax, not as a missing one', () => {
+    expect(taxAmount(1000, 0)).toBe(0);
+  });
+
+  it('rejects negative, infinite and not-a-number inputs', () => {
+    for (const bad of [-0.01, -1, -1e9, NaN, Infinity, -Infinity, undefined, null]) {
+      expect(sanitize(bad as number | null | undefined)).toBeNull();
+    }
+    expect(taxAmount(Infinity, 19)).toBeNull();
+    expect(taxAmount(1000, NaN)).toBeNull();
+  });
+
+  it('handles large values exactly to the cent and refuses what a double cannot hold', () => {
+    expect(taxAmount(1_000_000_000_000, 19)).toBe(190_000_000_000);
+    expect(taxAmount(123_456_789.01, 3)).toBe(3_703_703.67);
+    // Acima do que um número de ponto flutuante representa ao centavo, o resultado fica em branco.
+    expect(taxAmount(1e17, 19)).toBeNull();
+    expect(taxAmount(1e300, 19)).toBeNull();
+    expect(taxAmount(Number.MAX_VALUE, 33)).toBeNull();
+  });
+
+  it('keeps tiny and fractional values without turning them into zero by accident', () => {
+    expect(taxAmount(0.01, 100)).toBe(0.01);
+    expect(taxAmount(1e-9, 19)).toBe(0);
+    expect(taxAmount(0.005, 100)).toBe(0.01);
+  });
+
+  it('compares large quantities without precision loss up to 2^53', () => {
+    const row = compare('Quantidade', 'COUNT', 9_007_199_254_740_000, 9_007_199_254_740_991);
+    expect(row.difference).toBe(991);
   });
 });

@@ -89,7 +89,7 @@ indicators:
       - evidence/ops/sped-reconciliacao-20261028.md
     reviewed_at: 2026-10-28
   - id: simulador_imposto_apurado_dados_publicos
-    label: Imposto apurado a partir de dados públicos no Simulador
+    label: Imposto estimado (simulação) a partir de dados públicos no Simulador
     level: NAO_CONFIAVEL
     reason: >-
       Deriva do valor estimado por UF e CFOP, que é NAO_CONFIAVEL, e de alíquotas ainda não homologadas.

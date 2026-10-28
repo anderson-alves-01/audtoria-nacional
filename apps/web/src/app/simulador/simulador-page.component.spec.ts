@@ -416,7 +416,7 @@ describe('SimuladorPageComponent', () => {
       const html = el.innerHTML;
       expect(page.publicOpen()).toBeTrue();
       expect(el.querySelector('[data-testid="public-blocked"]')).toBeNull();
-      const publicAt = html.indexOf('Dados públicos e imposto apurado');
+      const publicAt = html.indexOf('Dados públicos e imposto estimado');
       const simulateAt = html.indexOf('Simule com a sua quantidade e valor');
       expect(publicAt).toBeGreaterThan(-1);
       expect(simulateAt).toBeGreaterThan(publicAt);
@@ -441,6 +441,47 @@ describe('SimuladorPageComponent', () => {
       expect(page.chart().categories).toEqual(['2021', '2022', 'Simulado']);
       http.verify();
     });
+  });
+
+  describe('hypothesis labelling', () => {
+    // Negações que o texto da tela usa de propósito.
+    const NEGATIONS = [
+      /não é imposto apurado nem devido/gi,
+      /não é apuração fiscal/gi,
+      /nem apuração/gi,
+      /simulador_imposto_apurado_dados_publicos/g, // identificador técnico do indicador, não texto da tela
+    ];
+    const withoutNegations = (text: string): string => NEGATIONS.reduce((acc, rx) => acc.replace(rx, ''), text);
+
+    it('never presents a simulated value as assessed or due tax (public gate closed)', () => {
+      const { fixture, page, el, http } = blocked();
+      page.setUf('SP');
+      page.quantityInput.set(10);
+      page.valueInput.set(1000);
+      fixture.detectChanges();
+      http.expectOne('/ibge-municipios.json').flush({ municipios: [] });
+      fixture.detectChanges();
+      const text = withoutNegations(el.textContent as string);
+      expect(text).not.toMatch(/apurad|devid/i);
+      const note = el.querySelector('[data-testid="hypothesis-note"]') as HTMLElement;
+      expect(note.textContent).toContain('Hipótese informada manualmente');
+      expect(note.textContent).toContain('não é imposto apurado nem devido');
+      http.verify();
+    });
+
+    it('never presents a public-data estimate as assessed or due tax (public gate open)', () => {
+      const { fixture, page, el, http } = opened();
+      page.setUf('SP');
+      page.valueInput.set(1000);
+      fixture.detectChanges();
+      http.expectOne('/ibge-municipios.json').flush({ municipios: [] });
+      fixture.detectChanges();
+      expect(withoutNegations(el.textContent as string)).not.toMatch(/apurad|devid/i);
+      const names = [...(page.chart().series ?? []), ...(page.publicChart().series ?? [])].map((series) => series.name);
+      expect(names.some((name) => /apurad|devid/i.test(name))).toBeFalse();
+      http.verify();
+    });
+
   });
 
   describe('rates', () => {
@@ -684,6 +725,174 @@ describe('SimuladorPageComponent municipality', () => {
     expect((el.querySelector('select[name="municipio"]') as HTMLSelectElement).disabled).toBeTrue();
     page.valueInput.set(1000);
     expect(page.resolved('ICMS', 2024).rate).toBe(19);
+    http.verify();
+  });
+});
+
+describe('SimuladorPageComponent functional flow through the DOM (homologação)', () => {
+  const CITIES = [
+    { uf: 'AC', ibge: '1200401', nome: 'Rio Branco' },
+    { uf: 'SP', ibge: '3550308', nome: 'São Paulo' },
+  ];
+
+  async function start() {
+    TestBed.configureTestingModule({
+      imports: [SimuladorPageComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
+    const fixture = TestBed.createComponent(SimuladorPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http.expectOne(isProbe).flush(view([]));
+    flushRates(http);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const field = <T extends HTMLElement>(name: string) => el.querySelector(`[name="${name}"]`) as T;
+    const choose = async (name: string, value: string) => {
+      const select = field<HTMLSelectElement>(name);
+      select.value = value;
+      select.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+    };
+    const type = async (name: string, value: string) => {
+      const input = field<HTMLInputElement>(name);
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+    };
+    const kpi = (tax: string): string =>
+      Array.from(el.querySelectorAll('app-kpi-card'))
+        .find((card) => card.textContent?.includes(`${tax} do cenário`))
+        ?.textContent?.replace(/\s+/g, ' ') ?? '';
+    return { fixture, http, page: fixture.componentInstance, el, field, choose, type, kpi };
+  }
+
+  it('walks the whole form: UF, municipality, taxes, operation, goods, quantity and value', async () => {
+    const { fixture, http, page, el, field, choose, type, kpi } = await start();
+    await choose('uf', 'AC');
+    http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
+    fixture.detectChanges();
+    await choose('municipio', '1200401');
+    await choose('operacao', 'Compras');
+    await choose('tipo', 'Veículos');
+    await type('qtd', '3');
+    await type('valor', '1000');
+    expect([page.uf(), page.municipality(), page.operation(), page.goods()]).toEqual([
+      'AC',
+      '1200401',
+      'Compras',
+      'Veículos',
+    ]);
+    expect(page.scenario()).toEqual({ quantity: 3, value: 1000 });
+    // Cada imposto é calculado sobre o valor informado e nunca somado aos demais.
+    expect(kpi('ITCD')).toContain('R$ 60,00');
+    expect(kpi('ITBI')).toContain('R$ 30,00');
+    expect(kpi('ISS')).toContain('R$ 50,00');
+    // O ano da alíquota padrão é 2022 (último ano da lista): o ICMS do Acre vigente era 17%.
+    expect(kpi('ICMS')).toContain('R$ 170,00');
+    expect(el.textContent).not.toMatch(/total dos impostos/i);
+    expect(field<HTMLSelectElement>('municipio').disabled).toBeFalse();
+    http.verify();
+  });
+
+  it('updates the chart as soon as the value changes', async () => {
+    const { http, page, type } = await start();
+    await type('valor', '1000');
+    const before = page.chart().series?.find((series) => series.name === 'ISS (hipótese)')?.values;
+    expect(before).toEqual([50]);
+    await type('valor', '2000');
+    expect(page.chart().series?.find((series) => series.name === 'ISS (hipótese)')?.values).toEqual([100]);
+    await type('valor', '');
+    expect(page.chart().series?.find((series) => series.name === 'ISS (hipótese)')?.values).toEqual([null]);
+    http.verify();
+  });
+
+  it('keeps decimal precision typed in the field', async () => {
+    const { http, page, type, kpi } = await start();
+    await type('valor', '4.06');
+    page.selectedTaxes.set(['ITCD', 'ITBI', 'ISS', 'ICMS']);
+    expect(page.simulatedTaxes().find((row) => row.tax === 'ISS')?.simulated).toBe(0.2);
+    await type('valor', '1234567.89');
+    expect(kpi('ISS')).toContain('R$ 61.728,39');
+    http.verify();
+  });
+
+  it('shows nothing for an empty field and treats zero as zero, not as missing', async () => {
+    const { http, page, type, kpi } = await start();
+    await type('valor', '');
+    expect(page.hasScenario()).toBeFalse();
+    await type('valor', '0');
+    expect(page.hasScenario()).toBeTrue();
+    expect(kpi('ISS')).toContain('R$ 0,00');
+    expect(kpi('ISS')).not.toContain('-R$');
+    http.verify();
+  });
+
+  it('ignores negative, exponent and absurd entries and says so, without computing a tax', async () => {
+    const { http, page, el, type } = await start();
+    await type('valor', '-100');
+    expect(page.scenario().value).toBeNull();
+    expect(page.inputInvalid()).toBeTrue();
+    expect(el.querySelector('[role="alert"]')?.textContent).toContain('Use apenas números iguais ou maiores que zero');
+    await type('qtd', '-1');
+    expect(page.scenario().quantity).toBeNull();
+    // Valor acima do que um número de ponto flutuante representa ao centavo: imposto em branco.
+    await type('valor', '1e300');
+    expect(page.simulatedTaxes().every((row) => row.simulated === null)).toBeTrue();
+    http.verify();
+  });
+
+  it('handles very large quantities and values without scientific notation or infinity', async () => {
+    const { http, page, el, type } = await start();
+    await type('qtd', '9007199254740991');
+    await type('valor', '100000000000');
+    expect(page.scenario()).toEqual({ quantity: 9007199254740991, value: 100000000000 });
+    expect(page.simulatedTaxes().find((row) => row.tax === 'ISS')?.simulated).toBe(5000000000);
+    expect(el.textContent).not.toMatch(/Infinity|NaN|e\+\d/);
+    http.verify();
+  });
+
+  it('drops a taxes selection and recalculates without it', async () => {
+    const { http, page, type, kpi, fixture, el } = await start();
+    await type('valor', '1000');
+    const iss = el.querySelector('input[name="tax-ISS"]') as HTMLInputElement;
+    iss.checked = false;
+    iss.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    expect(page.selectedTaxes()).not.toContain('ISS');
+    expect(kpi('ISS')).toBe('');
+    expect(page.chart().series?.some((series) => series.name.startsWith('ISS'))).toBeFalse();
+    http.verify();
+  });
+
+  it('does not overflow horizontally on a narrow phone screen', async () => {
+    const { fixture, http, el } = await start();
+    const host = fixture.nativeElement as HTMLElement;
+    host.style.display = 'block';
+    host.style.width = '320px';
+    host.style.overflowX = 'visible';
+    fixture.detectChanges();
+    const form = el.querySelector('form.filters') as HTMLElement;
+    expect(form.getBoundingClientRect().width).toBeLessThanOrEqual(320);
+    for (const control of Array.from(el.querySelectorAll('select, input[type="number"]'))) {
+      expect((control as HTMLElement).getBoundingClientRect().right).toBeLessThanOrEqual(321);
+    }
+    http.verify();
+  });
+
+  it('keeps every control reachable by label for keyboard and screen reader users', async () => {
+    const { http, el } = await start();
+    const controls = Array.from(el.querySelectorAll('select, input'));
+    expect(controls.length).toBeGreaterThanOrEqual(9);
+    for (const control of controls) {
+      expect(control.closest('label') ?? control.getAttribute('aria-label')).toBeTruthy();
+    }
     http.verify();
   });
 });
