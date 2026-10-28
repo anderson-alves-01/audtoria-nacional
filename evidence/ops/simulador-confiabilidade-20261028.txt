@@ -1,0 +1,36 @@
+Simulador SIRTA: confiabilidade, auditoria dos 1.041 e hipoteses manuais
+data=2026-10-28  escopo=local  deploy=nao  push=nao  ingestao=nao  rede=nao
+
+Commits locais (sobre 71a2fcb)
+  0850ea8 chore: versiona os dois originais oficiais do SPED e verifica checksums
+  4400d8b feat: auditoria das 1.041 omissoes UF x CFOP x ano com regra e classe por celula
+  29231f5 feat: registro de confiabilidade dos indicadores com falha fechada
+  189da6b feat(api): bloco reliability aditivo e guarda de uso fiscal com 409
+  9f39f61 feat(web): Simulador bloqueia dados SPED nao conferidos e opera so com hipoteses informadas
+  adf1317 feat: criterio de homologacao das aliquotas e relatorio de lacunas
+  (documentacao e relatorio no commit seguinte)
+
+Verificacoes
+  python tools/ops/sped-source-verify.py
+    OK 2 originais .ods e a planilha consolidada (sha256 conferem)
+  python tools/ops/sped-omission-audit.py
+    celulas ausentes=22343 indevidas=1041 (268.317.945 NF-e)
+  python tools/ops/tax-rates-audit.py
+    versoes=31 homologadas=0
+  python -m pytest -q -p no:warnings
+    415 passed, 1 skipped, 8 failed
+    falhas pre-existentes e fora do escopo:
+      tests/integration/test_alembic_paths.py (4): cadeia de migracoes falha na 0103 (tabela duplicada)
+      tests/integration/test_source_ingest.py (3) e test_official_ingest.py (1): contagens do banco local
+  python -m pytest tests/contract -q            2 passed
+  npx ng test --watch=false --browsers=ChromeHeadless   170 of 170 SUCCESS
+  npx ng build                                   concluido sem erro
+  ruff check nos arquivos novos e alterados      All checks passed
+
+Sem alteracao
+  producao: web 0.4.23 (sirta-prod-web:31), API 0.3.124 (sirta-prod-api:30)
+  carga SPED d25c890e-f93c-4b64-b307-247d64799e3f: published=false, homologated=false
+  dados originais: nenhum numero alterado, nada reincluido
+
+Rollback
+  git revert dos commits acima, na ordem inversa. Nada em banco, nuvem ou producao foi tocado.
