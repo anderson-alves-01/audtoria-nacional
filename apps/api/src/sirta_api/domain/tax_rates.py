@@ -12,7 +12,7 @@ Rules, all fail closed:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 
 FLAT_TAXES = frozenset({"ITCD", "ITBI", "ISS"})
@@ -72,14 +72,17 @@ def homologation_gaps(
     valid_from: date | None,
     homologated_by: str | None = None,
     jurisdiction_level: str = LEVEL_UF,
+    restrictions: str | None = None,
+    reviewed_by: str | None = None,
+    reviewed_at: date | datetime | None = None,
 ) -> list[str]:
     """What is still missing before a rate version counts as homologated. Empty means complete.
 
     VALIDADO only says a legal basis was informed by a person. Homologation also needs the official
-    URL of the legislation, a known start of validity, the person who validated it and, as a
-    separate human step, the reviewer who homologated it (``homologated_by``). Filling the
-    documentation never homologates by itself. A percentage read from an image, or a simulation
-    parameter, is never homologated.
+    URL of the legislation, a known start of validity, the person who validated it, the registered
+    restrictions and exceptions, a human review (who and when) and, as a separate human step, the
+    reviewer who homologated it (``homologated_by``). Filling the documentation never homologates
+    by itself. A percentage read from an image, or a simulation parameter, is never homologated.
     """
     gaps: list[str] = []
     if jurisdiction_level == LEVEL_SIMULATION:
@@ -98,6 +101,10 @@ def homologation_gaps(
         gaps.append("responsável pela validação")
     if valid_from is None:
         gaps.append("início da vigência")
+    if not (restrictions or "").strip():
+        gaps.append("restrições e exceções registradas")
+    if not ((reviewed_by or "").strip() and reviewed_at is not None):
+        gaps.append("revisão humana registrada (responsável e data)")
     if not (homologated_by or "").strip():
         gaps.append("homologação pelo responsável")
     return gaps

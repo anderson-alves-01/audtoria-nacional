@@ -128,6 +128,9 @@ FULL = {
     "official_url": "https://legis.example.gov.br/lc1",
     "validated_by": "responsável",
     "valid_from": date(2023, 4, 1),
+    "restrictions": "Exceções por mercadoria conferidas na lei.",
+    "reviewed_by": "revisor responsável",
+    "reviewed_at": date(2026, 10, 28),
     "homologated_by": "revisor responsável",
 }
 
@@ -140,6 +143,7 @@ def test_a_rate_is_homologated_only_with_every_requirement() -> None:
         "official_url": "URL oficial da legislação",
         "validated_by": "responsável pela validação",
         "valid_from": "início da vigência",
+        "restrictions": "restrições e exceções registradas",
         "homologated_by": "homologação pelo responsável",
     }
     for field, gap in expected.items():
@@ -163,6 +167,8 @@ def test_pending_rate_read_from_an_image_is_never_homologated() -> None:
         "URL oficial da legislação",
         "responsável pela validação",
         "início da vigência",
+        "restrições e exceções registradas",
+        "revisão humana registrada (responsável e data)",
         "homologação pelo responsável",
     ]
     # Even with a legal basis typed in, PENDENTE and the missing URL keep it out.
@@ -180,3 +186,21 @@ def test_documentation_alone_does_not_homologate_the_acre_rate() -> None:
 def test_a_simulation_parameter_is_never_homologated() -> None:
     gaps = homologation_gaps(**FULL, jurisdiction_level="SIMULACAO")
     assert len(gaps) == 1 and gaps[0].startswith("alíquota da jurisdição")
+
+
+def test_review_needs_both_the_reviewer_and_the_date() -> None:
+    review_gap = "revisão humana registrada (responsável e data)"
+    assert homologation_gaps(**{**FULL, "reviewed_by": None}) == [review_gap]
+    assert homologation_gaps(**{**FULL, "reviewed_at": None}) == [review_gap]
+    assert homologation_gaps(**{**FULL, "reviewed_by": "  "}) == [review_gap]
+
+
+def test_blank_restrictions_do_not_count_as_registered() -> None:
+    assert homologation_gaps(**{**FULL, "restrictions": "   "}) == [
+        "restrições e exceções registradas"
+    ]
+
+
+def test_documentation_review_and_restrictions_still_need_the_human_homologation() -> None:
+    complete = {**FULL, "homologated_by": None}
+    assert homologation_gaps(**complete) == ["homologação pelo responsável"]

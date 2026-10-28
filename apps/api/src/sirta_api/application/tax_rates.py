@@ -36,6 +36,9 @@ def _item(row: TaxRateVersion) -> dict:
         valid_from=row.valid_from,
         homologated_by=row.homologated_by,
         jurisdiction_level=row.jurisdiction_level,
+        restrictions=row.restrictions,
+        reviewed_by=row.reviewed_by,
+        reviewed_at=row.reviewed_at,
     )
     return {
         "homologated": not gaps,
@@ -50,6 +53,9 @@ def _item(row: TaxRateVersion) -> dict:
         "referenceMax": float(row.reference_max) if row.reference_max is not None else None,
         "homologatedBy": row.homologated_by,
         "homologatedAt": row.homologated_at.isoformat() if row.homologated_at else None,
+        "restrictions": row.restrictions,
+        "reviewedBy": row.reviewed_by,
+        "reviewedAt": row.reviewed_at.isoformat() if row.reviewed_at else None,
         "rateKind": row.rate_kind,
         "rate": float(row.rate),
         "validFrom": row.valid_from.isoformat() if row.valid_from else None,

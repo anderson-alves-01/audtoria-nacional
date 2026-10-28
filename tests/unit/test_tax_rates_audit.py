@@ -35,19 +35,35 @@ def test_image_only_icms_rates_miss_every_requirement() -> None:
             "URL oficial da legislação",
             "responsável pela validação",
             "início da vigência",
+            "restrições e exceções registradas",
+            "revisão humana registrada (responsável e data)",
             "homologação pelo responsável",
         }
 
 
-def test_acre_is_fully_documented_and_only_the_human_homologation_is_missing() -> None:
+def test_acre_19_has_the_primary_source_and_exceptions_but_misses_review_and_homologation() -> None:
     mod = _load()
     acre = [r for r in mod.load_seed_rows() if r["uf"] == "AC"]
     assert {r["status"] for r in acre} == {"VALIDADO"}
-    for row in acre:
-        assert row["official_url"].startswith("https://sefaz.ac.gov.br/")
-        assert mod.gaps_of(row) == ["homologação pelo responsável"]
-    assert str(next(r for r in acre if r["rate"] == "17")["valid_from"]) == "2002-01-01"
-    assert str(next(r for r in acre if r["rate"] == "19")["valid_from"]) == "2023-04-01"
+    nineteen = next(r for r in acre if r["rate"] == "19")
+    seventeen = next(r for r in acre if r["rate"] == "17")
+    assert nineteen["official_url"] == "https://www.legis.ac.gov.br/detalhar/5461"
+    assert "sefaz.ac.gov.br" in nineteen["legal_basis"]
+    assert "12% nas operações e prestações interestaduais" in nineteen["restrictions"]
+    assert "lista completa de exceções não foi transcrita" in nineteen["restrictions"]
+    assert mod.gaps_of(nineteen) == [
+        "revisão humana registrada (responsável e data)",
+        "homologação pelo responsável",
+    ]
+    # The 17% window has no listed exceptions: that gap stays visible instead of being filled in.
+    assert seventeen["official_url"].startswith("https://sefaz.ac.gov.br/")
+    assert mod.gaps_of(seventeen) == [
+        "restrições e exceções registradas",
+        "revisão humana registrada (responsável e data)",
+        "homologação pelo responsável",
+    ]
+    assert str(seventeen["valid_from"]) == "2002-01-01"
+    assert str(nineteen["valid_from"]) == "2023-04-01"
 
 
 def test_flat_taxes_are_simulation_parameters_and_never_homologated() -> None:

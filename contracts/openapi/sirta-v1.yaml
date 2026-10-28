@@ -729,9 +729,11 @@ paths:
         Simulation parameter, not a tax assessment. The additive reliability block gives the level
         of the rate indicators; none is CONFERIDO and none is homologated. Each item carries
         homologated and homologationGaps: homologated needs status VALIDADO plus legal basis,
-        official URL, validator, a known start of validity and homologation by the responsible
-        reviewer (a separate human step: filling the documentation does not homologate). A
-        percentage read from an image, or a simulation parameter, never qualifies.
+        official URL, validator, registered restrictions and exceptions, a human review (reviewedBy
+        and reviewedAt) and homologation by the responsible reviewer (a separate human step:
+        filling the documentation does not homologate). Additive item fields: restrictions,
+        reviewedBy, reviewedAt. A percentage read from an image, or a simulation parameter, never
+        qualifies.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}

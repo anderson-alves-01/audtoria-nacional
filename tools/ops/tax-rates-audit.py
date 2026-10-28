@@ -24,6 +24,7 @@ from sirta_api.domain.tax_rates import homologation_gaps  # noqa: E402
 
 MIGRATION = ROOT / "alembic" / "versions" / "0109_tax_rate_versions.py"
 MIGRATION_SCOPE = ROOT / "alembic" / "versions" / "0110_direction_rate_scope.py"
+MIGRATION_REVIEW = ROOT / "alembic" / "versions" / "0111_tax_rate_review_fields.py"
 
 
 def _load_module(name: str, path: Path):
@@ -34,16 +35,24 @@ def _load_module(name: str, path: Path):
     return module
 
 
-def load_seed_rows(path: Path = MIGRATION, scope: Path = MIGRATION_SCOPE) -> list[dict]:
-    """Rows as they stand after migrations 0109 and 0110."""
+def load_seed_rows(
+    path: Path = MIGRATION, scope: Path = MIGRATION_SCOPE, review: Path = MIGRATION_REVIEW
+) -> list[dict]:
+    """Rows as they stand after migrations 0109, 0110 and 0111."""
     rows = [dict(row) for row in _load_module("tax_rate_versions_seed", path)._rows()]
     patch = _load_module("tax_rate_scope_patch", scope)
+    review_patch = _load_module("tax_rate_review_patch", review)
     for row in rows:
         row["jurisdiction_level"] = "SIMULACAO" if row["uf"] == "BR" else "UF"
         row["homologated_by"] = None
+        row["restrictions"] = None
+        row["reviewed_by"] = None
+        row["reviewed_at"] = None
         if row["tax"] == "ICMS" and row["uf"] == "AC":
             if row["rate"] == "19":
-                row["legal_basis"], row["official_url"] = patch.AC_19_BASIS, patch.LC422_URL
+                row["legal_basis"] = review_patch.AC_19_BASIS
+                row["official_url"] = review_patch.LC422_PRIMARY_URL
+                row["restrictions"] = review_patch.AC_19_RESTRICTIONS
             else:
                 row["legal_basis"], row["official_url"] = patch.AC_17_BASIS, patch.LC55_URL
                 row["valid_from"] = date(2002, 1, 1)
@@ -59,6 +68,9 @@ def gaps_of(row: dict) -> list[str]:
         valid_from=row["valid_from"],
         homologated_by=row["homologated_by"],
         jurisdiction_level=row["jurisdiction_level"],
+        restrictions=row["restrictions"],
+        reviewed_by=row["reviewed_by"],
+        reviewed_at=row["reviewed_at"],
     )
 
 
@@ -75,10 +87,11 @@ def build_report(rows: list[dict], stamp: str) -> str:
         f"# Alíquotas: lacunas para a homologação ({stamp})",
         "",
         "Gerado por `tools/ops/tax-rates-audit.py`, somente leitura, a partir das linhas semeadas pela "
-        "migração `0109_tax_rate_versions` e pelo ajuste da `0110_direction_rate_scope`. Nenhuma alíquota ou status foi alterado.",
+        "migração `0109_tax_rate_versions` e pelos ajustes das `0110_direction_rate_scope` e `0111_tax_rate_review_fields`. Nenhuma alíquota ou status foi alterado.",
         "",
         "Critério de homologação: status `VALIDADO` e, ao mesmo tempo, fundamento legal, URL oficial da "
-        "legislação, responsável pela validação, início da vigência conhecido e **homologação pelo "
+        "legislação, responsável pela validação, início da vigência conhecido, restrições e exceções "
+        "registradas, revisão humana registrada (responsável e data) e **homologação pelo "
         "responsável** (etapa humana separada: preencher a documentação não homologa). Percentual lido "
         "de uma imagem não atende a nenhum desses itens. Parâmetro de simulação (`SIMULACAO`) nunca é "
         "homologado como alíquota de UF ou município.",
@@ -128,7 +141,8 @@ def build_report(rows: list[dict], stamp: str) -> str:
         "",
         "## O que falta informar",
         "",
-        "- AC: a documentação jurídica está completa (LC/AC 55/1997 art. 18, I, redação da LC/AC 422/2022, vigência 01/04/2023; redação anterior da LC/AC 100/2001, vigência 01/01/2002 a 31/03/2023, páginas da Sefaz/AC). Falta o responsável conferir os endereços e as condições de aplicação (exceções por mercadoria) e registrar a homologação.",
+        "- AC 19% (desde 01/04/2023): fonte primária LC/AC 422/2022 em https://www.legis.ac.gov.br/detalhar/5461 (texto lido em 28/10/2026), com as páginas da Sefaz/AC como complemento, e as exceções do art. 18 registradas (12% interestadual; 25%, 27%, 30%, 33% e 17% de cesta básica). O texto publicado omite itens do inciso III: a lista completa não foi transcrita. Falta a revisão humana (responsável e data), a conferência dessa lista e a homologação.",
+        "- AC 17% (01/01/2002 a 31/03/2023): fundamento e páginas da Sefaz/AC informados; as exceções do período não foram levantadas. Falta registrar restrições, a revisão humana e a homologação.",
         "- 26 UFs: lei ou decreto da alíquota modal, início da vigência, URL oficial, responsável pela validação e homologação, uma UF por vez.",
         "- ITCD (estadual): lei de cada UF, alíquota, faixas, base e vigência. Limite de referência de 8% (Resolução do Senado nº 9/1992), informado e a conferir.",
         "- ITBI (municipal): lei do município onde se situa o imóvel, alíquota, base e vigência.",

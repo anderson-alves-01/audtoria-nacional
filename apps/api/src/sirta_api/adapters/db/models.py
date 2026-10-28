@@ -453,6 +453,9 @@ class TaxRateVersion(Base):
     reference_max: Mapped[Decimal | None] = mapped_column(Numeric(7, 4), nullable=True)
     homologated_by: Mapped[str | None] = mapped_column(String(160), nullable=True)
     homologated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    restrictions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reviewed_by: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 

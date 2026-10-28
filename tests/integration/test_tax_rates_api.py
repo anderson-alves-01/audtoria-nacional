@@ -74,9 +74,15 @@ def test_no_seeded_rate_is_homologated_and_each_item_says_what_is_missing(api_cl
     assert all(item["homologated"] is False for item in body["items"])
     acre = [i for i in body["items"] if i["tax"] == "ICMS" and i["uf"] == "AC"]
     assert acre and all(i["status"] == "VALIDADO" for i in acre)
-    # Legal documentation is complete; only the human homologation is missing.
-    assert all(i["homologationGaps"] == ["homologação pelo responsável"] for i in acre)
+    # The 19% row is documented with exceptions; the human review and homologation are missing.
+    nineteen = next(i for i in acre if i["rate"] == 19)
+    assert nineteen["homologationGaps"] == [
+        "revisão humana registrada (responsável e data)",
+        "homologação pelo responsável",
+    ]
+    assert nineteen["restrictions"] and "interestaduais" in nineteen["restrictions"]
     assert all(i["officialUrl"] and i["homologatedBy"] is None for i in acre)
+    assert all(i["reviewedBy"] is None and i["reviewedAt"] is None for i in acre)
     image_only = next(i for i in body["items"] if i["tax"] == "ICMS" and i["uf"] == "SP")
     assert image_only["status"] == "PENDENTE"
     assert {"validação jurídica", "fundamento legal", "início da vigência"} <= set(
@@ -97,7 +103,9 @@ def test_acre_rows_carry_the_official_pages_and_validity_but_are_not_homologated
     assert str(nineteen.valid_from) == "2023-04-01"
     assert str(seventeen.valid_from) == "2002-01-01"
     assert str(seventeen.valid_to) == "2023-03-31"
-    assert nineteen.official_url == "https://sefaz.ac.gov.br/2021/?p=11479"
+    assert nineteen.official_url == "https://www.legis.ac.gov.br/detalhar/5461"
+    assert "https://sefaz.ac.gov.br/2021/?p=11479" in nineteen.legal_basis
+    assert nineteen.restrictions and nineteen.reviewed_by is None and nineteen.reviewed_at is None
     assert seventeen.official_url == "https://sefaz.ac.gov.br/2021/?p=12159"
     assert "55/1997" in nineteen.legal_basis and "422" in nineteen.legal_basis
     assert "100" in seventeen.legal_basis
@@ -182,6 +190,14 @@ def test_register_rejects_the_same_municipality_operation_and_start_twice(db_ses
         {"homologated_by": "revisor", "status": "PENDENTE"},
         {"reference_min": 5, "reference_max": 2},
         {"jurisdiction_level": "NACIONAL"},
+        {"reviewed_by": "revisor"},
+        {"reviewed_at": __import__("datetime").datetime(2026, 10, 28)},
+        {
+            "homologated_by": "revisor",
+            "status": "VALIDADO",
+            "legal_basis": "x",
+            "validated_by": "y",
+        },
     ],
 )
 def test_register_constraints_fail_closed(db_session, overrides) -> None:
