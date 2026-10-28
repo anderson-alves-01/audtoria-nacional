@@ -1,7 +1,13 @@
 from datetime import date
 from decimal import Decimal
 
-from sirta_api.domain.tax_rates import RateVersion, resolve_on, resolve_year
+from sirta_api.domain.tax_rates import (
+    RateVersion,
+    homologation_gaps,
+    is_homologated,
+    resolve_on,
+    resolve_year,
+)
 
 
 def _ac(rate: str, start: date | None, end: date | None, status: str = "VALIDADO") -> RateVersion:
@@ -59,3 +65,48 @@ def test_flat_taxes_use_the_national_row_and_ignore_uf() -> None:
 def test_non_modal_kinds_are_not_used_as_the_modal_rate() -> None:
     specific = RateVersion("ICMS", "SP", "ESPECIFICA", Decimal("12"), None, None, "VALIDADO")
     assert resolve_on([specific], "ICMS", "SP", date(2024, 1, 1)).rate is None
+
+
+FULL = {
+    "status": "VALIDADO",
+    "legal_basis": "LC 1/2020",
+    "official_url": "https://legis.example.gov.br/lc1",
+    "validated_by": "responsável",
+    "valid_from": date(2023, 4, 1),
+}
+
+
+def test_a_rate_is_homologated_only_with_every_requirement() -> None:
+    assert homologation_gaps(**FULL) == []
+    assert is_homologated(**FULL)
+    expected = {
+        "legal_basis": "fundamento legal",
+        "official_url": "URL oficial da legislação",
+        "validated_by": "responsável pela validação",
+        "valid_from": "início da vigência",
+    }
+    for field, gap in expected.items():
+        assert homologation_gaps(**{**FULL, field: None}) == [gap]
+        assert not is_homologated(**{**FULL, field: None})
+    assert homologation_gaps(**{**FULL, "legal_basis": "  "}) == ["fundamento legal"]
+
+
+def test_pending_rate_read_from_an_image_is_never_homologated() -> None:
+    image_only = {
+        "status": "PENDENTE",
+        "legal_basis": None,
+        "official_url": None,
+        "validated_by": None,
+        "valid_from": None,
+    }
+    gaps = homologation_gaps(**image_only)
+    assert gaps == [
+        "validação jurídica",
+        "fundamento legal",
+        "URL oficial da legislação",
+        "responsável pela validação",
+        "início da vigência",
+    ]
+    # Even with a legal basis typed in, PENDENTE and the missing URL keep it out.
+    assert not is_homologated(**{**FULL, "status": "PENDENTE", "official_url": None})
+    assert not is_homologated(**{**FULL, "status": "REVOGADO"})

@@ -60,3 +60,17 @@ def test_rejects_invalid_filters_and_requires_a_session(api_client) -> None:
     assert api_client.get("/v1/tax-rates?uf=XX", headers=_headers()).status_code == 422
     assert api_client.get("/v1/tax-rates?on=31-12-2023", headers=_headers()).status_code == 422
     assert api_client.get("/v1/tax-rates").status_code in (401, 403)
+
+
+def test_no_seeded_rate_is_homologated_and_each_item_says_what_is_missing(api_client) -> None:
+    body = api_client.get("/v1/tax-rates", headers=_headers()).json()
+    assert len(body["items"]) == 2 + 26 + 3
+    assert all(item["homologated"] is False for item in body["items"])
+    acre = [i for i in body["items"] if i["tax"] == "ICMS" and i["uf"] == "AC"]
+    assert acre and all(i["status"] == "VALIDADO" for i in acre)
+    assert all("URL oficial da legislação" in i["homologationGaps"] for i in acre)
+    image_only = next(i for i in body["items"] if i["tax"] == "ICMS" and i["uf"] == "SP")
+    assert image_only["status"] == "PENDENTE"
+    assert {"validação jurídica", "fundamento legal", "início da vigência"} <= set(
+        image_only["homologationGaps"]
+    )

@@ -11,7 +11,7 @@ from sirta_api.adapters.db.models import TaxRateVersion
 from sirta_api.application.indicator_reliability import RATE_INDICATORS, reliability_for
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.errors import ValidationFailedError
-from sirta_api.domain.tax_rates import RateVersion, resolve_on
+from sirta_api.domain.tax_rates import RateVersion, homologation_gaps, resolve_on
 
 TAXES = ("ICMS", "ITCD", "ITBI", "ISS")
 UFS = (
@@ -25,7 +25,16 @@ NOTICE = (
 
 
 def _item(row: TaxRateVersion) -> dict:
+    gaps = homologation_gaps(
+        status=row.status,
+        legal_basis=row.legal_basis,
+        official_url=row.official_url,
+        validated_by=row.validated_by,
+        valid_from=row.valid_from,
+    )
     return {
+        "homologated": not gaps,
+        "homologationGaps": gaps,
         "tax": row.tax,
         "uf": row.uf,
         "rateKind": row.rate_kind,

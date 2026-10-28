@@ -44,6 +44,40 @@ class RateResolution:
 NO_RATE = RateResolution(rate=None, status=None)
 
 
+def homologation_gaps(
+    *,
+    status: str,
+    legal_basis: str | None,
+    official_url: str | None,
+    validated_by: str | None,
+    valid_from: date | None,
+) -> list[str]:
+    """What is still missing before a rate version counts as homologated. Empty means complete.
+
+    VALIDADO only says a legal basis was informed by a person. Homologation also needs the official
+    URL of the legislation, a known start of validity and the person who validated it. A percentage
+    read from an image, with none of these, is never homologated.
+    """
+    gaps: list[str] = []
+    if status != "VALIDADO":
+        gaps.append(
+            "status diferente de VALIDADO" if status == "REVOGADO" else "validação jurídica"
+        )
+    if not (legal_basis or "").strip():
+        gaps.append("fundamento legal")
+    if not (official_url or "").strip():
+        gaps.append("URL oficial da legislação")
+    if not (validated_by or "").strip():
+        gaps.append("responsável pela validação")
+    if valid_from is None:
+        gaps.append("início da vigência")
+    return gaps
+
+
+def is_homologated(**fields) -> bool:
+    return not homologation_gaps(**fields)
+
+
 def _matches(version: RateVersion, tax: str, uf: str | None) -> bool:
     if version.status == "REVOGADO" or version.tax != tax or version.rate_kind not in USABLE_KINDS:
         return False

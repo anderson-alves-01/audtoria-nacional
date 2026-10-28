@@ -718,7 +718,10 @@ paths:
         operation are not modeled); ITCD, ITBI and ISS use uf BR. When on (YYYY-MM-DD) and tax are
         given, resolved holds the rate valid on that date or null. For ICMS, uf is also required.
         Simulation parameter, not a tax assessment. The additive reliability block gives the level
-        of the rate indicators; none is CONFERIDO and none is homologated.
+        of the rate indicators; none is CONFERIDO and none is homologated. Each item carries
+        homologated and homologationGaps: homologated needs status VALIDADO plus legal basis,
+        official URL, validator and a known start of validity. A percentage read from an image
+        never qualifies.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
