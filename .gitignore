@@ -77,4 +77,5 @@ playwright-report/
 # Planilhas de dados (não versionar)
 docs/data/*.xlsx
 
-docs/data/originais/
+docs/data/originais/*
+!docs/data/originais/*.ods
