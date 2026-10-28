@@ -55,11 +55,66 @@ def test_unknown_uf_or_missing_uf_returns_no_rate() -> None:
     assert resolve_year(AC, "ICMS", "SP", 2024).rate is None
 
 
-def test_flat_taxes_use_the_national_row_and_ignore_uf() -> None:
-    itcd = RateVersion("ITCD", "BR", "UNICA", Decimal("6"), None, None, "PENDENTE")
-    assert resolve_on([itcd], "ITCD", None, date(2024, 1, 1)).rate == Decimal("6")
+def _sim(tax: str, rate: str) -> RateVersion:
+    return RateVersion(
+        tax, "BR", "UNICA", Decimal(rate), None, None, "PENDENTE", jurisdiction_level="SIMULACAO"
+    )
+
+
+def test_flat_taxes_use_the_simulation_row_and_label_it_as_such() -> None:
+    itcd = _sim("ITCD", "6")
+    first = resolve_on([itcd], "ITCD", None, date(2024, 1, 1))
+    assert first.rate == Decimal("6")
+    assert first.is_simulation is True
     assert resolve_on([itcd], "ITCD", "SP", date(2024, 1, 1)).rate == Decimal("6")
     assert resolve_on([itcd], "ICMS", "SP", date(2024, 1, 1)).rate is None
+
+
+def test_a_real_state_rate_beats_the_simulation_parameter() -> None:
+    sim = _sim("ITCD", "6")
+    state = RateVersion("ITCD", "SP", "UNICA", Decimal("4"), date(2024, 1, 1), None, "VALIDADO")
+    result = resolve_on([sim, state], "ITCD", "SP", date(2024, 6, 1))
+    assert result.rate == Decimal("4")
+    assert result.is_simulation is False
+    assert resolve_on([sim, state], "ITCD", "RJ", date(2024, 6, 1)).is_simulation is True
+
+
+def test_municipal_taxes_never_match_by_uf_alone() -> None:
+    by_uf = RateVersion("ITBI", "SP", "UNICA", Decimal("2"), None, None, "VALIDADO")
+    assert resolve_on([by_uf], "ITBI", "SP", date(2024, 1, 1)).rate is None
+    city = RateVersion(
+        "ITBI",
+        "SP",
+        "UNICA",
+        Decimal("3"),
+        None,
+        None,
+        "VALIDADO",
+        jurisdiction_level="MUNICIPIO",
+        municipality_ibge_code="3550308",
+    )
+    assert resolve_on([city], "ITBI", "SP", date(2024, 1, 1)).rate is None
+    found = resolve_on([city], "ITBI", "SP", date(2024, 1, 1), municipality="3550308")
+    assert found.rate == Decimal("3")
+    assert resolve_on([city], "ITBI", "SP", date(2024, 1, 1), municipality="3304557").rate is None
+
+
+def test_a_rate_tied_to_an_operation_needs_that_operation() -> None:
+    iss = RateVersion(
+        "ISS",
+        "SP",
+        "UNICA",
+        Decimal("2"),
+        None,
+        None,
+        "VALIDADO",
+        jurisdiction_level="MUNICIPIO",
+        municipality_ibge_code="3550308",
+        operation_ref="LC116-7.02",
+    )
+    args = ("ISS", "SP", date(2024, 1, 1))
+    assert resolve_on([iss], *args, municipality="3550308").rate is None
+    assert resolve_on([iss], *args, municipality="3550308", operation="LC116-7.02").rate == 2
 
 
 def test_non_modal_kinds_are_not_used_as_the_modal_rate() -> None:
@@ -73,6 +128,7 @@ FULL = {
     "official_url": "https://legis.example.gov.br/lc1",
     "validated_by": "responsável",
     "valid_from": date(2023, 4, 1),
+    "homologated_by": "revisor responsável",
 }
 
 
@@ -84,6 +140,7 @@ def test_a_rate_is_homologated_only_with_every_requirement() -> None:
         "official_url": "URL oficial da legislação",
         "validated_by": "responsável pela validação",
         "valid_from": "início da vigência",
+        "homologated_by": "homologação pelo responsável",
     }
     for field, gap in expected.items():
         assert homologation_gaps(**{**FULL, field: None}) == [gap]
@@ -106,7 +163,20 @@ def test_pending_rate_read_from_an_image_is_never_homologated() -> None:
         "URL oficial da legislação",
         "responsável pela validação",
         "início da vigência",
+        "homologação pelo responsável",
     ]
     # Even with a legal basis typed in, PENDENTE and the missing URL keep it out.
     assert not is_homologated(**{**FULL, "status": "PENDENTE", "official_url": None})
     assert not is_homologated(**{**FULL, "status": "REVOGADO"})
+
+
+def test_documentation_alone_does_not_homologate_the_acre_rate() -> None:
+    # The Acre row after migration 0110: legal basis, URL, validator and start are all filled.
+    documented = {**FULL, "homologated_by": None}
+    assert homologation_gaps(**documented) == ["homologação pelo responsável"]
+    assert not is_homologated(**documented)
+
+
+def test_a_simulation_parameter_is_never_homologated() -> None:
+    gaps = homologation_gaps(**FULL, jurisdiction_level="SIMULACAO")
+    assert len(gaps) == 1 and gaps[0].startswith("alíquota da jurisdição")

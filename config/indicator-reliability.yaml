@@ -28,8 +28,10 @@ indicators:
     level: NAO_CONFIAVEL
     reason: >-
       1.041 pares UF x CFOP x ano (268.317.945 NF-e) classificados como Compras pela regra publicada estão
-      ausentes da planilha, sem regra de exclusão que os explique. Em RO o volume omitido é 30,6 vezes as
-      Compras incluídas.
+      ausentes da planilha, sem regra de exclusão que os explique. Decisão de 28/10/2026: as entradas por
+      transferência confirmadas (1.151 a 1.154 e 2.151 a 2.154, 132.237.096 NF-e) não são Compras, e os códigos
+      que a tabela oficial de CFOP não define (1.159, 2.159, 1.190, 2.170 e vizinhos, 136.080.849 NF-e) ficam
+      pendentes de classificação. A quantidade por UF e CFOP segue sem conferência.
     evidence:
       - evidence/ops/sped-auditoria-omissoes-20261028.md
       - evidence/ops/sped-omissoes-1041-20261028.csv
@@ -50,6 +52,18 @@ indicators:
     evidence:
       - evidence/ops/sped-reconciliacao-20261028.md
       - evidence/ops/sped-auditoria-omissoes-20261028.md
+    reviewed_at: 2026-10-28
+  - id: sped_transferencias_por_direcao
+    label: Transferências por direção (recebidas e remetidas)
+    level: NAO_CONFIAVEL
+    reason: >-
+      A planilha só traz saídas. As transferências recebidas (1.151 a 1.154 e 2.151 a 2.154) estão fora dela e
+      só existem nos arquivos oficiais. Das transferências remetidas publicadas, 10,2% (38.882.859 NF-e) estão em
+      CFOPs que a tabela oficial não lista como transferência (5.159, 5.160, 6.159, 5.192 e outros). As duas
+      direções nunca são somadas, porque o mesmo movimento pode aparecer nelas e a soma duplicaria a contagem.
+    evidence:
+      - evidence/ops/sped-auditoria-omissoes-20261028.md
+      - docs/data/SPED-CONFIABILIDADE.md
     reviewed_at: 2026-10-28
   - id: sped_quantidade_uf_ano
     label: Quantidade de NF-e por UF e ano, todos os CFOPs somados
@@ -87,10 +101,12 @@ indicators:
     label: Alíquota modal de ICMS do Acre (17% até 31/03/2023, 19% desde 01/04/2023)
     level: EXPLORATORIO
     reason: >-
-      Fundamento informado pelo responsável (LC/AC 422/2022). Falta URL oficial da legislação e conferência
-      independente. Não é homologada.
+      Documentação jurídica completa: LC/AC 55/1997 art. 18, I, com a redação da LC/AC 422/2022 (19% desde
+      01/04/2023) e da LC/AC 100/2001 (17% de 01/01/2002 a 31/03/2023), com as páginas da Sefaz/AC. Não é
+      homologada: falta o revisor responsável e a conferência das condições de aplicação (exceções por mercadoria).
     evidence:
       - alembic/versions/0109_tax_rate_versions.py
+      - alembic/versions/0110_direction_rate_scope.py
     reviewed_at: 2026-10-28
   - id: icms_aliquota_demais_uf
     label: Alíquota modal de ICMS das outras 26 UFs
@@ -102,11 +118,15 @@ indicators:
       - alembic/versions/0109_tax_rate_versions.py
     reviewed_at: 2026-10-28
   - id: itcd_itbi_iss_aliquotas
-    label: Alíquotas de ITCD (6%), ITBI (3%) e ISS (5%)
+    label: Parâmetros de simulação de ITCD (6%), ITBI (3%) e ISS (5%)
     level: EXPLORATORIO
     reason: >-
-      Valores informados no requisito do Simulador, nacionais e sem legislação por UF ou município. Não são
-      homologados.
+      Parâmetros do requisito do Simulador, sem legislação. ITCD é estadual e ITBI e ISS são municipais: uma
+      alíquota única não vale para todas as UFs nem para todos os municípios e nunca será homologada como tal.
+      O cadastro relaciona imposto, localidade, operação, fundamento legal e vigência. Faltam a lei estadual, as
+      faixas, as bases e a vigência (ITCD), a lei do município (ITBI) e a lei do município com o item da lista
+      de serviços (ISS). Limites de referência (ITCD 8%, ISS 2% a 5%) informados pelo responsável, a conferir.
     evidence:
       - alembic/versions/0109_tax_rate_versions.py
+      - alembic/versions/0110_direction_rate_scope.py
     reviewed_at: 2026-10-28

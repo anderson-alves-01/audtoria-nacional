@@ -691,7 +691,11 @@ paths:
         the annual series; level CFOP is the base by UF and CFOP and is paginated. The additive
         reliability block lists each indicator with its level (NAO_CONFIAVEL, EXPLORATORIO or
         CONFERIDO), reason, evidence, usableForFiscalCalculation, publishableInSimulator and
-        usableAsHypothesis.
+        usableAsHypothesis. Additive field direcao (RECEBIDA or REMETIDA) on items of the
+        operation Transferências; the two directions are never summed because the same movement
+        can appear in both. On level CFOP, classificacaoCfop (CONFIRMADA, PENDENTE_CLASSIFICACAO
+        or EXCLUIDA) says whether the official CFOP table lists the code as a transfer. The
+        workbook only has outbound CFOPs, so every loaded transfer is REMETIDA.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
@@ -715,13 +719,19 @@ paths:
         a legal basis is recorded; PENDENTE is a rate from a non-legal source and is not a legal
         validation; REVOGADO versions are not returned. NULL validFrom or validTo means unknown or
         open, never a guessed date. ICMS is the modal rate by UF (exceptions by product and
-        operation are not modeled); ITCD, ITBI and ISS use uf BR. When on (YYYY-MM-DD) and tax are
-        given, resolved holds the rate valid on that date or null. For ICMS, uf is also required.
+        operation are not modeled). ITCD is state and ITBI and ISS are municipal: their flat values
+        (uf BR) have jurisdictionLevel SIMULACAO, isSimulationParameter true, are always PENDENTE and
+        are never the rate of a UF or municipality. Additive fields: jurisdictionLevel (UF,
+        MUNICIPIO or SIMULACAO), municipalityIbgeCode, operationRef, referenceMin/referenceMax
+        (legal reference limits reported by the owner, to be checked at the source), homologatedBy
+        and homologatedAt. When on (YYYY-MM-DD) and tax are given, resolved holds the rate valid on
+        that date or null, plus isSimulationParameter. For ICMS, uf is also required.
         Simulation parameter, not a tax assessment. The additive reliability block gives the level
         of the rate indicators; none is CONFERIDO and none is homologated. Each item carries
         homologated and homologationGaps: homologated needs status VALIDADO plus legal basis,
-        official URL, validator and a known start of validity. A percentage read from an image
-        never qualifies.
+        official URL, validator, a known start of validity and homologation by the responsible
+        reviewer (a separate human step: filling the documentation does not homologate). A
+        percentage read from an image, or a simulation parameter, never qualifies.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}

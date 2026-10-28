@@ -27,6 +27,7 @@ SPED_INDICATORS = (
     "sped_compras_uf",
     "sped_valor_estimado_uf_cfop_ano",
     "sped_valor_estimado_operacao",
+    "sped_transferencias_por_direcao",
     "sped_quantidade_uf_ano",
     "sped_quantidade_nacional_cfop_mes",
     "sped_valor_nacional_cfop_mes",

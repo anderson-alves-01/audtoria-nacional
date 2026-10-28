@@ -119,6 +119,7 @@ def test_the_value_and_compras_indicators_are_nao_confiavel() -> None:
         "sped_compras_uf",
         "sped_valor_estimado_uf_cfop_ano",
         "sped_valor_estimado_operacao",
+        "sped_transferencias_por_direcao",
         "simulador_imposto_apurado_dados_publicos",
     ):
         assert registry[indicator_id].level is ReliabilityLevel.NAO_CONFIAVEL, indicator_id

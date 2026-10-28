@@ -20,7 +20,9 @@ UFS = (
 )  # fmt: skip
 NOTICE = (
     "Alíquotas para simulação. Só as marcadas VALIDADO têm base legal registrada. PENDENTE não é "
-    "validação jurídica. Alíquota modal: exceções por mercadoria e operação não estão modeladas."
+    "validação jurídica. Alíquota modal: exceções por mercadoria e operação não estão modeladas. "
+    "ITCD (estadual), ITBI e ISS (municipais) aparecem como parâmetros de simulação, não como "
+    "alíquota de UF ou município; nenhuma linha está homologada sem o revisor responsável."
 )
 
 
@@ -31,12 +33,22 @@ def _item(row: TaxRateVersion) -> dict:
         official_url=row.official_url,
         validated_by=row.validated_by,
         valid_from=row.valid_from,
+        homologated_by=row.homologated_by,
+        jurisdiction_level=row.jurisdiction_level,
     )
     return {
         "homologated": not gaps,
         "homologationGaps": gaps,
         "tax": row.tax,
         "uf": row.uf,
+        "jurisdictionLevel": row.jurisdiction_level,
+        "isSimulationParameter": row.jurisdiction_level == "SIMULACAO",
+        "municipalityIbgeCode": row.municipality_ibge_code,
+        "operationRef": row.operation_ref,
+        "referenceMin": float(row.reference_min) if row.reference_min is not None else None,
+        "referenceMax": float(row.reference_max) if row.reference_max is not None else None,
+        "homologatedBy": row.homologated_by,
+        "homologatedAt": row.homologated_at.isoformat() if row.homologated_at else None,
         "rateKind": row.rate_kind,
         "rate": float(row.rate),
         "validFrom": row.valid_from.isoformat() if row.valid_from else None,
@@ -96,6 +108,10 @@ def list_tax_rates(
                 valid_from=row.valid_from,
                 valid_to=row.valid_to,
                 status=row.status,
+                jurisdiction_level=row.jurisdiction_level,
+                municipality_ibge_code=row.municipality_ibge_code,
+                operation_ref=row.operation_ref,
+                homologated_by=row.homologated_by,
             )
             for row in rows
         ]
@@ -103,6 +119,7 @@ def list_tax_rates(
         body["resolved"] = {
             "rate": float(resolved.rate) if resolved.rate is not None else None,
             "status": resolved.status,
+            "isSimulationParameter": resolved.is_simulation,
         }
     body["items"] = [_item(row) for row in rows]
     return body
