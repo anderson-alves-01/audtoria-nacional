@@ -57,7 +57,49 @@ export function rateLabel(tax: TaxId, resolved: ResolvedRate): string {
     return `${tax} (sem alíquota)`;
   }
   const percent = `${tax} ${resolved.rate.toLocaleString('pt-BR')}%`;
+  if (resolved.isSimulation) {
+    return `${percent} (parâmetro de simulação)`;
+  }
   return resolved.status === 'PENDENTE' ? `${percent} (pendente)` : percent;
+}
+
+export const TRANSFER_OPERATION = 'Transferências';
+export type TransferDirection = '' | 'RECEBIDA' | 'REMETIDA';
+export const TRANSFER_DIRECTION_LABEL: Record<'RECEBIDA' | 'REMETIDA', string> = {
+  RECEBIDA: 'Transferências recebidas',
+  REMETIDA: 'Transferências remetidas',
+};
+export const TRANSFER_DIRECTION_NOTE =
+  'Transferências recebidas e remetidas nunca são somadas: o mesmo movimento pode aparecer nas duas direções e a soma duplicaria a contagem. Uma contagem distinta exige identificar os documentos ou uma regra de deduplicação comprovada.';
+export const TRANSFER_ICMS_NOTE =
+  'ICMS não calculado: a transferência entre estabelecimentos do mesmo titular, em regra, não é fato gerador (LC 204/2023, informada pelo responsável, a conferir na fonte), com regras próprias de crédito e uma opção legal de equiparação.';
+
+/** ICMS fica em branco numa transferencia, a menos que a pessoa opte, como hipotese, por calcula-lo. */
+export function icmsBlockedForTransfer(operation: string, optIn: boolean): boolean {
+  return operation === TRANSFER_OPERATION && !optIn;
+}
+
+/** Impostos que entram nos calculos: remove o ICMS de uma transferencia sem opt-in. */
+export function effectiveTaxes(taxes: TaxId[], operation: string, optIn: boolean): TaxId[] {
+  return icmsBlockedForTransfer(operation, optIn) ? taxes.filter((tax) => tax !== 'ICMS') : taxes;
+}
+
+/**
+ * Dado publico de transferencia so vale para UMA direcao. Sem direcao escolhida, ou sem o campo
+ * `direcao` no item, nada entra (falha fechada): somar as duas direcoes duplicaria a contagem.
+ */
+export function filterByDirection(
+  items: SpedSerieItem[],
+  operation: string,
+  direction: TransferDirection,
+): SpedSerieItem[] {
+  if (operation !== TRANSFER_OPERATION) {
+    return items;
+  }
+  if (direction === '') {
+    return [];
+  }
+  return items.filter((item) => item.operacao === TRANSFER_OPERATION && item.direcao === direction);
 }
 
 export interface ScenarioInput {

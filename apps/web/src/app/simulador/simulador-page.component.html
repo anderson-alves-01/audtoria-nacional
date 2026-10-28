@@ -36,12 +36,37 @@
     </label>
     <label>
       Operação
-      <select name="operacao" [ngModel]="operation()" (ngModelChange)="operation.set($event)">
+      <select name="operacao" [ngModel]="operation()" (ngModelChange)="setOperation($event)">
         @for (item of operations(); track item) {
           <option [value]="item">{{ item }}</option>
         }
       </select>
     </label>
+    @if (isTransfer()) {
+      <label>
+        Direção da transferência
+        <select
+          name="direcao"
+          data-testid="direction"
+          [ngModel]="transferDirection()"
+          (ngModelChange)="transferDirection.set($event)"
+        >
+          <option value="">Escolha a direção</option>
+          <option value="RECEBIDA">{{ directionLabel.RECEBIDA }}</option>
+          <option value="REMETIDA">{{ directionLabel.REMETIDA }}</option>
+        </select>
+      </label>
+      <label class="check">
+        <input
+          type="checkbox"
+          name="icms-transfer-optin"
+          data-testid="icms-optin"
+          [checked]="icmsTransferOptIn()"
+          (change)="icmsTransferOptIn.set($any($event.target).checked)"
+        />
+        Calcular ICMS mesmo assim (hipótese: equiparação optada)
+      </label>
+    }
     <fieldset class="taxes">
       <legend>Impostos</legend>
       @for (def of taxes; track def.id) {
@@ -65,6 +90,20 @@
       A tabela de alíquotas não pôde ser lida: todas aparecem como pendentes de validação jurídica.
     }
   </p>
+  @if (isTransfer()) {
+    <p class="hint" role="note" data-testid="transfer-note">
+      <app-badge tone="warn">Transferências</app-badge>
+      {{ directionNote }}
+      @if (icmsBlocked()) {
+        {{ transferIcmsNote }}
+      } @else {
+        O ICMS abaixo é uma hipótese informada por você (equiparação optada), não uma apuração.
+      }
+      @if (publicOpen() && !transferDirection()) {
+        Escolha a direção para ver dados públicos de transferência.
+      }
+    </p>
+  }
   @if (icmsNeedsUf()) {
     <p class="hint" role="note">Escolha uma UF para calcular o ICMS. Sem UF o imposto fica em "—".</p>
   }
@@ -123,7 +162,7 @@
         <app-kpi-card
           [label]="row.tax + ' apurado'"
           [value]="compact(row.amount, 'BRL')"
-          [meta]="rateMeta(row.resolved, latest()?.year ?? null)"
+          [meta]="taxMeta(row.tax, row.resolved, latest()?.year ?? null)"
           kind="Simulado"
           tone="warn"
         />
@@ -237,7 +276,7 @@
           [label]="row.tax + ' do cenário'"
           [value]="money(row.simulated)"
           [meta]="
-            rateMeta(row.resolved, scenarioYear()) +
+            taxMeta(row.tax, row.resolved, scenarioYear()) +
             (comparisonEnabled() ? ' · público ' + (reference()?.year ?? '—') + ': ' + money(row.published) : '')
           "
           [kind]="hypothesisLabel"

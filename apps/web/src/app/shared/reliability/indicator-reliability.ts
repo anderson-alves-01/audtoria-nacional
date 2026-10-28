@@ -27,6 +27,7 @@ export const PUBLIC_DATA_INDICATORS = [
   'sped_compras_uf',
   'sped_valor_estimado_uf_cfop_ano',
   'sped_valor_estimado_operacao',
+  'sped_transferencias_por_direcao',
   'simulador_imposto_apurado_dados_publicos',
 ] as const;
 
@@ -42,7 +43,7 @@ export const LEVEL_LABEL: Record<ReliabilityLevel, string> = {
 /** O que falta para liberar o dado publico. Detalhes em docs/delivery/RELATORIO-SIMULADOR-SIRTA-*.md. */
 export const HOMOLOGATION_NEEDS = [
   'Esclarecimento oficial do SPED sobre a definição de "Quantidade NF-e" e sobre a dimensão UF.',
-  'Decisão do responsável sobre as entradas por transferência (CFOP 1.15x e 2.15x), hoje fora da planilha.',
+  'Fonte oficial para os CFOPs 1.159, 2.159, 1.190, 2.170 e para os 5/6.15x a .19x que a tabela de CFOP não lista como transferência, e carga autorizada das transferências recebidas (1.151 a 1.154 e 2.151 a 2.154), hoje fora da planilha.',
   'Nova versão da planilha, ou regra corrigida, reconciliada com os arquivos originais.',
   'Revisão humana registrada no registro de confiabilidade, com evidência.',
 ] as const;

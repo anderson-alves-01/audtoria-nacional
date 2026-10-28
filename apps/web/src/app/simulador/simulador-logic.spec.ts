@@ -9,7 +9,11 @@ import {
 } from './simulador-aliquotas';
 import {
   HYPOTHESIS_LABEL,
+  TRANSFER_OPERATION,
   allowedParam,
+  effectiveTaxes,
+  filterByDirection,
+  icmsBlockedForTransfer,
   hypothesisChart,
   publicByYear,
   referenceYear,
@@ -121,7 +125,12 @@ describe('simulador logic', () => {
   it('compares the scenario with the public year and the tax difference', () => {
     const rows = publicByYear(items, [2021], 'Vendas', 'SP');
     const table = scenarioComparison(referenceYear(rows, 2021), { quantity: 150, value: 2000 }, ['ITCD', 'ICMS'], 'SP', book);
-    expect(table.map((row) => row.label)).toEqual(['Quantidade', 'Valor', 'ITCD 6% (pendente)', 'ICMS 18% (pendente)']);
+    expect(table.map((row) => row.label)).toEqual([
+      'Quantidade',
+      'Valor',
+      'ITCD 6% (parâmetro de simulação)',
+      'ICMS 18% (pendente)',
+    ]);
     expect(table[0].difference).toBe(50);
     expect(table[0].differencePercent).toBe(50);
     expect(table[1].difference).toBe(1000);
@@ -220,5 +229,28 @@ describe('hypothesisChart', () => {
     const chart = hypothesisChart({ quantity: 10, value: null }, ['ITCD'], null, book);
     expect(chart.series?.[1].values).toEqual([null]);
     expect(chart.series?.[2].values).toEqual([null]);
+  });
+});
+describe('transfer rules', () => {
+  const sent: SpedSerieItem = { ano: 2021, uf: 'SP', operacao: 'Transferências', quantidade: 10, valorEstimado: null, direcao: 'REMETIDA' };
+  const received: SpedSerieItem = { ...sent, quantidade: 5, direcao: 'RECEBIDA' };
+  const legacy: SpedSerieItem = { ...sent, direcao: undefined };
+
+  it('blocks ICMS on a transfer unless the user opts in', () => {
+    expect(icmsBlockedForTransfer(TRANSFER_OPERATION, false)).toBeTrue();
+    expect(icmsBlockedForTransfer(TRANSFER_OPERATION, true)).toBeFalse();
+    expect(icmsBlockedForTransfer('Vendas', false)).toBeFalse();
+    expect(effectiveTaxes(['ITCD', 'ICMS'], TRANSFER_OPERATION, false)).toEqual(['ITCD']);
+    expect(effectiveTaxes(['ITCD', 'ICMS'], TRANSFER_OPERATION, true)).toEqual(['ITCD', 'ICMS']);
+    expect(effectiveTaxes(['ITCD', 'ICMS'], 'Compras', false)).toEqual(['ITCD', 'ICMS']);
+  });
+
+  it('keeps one direction at a time and fails closed without a direction', () => {
+    const both = [sent, received];
+    expect(filterByDirection(both, TRANSFER_OPERATION, '')).toEqual([]);
+    expect(filterByDirection(both, TRANSFER_OPERATION, 'REMETIDA')).toEqual([sent]);
+    expect(filterByDirection(both, TRANSFER_OPERATION, 'RECEBIDA')).toEqual([received]);
+    expect(filterByDirection([legacy], TRANSFER_OPERATION, 'REMETIDA')).toEqual([]);
+    expect(filterByDirection(items, 'Vendas', '')).toEqual(items);
   });
 });

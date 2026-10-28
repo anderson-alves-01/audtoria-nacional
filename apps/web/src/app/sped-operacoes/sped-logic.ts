@@ -12,6 +12,8 @@ export interface SpedSerieItem {
   operacao: string;
   quantidade: number;
   valorEstimado: string | null;
+  /** So em Transferências: RECEBIDA ou REMETIDA. Nunca somar as duas direções. */
+  direcao?: 'RECEBIDA' | 'REMETIDA' | null;
 }
 
 export interface SpedCfopItem extends SpedSerieItem {
@@ -113,6 +115,19 @@ export function pick(items: SpedSerieItem[], filter: Partial<SpedFilter>): SpedS
   );
 }
 
+/** Verdadeiro quando as linhas misturam transferências recebidas e remetidas. */
+export function mixesDirections(rows: SpedSerieItem[]): boolean {
+  return new Set(rows.map((row) => row.direcao).filter((direction) => !!direction)).size > 1;
+}
+
+/** Soma das linhas, ou nulo se não há linha ou se somaria as duas direções de transferência. */
+function sumRows(rows: SpedSerieItem[], measure: Measure): number | null {
+  if (rows.length === 0 || mixesDirections(rows)) {
+    return null;
+  }
+  return sumKnown(rows.map((row) => measureOf(row, measure)));
+}
+
 /** Valor por UF de uma única operação, somando os anos escolhidos. Nunca mistura operações. */
 export function byUf(
   items: SpedSerieItem[],
@@ -123,7 +138,7 @@ export function byUf(
   const out = new Map<string, number | null>();
   for (const cell of HEX_LAYOUT) {
     const rows = pick(items, { ano, uf: cell.uf, operacao: operation });
-    out.set(cell.uf, rows.length === 0 ? null : sumKnown(rows.map((row) => measureOf(row, measure))));
+    out.set(cell.uf, sumRows(rows, measure));
   }
   return out;
 }
@@ -138,7 +153,7 @@ export function byOperation(
   const out = new Map<string, number | null>();
   for (const operation of operations) {
     const rows = pick(items, { ...filter, operacao: operation });
-    out.set(operation, rows.length === 0 ? null : sumKnown(rows.map((row) => measureOf(row, measure))));
+    out.set(operation, sumRows(rows, measure));
   }
   return out;
 }
@@ -152,7 +167,7 @@ export function byYear(
 ): (number | null)[] {
   return years.map((year) => {
     const rows = pick(items, { ano: String(year), uf, operacao: operation });
-    return rows.length === 0 ? null : sumKnown(rows.map((row) => measureOf(row, measure)));
+    return sumRows(rows, measure);
   });
 }
 

@@ -52,6 +52,15 @@ describe('sped logic', () => {
     ]);
   });
 
+  it('never adds received and sent transfers: a cell that mixes both directions stays empty', () => {
+    const sent: SpedSerieItem = { ano: 2021, uf: 'SP', operacao: 'Transferências', quantidade: 10, valorEstimado: '1.00', direcao: 'REMETIDA' };
+    const received: SpedSerieItem = { ...sent, quantidade: 5, direcao: 'RECEBIDA' };
+    expect(byUf([sent], 'Transferências', 'quantidade', null).get('SP')).toBe(10);
+    expect(byUf([sent, received], 'Transferências', 'quantidade', null).get('SP')).toBeNull();
+    expect(byYear([sent, received], [2021], 'Transferências', 'quantidade', 'SP')).toEqual([null]);
+    expect(byOperation([sent, received], ['Transferências'], 'valor', { ano: null, uf: 'SP' }).get('Transferências')).toBeNull();
+  });
+
   it('builds the yearly line with gaps for years without rows', () => {
     expect(byYear(items, [2021, 2022, 2023], 'Vendas', 'quantidade', 'SP')).toEqual([10, 20, null]);
   });

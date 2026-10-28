@@ -38,8 +38,16 @@ import {
   Comparison,
   HYPOTHESIS_LABEL,
   PublicYear,
+  TRANSFER_DIRECTION_LABEL,
+  TRANSFER_DIRECTION_NOTE,
+  TRANSFER_ICMS_NOTE,
+  TRANSFER_OPERATION,
+  TransferDirection,
   allowedParam,
+  effectiveTaxes,
+  filterByDirection,
   hypothesisChart,
+  icmsBlockedForTransfer,
   publicByYear,
   referenceFallbackYear,
   referenceYear,
@@ -103,6 +111,18 @@ export class SimuladorPageComponent implements OnInit {
   readonly goods = signal<string>('');
   readonly selectedTaxes = signal<TaxId[]>(['ITCD', 'ITBI', 'ISS', 'ICMS']);
 
+  // Transferencias: direcao propria e ICMS so por opt-in (hipotese).
+  readonly transferDirection = signal<TransferDirection>('');
+  readonly icmsTransferOptIn = signal(false);
+  readonly directionLabel = TRANSFER_DIRECTION_LABEL;
+  readonly directionNote = TRANSFER_DIRECTION_NOTE;
+  readonly transferIcmsNote = TRANSFER_ICMS_NOTE;
+  readonly isTransfer = computed(() => this.operation() === TRANSFER_OPERATION);
+  /** ICMS em branco numa transferencia sem opt-in. */
+  readonly icmsBlocked = computed(() => icmsBlockedForTransfer(this.operation(), this.icmsTransferOptIn()));
+  /** Impostos que entram em calculo e grafico. */
+  readonly activeTaxes = computed(() => effectiveTaxes(this.selectedTaxes(), this.operation(), this.icmsTransferOptIn()));
+
   // Cenario desejado (Parte B)
   readonly quantityInput = signal<number | null>(null);
   readonly valueInput = signal<number | null>(null);
@@ -111,7 +131,9 @@ export class SimuladorPageComponent implements OnInit {
   /** O simulador funciona sem dado publico: com o portao fechado, so a hipotese informada existe. */
   readonly hasPublic = computed(() => this.publicOpen() && this.view()?.run != null);
   /** Nenhum item publico chega aos calculos enquanto o portao estiver fechado. */
-  readonly items = computed(() => (this.publicOpen() ? (this.view()?.items ?? []) : []));
+  readonly items = computed(() =>
+    this.publicOpen() ? filterByDirection(this.view()?.items ?? [], this.operation(), this.transferDirection()) : [],
+  );
   readonly years = computed<number[]>(() => this.view()?.years ?? [...SPED_YEARS]);
   readonly operations = computed<string[]>(() => this.view()?.operations ?? [...SPED_OPERATIONS]);
   readonly ufs = computed<string[]>(() => this.view()?.ufs ?? FALLBACK_UFS);
@@ -133,7 +155,14 @@ export class SimuladorPageComponent implements OnInit {
   readonly taxRows = computed(() =>
     this.selectedTaxes().map((tax) => {
       const resolved = this.resolved(tax, this.latest()?.year ?? referenceFallbackYear);
-      return { tax, resolved, rate: resolved.rate, amount: taxAmount(this.latest()?.value ?? null, resolved.rate) };
+      const blocked = this.isBlocked(tax);
+      return {
+        tax,
+        resolved,
+        rate: resolved.rate,
+        blocked,
+        amount: blocked ? null : taxAmount(this.latest()?.value ?? null, resolved.rate),
+      };
     }),
   );
 
@@ -153,19 +182,22 @@ export class SimuladorPageComponent implements OnInit {
   );
 
   readonly comparison = computed<Comparison[]>(() =>
-    scenarioComparison(this.reference(), this.scenario(), this.selectedTaxes(), this.ufOrNull(), this.book()),
+    scenarioComparison(this.reference(), this.scenario(), this.activeTaxes(), this.ufOrNull(), this.book()),
   );
 
   /** Imposto do cenario informado, um por imposto escolhido. Nunca ha total entre impostos. */
   readonly simulatedTaxes = computed(() =>
     this.selectedTaxes().map((tax) => {
       const resolved = this.resolved(tax, this.scenarioYear());
+      const blocked = this.isBlocked(tax);
       return {
         tax,
         resolved,
         rate: resolved.rate,
-        simulated: taxAmount(this.scenario().value, resolved.rate),
-        published: this.comparisonEnabled() ? taxAmount(this.reference()?.value ?? null, resolved.rate) : null,
+        blocked,
+        simulated: blocked ? null : taxAmount(this.scenario().value, resolved.rate),
+        published:
+          this.comparisonEnabled() && !blocked ? taxAmount(this.reference()?.value ?? null, resolved.rate) : null,
       };
     }),
   );
@@ -175,18 +207,18 @@ export class SimuladorPageComponent implements OnInit {
     this.publicOpen()
       ? simulatorChart(
           this.rows(),
-          this.selectedTaxes(),
+          this.activeTaxes(),
           this.ufOrNull(),
           this.hasScenario() ? this.scenario() : null,
           this.book(),
           this.scenarioYear(),
         )
-      : hypothesisChart(this.scenario(), this.selectedTaxes(), this.ufOrNull(), this.book(), this.scenarioYear()),
+      : hypothesisChart(this.scenario(), this.activeTaxes(), this.ufOrNull(), this.book(), this.scenarioYear()),
   );
 
   /** Parte A: so dados publicos, sem o ponto simulado. */
   readonly publicChart = computed<BiChartInput>(() =>
-    simulatorChart(this.rows(), this.selectedTaxes(), this.ufOrNull(), null, this.book()),
+    simulatorChart(this.rows(), this.activeTaxes(), this.ufOrNull(), null, this.book()),
   );
 
   readonly icmsNeedsUf = computed(() => this.selectedTaxes().includes('ICMS') && !this.uf());
@@ -283,7 +315,24 @@ export class SimuladorPageComponent implements OnInit {
   }
 
   amountOf(row: PublicYear, tax: TaxId): number | null {
-    return taxAmount(row.value, this.resolved(tax, row.year).rate);
+    return this.isBlocked(tax) ? null : taxAmount(row.value, this.resolved(tax, row.year).rate);
+  }
+
+  /** ICMS de uma transferencia sem opt-in: nao incide por padrao, fica em branco. */
+  isBlocked(tax: TaxId): boolean {
+    return tax === 'ICMS' && this.icmsBlocked();
+  }
+
+  /** Troca a operacao e zera as escolhas que so valem para transferencia. */
+  setOperation(value: string): void {
+    this.operation.set(value);
+    this.transferDirection.set('');
+    this.icmsTransferOptIn.set(false);
+  }
+
+  /** Meta de um imposto: o motivo do branco numa transferencia, ou a aliquota e sua situacao. */
+  taxMeta(tax: TaxId, resolved: ResolvedRate, year: number | null): string {
+    return this.isBlocked(tax) ? this.transferIcmsNote : this.rateMeta(resolved, year);
   }
 
   /** Percentual da aliquota, ou o motivo de nao haver um. */
@@ -299,8 +348,13 @@ export class SimuladorPageComponent implements OnInit {
     if (resolved.changedWithinYear) {
       return `A alíquota validada mudou em ${year ?? 'no ano'}; o dado é anual e não pode ser dividido. Imposto em branco.`;
     }
-    const status = rateStatusLabel(resolved.status);
-    return resolved.rate === null ? 'Sem alíquota para esta escolha' : `Alíquota ${this.rateText(resolved)} · ${status}`;
+    if (resolved.rate === null) {
+      return 'Sem alíquota para esta escolha';
+    }
+    const status = resolved.isSimulation
+      ? 'Parâmetro de simulação, não é alíquota da UF nem do município'
+      : rateStatusLabel(resolved.status);
+    return `Alíquota ${this.rateText(resolved)} · ${status}`;
   }
 
   statusTone(resolved: ResolvedRate): 'ok' | 'warn' {

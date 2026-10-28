@@ -22,7 +22,7 @@ export const TAXES: TaxDef[] = [
 ];
 
 export const RATE_SOURCE =
-  'Alíquotas lidas da tabela versionada por vigência. Só as marcadas Validado têm base legal registrada (hoje, o ICMS modal do Acre). As demais estão Pendentes de validação jurídica e não devem ser tratadas como validadas. Percentuais lidos de uma imagem não são fundamento legal: nenhuma tabela está homologada.';
+  'Alíquotas lidas da tabela versionada por vigência. Só as marcadas Validado têm base legal registrada (hoje, o ICMS modal do Acre, com a documentação jurídica completa mas ainda sem homologação do responsável). As demais estão Pendentes de validação jurídica e não devem ser tratadas como validadas. Percentuais lidos de uma imagem não são fundamento legal: nenhuma tabela está homologada. ITCD (estadual), ITBI e ISS (municipais) usam parâmetros de simulação; uma alíquota única não vale para todas as UFs nem para todos os municípios.';
 
 export const RATE_CAVEAT =
   'Alíquota modal: exceções por mercadoria e operação não estão modeladas.';
@@ -98,6 +98,11 @@ export interface RateVersion {
   officialUrl: string | null;
   status: RateStatus | 'REVOGADO';
   note: string | null;
+  /** UF, MUNICIPIO ou SIMULACAO. Ausente em respostas antigas: uf BR conta como simulacao. */
+  jurisdictionLevel?: 'UF' | 'MUNICIPIO' | 'SIMULACAO';
+  isSimulationParameter?: boolean;
+  municipalityIbgeCode?: string | null;
+  operationRef?: string | null;
 }
 
 export interface ResolvedRate {
@@ -106,9 +111,17 @@ export interface ResolvedRate {
   /** A aliquota validada mudou dentro do ano: nao existe taxa anual unica. */
   changedWithinYear: boolean;
   version: RateVersion | null;
+  /** Parametro de simulacao: nao e a aliquota de nenhuma UF nem municipio. */
+  isSimulation: boolean;
 }
 
-export const NO_RATE: ResolvedRate = { rate: null, status: null, changedWithinYear: false, version: null };
+export const NO_RATE: ResolvedRate = {
+  rate: null,
+  status: null,
+  changedWithinYear: false,
+  version: null,
+  isSimulation: false,
+};
 
 const FLAT_UF = 'BR';
 const USABLE_KINDS = ['MODAL', 'UNICA'];
@@ -121,6 +134,7 @@ export function fallbackVersions(): RateVersion[] {
     tax: def.id,
     uf: FLAT_UF,
     rateKind: 'UNICA',
+    jurisdictionLevel: 'SIMULACAO',
     rate: def.fixedRate as number,
     note: 'Reserva local; leitura da tabela versionada indisponível.',
   }));
@@ -135,12 +149,29 @@ export function fallbackVersions(): RateVersion[] {
   return [...flat, ...icms];
 }
 
+function levelOf(version: RateVersion): 'UF' | 'MUNICIPIO' | 'SIMULACAO' {
+  return version.jurisdictionLevel ?? (version.uf === FLAT_UF ? 'SIMULACAO' : 'UF');
+}
+
+/**
+ * ITBI e ISS sao municipais: sem municipio na escolha, so o parametro de simulacao serve. ITCD e
+ * estadual: uma linha da UF vence o parametro. Linha de municipio nunca casa so pela UF.
+ */
 function matches(version: RateVersion, tax: TaxId, uf: string | null): boolean {
   if (version.status === 'REVOGADO' || version.tax !== tax || !USABLE_KINDS.includes(version.rateKind)) {
     return false;
   }
-  const wanted = tax === 'ICMS' ? uf : FLAT_UF;
-  return wanted !== null && version.uf === wanted;
+  if (version.operationRef) {
+    return false;
+  }
+  const level = levelOf(version);
+  if (level === 'SIMULACAO') {
+    return tax !== 'ICMS' && version.uf === FLAT_UF;
+  }
+  if (level === 'MUNICIPIO') {
+    return false;
+  }
+  return (tax === 'ICMS' || tax === 'ITCD') && uf !== null && version.uf === uf;
 }
 
 function overlaps(version: RateVersion, start: string, end: string): boolean {
@@ -161,14 +192,18 @@ export function resolveRate(versions: RateVersion[], tax: TaxId, uf: string | nu
   if (found.length === 0) {
     return NO_RATE;
   }
-  const validated = found.filter((version) => version.status === 'VALIDADO');
-  const chosen = validated.length > 0 ? validated : found;
+  // A aliquota de uma jurisdicao real vence o parametro de simulacao.
+  const real = found.filter((version) => levelOf(version) !== 'SIMULACAO');
+  const pool = real.length > 0 ? real : found;
+  const validated = pool.filter((version) => version.status === 'VALIDADO');
+  const chosen = validated.length > 0 ? validated : pool;
   const status = chosen[0].status as RateStatus;
+  const isSimulation = levelOf(chosen[0]) === 'SIMULACAO';
   if (new Set(chosen.map((version) => version.rate)).size > 1) {
-    return { rate: null, status, changedWithinYear: true, version: null };
+    return { rate: null, status, changedWithinYear: true, version: null, isSimulation };
   }
   const best = [...chosen].sort((a, b) => (b.validFrom ?? '').localeCompare(a.validFrom ?? ''))[0];
-  return { rate: best.rate, status, changedWithinYear: false, version: best };
+  return { rate: best.rate, status, changedWithinYear: false, version: best, isSimulation };
 }
 
 /** Texto do selo de uma aliquota. */

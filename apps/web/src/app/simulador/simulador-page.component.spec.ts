@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { APP_NAV_GROUPS, OPEN_NAV_GROUP_IDS } from '../layout/navigation';
 import { PUBLIC_DATA_INDICATORS, ReliabilityBlock, ReliabilityLevel } from '../shared/reliability/indicator-reliability';
+import { RateVersion } from './simulador-aliquotas';
 import { SimuladorPageComponent } from './simulador-page.component';
 
 const OPERATIONS = [
@@ -284,6 +285,71 @@ describe('SimuladorPageComponent', () => {
     });
   });
 
+  describe('transfers', () => {
+    it('offers a direction only for Transferências and resets it when the operation changes', () => {
+      const { fixture, page, el, http } = blocked();
+      expect(el.querySelector('[data-testid="direction"]')).toBeNull();
+      page.setOperation('Transferências');
+      fixture.detectChanges();
+      expect(el.querySelector('[data-testid="direction"]')).toBeTruthy();
+      expect(el.querySelector('[data-testid="transfer-note"]')?.textContent).toContain('nunca são somadas');
+      page.transferDirection.set('RECEBIDA');
+      page.icmsTransferOptIn.set(true);
+      page.setOperation('Vendas');
+      expect(page.transferDirection()).toBe('');
+      expect(page.icmsTransferOptIn()).toBeFalse();
+      http.verify();
+    });
+
+    it('does not apply ICMS to a transfer unless the user opts in, as a hypothesis', () => {
+      const { fixture, page, el, http } = blocked();
+      page.uf.set('SP');
+      page.setOperation('Transferências');
+      page.valueInput.set(5000);
+      fixture.detectChanges();
+      const icms = page.simulatedTaxes().find((row) => row.tax === 'ICMS');
+      expect(icms?.blocked).toBeTrue();
+      expect(icms?.simulated).toBeNull();
+      expect(page.simulatedTaxes().find((row) => row.tax === 'ITCD')?.simulated).toBe(300);
+      expect(page.activeTaxes()).not.toContain('ICMS');
+      expect((page.chart().series ?? []).map((series) => series.name)).not.toContain('ICMS (hipótese)');
+      expect(el.textContent).toContain('ICMS não calculado');
+
+      page.icmsTransferOptIn.set(true);
+      fixture.detectChanges();
+      expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(900);
+      expect(page.activeTaxes()).toContain('ICMS');
+      expect(el.textContent).toContain('hipótese informada por você (equiparação optada)');
+      http.verify();
+    });
+
+    it('keeps ICMS for other operations', () => {
+      const { page, http } = blocked();
+      page.uf.set('SP');
+      page.valueInput.set(5000);
+      expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(900);
+      http.verify();
+    });
+
+    it('never mixes the two directions in public data (future homologated base)', () => {
+      const both = [
+        { ano: 2021, uf: 'SP', operacao: 'Transferências', quantidade: 10, valorEstimado: '100.00', direcao: 'REMETIDA' },
+        { ano: 2021, uf: 'SP', operacao: 'Transferências', quantidade: 5, valorEstimado: '50.00', direcao: 'RECEBIDA' },
+      ];
+      const { page, http } = opened(both, [2021]);
+      page.uf.set('SP');
+      page.setOperation('Transferências');
+      // Sem direção escolhida nada entra: somar as duas duplicaria a contagem.
+      expect(page.items()).toEqual([]);
+      expect(page.latest()?.quantity).toBeNull();
+      page.transferDirection.set('REMETIDA');
+      expect(page.latest()?.quantity).toBe(10);
+      page.transferDirection.set('RECEBIDA');
+      expect(page.latest()?.quantity).toBe(5);
+      http.verify();
+    });
+  });
+
   describe('fail closed', () => {
     it('blocks the public data when the reliability block is missing from the answer', () => {
       const { page, el, http } = blocked(ITEMS, null);
@@ -396,8 +462,19 @@ describe('SimuladorPageComponent', () => {
       expect(page.resolved('ITCD', 2024)).toEqual(jasmine.objectContaining({ rate: 6, status: 'PENDENTE' }));
       const text = el.textContent as string;
       expect(text).toContain('Alíquota 19% · Validado');
-      expect(text).toContain('Alíquota 6% · Pendente de validação jurídica');
+      expect(text).toContain('Alíquota 6% · Parâmetro de simulação, não é alíquota da UF nem do município');
+      expect(page.resolved('ITCD', 2024).isSimulation).toBeTrue();
+      expect(page.resolved('ICMS', 2024).isSimulation).toBeFalse();
       expect(text).toContain('exceções por mercadoria e operação não estão modeladas');
+      http.verify();
+    });
+
+    it('never treats a municipality or operation rate as the rate of the whole UF', () => {
+      const { page, http } = acreBlocked([2024]);
+      const city = { ...flat('ITBI', 2), uf: 'AC', jurisdictionLevel: 'MUNICIPIO', municipalityIbgeCode: '1200401' };
+      page.rateVersions.set([...RATES, city] as unknown as RateVersion[]);
+      expect(page.resolved('ITBI', 2024).rate).toBe(3);
+      expect(page.resolved('ITBI', 2024).isSimulation).toBeTrue();
       http.verify();
     });
 
