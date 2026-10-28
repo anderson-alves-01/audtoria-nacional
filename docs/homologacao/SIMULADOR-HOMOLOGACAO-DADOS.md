@@ -76,3 +76,10 @@ Inalterado. A execução `d25c890e-f93c-4b64-b307-247d64799e3f` permanece com `p
 | D-03 | Autorizar a carga das transferências recebidas | Autoridade que autoriza |
 | D-04 | Conferir os indicadores um a um e registrar responsável, data e evidência no registro | Responsável pela conferência dos dados |
 | D-05 | Definir a regra para o valor por UF (rateio), ou substituir a fonte | Responsável pela conferência dos dados |
+
+## 9. Decisão do responsável do projeto (28/10/2026, após a preparação)
+
+- Definição adotada para Quantidade NF-e: **quantidade de itens**. É uma decisão do responsável do projeto, registrada em config/indicator-reliability.yaml. Ela não foi confirmada pelo SPED, porque as duas publicações não trazem definição. Os números da planilha não mudam.
+- Efeito: o item D-01 passa a ter definição adotada, mas não confirmada na fonte.
+- Não houve promoção a CONFERIDO. A definição não explica os volumes incompatíveis com o porte das UFs nem a divergência entre as duas publicações por CFOP e por entrada e saída (seção 6, itens 2 a 4), e a promoção exige responsável identificado, data e evidência no registro. Os 12 indicadores seguem como estavam.
+- Consequência para a tela: rótulos que dizem "NF-e" passam a significar itens de NF-e. Esse ajuste de texto não foi feito nesta publicação e fica registrado como pendência de rotulagem.

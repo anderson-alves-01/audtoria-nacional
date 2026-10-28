@@ -18,7 +18,9 @@ indicators:
     level: NAO_CONFIAVEL
     reason: >-
       Valores incompatíveis com o porte da UF e saltos acima de 100x entre 2024 e 2025. A quantidade por UF
-      e CFOP define a participação do rateio. Definição de "Quantidade NF-e" ausente nas duas fontes.
+      e CFOP define a participação do rateio. Definição de "Quantidade NF-e" ausente nas duas fontes. Em 28/10/2026 o
+      responsável do projeto definiu a quantidade como número de itens (decisão dele, não confirmada pelo SPED). A
+      definição não explica os valores incompatíveis nem a divergência entre as duas publicações: segue NAO_CONFIAVEL.
     evidence:
       - evidence/ops/sped-reconciliacao-20261028.md
       - docs/data/SPED-CONFIABILIDADE.md
@@ -70,14 +72,17 @@ indicators:
     level: EXPLORATORIO
     reason: >-
       O total das UFs bate com o total nacional, mas a soma por UF não bate com o porte esperado. Pode
-      aparecer com aviso. Não serve de base fiscal.
+      aparecer com aviso. Não serve de base fiscal. Definição adotada pelo responsável em 28/10/2026: quantidade de
+      itens (não confirmada pelo SPED).
     evidence:
       - evidence/ops/sped-reconciliacao-20261028.md
     reviewed_at: 2026-10-28
   - id: sped_quantidade_nacional_cfop_mes
     label: Quantidade nacional de NF-e por CFOP e mês (2025)
     level: EXPLORATORIO
-    reason: Definição ausente. Fecha com o histórico só no total geral, não por CFOP nem por entrada e saída.
+    reason: >-
+      Fecha com o histórico só no total geral, não por CFOP nem por entrada e saída. Definição adotada pelo
+      responsável em 28/10/2026: quantidade de itens (não confirmada pelo SPED).
     evidence:
       - evidence/ops/sped-reconciliacao-20261028.md
     reviewed_at: 2026-10-28
@@ -113,7 +118,9 @@ indicators:
     level: EXPLORATORIO
     reason: >-
       Percentuais lidos de uma imagem informada pelo responsável. Imagem não é fundamento legal, e por isso a
-      tabela fica PENDENTE e não homologada. Cada UF precisa de lei, vigência e URL oficial.
+      tabela fica PENDENTE e não homologada. Cada UF precisa de lei, vigência e URL oficial. Decisão do responsável
+      em 28/10/2026: os percentuais valem como estão, só como parâmetro do Simulador. Isso não os homologa nem os
+      torna alíquota legal.
     evidence:
       - alembic/versions/0109_tax_rate_versions.py
     reviewed_at: 2026-10-28
@@ -126,6 +133,8 @@ indicators:
       O cadastro relaciona imposto, localidade, operação, fundamento legal e vigência. Faltam a lei estadual, as
       faixas, as bases e a vigência (ITCD), a lei do município (ITBI) e a lei do município com o item da lista
       de serviços (ISS). Limites de referência (ITCD 8%, ISS 2% a 5%) informados pelo responsável, a conferir.
+      Decisão do responsável em 28/10/2026: os valores valem como estão, só como parâmetro do Simulador. Isso não
+      os homologa nem os torna alíquota legal.
     evidence:
       - alembic/versions/0109_tax_rate_versions.py
       - alembic/versions/0110_direction_rate_scope.py

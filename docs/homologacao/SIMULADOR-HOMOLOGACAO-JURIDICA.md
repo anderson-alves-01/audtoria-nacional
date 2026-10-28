@@ -103,3 +103,9 @@ Registradas como informadas pelo responsável e ainda a conferir na fonte: LC 20
 | J-04 | Informar a legislação de ITCD (por UF), ITBI e ISS (por município) | Revisor jurídico |
 | J-05 | Conferir na fonte as referências LC 204/2023, LC 227/2026, Res. SF 9/1992 e LC 116/2003 | Revisor jurídico |
 | J-06 | Definir como tratar exceção por mercadoria e operação interestadual no Simulador | Responsável funcional |
+
+## 8. Decisão do responsável do projeto (28/10/2026, após a preparação)
+
+- Os percentuais de ICMS das 27 UFs (inclusive os lidos de imagem) e os valores de ITCD (6%), ITBI (3%) e ISS (5%) **valem como estão, apenas como parâmetros do Simulador**.
+- Isso é uma decisão de uso. Não é homologação nem fundamento legal. As 31 versões continuam PENDENTE ou VALIDADO como estavam, sem eviewed_by e sem homologated_by, e o Simulador continua rotulando as alíquotas sem validação jurídica como pendentes. Nenhum valor foi alterado e nenhuma aprovação humana foi registrada em nome de alguém.
+- Os itens J-03 e J-04 deixam de bloquear o uso no Simulador, mas continuam necessários para qualquer uso fora dele.
