@@ -34,6 +34,37 @@ describe('routes', () => {
     expect(router.url).toBe('/visao');
   });
 
+  it('sends an unauthenticated visitor of the Simulador to the login screen', async () => {
+    sessionStorage.clear();
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/simulador');
+    expect(router.url).toBe('/entrar');
+  });
+
+  it('opens the Simulador for a signed-in operator', async () => {
+    sessionStorage.setItem(
+      'sirta.operatorSession',
+      JSON.stringify({
+        accessToken: 'token',
+        territoryId: 'territory',
+        purposeId: 'purpose',
+        expiresAt: '2099-01-01T00:00:00Z',
+        mode: 'OPERATOR_LOGIN',
+        username: 'admin.alpha',
+      }),
+    );
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/simulador');
+    expect(router.url).toBe('/simulador');
+    sessionStorage.clear();
+  });
+
+  it('keeps the Simulador only inside the guarded shell', () => {
+    const shell = routes.find((route) => route.path === '' && route.component !== undefined);
+    expect(shell?.canActivate?.length).toBeGreaterThan(0);
+    expect((shell?.children ?? []).some((child) => child.path === 'simulador')).toBeTrue();
+    expect(routes.some((route) => route.path === 'simulador')).toBeFalse();
+  });
   it('keeps legacy dashboard and sectoral urls', () => {
     const paths = collect(routes);
     expect(paths).toContain('setorial');

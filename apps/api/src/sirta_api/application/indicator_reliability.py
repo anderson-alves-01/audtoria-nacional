@@ -5,7 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import yaml
+from sqlalchemy.orm import Session
 
+from sirta_api.application.audit import record_audit
+from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.errors import ConflictError
 from sirta_api.domain.indicator_reliability import (
     Indicator,
@@ -59,6 +62,42 @@ def ensure_fiscal_use(indicator_id: str, registry: dict[str, Indicator] | None =
         raise ConflictError(
             f"O indicador {indicator_id} está {level.value} e não pode alimentar cálculo fiscal."
         )
+
+
+def authorize_fiscal_use(session: Session, *, context: AccessContext, indicator_id: str) -> dict:
+    """Decide whether an indicator may feed a fiscal calculation and audit the decision.
+
+    The refusal is committed before the 409 is raised: the request fails, the audit event stays.
+    Only a registered indicator id is written to the event, never free text from the URL.
+    """
+    registry = load_registry()
+    route = (
+        f"/v1/indicator-reliability/{indicator_id}/fiscal-use"
+        if indicator_id in registry
+        else "/v1/indicator-reliability/{indicator_id}/fiscal-use"
+    )
+    try:
+        ensure_fiscal_use(indicator_id, registry)
+    except ConflictError:
+        record_audit(
+            session,
+            context=context,
+            action="indicator.fiscal_use",
+            route=route,
+            outcome="denied",
+            resource_type="indicator",
+        )
+        session.commit()
+        raise
+    record_audit(
+        session,
+        context=context,
+        action="indicator.fiscal_use",
+        route=route,
+        outcome="allowed",
+        resource_type="indicator",
+    )
+    return indicator_view(indicator_id, registry)
 
 
 def indicator_view(indicator_id: str, registry: dict[str, Indicator]) -> dict:

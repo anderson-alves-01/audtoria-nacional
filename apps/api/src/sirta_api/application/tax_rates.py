@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from sirta_api.adapters.db.models import TaxRateVersion
+from sirta_api.application.audit import record_audit
 from sirta_api.application.indicator_reliability import RATE_INDICATORS, reliability_for
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.errors import ValidationFailedError
@@ -122,4 +123,12 @@ def list_tax_rates(
             "isSimulationParameter": resolved.is_simulation,
         }
     body["items"] = [_item(row) for row in rows]
+    record_audit(
+        session,
+        context=context,
+        action="tax_rates.list",
+        route="/v1/tax-rates",
+        outcome="allowed",
+        resource_type="tax_rate_versions",
+    )
     return body
