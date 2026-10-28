@@ -6,24 +6,21 @@
       <app-badge tone="warn">Simulação · não é apuração fiscal</app-badge>
       {{ banner() }}
     </p>
-    <p class="banner" role="note" data-testid="reliability">
-      <app-badge tone="warn">{{ reliability.label }}</app-badge>
-      {{ reliability.note }}
-    </p>
+    @if (state() !== 'loading' && !publicOpen()) {
+      <p class="banner" role="note" data-testid="reliability">
+        <app-badge tone="warn">Dados públicos bloqueados</app-badge>
+        {{ gate().headline }}
+      </p>
+    }
   </header>
 
   @if (state() === 'loading') {
-    <p role="status">Carregando os dados públicos…</p>
+    <p role="status">Verificando a confiabilidade da fonte…</p>
   }
   @if (state() === 'error') {
     <p role="alert">
-      Os dados públicos do SPED não puderam ser lidos. O simulador continua disponível, sem a comparação com o dado público.
-    </p>
-  }
-  @if (state() === 'ok' && !hasPublic()) {
-    <p class="hint" role="note">
-      Ainda não há carga validada do SPED. Você pode simular com a sua quantidade e valor; a comparação com o dado público
-      fica em branco.
+      A confiabilidade dos dados públicos do SPED não pôde ser verificada. Eles ficam bloqueados. O simulador continua
+      disponível com valores informados por você.
     </p>
   }
 
@@ -63,7 +60,7 @@
   </form>
 
   <p class="hint" role="note" data-testid="rate-note">
-    Alíquotas do ano {{ scenarioYear() }}. {{ rateCaveat }}
+    Alíquotas do ano {{ scenarioYear() }}. Nenhuma tabela de alíquotas está homologada. {{ rateCaveat }}
     @if (ratesFallback()) {
       A tabela de alíquotas não pôde ser lida: todas aparecem como pendentes de validação jurídica.
     }
@@ -72,7 +69,40 @@
     <p class="hint" role="note">Escolha uma UF para calcular o ICMS. Sem UF o imposto fica em "—".</p>
   }
 
-  @if (state() === 'ok' && view()?.run; as run) {
+  @if (state() !== 'loading' && !publicOpen()) {
+    <h2 class="part">Dados públicos e imposto apurado</h2>
+    <section class="blocked" aria-label="Dados públicos bloqueados" data-testid="public-blocked">
+      <p>
+        <app-badge tone="warn">Bloqueado</app-badge>
+        {{ gate().headline }}
+      </p>
+      <p>
+        Nenhum número do SPED aparece aqui nem entra em cálculo, e a comparação com dados públicos fica desabilitada até
+        existir uma base homologada. Você pode simular com os valores que informar; o resultado é uma hipótese.
+      </p>
+      @if (gate().blocking.length > 0) {
+        <ul class="reasons" aria-label="Indicadores bloqueados">
+          @for (item of gate().blocking; track item.id) {
+            <li>
+              <strong>{{ item.label }}</strong> · {{ levelLabel(item.level) }}. {{ item.reason }}
+            </li>
+          }
+        </ul>
+      }
+      <h3>O que falta para liberar</h3>
+      <ul class="needs">
+        @for (need of homologationNeeds; track need) {
+          <li>{{ need }}</li>
+        }
+      </ul>
+      <p class="legal">
+        Auditoria dos pares omitidos e demais evidências: evidence/ops/sped-auditoria-omissoes-20261028.md e
+        docs/data/SPED-CONFIABILIDADE.md.
+      </p>
+    </section>
+  }
+
+  @if (publicOpen() && state() === 'ok' && view()?.run; as run) {
     <h2 class="part">Dados públicos e imposto apurado</h2>
     <section class="kpis" aria-label="Último ano com dado">
       <app-kpi-card label="Operação" [value]="operation()" [meta]="territory()" kind="Sem total entre operações" />
@@ -142,6 +172,10 @@
   }
 
   <h2 class="part" id="simule">Simule com a sua quantidade e valor</h2>
+  <p class="hint" role="note" data-testid="hypothesis-note">
+    <app-badge tone="accent">{{ hypothesisLabel }}</app-badge>
+    Tudo que o simulador calcula parte do que você digita. É uma hipótese, não um dado oficial nem uma apuração.
+  </p>
   <form class="filters scenario" aria-labelledby="simule" (submit)="$event.preventDefault()">
     <label>
       Quantidade desejada
@@ -170,14 +204,14 @@
       />
     </label>
     <label>
-      Ano de comparação
+      {{ publicOpen() ? 'Ano de comparação' : 'Ano da alíquota' }}
       <select
         name="ano"
         [ngModel]="referenceYearInput() ?? latest()?.year ?? ''"
         (ngModelChange)="referenceYearInput.set(parse($event))"
       >
-        @for (row of rows(); track row.year) {
-          <option [value]="row.year">{{ row.year }}</option>
+        @for (year of years(); track year) {
+          <option [value]="year">{{ year }}</option>
         }
       </select>
     </label>
@@ -189,7 +223,7 @@
           <option [value]="item">{{ item }}</option>
         }
       </select>
-      <small id="sim-tipo-note">O dado público não traz esta dimensão. Serve só como rótulo do cenário.</small>
+      <small id="sim-tipo-note">Serve só como rótulo do cenário.</small>
     </label>
   </form>
   @if (inputInvalid()) {
@@ -202,22 +236,36 @@
         <app-kpi-card
           [label]="row.tax + ' do cenário'"
           [value]="money(row.simulated)"
-          [meta]="rateMeta(row.resolved, scenarioYear()) + ' · público ' + (reference()?.year ?? '—') + ': ' + money(row.published)"
-          kind="Simulado"
+          [meta]="
+            rateMeta(row.resolved, scenarioYear()) +
+            (comparisonEnabled() ? ' · público ' + (reference()?.year ?? '—') + ': ' + money(row.published) : '')
+          "
+          [kind]="hypothesisLabel"
           tone="warn"
         />
       }
     </section>
 
     <app-panel
-      title="Todos os dados e o cenário simulado"
+      [title]="comparisonEnabled() ? 'Todos os dados e o cenário simulado' : 'Cenário simulado'"
       [subtitle]="operation() + ' · ' + territory() + (goods() ? ' · ' + goods() : '')"
-      source="O ponto Simulado usa a quantidade e o valor que você informou. Imposto = valor × alíquota"
+      source="O ponto simulado usa a quantidade e o valor que você informou. Imposto = valor × alíquota"
     >
-      <div panelActions><app-badge tone="warn">Simulado</app-badge></div>
-      <app-bi-chart [input]="chart()" caption="Dados públicos e cenário simulado" [height]="360" />
+      <div panelActions><app-badge tone="warn">{{ hypothesisLabel }}</app-badge></div>
+      <app-bi-chart
+        [input]="chart()"
+        [caption]="comparisonEnabled() ? 'Dados públicos e cenário simulado' : 'Cenário simulado (hipótese)'"
+        [height]="360"
+      />
     </app-panel>
 
+    @if (!comparisonEnabled()) {
+      <p class="hint disabled" role="note" data-testid="comparison-disabled">
+        <app-badge tone="warn">Comparação desabilitada</app-badge>
+        A comparação com dados públicos só volta quando os indicadores do SPED estiverem conferidos e houver uma base
+        homologada. Hoje o simulador mostra apenas a hipótese que você informou.
+      </p>
+    } @else {
     <app-panel
       title="Comparação e diferença do imposto"
       [subtitle]="'Cenário × ' + (reference()?.year ?? '—') + ' público'"
@@ -249,14 +297,20 @@
         </table>
       </div>
     </app-panel>
+    }
   } @else {
     <p class="hint" role="note">
-      Preencha a quantidade, o valor ou ambos para ver o imposto do cenário, o gráfico com o ponto Simulado e a diferença para
-      o dado público.
+      @if (comparisonEnabled()) {
+        Preencha a quantidade, o valor ou ambos para ver o imposto do cenário, o gráfico com o ponto Simulado e a diferença
+        para o dado público.
+      } @else {
+        Preencha a quantidade, o valor ou ambos para ver o imposto da hipótese. A comparação com dados públicos está
+        desabilitada.
+      }
     </p>
   }
 
-  @if (state() === 'ok' && view()?.run; as run) {
+  @if (publicOpen() && state() === 'ok' && view()?.run; as run) {
     <section class="lineage" aria-label="Origem e método">
       <h2>Como é calculado</h2>
       <p>
@@ -279,8 +333,8 @@
     <section class="lineage" aria-label="Método">
       <h2>Como é calculado</h2>
       <p>
-        Imposto simulado = valor × alíquota. ICMS usa a alíquota modal interna da UF; o ICMS real varia por produto, operação
-        interestadual e benefício fiscal. {{ rateSource }}
+        Imposto da hipótese = valor informado × alíquota. ICMS usa a alíquota modal interna da UF; o ICMS real varia por
+        produto, operação interestadual e benefício fiscal. {{ rateSource }}
       </p>
       <p class="legal">A simulação roda no navegador e não grava nada. Cria crédito: não. Homologado: não. Publicado: não.</p>
     </section>

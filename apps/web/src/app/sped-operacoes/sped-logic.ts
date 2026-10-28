@@ -4,6 +4,7 @@
  */
 import { HEX_LAYOUT, HexCell } from '../atlas/hex-layout';
 import { BiChartInput, toIndexValues } from '../shared/bi/bi-chart-options';
+import { ReliabilityBlock } from '../shared/reliability/indicator-reliability';
 
 export interface SpedSerieItem {
   ano: number;
@@ -34,6 +35,8 @@ export interface SpedView<T> {
   homologated: boolean;
   published: boolean;
   createsTaxCredit: boolean;
+  /** Confiabilidade por indicador (config/indicator-reliability.yaml). Ausente em respostas antigas. */
+  reliability?: ReliabilityBlock;
   level: string;
   page: number;
   pageSize: number;
@@ -57,7 +60,8 @@ export const DEFAULT_OPERATION = 'Vendas';
 
 /**
  * Confiabilidade da fonte, da conferencia de 27/10/2026 (docs/data/SPED-CONFIABILIDADE.md).
- * Constante ate existir o campo na API. Nenhum indicador esta CONFERIDO.
+ * Texto de reserva da tela de referencia. A API traz o nivel de cada indicador em `reliability`; o
+ * Simulador decide com esse campo e nao com esta constante. Nenhum indicador esta CONFERIDO.
  */
 export const SPED_RELIABILITY = {
   level: 'NAO_CONFIAVEL',

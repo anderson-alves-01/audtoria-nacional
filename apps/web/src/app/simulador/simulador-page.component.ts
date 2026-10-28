@@ -11,7 +11,15 @@ import { BadgeComponent } from '../shared/ui/badge.component';
 import { KpiCardComponent } from '../shared/ui/kpi-card.component';
 import { PanelComponent } from '../shared/ui/panel.component';
 import { compactPublishedValue, formatPublishedValue } from '../shared/presentation/official-labels';
-import { DEFAULT_OPERATION, EMPTY, SPED_RELIABILITY, SpedSerieItem, SpedView } from '../sped-operacoes/sped-logic';
+import {
+  HOMOLOGATION_NEEDS,
+  LEVEL_LABEL,
+  PublicGate,
+  ReliabilityBlock,
+  ReliabilityLevel,
+  publicDataGate,
+} from '../shared/reliability/indicator-reliability';
+import { DEFAULT_OPERATION, EMPTY, SpedSerieItem, SpedView } from '../sped-operacoes/sped-logic';
 import {
   GOODS_TYPES,
   RATE_CAVEAT,
@@ -28,8 +36,10 @@ import {
 } from './simulador-aliquotas';
 import {
   Comparison,
+  HYPOTHESIS_LABEL,
   PublicYear,
   allowedParam,
+  hypothesisChart,
   publicByYear,
   referenceFallbackYear,
   referenceYear,
@@ -40,7 +50,7 @@ import {
 } from './simulador-logic';
 
 const FALLBACK_BANNER =
-  'Simulação aritmética sobre dados públicos exploratórios. Não é apuração fiscal, lançamento, crédito tributário nem decisão.';
+  'Simulação aritmética sobre valores informados por você, tratados como hipótese. Não é apuração fiscal, lançamento, crédito tributário nem decisão.';
 
 const FALLBACK_UFS = HEX_LAYOUT.map((cell) => cell.uf).sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
@@ -67,10 +77,19 @@ export class SimuladorPageComponent implements OnInit {
   readonly goodsTypes = GOODS_TYPES;
   readonly rateSource = RATE_SOURCE;
   readonly rateCaveat = RATE_CAVEAT;
-  readonly reliability = SPED_RELIABILITY;
+  readonly hypothesisLabel = HYPOTHESIS_LABEL;
+  readonly homologationNeeds = HOMOLOGATION_NEEDS;
 
   readonly state = signal<'loading' | 'ok' | 'error'>('loading');
   readonly view = signal<SpedView<SpedSerieItem> | null>(null);
+
+  /** Confiabilidade dos indicadores lida da API. Nula enquanto carrega ou se a leitura falhar. */
+  readonly reliabilityBlock = signal<ReliabilityBlock | null>(null);
+  /** Portao dos dados publicos: fechado ate todos os indicadores estarem CONFERIDO (falha fechada). */
+  readonly gate = computed<PublicGate>(() => publicDataGate(this.reliabilityBlock()));
+  readonly publicOpen = computed(() => this.gate().open);
+  /** A comparacao com dado publico so existe com o portao aberto e uma carga validada. */
+  readonly comparisonEnabled = computed(() => this.publicOpen() && this.view()?.run != null);
 
   /** Versoes de aliquota lidas de /v1/tax-rates. Nulo enquanto carrega ou se a leitura falhar. */
   readonly rateVersions = signal<RateVersion[] | null>(null);
@@ -89,13 +108,14 @@ export class SimuladorPageComponent implements OnInit {
   readonly valueInput = signal<number | null>(null);
   readonly referenceYearInput = signal<number | null>(null);
 
-  /** O simulador funciona sem dado publico: so a comparacao fica em branco. */
-  readonly hasPublic = computed(() => this.view()?.run != null);
-  readonly items = computed(() => this.view()?.items ?? []);
+  /** O simulador funciona sem dado publico: com o portao fechado, so a hipotese informada existe. */
+  readonly hasPublic = computed(() => this.publicOpen() && this.view()?.run != null);
+  /** Nenhum item publico chega aos calculos enquanto o portao estiver fechado. */
+  readonly items = computed(() => (this.publicOpen() ? (this.view()?.items ?? []) : []));
   readonly years = computed<number[]>(() => this.view()?.years ?? [...SPED_YEARS]);
   readonly operations = computed<string[]>(() => this.view()?.operations ?? [...SPED_OPERATIONS]);
   readonly ufs = computed<string[]>(() => this.view()?.ufs ?? FALLBACK_UFS);
-  readonly banner = computed(() => this.view()?.banner || FALLBACK_BANNER);
+  readonly banner = computed(() => (this.publicOpen() && this.view()?.banner) || FALLBACK_BANNER);
   readonly ufOrNull = computed(() => this.uf() || null);
   readonly territory = computed(() => this.uf() || 'Brasil, soma das UFs');
 
@@ -145,20 +165,23 @@ export class SimuladorPageComponent implements OnInit {
         resolved,
         rate: resolved.rate,
         simulated: taxAmount(this.scenario().value, resolved.rate),
-        published: taxAmount(this.reference()?.value ?? null, resolved.rate),
+        published: this.comparisonEnabled() ? taxAmount(this.reference()?.value ?? null, resolved.rate) : null,
       };
     }),
   );
 
+  /** Com o portao fechado o grafico traz so a hipotese informada, sem nenhum dado publico. */
   readonly chart = computed<BiChartInput>(() =>
-    simulatorChart(
-      this.rows(),
-      this.selectedTaxes(),
-      this.ufOrNull(),
-      this.hasScenario() ? this.scenario() : null,
-      this.book(),
-      this.scenarioYear(),
-    ),
+    this.publicOpen()
+      ? simulatorChart(
+          this.rows(),
+          this.selectedTaxes(),
+          this.ufOrNull(),
+          this.hasScenario() ? this.scenario() : null,
+          this.book(),
+          this.scenarioYear(),
+        )
+      : hypothesisChart(this.scenario(), this.selectedTaxes(), this.ufOrNull(), this.book(), this.scenarioYear()),
   );
 
   /** Parte A: so dados publicos, sem o ponto simulado. */
@@ -169,11 +192,17 @@ export class SimuladorPageComponent implements OnInit {
   readonly icmsNeedsUf = computed(() => this.selectedTaxes().includes('ICMS') && !this.uf());
 
   ngOnInit(): void {
-    const params = new HttpParams().set('level', 'SERIE').set('pageSize', 1000);
-    this.http.get<SpedView<SpedSerieItem>>('/v1/sped-operacoes', { params }).subscribe({
+    // Primeiro so a confiabilidade (uma linha). Os dados publicos so sao lidos se o portao abrir.
+    const probe = new HttpParams().set('level', 'SERIE').set('pageSize', 1);
+    this.http.get<SpedView<SpedSerieItem>>('/v1/sped-operacoes', { params: probe }).subscribe({
       next: (body) => {
-        this.view.set(body);
+        this.reliabilityBlock.set(body.reliability ?? null);
+        // Sem itens: as listas de UF, operacao e ano servem aos campos, mas nenhum dado publico entra.
+        this.view.set({ ...body, items: [] });
         this.state.set('ok');
+        if (this.publicOpen()) {
+          this.loadPublicData();
+        }
       },
       error: () => this.state.set('error'),
     });
@@ -186,6 +215,19 @@ export class SimuladorPageComponent implements OnInit {
     });
     // As listas de UF e operacao do contrato ja valem antes da leitura terminar.
     this.applyQuery();
+  }
+
+  /** So roda com o portao aberto, isto e, com todos os indicadores CONFERIDO. */
+  private loadPublicData(): void {
+    const params = new HttpParams().set('level', 'SERIE').set('pageSize', 1000);
+    this.http.get<SpedView<SpedSerieItem>>('/v1/sped-operacoes', { params }).subscribe({
+      next: (body) => this.view.set(body),
+      error: () => this.state.set('error'),
+    });
+  }
+
+  levelLabel(level: ReliabilityLevel): string {
+    return LEVEL_LABEL[level];
   }
 
   /** Abre ja na UF e na operacao vindas do painel SPED, desde que existam nas listas. */

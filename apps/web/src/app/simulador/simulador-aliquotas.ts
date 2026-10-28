@@ -22,7 +22,7 @@ export const TAXES: TaxDef[] = [
 ];
 
 export const RATE_SOURCE =
-  'Alíquotas lidas da tabela versionada por vigência. Só as marcadas Validado têm base legal registrada (hoje, o ICMS modal do Acre). As demais estão Pendentes de validação jurídica e não devem ser tratadas como validadas.';
+  'Alíquotas lidas da tabela versionada por vigência. Só as marcadas Validado têm base legal registrada (hoje, o ICMS modal do Acre). As demais estão Pendentes de validação jurídica e não devem ser tratadas como validadas. Percentuais lidos de uma imagem não são fundamento legal: nenhuma tabela está homologada.';
 
 export const RATE_CAVEAT =
   'Alíquota modal: exceções por mercadoria e operação não estão modeladas.';

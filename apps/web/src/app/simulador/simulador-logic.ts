@@ -181,6 +181,36 @@ export function simulatorChart(
   return { kind: 'line', unit: 'COUNT', categories, series };
 }
 
+/** Rotulo de tudo que o Simulador calcula a partir do que a pessoa digitou. */
+export const HYPOTHESIS_LABEL = 'Hipótese informada manualmente';
+
+/**
+ * Grafico da hipotese informada: um unico ponto por serie, sem nenhum dado publico. Usado enquanto
+ * o dado publico estiver bloqueado. Quantidade a esquerda; valor e impostos (R$) a direita.
+ */
+export function hypothesisChart(
+  scenario: ScenarioInput,
+  taxes: TaxId[],
+  uf: string | null,
+  book: RateVersion[],
+  year: number = referenceFallbackYear,
+): BiChartInput {
+  const series: BiChartInput['series'] = [
+    { name: 'Quantidade (hipótese)', values: [scenario.quantity], unit: 'COUNT', dashed: true },
+    { name: 'Valor (hipótese)', values: [scenario.value], axis: 'right', unit: 'BRL', dashed: true },
+  ];
+  for (const tax of taxes) {
+    series.push({
+      name: `${tax} (hipótese)`,
+      values: [taxAmount(scenario.value, resolveRate(book, tax, uf, year).rate)],
+      axis: 'right',
+      unit: 'BRL',
+      dashed: true,
+    });
+  }
+  return { kind: 'line', unit: 'COUNT', categories: [HYPOTHESIS_LABEL], series };
+}
+
 /** Valor vindo da URL so vale se estiver na lista conhecida. Qualquer outro cai no padrao. */
 export function allowedParam(raw: string | null | undefined, allowed: readonly string[], fallback: string): string {
   return raw && allowed.includes(raw) ? raw : fallback;

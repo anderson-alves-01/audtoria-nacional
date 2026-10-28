@@ -10,6 +10,7 @@ import { BiFilters, syncFiltersWithUrl } from '../shared/bi/bi-filters';
 import { DataTableComponent } from '../shared/bi/data-table.component';
 import { BiColumn, Cell } from '../shared/bi/table-logic';
 import { EmptyStateComponent } from '../shared/states/empty-state.component';
+import { LEVEL_LABEL, ReliabilityLevel } from '../shared/reliability/indicator-reliability';
 import { BadgeComponent } from '../shared/ui/badge.component';
 import { FilterBarComponent } from '../shared/ui/filter-bar.component';
 import { KpiCardComponent } from '../shared/ui/kpi-card.component';
@@ -103,6 +104,9 @@ export class SpedOperacoesPageComponent implements OnInit {
   readonly operations = computed(() => this.view()?.operations ?? []);
   readonly ufs = computed(() => this.view()?.ufs ?? []);
   readonly reliability = SPED_RELIABILITY;
+  /** Nivel de cada indicador, como a API devolve. Vazio em respostas antigas. */
+  readonly indicators = computed(() => this.view()?.reliability?.indicators ?? []);
+  readonly levelLabel = (level: ReliabilityLevel): string => LEVEL_LABEL[level];
   readonly banner = computed(() => this.view()?.banner || FALLBACK_BANNER);
 
   readonly ano = computed(() => this.filters.selections()['ano']?.[0] ?? null);

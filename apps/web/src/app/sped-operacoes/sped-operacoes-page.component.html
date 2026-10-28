@@ -10,6 +10,18 @@
       <app-badge tone="warn">{{ reliability.label }}</app-badge>
       {{ reliability.note }}
     </p>
+    @if (indicators().length > 0) {
+      <details class="levels" data-testid="reliability-levels">
+        <summary>Confiabilidade por indicador</summary>
+        <ul>
+          @for (item of indicators(); track item.id) {
+            <li>
+              <strong>{{ item.label }}</strong> · {{ levelLabel(item.level) }}. {{ item.reason }}
+            </li>
+          }
+        </ul>
+      </details>
+    }
   </header>
 
   @if (state() === 'loading') {

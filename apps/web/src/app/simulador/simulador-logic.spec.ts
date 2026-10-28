@@ -8,7 +8,9 @@ import {
   resolveRate,
 } from './simulador-aliquotas';
 import {
+  HYPOTHESIS_LABEL,
   allowedParam,
+  hypothesisChart,
   publicByYear,
   referenceYear,
   sanitize,
@@ -198,5 +200,25 @@ describe('simulador logic', () => {
     const rows = publicByYear(items, [2021], 'Vendas', 'SP');
     const chart = simulatorChart(rows, [], 'SP', { quantity: null, value: null }, book);
     expect(chart.categories).toEqual(['2021']);
+  });
+});
+
+describe('hypothesisChart', () => {
+  it('has one point per series and no public data', () => {
+    const chart = hypothesisChart({ quantity: 150, value: 2000 }, ['ITCD', 'ICMS'], 'SP', book, 2024);
+    expect(chart.categories).toEqual([HYPOTHESIS_LABEL]);
+    expect(chart.series?.map((entry) => entry.name)).toEqual([
+      'Quantidade (hipótese)',
+      'Valor (hipótese)',
+      'ITCD (hipótese)',
+      'ICMS (hipótese)',
+    ]);
+    expect(chart.series?.map((entry) => entry.values)).toEqual([[150], [2000], [120], [360]]);
+  });
+
+  it('keeps an absent input empty and never turns it into zero', () => {
+    const chart = hypothesisChart({ quantity: 10, value: null }, ['ITCD'], null, book);
+    expect(chart.series?.[1].values).toEqual([null]);
+    expect(chart.series?.[2].values).toEqual([null]);
   });
 });

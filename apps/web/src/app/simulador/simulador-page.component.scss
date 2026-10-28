@@ -178,6 +178,38 @@ td {
   }
 }
 
+.blocked {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--warn);
+  border-radius: var(--r);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.86rem;
+
+  p {
+    margin: 0 0 0.5rem;
+  }
+
+  h3 {
+    margin: 0.75rem 0 0.3rem;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  ul {
+    margin: 0 0 0.5rem;
+    padding-left: 1.2rem;
+  }
+}
+
+.disabled {
+  padding: 0.55rem 0.8rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r);
+}
+
 .legal {
   color: var(--muted);
   font-size: 0.82rem;

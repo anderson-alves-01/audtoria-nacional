@@ -60,6 +60,38 @@ describe('SpedOperacoesPageComponent', () => {
     http.verify();
   });
 
+  it('lists the level of each indicator when the API sends the reliability block', () => {
+    const fixture = TestBed.createComponent(SpedOperacoesPageComponent);
+    const http = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    http
+      .expectOne((req) => req.url === '/v1/sped-operacoes' && req.params.get('level') === 'SERIE')
+      .flush({
+        ...view([], false),
+        reliability: {
+          levels: ['NAO_CONFIAVEL', 'EXPLORATORIO', 'CONFERIDO'],
+          indicators: [
+            {
+              id: 'sped_compras_uf',
+              label: 'Compras por UF',
+              level: 'NAO_CONFIAVEL',
+              reason: '1.041 pares omitidos',
+              evidence: [],
+              usableForFiscalCalculation: false,
+              publishableInSimulator: false,
+              usableAsHypothesis: false,
+            },
+          ],
+        },
+      });
+    fixture.detectChanges();
+    const text = fixture.nativeElement.querySelector('[data-testid="reliability-levels"]')?.textContent as string;
+    expect(text).toContain('Compras por UF');
+    expect(text).toContain('Não confiável');
+    expect(text).toContain('1.041 pares omitidos');
+    http.verify();
+  });
+
   it('keeps the exploratory banner and shows an empty state when nothing was loaded', () => {
     const fixture = TestBed.createComponent(SpedOperacoesPageComponent);
     const http = TestBed.inject(HttpTestingController);
