@@ -19,6 +19,7 @@ from sirta_api.adapters.ingest.catalog_loader import catalog_source
 from sirta_api.adapters.ingest.parsers import landing_dir, sha256_bytes, write_landing
 from sirta_api.adapters.ingest.sped_xlsx import SpedLayoutError, parse_sped_workbook
 from sirta_api.application.audit import record_audit
+from sirta_api.application.indicator_reliability import SPED_INDICATORS, reliability_for
 from sirta_api.application.source_ingest import _load_source
 from sirta_api.config import get_settings
 from sirta_api.domain.authorization import AccessContext
@@ -298,6 +299,7 @@ def list_sped_operations(
         "homologated": False,
         "published": False,
         "createsTaxCredit": False,
+        "reliability": reliability_for(SPED_INDICATORS),
         "level": level,
         "page": page,
         "pageSize": page_size,

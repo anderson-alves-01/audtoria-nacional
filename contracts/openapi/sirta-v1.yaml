@@ -688,7 +688,10 @@ paths:
         SPED NF-e operations by UF, operation and year (2021-2025). Quantity is observed.
         valorEstimado is an estimated allocation (valueKind=ESTIMATED_ALLOCATION), exploratory,
         not homologated, never summed across operations. Null value stays null. level SERIE is
-        the annual series; level CFOP is the base by UF and CFOP and is paginated.
+        the annual series; level CFOP is the base by UF and CFOP and is paginated. The additive
+        reliability block lists each indicator with its level (NAO_CONFIAVEL, EXPLORATORIO or
+        CONFERIDO), reason, evidence, usableForFiscalCalculation, publishableInSimulator and
+        usableAsHypothesis.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
@@ -714,7 +717,8 @@ paths:
         open, never a guessed date. ICMS is the modal rate by UF (exceptions by product and
         operation are not modeled); ITCD, ITBI and ISS use uf BR. When on (YYYY-MM-DD) and tax are
         given, resolved holds the rate valid on that date or null. For ICMS, uf is also required.
-        Simulation parameter, not a tax assessment.
+        Simulation parameter, not a tax assessment. The additive reliability block gives the level
+        of the rate indicators; none is CONFERIDO and none is homologated.
       parameters:
         - {$ref: '#/components/parameters/TerritoryId'}
         - {$ref: '#/components/parameters/PurposeId'}
@@ -726,6 +730,22 @@ paths:
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
         '422': {description: 'Invalid tax, UF or date'}
+  /v1/indicator-reliability/{indicator_id}/fiscal-use:
+    get:
+      operationId: getIndicatorFiscalUse
+      description: >
+        Authorizes a fiscal calculation on an indicator. Only CONFERIDO indicators pass (200).
+        NAO_CONFIAVEL, EXPLORATORIO and unregistered indicators return 409 (fail closed). The
+        reliability registry is config/indicator-reliability.yaml; no script promotes a level.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {name: indicator_id, in: path, required: true, schema: {type: string}}
+      responses:
+        '200': {description: 'Indicator is CONFERIDO; usableForFiscalCalculation is true'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '409': {description: 'Indicator is not CONFERIDO and cannot feed a fiscal calculation'}
   /v1/indicators/official-gold:
     get:
       operationId: getOfficialGold

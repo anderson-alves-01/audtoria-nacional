@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from sirta_api.adapters.db.models import TaxRateVersion
+from sirta_api.application.indicator_reliability import RATE_INDICATORS, reliability_for
 from sirta_api.domain.authorization import AccessContext
 from sirta_api.domain.errors import ValidationFailedError
 from sirta_api.domain.tax_rates import RateVersion, resolve_on
@@ -69,7 +70,13 @@ def list_tax_rates(
             query.order_by(TaxRateVersion.tax, TaxRateVersion.uf, TaxRateVersion.valid_from)
         )
     )
-    body: dict = {"notice": NOTICE, "createsTaxCredit": False, "on": on, "resolved": None}
+    body: dict = {
+        "notice": NOTICE,
+        "createsTaxCredit": False,
+        "reliability": reliability_for(RATE_INDICATORS),
+        "on": on,
+        "resolved": None,
+    }
     if on_date is not None and tax is not None and (uf is not None or tax != "ICMS"):
         versions = [
             RateVersion(

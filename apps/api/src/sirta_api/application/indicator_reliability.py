@@ -34,6 +34,9 @@ SPED_INDICATORS = (
 )
 
 
+RATE_INDICATORS = ("icms_aliquota_ac", "icms_aliquota_demais_uf", "itcd_itbi_iss_aliquotas")
+
+
 def registry_path() -> Path:
     here = Path(__file__).resolve()
     for parent in [Path.cwd(), *here.parents]:
