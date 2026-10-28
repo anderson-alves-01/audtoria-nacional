@@ -149,3 +149,46 @@ def test_invalid_registry_file_makes_loading_fail(tmp_path: Path) -> None:
     broken.write_text(yaml.safe_dump({"indicators": [{"id": "a", "level": "CONFERIDO"}]}))
     with pytest.raises(RegistryError):
         load_registry(broken)
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"conferred_by": "   "},
+        {"conferred_by": ""},
+        {"evidence": ["", "  "]},
+        {"conferred_at": "2026-10-28"},  # texto entre aspas, não data
+        {"conferred_at": date(2999, 1, 1)},  # conferência no futuro não vale
+        {"conferred_at": 20261028},
+    ],
+)
+def test_conferido_rejects_blank_textual_or_future_proof(overrides) -> None:
+    data = {
+        "level": "CONFERIDO",
+        "conferred_by": "responsável",
+        "conferred_at": date(2026, 10, 28),
+    }
+    data.update(overrides)
+    with pytest.raises(RegistryError):
+        parse_registry(_payload(**data))
+
+
+@pytest.mark.parametrize("level", ["conferido", "Conferido", " CONFERIDO", "CONFERIDO ", "", None])
+def test_level_must_match_exactly(level) -> None:
+    with pytest.raises(RegistryError):
+        parse_registry(
+            _payload(
+                level=level,
+                conferred_by="responsável",
+                conferred_at=date(2026, 10, 28),
+            )
+        )
+
+
+def test_a_non_conferido_level_never_turns_into_a_fiscal_use_by_extra_fields() -> None:
+    registry = parse_registry(
+        _payload(level="EXPLORATORIO", conferred_by="responsável", conferred_at=date(2026, 10, 28))
+    )
+    with pytest.raises(ConflictError):
+        ensure_fiscal_use("x", registry)
+    assert level_of(registry, "x") is ReliabilityLevel.EXPLORATORIO

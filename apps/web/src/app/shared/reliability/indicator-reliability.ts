@@ -81,11 +81,22 @@ export function publicDataGate(
       blocking: [],
     };
   }
-  const found = required.map(
-    (id) => block.indicators.find((indicator) => indicator.id === id) ?? missingIndicator(id),
+  // Entradas que nao sao objetos sao ignoradas, e um indicador exigido ausente conta como NAO_CONFIAVEL.
+  const entries = block.indicators.filter(
+    (indicator): indicator is ReliabilityIndicator => typeof indicator === 'object' && indicator !== null,
   );
+  // Se o mesmo id vier mais de uma vez, todas as copias precisam passar: basta uma falhar para bloquear.
+  const found = required.flatMap((id) => {
+    const copies = entries.filter((indicator) => indicator.id === id);
+    return copies.length > 0 ? copies : [missingIndicator(id)];
+  });
+  // CONFERIDO exato (sem variacao de caixa), publicavel (booleano true) e com evidencia registrada.
   const blocking = found.filter(
-    (indicator) => indicator.level !== 'CONFERIDO' || indicator.publishableInSimulator !== true,
+    (indicator) =>
+      indicator.level !== 'CONFERIDO' ||
+      indicator.publishableInSimulator !== true ||
+      !Array.isArray(indicator.evidence) ||
+      indicator.evidence.length === 0,
   );
   if (blocking.length === 0) {
     return { open: true, headline: '', blocking: [] };

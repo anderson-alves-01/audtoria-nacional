@@ -12,7 +12,7 @@ function indicator(id: string, level: ReliabilityLevel, publishable = level === 
     label: id,
     level,
     reason: 'r',
-    evidence: [],
+    evidence: level === 'CONFERIDO' ? ['evidence/ops/exemplo.md'] : [],
     usableForFiscalCalculation: level === 'CONFERIDO',
     publishableInSimulator: publishable,
     usableAsHypothesis: level !== 'NAO_CONFIAVEL',
@@ -64,4 +64,62 @@ describe('publicDataGate', () => {
   it('opens only when every required indicator is CONFERIDO and publishable', () => {
     expect(publicDataGate(block('CONFERIDO')).open).toBeTrue();
   });
-});
+  describe('tampered or inconsistent answers (anti-circumvention)', () => {
+    const first = PUBLIC_DATA_INDICATORS[0];
+
+    it('stays closed when the same indicator appears twice and one copy is not CONFERIDO', () => {
+      const conferidoFirst = block('CONFERIDO');
+      conferidoFirst.indicators.push(indicator(first, 'NAO_CONFIAVEL'));
+      expect(publicDataGate(conferidoFirst).open).toBeFalse();
+      const conferidoLast = block('CONFERIDO');
+      conferidoLast.indicators.unshift(indicator(first, 'EXPLORATORIO'));
+      expect(publicDataGate(conferidoLast).open).toBeFalse();
+    });
+
+    it('stays closed for CONFERIDO without any evidence', () => {
+      const bare = block('CONFERIDO');
+      bare.indicators[0] = { ...indicator(first, 'CONFERIDO'), evidence: [] };
+      const gate = publicDataGate(bare);
+      expect(gate.open).toBeFalse();
+      expect(gate.blocking.map((item) => item.id)).toEqual([first]);
+    });
+
+    it('stays closed for an unknown, lower-case or empty level', () => {
+      for (const level of ['OUTRO', 'conferido', 'Conferido', '', ' CONFERIDO']) {
+        const odd = block('CONFERIDO');
+        odd.indicators[0] = { ...indicator(first, 'CONFERIDO'), level: level as ReliabilityLevel };
+        expect(publicDataGate(odd).open).withContext(level).toBeFalse();
+      }
+    });
+
+    it('stays closed when publishable is anything but the boolean true', () => {
+      for (const flag of [undefined, null, 'true', 1, 0, false]) {
+        const odd = block('CONFERIDO');
+        odd.indicators[0] = {
+          ...indicator(first, 'CONFERIDO'),
+          publishableInSimulator: flag as unknown as boolean,
+        };
+        expect(publicDataGate(odd).open).withContext(String(flag)).toBeFalse();
+      }
+    });
+
+    it('ignores a publishable flag on an indicator that is not CONFERIDO', () => {
+      const odd = block('CONFERIDO');
+      odd.indicators[0] = indicator(first, 'EXPLORATORIO', true);
+      expect(publicDataGate(odd).open).toBeFalse();
+      odd.indicators[0] = indicator(first, 'NAO_CONFIAVEL', true);
+      expect(publicDataGate(odd).open).toBeFalse();
+    });
+
+    it('does not let an extra CONFERIDO indicator stand in for a required one', () => {
+      const extra = block('CONFERIDO');
+      extra.indicators = [...extra.indicators.slice(1), indicator('qualquer_outro', 'CONFERIDO')];
+      expect(publicDataGate(extra).open).toBeFalse();
+    });
+
+    it('stays closed for entries that are not objects', () => {
+      const broken = block('CONFERIDO');
+      broken.indicators[0] = null as unknown as ReliabilityIndicator;
+      expect(publicDataGate(broken).open).toBeFalse();
+    });
+  });});

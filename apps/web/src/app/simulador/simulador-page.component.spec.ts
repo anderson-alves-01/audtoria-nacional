@@ -37,7 +37,7 @@ function reliability(level: ReliabilityLevel | Partial<Record<string, Reliabilit
         label: `Indicador ${id}`,
         level: current,
         reason: `Motivo de ${id}`,
-        evidence: [],
+        evidence: current === 'CONFERIDO' ? ['evidence/ops/exemplo.md'] : [],
         usableForFiscalCalculation: current === 'CONFERIDO',
         publishableInSimulator: current === 'CONFERIDO',
         usableAsHypothesis: current !== 'NAO_CONFIAVEL',

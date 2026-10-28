@@ -91,6 +91,8 @@ def parse_registry(payload: Any) -> dict[str, Indicator]:
         evidence = tuple(str(item) for item in evidence_raw if str(item).strip())
         conferred_by = str(raw["conferred_by"]).strip() if raw.get("conferred_by") else None
         conferred_at = _as_date(raw.get("conferred_at"), "conferred_at", indicator_id)
+        if conferred_at is not None and conferred_at > date.today():
+            raise RegistryError(f"{indicator_id}: conferred_at não pode estar no futuro")
         if level is ReliabilityLevel.CONFERIDO and not (conferred_by and conferred_at and evidence):
             raise RegistryError(
                 f"{indicator_id}: CONFERIDO exige conferred_by, conferred_at e uma evidência"
