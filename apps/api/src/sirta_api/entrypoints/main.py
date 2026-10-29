@@ -10,6 +10,7 @@ from sirta_api.entrypoints.audit_cases import router as audit_cases_router
 from sirta_api.entrypoints.audit_rules import router as audit_rules_router
 from sirta_api.entrypoints.cadastro_360 import router as cadastro_360_router
 from sirta_api.entrypoints.catalog import router as catalog_router
+from sirta_api.entrypoints.cgu_nfe import router as cgu_nfe_router
 from sirta_api.entrypoints.collection_panel import router as collection_panel_router
 from sirta_api.entrypoints.dashboards import router as dashboard_router
 from sirta_api.entrypoints.diagnosis import router as diagnosis_router
@@ -64,6 +65,7 @@ def create_app() -> FastAPI:
     application.include_router(diagnosis_router)
     application.include_router(audit_rules_router)
     application.include_router(sped_router)
+    application.include_router(cgu_nfe_router)
     application.include_router(tax_rates_router)
     application.include_router(indicator_reliability_router)
     application.include_router(findings_router)

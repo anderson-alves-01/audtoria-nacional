@@ -324,6 +324,39 @@ class Store:
         )
         return [r["month"] for r in rows]
 
+    def processed_months_for_version(self, version: str) -> list[str]:
+        rows = self.conn.execute(
+            "SELECT DISTINCT month FROM processamentos WHERE status='CONCLUIDO' AND version=? "
+            "ORDER BY month",
+            (version,),
+        )
+        return [r["month"] for r in rows]
+
+    def latest_completed_run(self, version: str) -> sqlite3.Row | None:
+        return self.conn.execute(
+            "SELECT * FROM processamentos WHERE status='CONCLUIDO' AND version=? "
+            "ORDER BY id DESC LIMIT 1",
+            (version,),
+        ).fetchone()
+
+    def year_uf_item_rows(self, months: list[str]) -> list[tuple[str, str, str, int, int]]:
+        return self._year_uf_sum(months, "agg_item", "itens")
+
+    def year_uf_note_rows(self, months: list[str]) -> list[tuple[str, str, str, int, int]]:
+        return self._year_uf_sum(months, "agg_nota_mun", "notas")
+
+    def _year_uf_sum(
+        self, months: list[str], table: str, count_col: str
+    ) -> list[tuple[str, str, str, int, int]]:
+        if not months:
+            return []
+        marks = ",".join("?" * len(months))
+        sql = (
+            f"SELECT substr(month,1,4), uf, situacao, SUM({count_col}), SUM(valor_cents) "  # noqa: S608
+            f"FROM {table} WHERE month IN ({marks}) GROUP BY 1, 2, 3"  # noqa: S608
+        )
+        return [(r[0], r[1], r[2], int(r[3]), int(r[4])) for r in self.conn.execute(sql, months)]
+
     # -- bulk -------------------------------------------------------------------------------
     def clear_month(self, conn: sqlite3.Connection, month: str) -> None:
         """Remove what a previous run derived for the month. The manifest is kept."""

@@ -7,23 +7,12 @@ import { PUBLIC_DATA_INDICATORS, ReliabilityBlock, ReliabilityLevel } from '../s
 import { RateVersion } from './simulador-aliquotas';
 import { SimuladorPageComponent } from './simulador-page.component';
 
-const OPERATIONS = [
-  'Compras',
-  'Vendas',
-  'Transferências',
-  'Doações / bonificações / brindes',
-  'Serviços Prestados',
-  'Serviços Tomados',
-  'Outras Saídas',
-];
-
 const run = {
-  runId: '0b7a8d0e-0000-4000-8000-000000000002',
-  checksum: 'cd'.repeat(32),
-  layoutVersion: 'sped-nfe-uf-cfop-v1',
-  competence: '2021-25',
-  loadedAt: '2026-10-27T12:00:00+00:00',
-  receivedCount: 3,
+  runId: 'synth-cgu',
+  layoutVersion: 'cgu-nfe-v1',
+  competence: '2021-01..2025-12',
+  monthsProcessed: 53,
+  loadedAt: '2026-10-29T12:00:00+00:00',
 };
 
 function reliability(level: ReliabilityLevel | Partial<Record<string, ReliabilityLevel>>): ReliabilityBlock {
@@ -52,21 +41,22 @@ function view(
 ): Record<string, unknown> {
   const { withRun = true, years = [2021, 2022], block = reliability('NAO_CONFIAVEL') } = options;
   return {
-    sourceId: 'SPED-NFE-UF-CFOP',
-    valueKind: 'ESTIMATED_ALLOCATION',
-    banner: 'Base exploratória, não homologada. O valor por UF é rateio estimado.',
-    formula: 'Valor nacional do CFOP × participação da UF',
+    sourceId: 'CGU-NFE',
+    valueKind: 'OBSERVED_DOCUMENT_CENTS',
+    banner: 'NF-e da CGU. UF do emitente. Valor de documento não é pagamento.',
+    formula: 'itens_exceto_canceladas; valor_itens_exceto_canceladas',
     homologated: false,
     published: false,
     createsTaxCredit: false,
+    coverage: 'PARCIAL',
+    monthsProcessed: 53,
+    monthsMissing: ['202101'],
     ...(block ? { reliability: block } : {}),
-    level: 'SERIE',
     page: 1,
     pageSize: 1000,
     total: items.length,
     years,
-    operations: OPERATIONS,
-    ufs: ['AC', 'SP'],
+    ufs: ['AC', 'SP', 'MG'],
     run: withRun ? run : null,
     items,
   };
@@ -99,15 +89,15 @@ function flushRates(http: HttpTestingController, rates: unknown[] | 'error' = RA
 }
 
 const ITEMS = [
-  { ano: 2021, uf: 'SP', operacao: 'Vendas', quantidade: 100, valorEstimado: '1000.00' },
-  { ano: 2022, uf: 'SP', operacao: 'Vendas', quantidade: 200, valorEstimado: '2000.00' },
-  { ano: 2022, uf: 'SP', operacao: 'Compras', quantidade: 999, valorEstimado: '9999.00' },
+  { ano: 2021, uf: 'SP', itens: 100, valorItens: '1000.00', notas: 10, valorNotas: '900.00' },
+  { ano: 2022, uf: 'SP', itens: 200, valorItens: '2000.00', notas: 20, valorNotas: '1800.00' },
+  { ano: 2022, uf: 'MG', itens: 999, valorItens: '9999.00', notas: 1, valorNotas: '1.00' },
 ];
 
 const isProbe = (req: { url: string; params: { get(name: string): string | null } }) =>
-  req.url === '/v1/sped-operacoes' && req.params.get('pageSize') === '1';
+  req.url === '/v1/cgu-nfe' && req.params.get('pageSize') === '1';
 const isFullRead = (req: { url: string; params: { get(name: string): string | null } }) =>
-  req.url === '/v1/sped-operacoes' && req.params.get('pageSize') === '1000';
+  req.url === '/v1/cgu-nfe' && req.params.get('pageSize') === '1000';
 
 describe('SimuladorPageComponent', () => {
   beforeEach(async () => {
@@ -149,15 +139,15 @@ describe('SimuladorPageComponent', () => {
     expect(APP_NAV_GROUPS.find((group) => group.id === 'simulador')?.links[0].path).toBe('/simulador');
   });
 
-  describe('with the SPED source NAO_CONFIAVEL (today)', () => {
-    it('blocks the public data and says why, without rendering any SPED number', () => {
+  describe('with the public source NAO_CONFIAVEL', () => {
+    it('blocks the public data and says why, without rendering any CGU number', () => {
       const { page, el, http } = blocked();
       const text = el.textContent as string;
       expect(page.publicOpen()).toBeFalse();
       expect(el.querySelector('[data-testid="public-blocked"]')).toBeTruthy();
-      expect(text).toContain('Fonte SPED NAO_CONFIAVEL: indicadores não são usados no Simulador');
+      expect(text).toContain('Fonte pública NAO_CONFIAVEL: indicadores não são usados no Simulador');
       expect(text).toContain('O que falta para liberar');
-      expect(text).toContain('Motivo de sped_compras_uf');
+      expect(text).toContain('Motivo de cgu_nfe_itens_uf_ano');
       // Os itens vieram no corpo (999 e R$ 9.999,00) e nada disso chega à tela nem aos cálculos.
       expect(page.items()).toEqual([]);
       expect(text).not.toContain('999');
@@ -236,14 +226,11 @@ describe('SimuladorPageComponent', () => {
       http.verify();
     });
 
-    it('offers the requested taxes, operations and goods types', () => {
+    it('offers the requested taxes and goods types', () => {
       const { el, http } = blocked();
       const text = el.textContent as string;
       for (const label of ['ITCD', 'ITBI', 'ISS', 'ICMS (por UF)']) {
         expect(text).toContain(label);
-      }
-      for (const operation of OPERATIONS) {
-        expect(text).toContain(operation);
       }
       for (const goods of ['Veículos', 'Imóveis', 'Eletrodomésticos', 'Alimentos e Bebidas', 'Outros Bens', 'Serviços Gerais']) {
         expect(text).toContain(goods);
@@ -280,75 +267,27 @@ describe('SimuladorPageComponent', () => {
       http.verify();
     });
 
-    it('uses the public-data free banner instead of the SPED banner', () => {
+    it('uses the public-data free banner instead of the CGU series banner', () => {
       const { el, http } = blocked();
       expect(el.textContent).toContain('valores informados por você, tratados como hipótese');
-      expect(el.textContent).not.toContain('Base exploratória, não homologada');
+      expect(el.textContent).not.toContain('Valor de documento não é pagamento');
       http.verify();
     });
   });
 
-  describe('transfers', () => {
-    it('offers a direction only for Transferências and resets it when the operation changes', () => {
-      const { fixture, page, el, http } = blocked();
+  describe('CGU baseline has no SPED operation', () => {
+    it('does not show operação or direção', () => {
+      const { el, http } = blocked();
+      expect(el.querySelector('select[name="operacao"]')).toBeNull();
       expect(el.querySelector('[data-testid="direction"]')).toBeNull();
-      page.setOperation('Transferências');
-      fixture.detectChanges();
-      expect(el.querySelector('[data-testid="direction"]')).toBeTruthy();
-      expect(el.querySelector('[data-testid="transfer-note"]')?.textContent).toContain('nunca são somadas');
-      page.transferDirection.set('RECEBIDA');
-      page.icmsTransferOptIn.set(true);
-      page.setOperation('Vendas');
-      expect(page.transferDirection()).toBe('');
-      expect(page.icmsTransferOptIn()).toBeFalse();
       http.verify();
     });
 
-    it('does not apply ICMS to a transfer unless the user opts in, as a hypothesis', () => {
-      const { fixture, page, el, http } = blocked();
-      page.uf.set('SP');
-      page.setOperation('Transferências');
-      page.valueInput.set(5000);
-      fixture.detectChanges();
-      const icms = page.simulatedTaxes().find((row) => row.tax === 'ICMS');
-      expect(icms?.blocked).toBeTrue();
-      expect(icms?.simulated).toBeNull();
-      expect(page.simulatedTaxes().find((row) => row.tax === 'ITCD')?.simulated).toBe(300);
-      expect(page.activeTaxes()).not.toContain('ICMS');
-      expect((page.chart().series ?? []).map((series) => series.name)).not.toContain('ICMS (hipótese)');
-      expect(el.textContent).toContain('ICMS não calculado');
-
-      page.icmsTransferOptIn.set(true);
-      fixture.detectChanges();
-      expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(900);
-      expect(page.activeTaxes()).toContain('ICMS');
-      expect(el.textContent).toContain('hipótese informada por você (equiparação optada)');
-      http.verify();
-    });
-
-    it('keeps ICMS for other operations', () => {
+    it('keeps ICMS on the typed hypothesis', () => {
       const { page, http } = blocked();
       page.uf.set('SP');
       page.valueInput.set(5000);
       expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(900);
-      http.verify();
-    });
-
-    it('never mixes the two directions in public data (future homologated base)', () => {
-      const both = [
-        { ano: 2021, uf: 'SP', operacao: 'Transferências', quantidade: 10, valorEstimado: '100.00', direcao: 'REMETIDA' },
-        { ano: 2021, uf: 'SP', operacao: 'Transferências', quantidade: 5, valorEstimado: '50.00', direcao: 'RECEBIDA' },
-      ];
-      const { page, http } = opened(both, [2021]);
-      page.uf.set('SP');
-      page.setOperation('Transferências');
-      // Sem direção escolhida nada entra: somar as duas duplicaria a contagem.
-      expect(page.items()).toEqual([]);
-      expect(page.latest()?.quantity).toBeNull();
-      page.transferDirection.set('REMETIDA');
-      expect(page.latest()?.quantity).toBe(10);
-      page.transferDirection.set('RECEBIDA');
-      expect(page.latest()?.quantity).toBe(5);
       http.verify();
     });
   });
@@ -365,10 +304,7 @@ describe('SimuladorPageComponent', () => {
 
     it('blocks the public data when one required indicator is not in the block', () => {
       const partial = reliability({
-        sped_quantidade_uf_cfop_ano: 'CONFERIDO',
-        sped_compras_uf: 'CONFERIDO',
-        sped_valor_estimado_uf_cfop_ano: 'CONFERIDO',
-        sped_valor_estimado_operacao: 'CONFERIDO',
+        cgu_nfe_itens_uf_ano: 'CONFERIDO',
       });
       const { page, el, http } = blocked(ITEMS, partial);
       expect(page.publicOpen()).toBeFalse();
@@ -381,17 +317,17 @@ describe('SimuladorPageComponent', () => {
         string,
         ReliabilityLevel
       >;
-      one['sped_compras_uf'] = 'NAO_CONFIAVEL';
+      one['cgu_nfe_itens_uf_ano'] = 'NAO_CONFIAVEL';
       const { page, http } = blocked(ITEMS, reliability(one));
       expect(page.publicOpen()).toBeFalse();
-      expect(page.gate().blocking.map((item) => item.id)).toEqual(['sped_compras_uf']);
+      expect(page.gate().blocking.map((item) => item.id)).toEqual(['cgu_nfe_itens_uf_ano']);
       http.verify();
     });
 
     it('treats EXPLORATORIO as not publishable in the Simulador', () => {
       const { page, el, http } = blocked(ITEMS, reliability('EXPLORATORIO'));
       expect(page.publicOpen()).toBeFalse();
-      expect(el.textContent).toContain('Fonte SPED EXPLORATORIO');
+      expect(el.textContent).toContain('Fonte pública EXPLORATORIO');
       http.verify();
     });
 
@@ -410,7 +346,7 @@ describe('SimuladorPageComponent', () => {
     });
   });
 
-  describe('once every indicator is CONFERIDO (future homologated base)', () => {
+  describe('once the CGU indicators are CONFERIDO', () => {
     it('opens the gate, reads the full data and shows the public data before the fields', () => {
       const { page, el, http } = opened();
       const html = el.innerHTML;
@@ -583,10 +519,9 @@ describe('SimuladorPageComponent opened from the SPED panel', () => {
     return { page: fixture.componentInstance, http };
   }
 
-  it('pre-fills the UF and the operation from the URL', () => {
+  it('pre-fills the UF from the URL and ignores operação', () => {
     const { page, http } = open({ uf: 'SP', operacao: 'Compras' });
     expect(page.uf()).toBe('SP');
-    expect(page.operation()).toBe('Compras');
     // Escolher uma UF (aqui pela URL) lê a lista de municípios uma única vez.
     http.expectOne('/ibge-municipios.json').flush({ municipios: [] });
     http.verify();
@@ -595,7 +530,6 @@ describe('SimuladorPageComponent opened from the SPED panel', () => {
   it('ignores unknown values in the URL', () => {
     const { page, http } = open({ uf: 'XX', operacao: '<img src=x>' });
     expect(page.uf()).toBe('');
-    expect(page.operation()).toBe('Vendas');
     http.verify();
   });
 });
@@ -779,16 +713,10 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
     http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
     fixture.detectChanges();
     await choose('municipio', '1200401');
-    await choose('operacao', 'Compras');
     await choose('tipo', 'Veículos');
     await type('qtd', '3');
     await type('valor', '1000');
-    expect([page.uf(), page.municipality(), page.operation(), page.goods()]).toEqual([
-      'AC',
-      '1200401',
-      'Compras',
-      'Veículos',
-    ]);
+    expect([page.uf(), page.municipality(), page.goods()]).toEqual(['AC', '1200401', 'Veículos']);
     expect(page.scenario()).toEqual({ quantity: 3, value: 1000 });
     // Cada imposto é calculado sobre o valor informado e nunca somado aos demais.
     expect(kpi('ITCD')).toContain('R$ 60,00');

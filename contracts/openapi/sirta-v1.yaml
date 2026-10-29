@@ -711,6 +711,31 @@ paths:
         '401': {$ref: '#/components/responses/Unauthorized'}
         '403': {$ref: '#/components/responses/Forbidden'}
         '422': {description: Invalid filter}
+  /v1/cgu-nfe:
+    get:
+      operationId: listCguNfe
+      description: >
+        CGU NF-e observed totals by issuer UF and year for the Simulador. Quantity is the number
+        of items. valorItens is the sum of item cents excluding cancelled notes (valueKind=
+        OBSERVED_DOCUMENT_CENTS). Not the whole market, not NFS-e, not payment. coverage is
+        PARCIAL while any of the 60 requested months is missing, AUSENTE when the local SQLite
+        has no processed month, COMPLETO only with all 60. Reads var/datalake/cgu-nfe (no
+        Postgres, no bronze, no CPF/CNPJ). homologated remains false (not a tax credit).
+        reliability lists cgu_nfe_itens_uf_ano, cgu_nfe_valor_itens_uf_ano and
+        simulador_imposto_apurado_dados_publicos. The tax indicator stays NAO_CONFIAVEL because
+        rates are not homologated.
+      parameters:
+        - {$ref: '#/components/parameters/TerritoryId'}
+        - {$ref: '#/components/parameters/PurposeId'}
+        - {name: uf, in: query, schema: {type: string, minLength: 2, maxLength: 2}}
+        - {name: ano, in: query, schema: {type: integer, minimum: 2021, maximum: 2025}}
+        - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+        - {name: pageSize, in: query, schema: {type: integer, minimum: 1, maximum: 1000, default: 200}}
+      responses:
+        '200': {description: 'Items from local SQLite aggregates; run is null when nothing was processed'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '403': {$ref: '#/components/responses/Forbidden'}
+        '422': {description: Invalid filter}
   /v1/tax-rates:
     get:
       operationId: listTaxRates

@@ -187,6 +187,27 @@ reconciliação de exportação, limite do Excel e ausência de CPF/CNPJ, nomes 
 arquivos gerados.
 
 Desempenho medido com ZIP sintético de 150 mil notas e 450 mil itens: 40 s por mês no processamento.
+
+## Simulador (base pública local, 29/10/2026)
+
+O Simulador (`/simulador`) lê `GET /v1/cgu-nfe`, que agrega o SQLite local por UF do emitente e
+ano. Não é ingestão Gold, não passa pelo Postgres e não lê o bronze (sem CPF/CNPJ/nomes na API).
+Quantidade pública = número de itens, visão exceto canceladas. Valor público = soma dos itens em
+centavos, mesma visão. Imposto do Simulador continua sendo valor × alíquota (indicador
+`simulador_imposto_apurado_dados_publicos` permanece NAO_CONFIAVEL; alíquotas não homologadas).
+
+Indicadores CONFERIDO neste recorte, por decisão do responsável em 29/10/2026:
+
+- `cgu_nfe_itens_uf_ano`
+- `cgu_nfe_valor_itens_uf_ano`
+
+O que não está conferido: mercado inteiro, compras públicas totais, NFS-e, município de
+consumo/entrega, soma de quantidade entre unidades, valor da nota como pagamento, imposto apurado.
+Cobertura PARCIAL 53/60. O painel `/sped-operacoes` não muda e o SPED não alimenta o Simulador.
+
+Se o SQLite não existir, a API devolve `run: null`, `items: []` e `coverage: AUSENTE` — nunca
+zero inventado. Não publicado em produção.
+
 ## Limites e dívida técnica
 
 - Os 53 meses listados processaram com o mapa de colunas atual (falha fechada se faltar coluna

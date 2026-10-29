@@ -153,3 +153,43 @@ def test_state_is_derived_from_recorded_facts() -> None:
     assert d.derive_state(listed=True, blocked=True, validated=True) == d.STATE_VALIDATED
     assert d.derive_state(listed=False, validated=True, processed=True) == d.STATE_DONE
     assert len(d.MONTH_STATES) == 6
+
+
+def test_coverage_is_partial_until_every_requested_month_is_processed() -> None:
+    requested = d.requested_months()
+    assert d.coverage_of(requested, []) == ("AUSENTE", requested)
+    one = ["202401"]
+    kind, missing = d.coverage_of(requested, one)
+    assert kind == "PARCIAL"
+    assert "202401" not in missing
+    assert len(missing) == 59
+    assert d.coverage_of(requested, requested) == ("COMPLETO", [])
+
+
+def test_roll_year_uf_keeps_cancelled_out_of_the_simulator_measure() -> None:
+    items = [
+        ("2024", "SP", d.SIT_NO_EVENT, 10, 1000),
+        ("2024", "SP", d.SIT_CANCELLED, 2, 200),
+        ("2024", "RJ", d.SIT_OTHER_EVENT, 5, 500),
+    ]
+    notes = [
+        ("2024", "SP", d.SIT_NO_EVENT, 3, 900),
+        ("2024", "SP", d.SIT_CANCELLED, 1, 100),
+    ]
+    rows = d.roll_year_uf(item_rows=items, note_rows=notes)
+    sp = next(row for row in rows if row.uf == "SP")
+    assert sp.itens == 10
+    assert sp.valor_itens_cents == 1000
+    assert sp.itens_bruto == 12
+    assert sp.notas == 3
+    assert sp.valor_notas_cents == 900
+    payload = d.series_item(sp)
+    assert payload["itens"] == 10
+    assert payload["valorItens"] == "10.00"
+    assert payload["itensCancelados"] == 2
+
+
+def test_cents_to_decimal_text_is_exact() -> None:
+    assert d.cents_to_decimal_text(1) == "0.01"
+    assert d.cents_to_decimal_text(100) == "1.00"
+    assert d.cents_to_decimal_text(12345) == "123.45"

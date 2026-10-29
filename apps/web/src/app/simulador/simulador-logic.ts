@@ -1,10 +1,11 @@
 /**
- * Regras puras do Simulador. Imposto = valor x aliquota. Quantidade e observada, o valor
- * publico vem da planilha (rateio) e o imposto e simulacao aritmetica, nao apuracao fiscal.
- * Nada aqui soma operacoes ou impostos diferentes. Valor ausente nunca vira zero.
+ * Regras puras do Simulador. Imposto = valor x aliquota. Quantidade e valor publicos da CGU
+ * NF-e (itens e valor dos itens, exceto canceladas, UF do emitente). O imposto e simulacao
+ * aritmetica, nao apuracao fiscal. Valor ausente nunca vira zero.
  */
 import { BiChartInput } from '../shared/bi/bi-chart-options';
-import { SpedSerieItem, byYear } from '../sped-operacoes/sped-logic';
+import { ReliabilityBlock } from '../shared/reliability/indicator-reliability';
+import { SpedSerieItem, byYear, money } from '../sped-operacoes/sped-logic';
 import { RateVersion, ResolvedRate, TaxId, resolveRate } from './simulador-aliquotas';
 
 export const SIMULATED_LABEL = 'Simulado';
@@ -49,6 +50,58 @@ export function publicByYear(
   const quantity = byYear(items, years, operation, 'quantidade', uf);
   const value = byYear(items, years, operation, 'valor', uf);
   return years.map((year, index) => ({ year, quantity: quantity[index], value: value[index] }));
+}
+
+export interface CguNfeItem {
+  ano: number;
+  uf: string;
+  itens: number;
+  valorItens: string | null;
+}
+
+export interface CguNfeRun {
+  runId: string;
+  layoutVersion: string;
+  competence: string;
+  monthsProcessed: number;
+  loadedAt?: string | null;
+}
+
+export interface CguNfeView {
+  sourceId: string;
+  valueKind: string;
+  banner: string;
+  formula: string;
+  homologated: boolean;
+  published: boolean;
+  createsTaxCredit: boolean;
+  reliability?: ReliabilityBlock;
+  coverage: string;
+  monthsProcessed: number;
+  monthsMissing: string[];
+  page: number;
+  pageSize: number;
+  total: number;
+  years: number[];
+  ufs: string[];
+  run: CguNfeRun | null;
+  items: CguNfeItem[];
+}
+
+/**
+ * Serie publica da CGU: itens e valor dos itens (exceto canceladas) por ano.
+ * Sem operacao. UF vazia soma as UFs presentes. Ano sem linha fica nulo, nunca zero.
+ */
+export function publicByYearFromCgu(items: CguNfeItem[], years: number[], uf: string | null): PublicYear[] {
+  return years.map((year) => {
+    const rows = items.filter((item) => item.ano === year && (uf === null || item.uf === uf));
+    if (rows.length === 0) {
+      return { year, quantity: null, value: null };
+    }
+    const quantity = rows.reduce((sum, item) => sum + item.itens, 0);
+    const values = rows.map((item) => money(item.valorItens)).filter((value): value is number => value !== null);
+    return { year, quantity, value: values.length === 0 ? null : values.reduce((sum, value) => sum + value, 0) };
+  });
 }
 
 /** Imposto estimado por ano (simulacao) para cada imposto escolhido, com a aliquota vigente em cada ano. */

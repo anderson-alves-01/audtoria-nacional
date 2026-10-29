@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 import re
 import unicodedata
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
@@ -386,3 +387,138 @@ def classify_situation(latest_event: str | None, events: set[str] | frozenset[st
     if texts:
         return SIT_OTHER_EVENT
     return SIT_NO_EVENT
+
+
+# --- Simulator series (UF emitente × year) --------------------------------------------------------
+YEARS = tuple(range(FIRST_YEAR, LAST_YEAR + 1))
+VALUE_KIND_OBSERVED = "OBSERVED_DOCUMENT_CENTS"
+SIMULATOR_BANNER = (
+    "NF-e da CGU (Portal da Transparência), UF do emitente. Quantidade = número de itens. "
+    "Valor = soma dos itens em centavos, visão exceto canceladas. Não é o mercado, todas as "
+    "compras públicas nem NFS-e. Valor de documento não é pagamento. Cobertura PARCIAL enquanto "
+    "houver mês pedido sem ZIP. Imposto do Simulador = valor × alíquota (alíquotas não homologadas)."
+)
+SIMULATOR_FORMULA = (
+    "itens_exceto_canceladas = itens_bruto − itens_cancelados; "
+    "valor_itens_exceto_canceladas = valor_itens_bruto − valor_itens_cancelados. "
+    "Cancelada quando o evento contém CANCEL. UF é a do emitente."
+)
+
+
+def cents_to_decimal_text(cents: int) -> str:
+    """API money: ``12345`` → ``123.45``. Exact cents, period decimal, two places."""
+    return format(Decimal(cents).scaleb(-2), "f")
+
+
+def coverage_of(requested: list[str], processed: list[str]) -> tuple[str, list[str]]:
+    """PARCIAL while any requested month is missing. AUSENTE when nothing was processed."""
+    done = set(processed)
+    missing = [month for month in requested if month not in done]
+    if not processed:
+        return "AUSENTE", missing
+    if missing:
+        return "PARCIAL", missing
+    return "COMPLETO", []
+
+
+@dataclass(frozen=True, slots=True)
+class YearUfMeasures:
+    """Observed item and note totals by issuer UF and year. Simulator uses except-cancelled items."""
+
+    year: int
+    uf: str
+    itens_bruto: int
+    valor_itens_bruto_cents: int
+    itens_cancelados: int
+    valor_itens_cancelados_cents: int
+    notas_bruto: int
+    valor_notas_bruto_cents: int
+    notas_canceladas: int
+    valor_notas_canceladas_cents: int
+
+    @property
+    def itens(self) -> int:
+        return self.itens_bruto - self.itens_cancelados
+
+    @property
+    def valor_itens_cents(self) -> int:
+        return self.valor_itens_bruto_cents - self.valor_itens_cancelados_cents
+
+    @property
+    def notas(self) -> int:
+        return self.notas_bruto - self.notas_canceladas
+
+    @property
+    def valor_notas_cents(self) -> int:
+        return self.valor_notas_bruto_cents - self.valor_notas_canceladas_cents
+
+
+def _add_bucket(
+    buckets: dict[tuple[int, str], dict[str, int]],
+    year: str,
+    uf: str,
+    situation: str,
+    count: int,
+    cents: int,
+    kind: str,
+) -> None:
+    key = (int(year), uf)
+    slot = buckets.setdefault(
+        key,
+        {
+            "itens_bruto": 0,
+            "valor_itens_bruto_cents": 0,
+            "itens_cancelados": 0,
+            "valor_itens_cancelados_cents": 0,
+            "notas_bruto": 0,
+            "valor_notas_bruto_cents": 0,
+            "notas_canceladas": 0,
+            "valor_notas_canceladas_cents": 0,
+        },
+    )
+    cancelled = situation == SIT_CANCELLED
+    if kind == "item":
+        slot["itens_bruto"] += count
+        slot["valor_itens_bruto_cents"] += cents
+        if cancelled:
+            slot["itens_cancelados"] += count
+            slot["valor_itens_cancelados_cents"] += cents
+    else:
+        slot["notas_bruto"] += count
+        slot["valor_notas_bruto_cents"] += cents
+        if cancelled:
+            slot["notas_canceladas"] += count
+            slot["valor_notas_canceladas_cents"] += cents
+
+
+def roll_year_uf(
+    *,
+    item_rows: Iterable[tuple[str, str, str, int, int]],
+    note_rows: Iterable[tuple[str, str, str, int, int]],
+) -> list[YearUfMeasures]:
+    """Roll (year, uf, situacao, count, cents) rows. Blank stays out: empty input yields []."""
+    buckets: dict[tuple[int, str], dict[str, int]] = {}
+    for year, uf, situation, count, cents in item_rows:
+        _add_bucket(buckets, year, uf, situation, count, cents, "item")
+    for year, uf, situation, count, cents in note_rows:
+        _add_bucket(buckets, year, uf, situation, count, cents, "note")
+    return [
+        YearUfMeasures(year=year, uf=uf, **values)
+        for (year, uf), values in sorted(buckets.items())
+    ]
+
+
+def series_item(row: YearUfMeasures) -> dict:
+    """JSON item for GET /v1/cgu-nfe. Except-cancelled is the public measure."""
+    return {
+        "ano": row.year,
+        "uf": row.uf,
+        "itens": row.itens,
+        "valorItens": cents_to_decimal_text(row.valor_itens_cents),
+        "notas": row.notas,
+        "valorNotas": cents_to_decimal_text(row.valor_notas_cents),
+        "itensBruto": row.itens_bruto,
+        "valorItensBruto": cents_to_decimal_text(row.valor_itens_bruto_cents),
+        "itensCancelados": row.itens_cancelados,
+        "valorItensCancelados": cents_to_decimal_text(row.valor_itens_cancelados_cents),
+    }

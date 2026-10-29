@@ -16,6 +16,7 @@ import {
   icmsBlockedForTransfer,
   hypothesisChart,
   publicByYear,
+  publicByYearFromCgu,
   referenceYear,
   compare,
   sanitize,
@@ -110,6 +111,22 @@ describe('simulador logic', () => {
     expect(sanitize(-1)).toBeNull();
     expect(sanitize(NaN)).toBeNull();
     expect(sanitize(null)).toBeNull();
+  });
+
+  it('reads CGU items by issuer UF and leaves a year without data empty', () => {
+    const cgu = [
+      { ano: 2021, uf: 'SP', itens: 100, valorItens: '1000.00' },
+      { ano: 2022, uf: 'SP', itens: 200, valorItens: null },
+      { ano: 2022, uf: 'MG', itens: 999, valorItens: '9999.00' },
+    ];
+    expect(publicByYearFromCgu(cgu, [2021, 2022, 2023], 'SP')).toEqual([
+      { year: 2021, quantity: 100, value: 1000 },
+      { year: 2022, quantity: 200, value: null },
+      { year: 2023, quantity: null, value: null },
+    ]);
+    const brazil = publicByYearFromCgu(cgu, [2022], null);
+    expect(brazil[0].quantity).toBe(1199);
+    expect(brazil[0].value).toBe(9999);
   });
 
   it('reads one operation only and leaves a year without value empty', () => {

@@ -99,10 +99,17 @@ def test_registry_rejects_unknown_level_duplicate_and_missing_reason() -> None:
         parse_registry({})
 
 
-def test_shipped_registry_has_no_conferido_and_blocks_every_sped_indicator() -> None:
+def test_shipped_registry_confers_cgu_nfe_and_blocks_every_sped_indicator() -> None:
     registry = load_registry()
     assert registry, "registro vazio"
-    assert not [i.id for i in registry.values() if i.level is ReliabilityLevel.CONFERIDO]
+    conferred = [i.id for i in registry.values() if i.level is ReliabilityLevel.CONFERIDO]
+    assert conferred == ["cgu_nfe_itens_uf_ano", "cgu_nfe_valor_itens_uf_ano"]
+    for indicator_id in conferred:
+        ensure_fiscal_use(indicator_id, registry)
+        view = indicator_view(indicator_id, registry)
+        assert view["usableForFiscalCalculation"] is True
+        assert view["publishableInSimulator"] is True
+        assert view["evidence"]
     for indicator_id in SPED_INDICATORS:
         assert indicator_id in registry, indicator_id
         with pytest.raises(ConflictError):

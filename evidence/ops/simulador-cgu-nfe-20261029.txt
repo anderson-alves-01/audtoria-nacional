@@ -1,0 +1,48 @@
+Simulador public baseline = CGU NF-e (local, 2026-10-29)
+Not published. No Postgres load. No production deploy.
+
+Verdict: GO for the local slice. Publication remains pending (human gate).
+real_data_ingestion stays BLOCKED for Postgres/prod.
+
+What CONFERIDO covers
+- cgu_nfe_itens_uf_ano and cgu_nfe_valor_itens_uf_ano
+- conferred_by: responsável do produto; conferred_at: 2026-10-29
+- item count and item cents except cancelled, issuer UF x year, official CGU ZIPs
+- 30-month reproduction + export reconciliation (evidence/ops/cgu-nfe-*-20261029.*)
+
+What it does not cover
+- whole market, total public purchases, NFS-e
+- consumption/delivery municipality
+- quantity summed across units, CFOP purchase/sale
+- note value as payment
+- simulated tax (simulador_imposto_apurado_dados_publicos stays NAO_CONFIAVEL)
+- rates (not homologated)
+- 7 unlisted 2021 months (coverage PARCIAL 53/60)
+
+Commands and results
+- $env:PYTHONPATH = "apps/api/src"; python -m pytest tests/unit/test_cgu_nfe_domain.py tests/unit/test_indicator_reliability.py tests/integration/test_cgu_nfe_series.py tests/integration/test_simulador_access.py tests/integration/test_indicator_reliability_api.py -q
+  -> 97 passed
+- apps/web: npm test -- --include=**/simulador-page.component.spec.ts --include=**/simulador-logic.spec.ts --include=**/indicator-reliability.spec.ts
+  -> 87 of 87 SUCCESS
+- Live GET /v1/cgu-nfe (operator session, local SQLite): coverage=PARCIAL monthsProcessed=53 runId=76534a439f28 homologated=false total=135
+  indicators: cgu_nfe_itens_uf_ano=CONFERIDO; cgu_nfe_valor_itens_uf_ano=CONFERIDO; simulador_imposto_apurado_dados_publicos=NAO_CONFIAVEL
+  SP 2024: itens=1823805 valorItens=30362096754.69
+- GET /v1/indicator-reliability/cgu_nfe_itens_uf_ano/fiscal-use -> 200 usable=true
+- GET /v1/indicator-reliability/sped_quantidade_uf_cfop_ano/fiscal-use -> 409
+
+Browser (login -> /simulador -> UF SP -> hypothesis vs public year)
+- http://localhost:4200/entrar then /simulador
+- Banner: NF-e da CGU, UF do emitente, exceto canceladas, PARCIAL, not payment, tax = value x rate
+- No operação/direção controls
+- Brazil 2025 public: 6 mi items, R$ 96,7 bi, coverage PARCIAL
+- UF SP 2025 public: 1,3 mi items, R$ 33,2 bi; table 2024 SP 1.823.805 / R$ 30.362.096.754,69 (matches API)
+- Hypothesis 1000 items / R$ 500.000, year 2025: ITCD R$ 30.000,00; ITBI R$ 15.000,00; ISS R$ 25.000,00; ICMS R$ 90.000,00; comparison panel open vs 2025 public
+- Lineage: carga 76534a439f28 · layout cgu-nfe-v1 · 53 months · PARCIAL. Homologado: não. Publicado: não.
+
+Rollback
+- Revert config/indicator-reliability.yaml CGU levels and apps/web PUBLIC_DATA_INDICATORS to close the gate.
+- Deleting var/datalake/cgu-nfe does not touch Postgres.
+- Production deploy is out of this slice.
+
+Local note
+- First GET /v1/cgu-nfe aggregates the full silver SQLite even for pageSize=1 (~50s on this machine). The UI waits on "Verificando a confiabilidade da fonte…" then loads. Not a correctness failure.

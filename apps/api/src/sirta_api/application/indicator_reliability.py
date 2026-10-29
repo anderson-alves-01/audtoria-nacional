@@ -40,6 +40,11 @@ SPED_INDICATORS = (
 
 RATE_INDICATORS = ("icms_aliquota_ac", "icms_aliquota_demais_uf", "itcd_itbi_iss_aliquotas")
 
+CGU_NFE_INDICATORS = (
+    "cgu_nfe_itens_uf_ano",
+    "cgu_nfe_valor_itens_uf_ano",
+)
+
 
 def registry_path() -> Path:
     here = Path(__file__).resolve()

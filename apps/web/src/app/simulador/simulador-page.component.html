@@ -19,8 +19,8 @@
   }
   @if (state() === 'error') {
     <p role="alert">
-      A confiabilidade dos dados públicos do SPED não pôde ser verificada. Eles ficam bloqueados. O simulador continua
-      disponível com valores informados por você.
+      A confiabilidade dos dados públicos da CGU NF-e não pôde ser verificada. Eles ficam bloqueados. O simulador
+      continua disponível com valores informados por você.
     </p>
   }
 
@@ -49,39 +49,6 @@
         }
       </select>
     </label>
-    <label>
-      Operação
-      <select name="operacao" [ngModel]="operation()" (ngModelChange)="setOperation($event)">
-        @for (item of operations(); track item) {
-          <option [value]="item">{{ item }}</option>
-        }
-      </select>
-    </label>
-    @if (isTransfer()) {
-      <label>
-        Direção da transferência
-        <select
-          name="direcao"
-          data-testid="direction"
-          [ngModel]="transferDirection()"
-          (ngModelChange)="transferDirection.set($event)"
-        >
-          <option value="">Escolha a direção</option>
-          <option value="RECEBIDA">{{ directionLabel.RECEBIDA }}</option>
-          <option value="REMETIDA">{{ directionLabel.REMETIDA }}</option>
-        </select>
-      </label>
-      <label class="check">
-        <input
-          type="checkbox"
-          name="icms-transfer-optin"
-          data-testid="icms-optin"
-          [checked]="icmsTransferOptIn()"
-          (change)="icmsTransferOptIn.set($any($event.target).checked)"
-        />
-        Calcular ICMS mesmo assim (hipótese: equiparação optada)
-      </label>
-    }
     <fieldset class="taxes">
       <legend>Impostos</legend>
       @for (def of taxes; track def.id) {
@@ -105,20 +72,6 @@
       A tabela de alíquotas não pôde ser lida: todas aparecem como pendentes de validação jurídica.
     }
   </p>
-  @if (isTransfer()) {
-    <p class="hint" role="note" data-testid="transfer-note">
-      <app-badge tone="warn">Transferências</app-badge>
-      {{ directionNote }}
-      @if (icmsBlocked()) {
-        {{ transferIcmsNote }}
-      } @else {
-        O ICMS abaixo é uma hipótese informada por você (equiparação optada), não uma apuração.
-      }
-      @if (publicOpen() && !transferDirection()) {
-        Escolha a direção para ver dados públicos de transferência.
-      }
-    </p>
-  }
   @if (municipalityState() === 'error') {
     <p class="hint" role="alert" data-testid="municipality-error">
       A lista de municípios não pôde ser lida. A escolha de município fica indisponível e o simulador continua por UF.
@@ -142,8 +95,9 @@
         {{ gate().headline }}
       </p>
       <p>
-        Nenhum número do SPED aparece aqui nem entra em cálculo, e a comparação com dados públicos fica desabilitada até
-        existir uma base homologada. Você pode simular com os valores que informar; o resultado é uma hipótese.
+        Nenhum número da CGU aparece aqui nem entra em cálculo, e a comparação com dados públicos fica desabilitada até
+        os indicadores exigidos estarem CONFERIDO. Você pode simular com os valores que informar; o resultado é uma
+        hipótese.
       </p>
       @if (gate().blocking.length > 0) {
         <ul class="reasons" aria-label="Indicadores bloqueados">
@@ -160,19 +114,16 @@
           <li>{{ need }}</li>
         }
       </ul>
-      <p class="legal">
-        Auditoria dos pares omitidos e demais evidências: evidence/ops/sped-auditoria-omissoes-20261028.md e
-        docs/data/SPED-CONFIABILIDADE.md.
-      </p>
+      <p class="legal">Cobertura, regras e evidências: docs/data/CGU-NFE.md e evidence/ops/cgu-nfe-*-20261029.*.</p>
     </section>
   }
 
   @if (publicOpen() && state() === 'ok' && view()?.run; as run) {
     <h2 class="part">Dados públicos e imposto estimado (simulação)</h2>
     <section class="kpis" aria-label="Último ano com dado">
-      <app-kpi-card label="Operação" [value]="operation()" [meta]="territory()" kind="Sem total entre operações" />
+      <app-kpi-card label="Fonte" [value]="sourceLabel" [meta]="territory() + ' · ' + coverage()" kind="CGU NF-e" />
       <app-kpi-card
-        label="Quantidade"
+        label="Quantidade (itens)"
         [value]="compact(latest()?.quantity ?? null, 'COUNT')"
         [meta]="'Ano ' + (latest()?.year ?? '—')"
         kind="Observado"
@@ -197,21 +148,20 @@
 
     <app-panel
       title="Quantidade, valor e imposto por ano"
-      [subtitle]="operation() + ' · ' + territory()"
-      source="Quantidade no eixo esquerdo. Valor e impostos em R$ no eixo direito"
+      [subtitle]="sourceLabel + ' · ' + territory()"
+      source="Quantidade (itens) no eixo esquerdo. Valor dos itens e impostos em R$ no eixo direito"
     >
       <app-bi-chart [input]="publicChart()" caption="Quantidade, valor e imposto por ano" [height]="340" />
     </app-panel>
 
-    <app-panel title="Tabela dos dados" [subtitle]="operation() + ' · ' + territory()" source="Célula vazia significa sem valor gravado">
+    <app-panel title="Tabela dos dados" [subtitle]="sourceLabel + ' · ' + territory()" source="Célula vazia significa sem valor gravado">
       <div class="table-wrap">
         <table>
           <caption class="sr">Dados públicos e imposto estimado por ano</caption>
           <thead>
             <tr>
               <th scope="col">Ano</th>
-              <th scope="col">Operação</th>
-              <th scope="col" class="num">Quantidade</th>
+              <th scope="col" class="num">Itens</th>
               <th scope="col" class="num">Valor (R$)</th>
               @for (tax of selectedTaxes(); track tax) {
                 <th scope="col" class="num">{{ tax }} estimado (R$)</th>
@@ -222,7 +172,6 @@
             @for (row of rows(); track row.year) {
               <tr>
                 <th scope="row">{{ row.year }}</th>
-                <td>{{ operation() }}</td>
                 <td class="num tabular">{{ count(row.quantity) }}</td>
                 <td class="num tabular">{{ money(row.value) }}</td>
                 @for (tax of selectedTaxes(); track tax) {
@@ -313,7 +262,7 @@
 
     <app-panel
       [title]="comparisonEnabled() ? 'Todos os dados e o cenário simulado' : 'Cenário simulado'"
-      [subtitle]="operation() + ' · ' + territory() + (goods() ? ' · ' + goods() : '')"
+      [subtitle]="sourceLabel + ' · ' + territory() + (goods() ? ' · ' + goods() : '')"
       source="O ponto simulado usa a quantidade e o valor que você informou. Imposto = valor × alíquota"
     >
       <div panelActions><app-badge tone="warn">{{ hypothesisLabel }}</app-badge></div>
@@ -327,8 +276,8 @@
     @if (!comparisonEnabled()) {
       <p class="hint disabled" role="note" data-testid="comparison-disabled">
         <app-badge tone="warn">Comparação desabilitada</app-badge>
-        A comparação com dados públicos só volta quando os indicadores do SPED estiverem conferidos e houver uma base
-        homologada. Hoje o simulador mostra apenas a hipótese que você informou.
+        A comparação com dados públicos só volta quando os indicadores da CGU NF-e (itens e valor dos itens) estiverem
+        conferidos e houver uma carga local. Hoje o simulador mostra apenas a hipótese que você informou.
       </p>
     } @else {
     <app-panel
@@ -379,18 +328,19 @@
     <section class="lineage" aria-label="Origem e método">
       <h2>Como é calculado</h2>
       <p>
-        Quantidade: observada no SPED NF-e por UF, operação e ano. Valor: lido da planilha publicada, que o obtém por rateio do
-        valor nacional do CFOP pela participação da UF em quantidade; não é calculado aqui. Imposto simulado = valor × alíquota.
-        O valor de uma UF herda qualquer erro da quantidade dela.
+        Quantidade: número de itens da NF-e da CGU, visão exceto canceladas, por UF do emitente e ano. Valor: soma dos
+        itens em centavos, mesma visão. Não é mercado, compras públicas totais nem NFS-e. Valor de documento não é
+        pagamento. Imposto simulado = valor × alíquota (alíquotas não homologadas).
       </p>
+      <p>{{ view()?.formula }}</p>
       <p>{{ rateSource }}</p>
       <p>
         ICMS usa a alíquota modal interna da UF. O ICMS real varia por produto, operação interestadual e benefício fiscal.
-        Operações e impostos nunca são somados entre si.
+        Impostos nunca são somados entre si. O município não filtra a série pública nesta fatia: só a alíquota de ITBI/ISS.
       </p>
       <p>
-        Carga {{ run.runId }} · arquivo sha256 {{ run.checksum }} · layout {{ run.layoutVersion }} · competência
-        {{ run.competence }}.
+        Carga {{ run.runId }} · layout {{ run.layoutVersion }} · competência {{ run.competence }} · meses processados
+        {{ run.monthsProcessed }} · cobertura {{ coverage() }}.
       </p>
       <p class="legal">A simulação roda no navegador e não grava nada. Cria crédito: não. Homologado: não. Publicado: não.</p>
     </section>

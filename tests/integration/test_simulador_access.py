@@ -32,6 +32,7 @@ ROUTES = (
     "/v1/sped-operacoes",
     "/v1/tax-rates",
     "/v1/indicator-reliability/sped_compras_uf/fiscal-use",
+    "/v1/cgu-nfe",
 )
 
 
@@ -151,6 +152,16 @@ def test_reading_the_rate_table_is_audited(api_client, db_session) -> None:
     assert events[0].route == "/v1/tax-rates"
 
 
+def test_cgu_nfe_fiscal_use_is_allowed_and_sped_is_still_refused(api_client) -> None:
+    conferred = api_client.get(
+        "/v1/indicator-reliability/cgu_nfe_itens_uf_ano/fiscal-use", headers=_analyst()
+    )
+    assert conferred.status_code == 200
+    assert conferred.json()["level"] == "CONFERIDO"
+    refused = api_client.get(ROUTES[2], headers=_analyst())
+    assert refused.status_code == 409
+
+
 def test_a_refused_fiscal_use_is_audited_even_though_the_request_fails(
     api_client, db_session
 ) -> None:
@@ -188,8 +199,13 @@ def test_no_route_of_the_simulator_can_publish_or_promote_anything(api_client) -
 
 
 def test_no_code_promotes_an_indicator_or_publishes_the_sped_load() -> None:
-    registry = (ROOT / "config" / "indicator-reliability.yaml").read_text(encoding="utf-8")
-    assert not re.search(r"(?m)^\s*level:\s*CONFERIDO\b", registry)
+    import yaml
+
+    registry_path = ROOT / "config" / "indicator-reliability.yaml"
+    registry = yaml.safe_load(registry_path.read_text(encoding="utf-8"))
+    conferred = [item["id"] for item in registry["indicators"] if item["level"] == "CONFERIDO"]
+    assert conferred == ["cgu_nfe_itens_uf_ano", "cgu_nfe_valor_itens_uf_ano"]
+    assert all(not item.startswith("sped_") for item in conferred)
     offenders = []
     for folder in ("apps/api/src", "tools"):
         for path in (ROOT / folder).rglob("*.py"):

@@ -19,7 +19,7 @@ import {
   ReliabilityLevel,
   publicDataGate,
 } from '../shared/reliability/indicator-reliability';
-import { DEFAULT_OPERATION, EMPTY, SpedSerieItem, SpedView } from '../sped-operacoes/sped-logic';
+import { EMPTY } from '../sped-operacoes/sped-logic';
 import {
   MUNICIPALITY_CATALOG_URL,
   MunicipalityCatalog,
@@ -34,7 +34,6 @@ import {
   RATE_SOURCE,
   RateVersion,
   ResolvedRate,
-  SPED_OPERATIONS,
   SPED_YEARS,
   TAXES,
   TaxId,
@@ -43,20 +42,14 @@ import {
   resolveRate,
 } from './simulador-aliquotas';
 import {
+  CguNfeItem,
+  CguNfeView,
   Comparison,
   HYPOTHESIS_LABEL,
   PublicYear,
-  TRANSFER_DIRECTION_LABEL,
-  TRANSFER_DIRECTION_NOTE,
-  TRANSFER_ICMS_NOTE,
-  TRANSFER_OPERATION,
-  TransferDirection,
   allowedParam,
-  effectiveTaxes,
-  filterByDirection,
   hypothesisChart,
-  icmsBlockedForTransfer,
-  publicByYear,
+  publicByYearFromCgu,
   referenceFallbackYear,
   referenceYear,
   sanitize,
@@ -97,7 +90,7 @@ export class SimuladorPageComponent implements OnInit {
   readonly homologationNeeds = HOMOLOGATION_NEEDS;
 
   readonly state = signal<'loading' | 'ok' | 'error'>('loading');
-  readonly view = signal<SpedView<SpedSerieItem> | null>(null);
+  readonly view = signal<CguNfeView | null>(null);
 
   /** Confiabilidade dos indicadores lida da API. Nula enquanto carrega ou se a leitura falhar. */
   readonly reliabilityBlock = signal<ReliabilityBlock | null>(null);
@@ -127,21 +120,11 @@ export class SimuladorPageComponent implements OnInit {
     return municipalityBelongsTo(this.municipalityCatalog(), this.ufOrNull(), code) ? code : null;
   });
   readonly municipalityLabel = computed(() => municipalityName(this.municipalityCatalog(), this.municipalityOrNull()));
-  readonly operation = signal<string>(DEFAULT_OPERATION);
   readonly goods = signal<string>('');
   readonly selectedTaxes = signal<TaxId[]>(['ITCD', 'ITBI', 'ISS', 'ICMS']);
-
-  // Transferencias: direcao propria e ICMS so por opt-in (hipotese).
-  readonly transferDirection = signal<TransferDirection>('');
-  readonly icmsTransferOptIn = signal(false);
-  readonly directionLabel = TRANSFER_DIRECTION_LABEL;
-  readonly directionNote = TRANSFER_DIRECTION_NOTE;
-  readonly transferIcmsNote = TRANSFER_ICMS_NOTE;
-  readonly isTransfer = computed(() => this.operation() === TRANSFER_OPERATION);
-  /** ICMS em branco numa transferencia sem opt-in. */
-  readonly icmsBlocked = computed(() => icmsBlockedForTransfer(this.operation(), this.icmsTransferOptIn()));
+  readonly sourceLabel = 'NF-e CGU · UF do emitente';
   /** Impostos que entram em calculo e grafico. */
-  readonly activeTaxes = computed(() => effectiveTaxes(this.selectedTaxes(), this.operation(), this.icmsTransferOptIn()));
+  readonly activeTaxes = computed(() => this.selectedTaxes());
 
   // Cenario desejado (Parte B)
   readonly quantityInput = signal<number | null>(null);
@@ -151,19 +134,15 @@ export class SimuladorPageComponent implements OnInit {
   /** O simulador funciona sem dado publico: com o portao fechado, so a hipotese informada existe. */
   readonly hasPublic = computed(() => this.publicOpen() && this.view()?.run != null);
   /** Nenhum item publico chega aos calculos enquanto o portao estiver fechado. */
-  readonly items = computed(() =>
-    this.publicOpen() ? filterByDirection(this.view()?.items ?? [], this.operation(), this.transferDirection()) : [],
-  );
+  readonly items = computed<CguNfeItem[]>(() => (this.publicOpen() ? (this.view()?.items ?? []) : []));
   readonly years = computed<number[]>(() => this.view()?.years ?? [...SPED_YEARS]);
-  readonly operations = computed<string[]>(() => this.view()?.operations ?? [...SPED_OPERATIONS]);
   readonly ufs = computed<string[]>(() => this.view()?.ufs ?? FALLBACK_UFS);
+  readonly coverage = computed(() => this.view()?.coverage ?? 'AUSENTE');
   readonly banner = computed(() => (this.publicOpen() && this.view()?.banner) || FALLBACK_BANNER);
   readonly ufOrNull = computed(() => this.uf() || null);
   readonly territory = computed(() => this.uf() || 'Brasil, soma das UFs');
 
-  readonly rows = computed<PublicYear[]>(() =>
-    publicByYear(this.items(), this.years(), this.operation(), this.ufOrNull()),
-  );
+  readonly rows = computed<PublicYear[]>(() => publicByYearFromCgu(this.items(), this.years(), this.ufOrNull()));
 
   readonly latest = computed<PublicYear | null>(() => this.rows()[this.rows().length - 1] ?? null);
 
@@ -268,11 +247,11 @@ export class SimuladorPageComponent implements OnInit {
 
   ngOnInit(): void {
     // Primeiro so a confiabilidade (uma linha). Os dados publicos so sao lidos se o portao abrir.
-    const probe = new HttpParams().set('level', 'SERIE').set('pageSize', 1);
-    this.http.get<SpedView<SpedSerieItem>>('/v1/sped-operacoes', { params: probe }).subscribe({
+    const probe = new HttpParams().set('pageSize', 1);
+    this.http.get<CguNfeView>('/v1/cgu-nfe', { params: probe }).subscribe({
       next: (body) => {
         this.reliabilityBlock.set(body.reliability ?? null);
-        // Sem itens: as listas de UF, operacao e ano servem aos campos, mas nenhum dado publico entra.
+        // Sem itens: as listas de UF e ano servem aos campos, mas nenhum dado publico entra.
         this.view.set({ ...body, items: [] });
         this.state.set('ok');
         if (this.publicOpen()) {
@@ -288,14 +267,14 @@ export class SimuladorPageComponent implements OnInit {
         this.ratesFallback.set(true);
       },
     });
-    // As listas de UF e operacao do contrato ja valem antes da leitura terminar.
+    // A lista de UF do contrato ja vale antes da leitura terminar.
     this.applyQuery();
   }
 
   /** So roda com o portao aberto, isto e, com todos os indicadores CONFERIDO. */
   private loadPublicData(): void {
-    const params = new HttpParams().set('level', 'SERIE').set('pageSize', 1000);
-    this.http.get<SpedView<SpedSerieItem>>('/v1/sped-operacoes', { params }).subscribe({
+    const params = new HttpParams().set('pageSize', 1000);
+    this.http.get<CguNfeView>('/v1/cgu-nfe', { params }).subscribe({
       next: (body) => this.view.set(body),
       error: () => this.state.set('error'),
     });
@@ -305,14 +284,13 @@ export class SimuladorPageComponent implements OnInit {
     return LEVEL_LABEL[level];
   }
 
-  /** Abre ja na UF e na operacao vindas do painel SPED, desde que existam nas listas. */
+  /** Abre ja na UF vinda do painel SPED, se existir na lista. operacao e ignorada (CGU nao classifica CFOP). */
   private applyQuery(): void {
     const query = this.route.snapshot?.queryParamMap;
     if (!query) {
       return;
     }
     this.setUf(allowedParam(query.get('uf'), this.ufs(), ''));
-    this.operation.set(allowedParam(query.get('operacao'), this.operations(), DEFAULT_OPERATION));
   }
 
   isTaxSelected(tax: TaxId): boolean {
@@ -391,21 +369,12 @@ export class SimuladorPageComponent implements OnInit {
     });
   }
 
-  /** ICMS de uma transferencia sem opt-in: nao incide por padrao, fica em branco. */
-  isBlocked(tax: TaxId): boolean {
-    return tax === 'ICMS' && this.icmsBlocked();
+  isBlocked(_tax: TaxId): boolean {
+    return false;
   }
 
-  /** Troca a operacao e zera as escolhas que so valem para transferencia. */
-  setOperation(value: string): void {
-    this.operation.set(value);
-    this.transferDirection.set('');
-    this.icmsTransferOptIn.set(false);
-  }
-
-  /** Meta de um imposto: o motivo do branco numa transferencia, ou a aliquota e sua situacao. */
-  taxMeta(tax: TaxId, resolved: ResolvedRate, year: number | null): string {
-    return this.isBlocked(tax) ? this.transferIcmsNote : this.rateMeta(resolved, year);
+  taxMeta(_tax: TaxId, resolved: ResolvedRate, year: number | null): string {
+    return this.rateMeta(resolved, year);
   }
 
   /** Percentual da aliquota, ou o motivo de nao haver um. */

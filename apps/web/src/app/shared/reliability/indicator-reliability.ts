@@ -22,14 +22,7 @@ export interface ReliabilityBlock {
 }
 
 /** Indicadores dos quais depende qualquer dado publico mostrado ou comparado no Simulador. */
-export const PUBLIC_DATA_INDICATORS = [
-  'sped_quantidade_uf_cfop_ano',
-  'sped_compras_uf',
-  'sped_valor_estimado_uf_cfop_ano',
-  'sped_valor_estimado_operacao',
-  'sped_transferencias_por_direcao',
-  'simulador_imposto_apurado_dados_publicos',
-] as const;
+export const PUBLIC_DATA_INDICATORS = ['cgu_nfe_itens_uf_ano', 'cgu_nfe_valor_itens_uf_ano'] as const;
 
 /** Indicadores das aliquotas. Servem de hipotese rotulada, nunca de calculo fiscal. */
 export const RATE_INDICATORS = ['icms_aliquota_ac', 'icms_aliquota_demais_uf', 'itcd_itbi_iss_aliquotas'] as const;
@@ -40,12 +33,11 @@ export const LEVEL_LABEL: Record<ReliabilityLevel, string> = {
   CONFERIDO: 'Conferido',
 };
 
-/** O que falta para liberar o dado publico. Detalhes em docs/delivery/RELATORIO-SIMULADOR-SIRTA-*.md. */
+/** O que falta para uma cobertura completa e para o imposto deixar de ser só estimativa. */
 export const HOMOLOGATION_NEEDS = [
-  'Esclarecimento oficial do SPED sobre a definição de "Quantidade NF-e" e sobre a dimensão UF.',
-  'Fonte oficial para os CFOPs 1.159, 2.159, 1.190, 2.170 e para os 5/6.15x a .19x que a tabela de CFOP não lista como transferência, e carga autorizada das transferências recebidas (1.151 a 1.154 e 2.151 a 2.154), hoje fora da planilha.',
-  'Nova versão da planilha, ou regra corrigida, reconciliada com os arquivos originais.',
-  'Revisão humana registrada no registro de confiabilidade, com evidência.',
+  'Sete meses de 2021 não listados no catálogo da CGU (jan–mar e mai–ago). Sem ZIP oficial a cobertura permanece PARCIAL.',
+  'Homologação humana das alíquotas: o imposto do Simulador continua sendo valor × alíquota, não apuração.',
+  'Não tratar a base como mercado, compras públicas totais ou NFS-e; município do emitente não é município de consumo.',
 ] as const;
 
 export interface PublicGate {
@@ -105,8 +97,8 @@ export function publicDataGate(
   return {
     open: false,
     headline: hasUnreliable
-      ? 'Fonte SPED NAO_CONFIAVEL: indicadores não são usados no Simulador.'
-      : 'Fonte SPED EXPLORATORIO: indicadores não são publicados no Simulador até a conferência.',
+      ? 'Fonte pública NAO_CONFIAVEL: indicadores não são usados no Simulador.'
+      : 'Fonte pública EXPLORATORIO: indicadores não são publicados no Simulador até a conferência.',
     blocking,
   };
 }

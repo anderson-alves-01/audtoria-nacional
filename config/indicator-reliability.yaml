@@ -10,7 +10,8 @@
 #   - CONFERIDO exige conferred_by, conferred_at e ao menos uma evidência. O carregamento rejeita o arquivo
 #     sem esses campos.
 #   - Nenhum script promove um indicador. A promoção é uma edição humana revisada, com evidência.
-#   - Nenhum indicador está CONFERIDO nesta versão.
+#   - CONFERIDO neste arquivo, só os indicadores CGU NF-e de itens e valor por UF e ano
+#     (recorte documentado, cobertura PARCIAL). SPED, imposto estimado e alíquotas não estão.
 version: 1
 indicators:
   - id: sped_quantidade_uf_cfop_ano
@@ -93,15 +94,45 @@ indicators:
     evidence:
       - evidence/ops/sped-reconciliacao-20261028.md
     reviewed_at: 2026-10-28
+  - id: cgu_nfe_itens_uf_ano
+    label: Quantidade de itens de NF-e da CGU por UF do emitente e ano (2021 a 2025)
+    level: CONFERIDO
+    reason: >-
+      Totais de itens lidos dos ZIPs oficiais da CGU, visão exceto canceladas, UF do emitente.
+      Os 30 meses da extração anterior foram reproduzidos (mesmo SHA-256, contagens e valores).
+      Cobertura PARCIAL 53/60: sete meses de 2021 não constam do catálogo. Não é o mercado,
+      todas as compras públicas nem NFS-e. Quantidade não é somada entre unidades.
+    evidence:
+      - evidence/ops/cgu-nfe-referencia-20261029.md
+      - evidence/ops/cgu-nfe-reconciliacao-exportacao-20261029.csv
+      - docs/data/CGU-NFE.md
+    reviewed_at: 2026-10-29
+    conferred_by: responsável do produto
+    conferred_at: 2026-10-29
+  - id: cgu_nfe_valor_itens_uf_ano
+    label: Valor dos itens de NF-e da CGU por UF do emitente e ano (R$, 2021 a 2025)
+    level: CONFERIDO
+    reason: >-
+      Soma em centavos exatos dos itens, visão exceto canceladas, UF do emitente. Conferido com
+      o manifesto local e, nos 30 meses da referência, com a extração anterior. Valor de documento
+      não é pagamento. Cobertura PARCIAL 53/60.
+    evidence:
+      - evidence/ops/cgu-nfe-referencia-20261029.md
+      - evidence/ops/cgu-nfe-reconciliacao-exportacao-20261029.csv
+      - docs/data/CGU-NFE.md
+    reviewed_at: 2026-10-29
+    conferred_by: responsável do produto
+    conferred_at: 2026-10-29
   - id: simulador_imposto_apurado_dados_publicos
     label: Imposto estimado (simulação) a partir de dados públicos no Simulador
     level: NAO_CONFIAVEL
     reason: >-
-      Deriva do valor estimado por UF e CFOP, que é NAO_CONFIAVEL, e de alíquotas ainda não homologadas.
-      A comparação com dados públicos fica desabilitada até existir base homologada.
+      O valor público da CGU está CONFERIDO no recorte, mas o imposto = valor × alíquota e nenhuma
+      tabela de alíquotas está homologada. Não é apuração fiscal.
     evidence:
+      - docs/data/CGU-NFE.md
       - docs/data/SPED-CONFIABILIDADE.md
-    reviewed_at: 2026-10-28
+    reviewed_at: 2026-10-29
   - id: icms_aliquota_ac
     label: Alíquota modal de ICMS do Acre (17% até 31/03/2023, 19% desde 01/04/2023)
     level: EXPLORATORIO
