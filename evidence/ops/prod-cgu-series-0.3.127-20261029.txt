@@ -1,0 +1,41 @@
+Publicação do recorte CGU UF×ano no Simulador: API 0.3.127
+Data: 2026-10-29
+authorization=usuário, nesta sessão (plano "CGU em produção e comparação ligada")
+git=push feat/professional-ui-v1 e52f90e..c135e24 (código e slim), depois evidência neste commit
+escopo=SQLite silver mínimo (UF emitente × ano + processamentos CONCLUIDO). Sem ZIP/bronze, sem Postgres, sem Terraform, sem S3/EFS, sem migration. Web permanece 0.4.25 (sirta-prod-web:33).
+
+slim=apps/api/data/cgu-nfe-series.sqlite
+  bytes=32768
+  sha256=d1f4ec38ef0dce4689500e2545297c67b63fdb10d9928dcf5ce195594c2dc475
+  tabelas=processamentos, series_uf_ano (sqlite_sequence do AUTOINCREMENT)
+  linhas=135  meses=53/60  cobertura=PARCIAL
+  run_id=76534a439f28  version=cgu-nfe-v1
+  SP 2024: itens=1823805 valorItens=30362096754.69 (bate com evidence/ops/simulador-cgu-nfe-20261029.txt)
+  sem chave de acesso, CPF/CNPJ, município, NCM ou bronze
+  o SQLite completo local (1,72 GB) e o bronze não entram na imagem
+
+api=sirta-prod-api:0.3.127, task definition :33 (anterior :32, 0.3.126), digest sha256:488ae680d95d5eef7052100e691713d9322b3eff193d5cae4322d492ce089331. Rollout PRIMARY COMPLETED 1/1.
+migrações=nenhuma; a partida confirma o head já em 0111.
+web=inalterada (0.4.25, sirta-prod-web:33).
+
+verificação_imagem (docker run --entrypoint python, sem Postgres):
+  path=/app/var/datalake/cgu-nfe/cgu-nfe-series.sqlite
+  months=53 series=True
+  SP 2024 itens=1823805 cents=3036209675469
+  run_id=76534a439f28
+
+verificação_ao_vivo (sem token forjado):
+  GET /health no ALB: 200 (implementationVersion 0.3.101 no binário)
+  GET /v1/cgu-nfe sem sessão: 401
+  login de operador no browser, /simulador:
+    comparison-disabled ausente
+    carga 76534a439f28 · layout cgu-nfe-v1 · 53 meses · PARCIAL
+    UF SP: quantidade e valor públicos preenchidos
+    comparação 2024 ligada (título "Comparação e diferença do imposto", "Cenário × 2024 público")
+    ITCD público 2024 R$ 1.821.725.805,28 = 6% de 30.362.096.754,69
+  captura: evidence/ops/prod-cgu-series-simulador-20261029.png
+
+efeito_em_produção=GET /v1/cgu-nfe deixa de devolver coverage AUSENTE/run null. O Simulador (web 0.4.25) liga a comparação porque view.run != null. Imposto estimado continua NAO_CONFIAVEL. Alíquotas não homologadas. Bronze e Postgres não foram tocados. real_data_ingestion permanece BLOCKED para Postgres.
+
+rollback_api=update-service para sirta-prod-api:32 (0.3.126). Sem migration. A web não muda.
+rollback_web=não aplicável nesta fatia.
