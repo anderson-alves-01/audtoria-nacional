@@ -11,15 +11,8 @@ import { BadgeComponent } from '../shared/ui/badge.component';
 import { KpiCardComponent } from '../shared/ui/kpi-card.component';
 import { PanelComponent } from '../shared/ui/panel.component';
 import { compactPublishedValue, formatPublishedValue } from '../shared/presentation/official-labels';
-import {
-  HOMOLOGATION_NEEDS,
-  LEVEL_LABEL,
-  PublicGate,
-  ReliabilityBlock,
-  ReliabilityLevel,
-  publicDataGate,
-} from '../shared/reliability/indicator-reliability';
-import { EMPTY } from '../sped-operacoes/sped-logic';
+import { PublicGate, ReliabilityBlock, publicDataGate } from '../shared/reliability/indicator-reliability';
+import { DEFAULT_OPERATION, EMPTY } from '../sped-operacoes/sped-logic';
 import {
   MUNICIPALITY_CATALOG_URL,
   MunicipalityCatalog,
@@ -30,15 +23,13 @@ import {
 } from './simulador-municipios';
 import {
   GOODS_TYPES,
-  RATE_CAVEAT,
-  RATE_SOURCE,
   RateVersion,
   ResolvedRate,
+  SPED_OPERATIONS,
   SPED_YEARS,
   TAXES,
   TaxId,
   fallbackVersions,
-  rateStatusLabel,
   resolveRate,
 } from './simulador-aliquotas';
 import {
@@ -47,7 +38,9 @@ import {
   Comparison,
   HYPOTHESIS_LABEL,
   PublicYear,
+  ScenarioDriver,
   allowedParam,
+  completeFromAverage,
   hypothesisChart,
   publicByYearFromCgu,
   referenceFallbackYear,
@@ -56,10 +49,8 @@ import {
   scenarioComparison,
   simulatorChart,
   taxAmount,
+  unitValue,
 } from './simulador-logic';
-
-const FALLBACK_BANNER =
-  'Simulação aritmética sobre valores informados por você, tratados como hipótese. Não é apuração fiscal, lançamento, crédito tributário nem decisão.';
 
 const FALLBACK_UFS = HEX_LAYOUT.map((cell) => cell.uf).sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
@@ -83,11 +74,9 @@ export class SimuladorPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   readonly taxes = TAXES;
+  readonly operations = SPED_OPERATIONS;
   readonly goodsTypes = GOODS_TYPES;
-  readonly rateSource = RATE_SOURCE;
-  readonly rateCaveat = RATE_CAVEAT;
   readonly hypothesisLabel = HYPOTHESIS_LABEL;
-  readonly homologationNeeds = HOMOLOGATION_NEEDS;
 
   readonly state = signal<'loading' | 'ok' | 'error'>('loading');
   readonly view = signal<CguNfeView | null>(null);
@@ -121,6 +110,7 @@ export class SimuladorPageComponent implements OnInit {
   });
   readonly municipalityLabel = computed(() => municipalityName(this.municipalityCatalog(), this.municipalityOrNull()));
   readonly goods = signal<string>('');
+  readonly operation = signal<string>(DEFAULT_OPERATION);
   readonly selectedTaxes = signal<TaxId[]>(['ITCD', 'ITBI', 'ISS', 'ICMS']);
   readonly sourceLabel = 'NF-e CGU · UF do emitente';
   /** Impostos que entram em calculo e grafico. */
@@ -129,6 +119,7 @@ export class SimuladorPageComponent implements OnInit {
   // Cenario desejado (Parte B)
   readonly quantityInput = signal<number | null>(null);
   readonly valueInput = signal<number | null>(null);
+  readonly driver = signal<ScenarioDriver>(null);
   readonly referenceYearInput = signal<number | null>(null);
 
   /** O simulador funciona sem dado publico: com o portao fechado, so a hipotese informada existe. */
@@ -138,9 +129,11 @@ export class SimuladorPageComponent implements OnInit {
   readonly years = computed<number[]>(() => this.view()?.years ?? [...SPED_YEARS]);
   readonly ufs = computed<string[]>(() => this.view()?.ufs ?? FALLBACK_UFS);
   readonly coverage = computed(() => this.view()?.coverage ?? 'AUSENTE');
-  readonly banner = computed(() => (this.publicOpen() && this.view()?.banner) || FALLBACK_BANNER);
   readonly ufOrNull = computed(() => this.uf() || null);
-  readonly territory = computed(() => this.uf() || 'Brasil, soma das UFs');
+  readonly territory = computed(() => {
+    const place = this.uf() || 'Brasil, soma das UFs';
+    return this.operation() ? `${place} · ${this.operation()}` : place;
+  });
 
   readonly rows = computed<PublicYear[]>(() => publicByYearFromCgu(this.items(), this.years(), this.ufOrNull()));
 
@@ -165,10 +158,25 @@ export class SimuladorPageComponent implements OnInit {
     }),
   );
 
-  readonly scenario = computed(() => ({
-    quantity: sanitize(this.quantityInput()),
-    value: sanitize(this.valueInput()),
-  }));
+  readonly average = computed(() =>
+    this.hasPublic() ? unitValue(this.reference()?.quantity ?? null, this.reference()?.value ?? null) : null,
+  );
+
+  readonly scenario = computed(() =>
+    completeFromAverage(
+      sanitize(this.quantityInput()),
+      sanitize(this.valueInput()),
+      this.average(),
+      this.driver(),
+    ),
+  );
+
+  readonly quantityShown = computed(() =>
+    this.driver() === 'value' ? this.scenario().quantity : this.quantityInput(),
+  );
+  readonly valueShown = computed(() =>
+    this.driver() === 'quantity' ? this.scenario().value : this.valueInput(),
+  );
   readonly hasScenario = computed(() => this.scenario().quantity !== null || this.scenario().value !== null);
   readonly inputInvalid = computed(
     () =>
@@ -243,8 +251,6 @@ export class SimuladorPageComponent implements OnInit {
     ),
   );
 
-  readonly icmsNeedsUf = computed(() => this.selectedTaxes().includes('ICMS') && !this.uf());
-
   ngOnInit(): void {
     // Primeiro so a confiabilidade (uma linha). Os dados publicos so sao lidos se o portao abrir.
     const probe = new HttpParams().set('pageSize', 1);
@@ -280,17 +286,14 @@ export class SimuladorPageComponent implements OnInit {
     });
   }
 
-  levelLabel(level: ReliabilityLevel): string {
-    return LEVEL_LABEL[level];
-  }
-
-  /** Abre ja na UF vinda do painel SPED, se existir na lista. operacao e ignorada (CGU nao classifica CFOP). */
+  /** Abre ja na UF e na operacao vindas do painel SPED, se existirem na lista. */
   private applyQuery(): void {
     const query = this.route.snapshot?.queryParamMap;
     if (!query) {
       return;
     }
     this.setUf(allowedParam(query.get('uf'), this.ufs(), ''));
+    this.operation.set(allowedParam(query.get('operacao'), this.operations, DEFAULT_OPERATION));
   }
 
   isTaxSelected(tax: TaxId): boolean {
@@ -306,6 +309,16 @@ export class SimuladorPageComponent implements OnInit {
   /** Numero do campo. Texto vazio vira nulo. */
   parse(raw: unknown): number | null {
     return raw === '' || raw === null || raw === undefined ? null : Number(raw);
+  }
+
+  setQuantity(raw: unknown): void {
+    this.driver.set('quantity');
+    this.quantityInput.set(this.parse(raw));
+  }
+
+  setValue(raw: unknown): void {
+    this.driver.set('value');
+    this.valueInput.set(this.parse(raw));
   }
 
   money(value: number | null): string {
@@ -385,18 +398,9 @@ export class SimuladorPageComponent implements OnInit {
     return resolved.rate === null ? 'sem alíquota' : `${resolved.rate.toLocaleString('pt-BR')}%`;
   }
 
-  /** Percentual mais a situacao jurídica da aliquota. */
-  rateMeta(resolved: ResolvedRate, year: number | null): string {
-    if (resolved.changedWithinYear) {
-      return `A alíquota validada mudou em ${year ?? 'no ano'}; o dado é anual e não pode ser dividido. Imposto em branco.`;
-    }
-    if (resolved.rate === null) {
-      return 'Sem alíquota para esta escolha';
-    }
-    const status = resolved.isSimulation
-      ? 'Parâmetro de simulação, não é alíquota da UF nem do município'
-      : rateStatusLabel(resolved.status);
-    return `Alíquota ${this.rateText(resolved)} · ${status}`;
+  /** Percentual da aliquota no cartão, sem texto de regra. */
+  rateMeta(resolved: ResolvedRate, _year: number | null): string {
+    return this.rateText(resolved);
   }
 
   statusTone(resolved: ResolvedRate): 'ok' | 'warn' {

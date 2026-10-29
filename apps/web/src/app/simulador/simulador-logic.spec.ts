@@ -11,6 +11,7 @@ import {
   HYPOTHESIS_LABEL,
   TRANSFER_OPERATION,
   allowedParam,
+  completeFromAverage,
   effectiveTaxes,
   filterByDirection,
   icmsBlockedForTransfer,
@@ -19,12 +20,14 @@ import {
   publicByYearFromCgu,
   referenceYear,
   compare,
+  roundCents,
   sanitize,
   scenarioComparison,
   simulatorChart,
   taxAmount,
   rateLabel,
   taxByYear,
+  unitValue,
 } from './simulador-logic';
 import { HEX_LAYOUT } from '../atlas/hex-layout';
 
@@ -111,6 +114,17 @@ describe('simulador logic', () => {
     expect(sanitize(-1)).toBeNull();
     expect(sanitize(NaN)).toBeNull();
     expect(sanitize(null)).toBeNull();
+  });
+
+  it('derives the public unit value and completes the other scenario field', () => {
+    expect(unitValue(200, 2000)).toBe(10);
+    expect(unitValue(0, 2000)).toBeNull();
+    expect(unitValue(200, null)).toBeNull();
+    expect(roundCents(300 * 10)).toBe(3000);
+    expect(completeFromAverage(300, null, 10, 'quantity')).toEqual({ quantity: 300, value: 3000 });
+    expect(completeFromAverage(null, 5000, 10, 'value')).toEqual({ quantity: 500, value: 5000 });
+    expect(completeFromAverage(300, null, null, 'quantity')).toEqual({ quantity: 300, value: null });
+    expect(completeFromAverage(300, 5000, 10, null)).toEqual({ quantity: 300, value: 5000 });
   });
 
   it('reads CGU items by issuer UF and leaves a year without data empty', () => {

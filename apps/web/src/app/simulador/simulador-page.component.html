@@ -2,26 +2,13 @@
   <header class="hero">
     <p class="kicker">Simulador</p>
     <h1 id="sim-title">Simulador de impostos sobre operações</h1>
-    <p class="banner" role="note">
-      <app-badge tone="warn">Simulação · não é apuração fiscal</app-badge>
-      {{ banner() }}
-    </p>
-    @if (state() !== 'loading' && !publicOpen()) {
-      <p class="banner" role="note" data-testid="reliability">
-        <app-badge tone="warn">Dados públicos bloqueados</app-badge>
-        {{ gate().headline }}
-      </p>
-    }
   </header>
 
   @if (state() === 'loading') {
     <p role="status">Verificando a confiabilidade da fonte…</p>
   }
   @if (state() === 'error') {
-    <p role="alert">
-      A confiabilidade dos dados públicos da CGU NF-e não pôde ser verificada. Eles ficam bloqueados. O simulador
-      continua disponível com valores informados por você.
-    </p>
+    <p role="alert">A confiabilidade dos dados públicos não pôde ser verificada. O simulador continua disponível.</p>
   }
 
   <form class="filters" aria-label="Escolhas do simulador" (submit)="$event.preventDefault()">
@@ -49,6 +36,14 @@
         }
       </select>
     </label>
+    <label>
+      Operação
+      <select name="operacao" data-testid="operation" [ngModel]="operation()" (ngModelChange)="operation.set($event)">
+        @for (item of operations; track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select>
+    </label>
     <fieldset class="taxes">
       <legend>Impostos</legend>
       @for (def of taxes; track def.id) {
@@ -65,26 +60,10 @@
       }
     </fieldset>
   </form>
-
-  <p class="hint" role="note" data-testid="rate-note">
-    Alíquotas do ano {{ scenarioYear() }}. Nenhuma tabela de alíquotas está homologada. {{ rateCaveat }}
-    @if (ratesFallback()) {
-      A tabela de alíquotas não pôde ser lida: todas aparecem como pendentes de validação jurídica.
-    }
-  </p>
   @if (municipalityState() === 'error') {
     <p class="hint" role="alert" data-testid="municipality-error">
-      A lista de municípios não pôde ser lida. A escolha de município fica indisponível e o simulador continua por UF.
+      A lista de municípios não pôde ser lida. A escolha de município fica indisponível.
     </p>
-  }
-  @if (municipalityOrNull()) {
-    <p class="hint" role="note" data-testid="municipality-note">
-      Município escolhido: {{ municipalityLabel() }} ({{ municipality() }}). Nenhuma alíquota municipal de ITBI ou ISS está
-      cadastrada: esses impostos usam o parâmetro de simulação, que não é alíquota do município.
-    </p>
-  }
-  @if (icmsNeedsUf()) {
-    <p class="hint" role="note">Escolha uma UF para calcular o ICMS. Sem UF o imposto fica em "—".</p>
   }
 
   @if (state() !== 'loading' && !publicOpen()) {
@@ -94,27 +73,6 @@
         <app-badge tone="warn">Bloqueado</app-badge>
         {{ gate().headline }}
       </p>
-      <p>
-        Nenhum número da CGU aparece aqui nem entra em cálculo, e a comparação com dados públicos fica desabilitada até
-        os indicadores exigidos estarem CONFERIDO. Você pode simular com os valores que informar; o resultado é uma
-        hipótese.
-      </p>
-      @if (gate().blocking.length > 0) {
-        <ul class="reasons" aria-label="Indicadores bloqueados">
-          @for (item of gate().blocking; track item.id) {
-            <li>
-              <strong>{{ item.label }}</strong> · {{ levelLabel(item.level) }}. {{ item.reason }}
-            </li>
-          }
-        </ul>
-      }
-      <h3>O que falta para liberar</h3>
-      <ul class="needs">
-        @for (need of homologationNeeds; track need) {
-          <li>{{ need }}</li>
-        }
-      </ul>
-      <p class="legal">Cobertura, regras e evidências: docs/data/CGU-NFE.md e evidence/ops/cgu-nfe-*-20261029.*.</p>
     </section>
   }
 
@@ -131,7 +89,7 @@
       <app-kpi-card
         label="Valor"
         [value]="compact(latest()?.value ?? null, 'BRL')"
-        [meta]="'Ano ' + (latest()?.year ?? '—') + ' · em R$'"
+        [meta]="'Ano ' + (latest()?.year ?? '—')"
         kind="Valor"
         tone="warn"
       />
@@ -146,15 +104,11 @@
       }
     </section>
 
-    <app-panel
-      title="Quantidade, valor e imposto por ano"
-      [subtitle]="sourceLabel + ' · ' + territory()"
-      source="Quantidade (itens) no eixo esquerdo. Valor dos itens e impostos em R$ no eixo direito"
-    >
+    <app-panel title="Quantidade, valor e imposto por ano" [subtitle]="sourceLabel + ' · ' + territory()">
       <app-bi-chart [input]="publicChart()" caption="Quantidade, valor e imposto por ano" [height]="340" />
     </app-panel>
 
-    <app-panel title="Tabela dos dados" [subtitle]="sourceLabel + ' · ' + territory()" source="Célula vazia significa sem valor gravado">
+    <app-panel title="Tabela dos dados" [subtitle]="sourceLabel + ' · ' + territory()">
       <div class="table-wrap">
         <table>
           <caption class="sr">Dados públicos e imposto estimado por ano</caption>
@@ -186,10 +140,6 @@
   }
 
   <h2 class="part" id="simule">Simule com a sua quantidade e valor</h2>
-  <p class="hint" role="note" data-testid="hypothesis-note">
-    <app-badge tone="accent">{{ hypothesisLabel }}</app-badge>
-    Tudo que o simulador calcula parte do que você digita. É uma hipótese, não é imposto apurado nem devido.
-  </p>
   <form class="filters scenario" aria-labelledby="simule" (submit)="$event.preventDefault()">
     <label>
       Quantidade desejada
@@ -200,8 +150,8 @@
         step="1"
         inputmode="numeric"
         placeholder="Ex.: 1000"
-        [ngModel]="quantityInput()"
-        (ngModelChange)="quantityInput.set(parse($event))"
+        [ngModel]="quantityShown()"
+        (ngModelChange)="setQuantity($event)"
       />
     </label>
     <label>
@@ -213,8 +163,8 @@
         step="0.01"
         inputmode="decimal"
         placeholder="Ex.: 500000"
-        [ngModel]="valueInput()"
-        (ngModelChange)="valueInput.set(parse($event))"
+        [ngModel]="valueShown()"
+        (ngModelChange)="setValue($event)"
       />
     </label>
     <label>
@@ -231,13 +181,12 @@
     </label>
     <label>
       Tipo de bem ou serviço
-      <select name="tipo" [ngModel]="goods()" (ngModelChange)="goods.set($event)" aria-describedby="sim-tipo-note">
+      <select name="tipo" [ngModel]="goods()" (ngModelChange)="goods.set($event)">
         <option value="">Não informado</option>
         @for (item of goodsTypes; track item) {
           <option [value]="item">{{ item }}</option>
         }
       </select>
-      <small id="sim-tipo-note">Serve só como rótulo do cenário.</small>
     </label>
   </form>
   @if (inputInvalid()) {
@@ -263,7 +212,6 @@
     <app-panel
       [title]="comparisonEnabled() ? 'Todos os dados e o cenário simulado' : 'Cenário simulado'"
       [subtitle]="sourceLabel + ' · ' + territory() + (goods() ? ' · ' + goods() : '')"
-      source="O ponto simulado usa a quantidade e o valor que você informou. Imposto = valor × alíquota"
     >
       <div panelActions><app-badge tone="warn">{{ hypothesisLabel }}</app-badge></div>
       <app-bi-chart
@@ -273,85 +221,37 @@
       />
     </app-panel>
 
-    @if (!comparisonEnabled()) {
-      <p class="hint disabled" role="note" data-testid="comparison-disabled">
-        <app-badge tone="warn">Comparação desabilitada</app-badge>
-        A comparação com dados públicos só volta quando os indicadores da CGU NF-e (itens e valor dos itens) estiverem
-        conferidos e houver uma carga local. Hoje o simulador mostra apenas a hipótese que você informou.
-      </p>
-    } @else {
-    <app-panel
-      title="Comparação e diferença do imposto"
-      [subtitle]="'Cenário × ' + (reference()?.year ?? '—') + ' público'"
-      source="Diferença = simulado − público. Sem valor público a diferença fica em branco"
-    >
-      <div class="table-wrap">
-        <table>
-          <caption class="sr">Comparação entre o cenário simulado e o dado público</caption>
-          <thead>
-            <tr>
-              <th scope="col">Item</th>
-              <th scope="col" class="num">Público ({{ reference()?.year ?? '—' }})</th>
-              <th scope="col" class="num">Simulado</th>
-              <th scope="col" class="num">Diferença</th>
-              <th scope="col" class="num">Diferença %</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (row of comparison(); track row.label) {
+    @if (comparisonEnabled()) {
+      <app-panel
+        title="Comparação e diferença do imposto"
+        [subtitle]="'Cenário × ' + (reference()?.year ?? '—') + ' público'"
+      >
+        <div class="table-wrap">
+          <table>
+            <caption class="sr">Comparação entre o cenário simulado e o dado público</caption>
+            <thead>
               <tr>
-                <th scope="row">{{ row.label }}</th>
-                <td class="num tabular">{{ cell(row.publicValue, row.unit) }}</td>
-                <td class="num tabular">{{ cell(row.simulated, row.unit) }}</td>
-                <td class="num tabular">{{ cell(row.difference, row.unit) }}</td>
-                <td class="num tabular">{{ percent(row.differencePercent) }}</td>
+                <th scope="col">Item</th>
+                <th scope="col" class="num">Público ({{ reference()?.year ?? '—' }})</th>
+                <th scope="col" class="num">Simulado</th>
+                <th scope="col" class="num">Diferença</th>
+                <th scope="col" class="num">Diferença %</th>
               </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    </app-panel>
+            </thead>
+            <tbody>
+              @for (row of comparison(); track row.label) {
+                <tr>
+                  <th scope="row">{{ row.label }}</th>
+                  <td class="num tabular">{{ cell(row.publicValue, row.unit) }}</td>
+                  <td class="num tabular">{{ cell(row.simulated, row.unit) }}</td>
+                  <td class="num tabular">{{ cell(row.difference, row.unit) }}</td>
+                  <td class="num tabular">{{ percent(row.differencePercent) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </app-panel>
     }
-  } @else {
-    <p class="hint" role="note">
-      @if (comparisonEnabled()) {
-        Preencha a quantidade, o valor ou ambos para ver o imposto do cenário, o gráfico com o ponto Simulado e a diferença
-        para o dado público.
-      } @else {
-        Preencha a quantidade, o valor ou ambos para ver o imposto da hipótese. A comparação com dados públicos está
-        desabilitada.
-      }
-    </p>
-  }
-
-  @if (publicOpen() && state() === 'ok' && view()?.run; as run) {
-    <section class="lineage" aria-label="Origem e método">
-      <h2>Como é calculado</h2>
-      <p>
-        Quantidade: número de itens da NF-e da CGU, visão exceto canceladas, por UF do emitente e ano. Valor: soma dos
-        itens em centavos, mesma visão. Não é mercado, compras públicas totais nem NFS-e. Valor de documento não é
-        pagamento. Imposto simulado = valor × alíquota (alíquotas não homologadas).
-      </p>
-      <p>{{ view()?.formula }}</p>
-      <p>{{ rateSource }}</p>
-      <p>
-        ICMS usa a alíquota modal interna da UF. O ICMS real varia por produto, operação interestadual e benefício fiscal.
-        Impostos nunca são somados entre si. O município não filtra a série pública nesta fatia: só a alíquota de ITBI/ISS.
-      </p>
-      <p>
-        Carga {{ run.runId }} · layout {{ run.layoutVersion }} · competência {{ run.competence }} · meses processados
-        {{ run.monthsProcessed }} · cobertura {{ coverage() }}.
-      </p>
-      <p class="legal">A simulação roda no navegador e não grava nada. Cria crédito: não. Homologado: não. Publicado: não.</p>
-    </section>
-  } @else if (state() !== 'loading') {
-    <section class="lineage" aria-label="Método">
-      <h2>Como é calculado</h2>
-      <p>
-        Imposto da hipótese = valor informado × alíquota. ICMS usa a alíquota modal interna da UF; o ICMS real varia por
-        produto, operação interestadual e benefício fiscal. {{ rateSource }}
-      </p>
-      <p class="legal">A simulação roda no navegador e não grava nada. Cria crédito: não. Homologado: não. Publicado: não.</p>
-    </section>
   }
 </section>

@@ -18,7 +18,7 @@ export const TAXES: TaxDef[] = [
   { id: 'ITCD', label: 'ITCD', fixedRate: 6 },
   { id: 'ITBI', label: 'ITBI', fixedRate: 3 },
   { id: 'ISS', label: 'ISS', fixedRate: 5 },
-  { id: 'ICMS', label: 'ICMS (por UF)', fixedRate: null },
+  { id: 'ICMS', label: 'ICMS', fixedRate: null },
 ];
 
 export const RATE_SOURCE =

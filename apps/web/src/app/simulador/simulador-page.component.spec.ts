@@ -146,8 +146,8 @@ describe('SimuladorPageComponent', () => {
       expect(page.publicOpen()).toBeFalse();
       expect(el.querySelector('[data-testid="public-blocked"]')).toBeTruthy();
       expect(text).toContain('Fonte pública NAO_CONFIAVEL: indicadores não são usados no Simulador');
-      expect(text).toContain('O que falta para liberar');
-      expect(text).toContain('Motivo de cgu_nfe_itens_uf_ano');
+      expect(text).not.toContain('O que falta para liberar');
+      expect(text).not.toContain('Motivo de cgu_nfe_itens_uf_ano');
       // Os itens vieram no corpo (999 e R$ 9.999,00) e nada disso chega à tela nem aos cálculos.
       expect(page.items()).toEqual([]);
       expect(text).not.toContain('999');
@@ -170,7 +170,7 @@ describe('SimuladorPageComponent', () => {
       await fixture.whenStable();
       expect(el.querySelector('input[name="qtd"]')).toBeTruthy();
       expect(el.querySelector('input[name="valor"]')).toBeTruthy();
-      expect(el.querySelector('[data-testid="hypothesis-note"]')?.textContent).toContain('Hipótese informada manualmente');
+      expect(el.querySelector('select[name="operacao"]')).toBeTruthy();
       const value = el.querySelector('input[name="valor"]') as HTMLInputElement;
       value.value = '5000';
       value.dispatchEvent(new Event('input'));
@@ -211,7 +211,7 @@ describe('SimuladorPageComponent', () => {
       fixture.detectChanges();
       const text = el.textContent as string;
       expect(page.comparisonEnabled()).toBeFalse();
-      expect(el.querySelector('[data-testid="comparison-disabled"]')?.textContent).toContain('Comparação desabilitada');
+      expect(el.querySelector('[data-testid="comparison-disabled"]')).toBeNull();
       expect(text).not.toContain('Comparação e diferença do imposto');
       expect(text).toContain('Ano da alíquota');
       expect(text).not.toContain('Ano de comparação');
@@ -220,18 +220,22 @@ describe('SimuladorPageComponent', () => {
       http.verify();
     });
 
-    it('tells the user what to type when nothing was informed yet', () => {
+    it('does not print comparison instructions when nothing was informed yet', () => {
       const { el, http } = blocked();
-      expect(el.textContent).toContain('A comparação com dados públicos está desabilitada');
+      expect(el.textContent).not.toContain('A comparação com dados públicos está desabilitada');
+      expect(el.textContent).not.toContain('Preencha a quantidade');
       http.verify();
     });
 
-    it('offers the requested taxes and goods types', () => {
+    it('offers the requested taxes, operations and goods types', () => {
       const { el, http } = blocked();
       const text = el.textContent as string;
-      for (const label of ['ITCD', 'ITBI', 'ISS', 'ICMS (por UF)']) {
+      for (const label of ['ITCD', 'ITBI', 'ISS', 'ICMS']) {
         expect(text).toContain(label);
       }
+      expect(text).not.toContain('ICMS (por UF)');
+      expect(el.querySelector('select[name="operacao"]')).toBeTruthy();
+      expect(text).toContain('Vendas');
       for (const goods of ['Veículos', 'Imóveis', 'Eletrodomésticos', 'Alimentos e Bebidas', 'Outros Bens', 'Serviços Gerais']) {
         expect(text).toContain(goods);
       }
@@ -243,17 +247,16 @@ describe('SimuladorPageComponent', () => {
       http.verify();
     });
 
-    it('leaves ICMS empty and warns when no UF is chosen', () => {
+    it('leaves ICMS empty when no UF is chosen, without an on-screen rule', () => {
       const { page, el, fixture, http } = blocked();
       page.valueInput.set(1000);
       fixture.detectChanges();
       expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBeNull();
       expect(page.simulatedTaxes().find((row) => row.tax === 'ISS')?.simulated).toBe(50);
-      expect(el.textContent).toContain('Escolha uma UF para calcular o ICMS');
+      expect(el.textContent).not.toContain('Escolha uma UF para calcular o ICMS');
       page.toggleTax('ICMS', false);
       fixture.detectChanges();
       expect(page.selectedTaxes()).toEqual(['ITCD', 'ITBI', 'ISS']);
-      expect(el.textContent).not.toContain('Escolha uma UF para calcular o ICMS');
       http.verify();
     });
 
@@ -267,18 +270,22 @@ describe('SimuladorPageComponent', () => {
       http.verify();
     });
 
-    it('uses the public-data free banner instead of the CGU series banner', () => {
+    it('hides methodology and rule copy', () => {
       const { el, http } = blocked();
-      expect(el.textContent).toContain('valores informados por você, tratados como hipótese');
-      expect(el.textContent).not.toContain('Valor de documento não é pagamento');
+      const text = el.textContent as string;
+      expect(text).not.toContain('Como é calculado');
+      expect(text).not.toContain('Valor de documento não é pagamento');
+      expect(text).not.toContain('valores informados por você, tratados como hipótese');
+      expect(el.querySelector('[data-testid="rate-note"]')).toBeNull();
+      expect(el.querySelector('[data-testid="hypothesis-note"]')).toBeNull();
       http.verify();
     });
   });
 
-  describe('CGU baseline has no SPED operation', () => {
-    it('does not show operação or direção', () => {
+  describe('operation filter', () => {
+    it('shows operação in the initial filters and not direção', () => {
       const { el, http } = blocked();
-      expect(el.querySelector('select[name="operacao"]')).toBeNull();
+      expect(el.querySelector('select[name="operacao"]')).toBeTruthy();
       expect(el.querySelector('[data-testid="direction"]')).toBeNull();
       http.verify();
     });
@@ -308,7 +315,8 @@ describe('SimuladorPageComponent', () => {
       });
       const { page, el, http } = blocked(ITEMS, partial);
       expect(page.publicOpen()).toBeFalse();
-      expect(el.textContent).toContain('Indicador ausente da resposta da API');
+      expect(el.querySelector('[data-testid="public-blocked"]')).toBeTruthy();
+      expect(page.gate().blocking.some((item) => item.reason.includes('ausente'))).toBeTrue();
       http.verify();
     });
 
@@ -377,6 +385,27 @@ describe('SimuladorPageComponent', () => {
       expect(page.chart().categories).toEqual(['2021', '2022', 'Simulado']);
       http.verify();
     });
+
+    it('fills value from public unit price when only quantity is typed', () => {
+      const { page, http } = opened();
+      page.uf.set('SP');
+      page.referenceYearInput.set(2022);
+      page.setQuantity(300);
+      expect(page.average()).toBe(10);
+      expect(page.scenario()).toEqual({ quantity: 300, value: 3000 });
+      expect(page.simulatedTaxes().find((row) => row.tax === 'ITCD')?.simulated).toBe(180);
+      http.verify();
+    });
+
+    it('fills quantity from public unit price when only value is typed', () => {
+      const { page, http } = opened();
+      page.uf.set('SP');
+      page.referenceYearInput.set(2022);
+      page.setValue(5000);
+      expect(page.scenario()).toEqual({ quantity: 500, value: 5000 });
+      expect(page.simulatedTaxes().find((row) => row.tax === 'ITCD')?.simulated).toBe(300);
+      http.verify();
+    });
   });
 
   describe('hypothesis labelling', () => {
@@ -399,9 +428,8 @@ describe('SimuladorPageComponent', () => {
       fixture.detectChanges();
       const text = withoutNegations(el.textContent as string);
       expect(text).not.toMatch(/apurad|devid/i);
-      const note = el.querySelector('[data-testid="hypothesis-note"]') as HTMLElement;
-      expect(note.textContent).toContain('Hipótese informada manualmente');
-      expect(note.textContent).toContain('não é imposto apurado nem devido');
+      expect(el.textContent).toContain('Hipótese informada manualmente');
+      expect(el.querySelector('[data-testid="hypothesis-note"]')).toBeNull();
       http.verify();
     });
 
@@ -441,11 +469,13 @@ describe('SimuladorPageComponent', () => {
       expect(page.resolved('ICMS', 2024)).toEqual(jasmine.objectContaining({ rate: 19, status: 'VALIDADO' }));
       expect(page.resolved('ITCD', 2024)).toEqual(jasmine.objectContaining({ rate: 6, status: 'PENDENTE' }));
       const text = el.textContent as string;
-      expect(text).toContain('Alíquota 19% · Validado');
-      expect(text).toContain('Alíquota 6% · Parâmetro de simulação, não é alíquota da UF nem do município');
+      expect(text).toContain('19%');
+      expect(text).toContain('6%');
+      expect(text).not.toContain('Validado');
+      expect(text).not.toContain('Parâmetro de simulação');
       expect(page.resolved('ITCD', 2024).isSimulation).toBeTrue();
       expect(page.resolved('ICMS', 2024).isSimulation).toBeFalse();
-      expect(text).toContain('exceções por mercadoria e operação não estão modeladas');
+      expect(text).not.toContain('exceções por mercadoria e operação não estão modeladas');
       http.verify();
     });
 
@@ -463,8 +493,7 @@ describe('SimuladorPageComponent', () => {
       page.valueInput.set(1000);
       page.referenceYearInput.set(2024);
       const text = el.textContent as string;
-      expect(text).toContain('Nenhuma tabela de alíquotas está homologada');
-      expect(text).toContain('nenhuma tabela está homologada');
+      expect(text).not.toContain('Nenhuma tabela de alíquotas está homologada');
       expect(text).not.toContain('Homologado: sim');
       expect(page.resolved('ICMS', 2024).status).toBe('VALIDADO');
       http.verify();
@@ -478,7 +507,7 @@ describe('SimuladorPageComponent', () => {
       const icms = page.simulatedTaxes().find((row) => row.tax === 'ICMS');
       expect(icms?.simulated).toBeNull();
       expect(icms?.resolved.changedWithinYear).toBeTrue();
-      expect((fixture.nativeElement as HTMLElement).textContent).toContain('mudou em 2023');
+      expect((fixture.nativeElement as HTMLElement).textContent).toContain('muda no ano');
       http.verify();
     });
 
@@ -493,7 +522,7 @@ describe('SimuladorPageComponent', () => {
       fixture.detectChanges();
       expect(page.ratesFallback()).toBeTrue();
       expect(page.resolved('ICMS', 2024)).toEqual(jasmine.objectContaining({ rate: 19, status: 'PENDENTE' }));
-      expect((fixture.nativeElement as HTMLElement).textContent).toContain('A tabela de alíquotas não pôde ser lida');
+      expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('A tabela de alíquotas não pôde ser lida');
       http.verify();
     });
   });
@@ -519,10 +548,10 @@ describe('SimuladorPageComponent opened from the SPED panel', () => {
     return { page: fixture.componentInstance, http };
   }
 
-  it('pre-fills the UF from the URL and ignores operação', () => {
+  it('pre-fills the UF and operação from the URL', () => {
     const { page, http } = open({ uf: 'SP', operacao: 'Compras' });
     expect(page.uf()).toBe('SP');
-    // Escolher uma UF (aqui pela URL) lê a lista de municípios uma única vez.
+    expect(page.operation()).toBe('Compras');
     http.expectOne('/ibge-municipios.json').flush({ municipios: [] });
     http.verify();
   });
@@ -530,6 +559,7 @@ describe('SimuladorPageComponent opened from the SPED panel', () => {
   it('ignores unknown values in the URL', () => {
     const { page, http } = open({ uf: 'XX', operacao: '<img src=x>' });
     expect(page.uf()).toBe('');
+    expect(page.operation()).toBe('Vendas');
     http.verify();
   });
 });
@@ -641,11 +671,9 @@ describe('SimuladorPageComponent municipality', () => {
     http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
     page.setMunicipality('1200401');
     fixture.detectChanges();
-    const note = el.querySelector('[data-testid="municipality-note"]') as HTMLElement;
-    expect(note.textContent).toContain('Rio Branco');
-    expect(note.textContent).toContain('não é alíquota do município');
+    expect(el.querySelector('[data-testid="municipality-note"]')).toBeNull();
     expect(page.resolved('ITBI', 2024).isSimulation).toBeTrue();
-    expect(page.rateMeta(page.resolved('ISS', 2024), 2024)).toContain('Parâmetro de simulação');
+    expect(page.rateMeta(page.resolved('ISS', 2024), 2024)).toBe('5%');
     http.verify();
   });
 
@@ -713,10 +741,16 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
     http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
     fixture.detectChanges();
     await choose('municipio', '1200401');
+    await choose('operacao', 'Compras');
     await choose('tipo', 'Veículos');
     await type('qtd', '3');
     await type('valor', '1000');
-    expect([page.uf(), page.municipality(), page.goods()]).toEqual(['AC', '1200401', 'Veículos']);
+    expect([page.uf(), page.municipality(), page.operation(), page.goods()]).toEqual([
+      'AC',
+      '1200401',
+      'Compras',
+      'Veículos',
+    ]);
     expect(page.scenario()).toEqual({ quantity: 3, value: 1000 });
     // Cada imposto é calculado sobre o valor informado e nunca somado aos demais.
     expect(kpi('ITCD')).toContain('R$ 60,00');

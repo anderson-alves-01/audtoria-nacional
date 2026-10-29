@@ -174,6 +174,60 @@ export interface ScenarioInput {
   value: number | null;
 }
 
+export type ScenarioDriver = 'quantity' | 'value' | null;
+
+/** Valor médio do dado público: valor / quantidade. Sem os dois, ou com quantidade zero, não há média. */
+export function unitValue(quantity: number | null, value: number | null): number | null {
+  if (quantity === null || value === null || quantity === 0 || !Number.isFinite(quantity) || !Number.isFinite(value)) {
+    return null;
+  }
+  const average = value / quantity;
+  return Number.isFinite(average) && average > 0 ? average : null;
+}
+
+/** Arredonda ao centavo com a mesma limpeza usada no imposto. */
+export function roundCents(value: number): number | null {
+  if (!Number.isFinite(value)) {
+    return null;
+  }
+  const cents = Math.round(Number((value * 100).toPrecision(15)));
+  if (!Number.isFinite(cents) || Math.abs(cents) > MAX_EXACT_CENTS) {
+    return null;
+  }
+  return (cents === 0 ? 0 : cents) / 100;
+}
+
+/**
+ * Completa quantidade ou valor com o valor médio público. Quem digita um campo não precisa
+ * preencher o outro: a média preenche o resto. Sem média, cada campo vale só o que foi digitado.
+ */
+export function completeFromAverage(
+  quantity: number | null,
+  value: number | null,
+  average: number | null,
+  driver: ScenarioDriver,
+): ScenarioInput {
+  if (average === null || !Number.isFinite(average) || average <= 0) {
+    return { quantity, value };
+  }
+  const fromQuantity = driver === 'quantity' || (driver === null && quantity !== null && value === null);
+  const fromValue = driver === 'value' || (driver === null && value !== null && quantity === null);
+  if (fromQuantity) {
+    if (quantity === null) {
+      return { quantity: null, value: null };
+    }
+    return { quantity, value: roundCents(quantity * average) };
+  }
+  if (fromValue) {
+    if (value === null) {
+      return { quantity: null, value: null };
+    }
+    const derived = value / average;
+    return { quantity: Number.isFinite(derived) ? derived : null, value };
+  }
+  return { quantity, value };
+}
+
 /** Entrada valida: numero finito e nao negativo. Qualquer outra coisa e tratada como ausente. */
 export function sanitize(raw: number | null | undefined): number | null {
   // Somar 0 troca -0 por 0: o Intl mostraria "-R$ 0,00".
