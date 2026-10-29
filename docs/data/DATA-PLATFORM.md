@@ -70,10 +70,12 @@ agregados, digests de chave, quarentena e auditoria) → gold (XLSX e CSVs em `e
 O bloqueio de verificação humana do portal é registrado e nunca contornado; os ZIPs oficiais
 entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-NFE.md`.
 
-### Simulador: base pública CGU NF-e (29/10/2026, local, não publicado)
+### Simulador: base pública CGU NF-e (29/10/2026)
 
 - `GET /v1/cgu-nfe` lê o SQLite em `var/datalake/cgu-nfe` (agregado UF do emitente × ano, itens e
-  valor dos itens exceto canceladas). Sem Postgres, sem bronze, sem PII. OpenAPI `listCguNfe`.
+  valor dos itens exceto canceladas). Prefere `cgu-nfe-series.sqlite` (UF × ano, sem chave/bronze)
+  e cai no `cgu-nfe.sqlite` completo só em desenvolvimento local. Sem Postgres, sem bronze, sem
+  PII. OpenAPI `listCguNfe`.
 - O Simulador deixa de chamar `/v1/sped-operacoes`. O painel `/sped-operacoes` permanece na
   Referência publicada, com os indicadores SPED em NAO_CONFIAVEL/EXPLORATORIO.
 - Portão do Simulador: `cgu_nfe_itens_uf_ano` e `cgu_nfe_valor_itens_uf_ano` CONFERIDO
@@ -81,7 +83,9 @@ entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-
   alíquotas não estão CONFERIDO; `can_use_in_fiscal_calculation` do imposto segue fechado.
 - Interpretação na tela: cobertura PARCIAL 53/60, UF do emitente, valor de documento ≠ pagamento,
   imposto = valor × alíquota. Município e operação/CFOP não filtram a série pública nesta fatia.
-- Não é ingestão Gold. `real_data_ingestion` permanece BLOCKED para Postgres. Código publicado em
-  29/10/2026 (API 0.3.126, web 0.4.25); o SQLite local não foi copiado para produção, então a API
-  devolve `coverage: AUSENTE` até uma carga autorizada do agregado. Evidência:
-  `evidence/ops/simulador-cgu-nfe-20261029.txt`, `evidence/ops/prod-simulador-cgu-0.4.25-20261029.txt`.
+- Não é ingestão Gold. `real_data_ingestion` permanece BLOCKED para Postgres. O recorte UF × ano
+  está em `apps/api/data/cgu-nfe-series.sqlite` (32 KiB, sha256
+  `d1f4ec38ef0dce4689500e2545297c67b63fdb10d9928dcf5ce195594c2dc475`, 135 linhas, 53 meses).
+  SP 2024: 1.823.805 itens / R$ 30.362.096.754,69. O arquivo de 1,7 GB e o bronze não entram na
+  imagem. Evidência: `evidence/ops/simulador-cgu-nfe-20261029.txt`,
+  `evidence/ops/prod-simulador-cgu-0.4.25-20261029.txt`.

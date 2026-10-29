@@ -6,6 +6,7 @@ and never stand for official data. Real data is not touched by any test.
 
 import csv
 import json
+import sqlite3
 import zipfile
 from pathlib import Path
 
@@ -525,6 +526,26 @@ def test_cli_import_process_audit_export_and_status(tmp_path: Path, capsys) -> N
     assert cli.main(["status", "--root", root, "--months", "202401", "202402"]) == 0
     status = capsys.readouterr().out
     assert "PROCESSAMENTO_CONCLUIDO" in status
+
+
+def test_cli_export_series_writes_uf_year_sqlite_without_keys(tmp_path: Path) -> None:
+    root = str(tmp_path / "lake")
+    zip_path = tmp_path / "202401_NFe.zip"
+    baseline_month(zip_path)
+    assert cli.main(["import-zip", str(zip_path), "--root", root]) == 0
+    assert cli.main(["process", "--root", root]) == 0
+    out = tmp_path / "cgu-nfe-series.sqlite"
+    assert cli.main(["export-series", "--root", root, "--out", str(out)]) == 0
+    assert out.is_file()
+    conn = sqlite3.connect(out)
+    tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    assert {"processamentos", "series_uf_ano"} <= tables
+    assert tables <= {"processamentos", "series_uf_ano", "sqlite_sequence"}
+    schema = " ".join(row[0] for row in conn.execute("SELECT sql FROM sqlite_master")).lower()
+    assert "chave" not in schema
+    months = [row[0] for row in conn.execute("SELECT month FROM processamentos ORDER BY month")]
+    assert months == ["202401"]
+    conn.close()
 
 
 def test_cli_export_with_nothing_processed_and_bad_months(tmp_path: Path) -> None:

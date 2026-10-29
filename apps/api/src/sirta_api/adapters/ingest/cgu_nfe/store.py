@@ -10,6 +10,9 @@ Layout under the root (default ``<SIRTA_DATALAKE_ROOT>/cgu-nfe``, ignored by Git
 
 The store holds aggregates and key digests, not the full item rows. The original values stay in the
 bronze ZIP, whose SHA-256 is in the manifest.
+
+The Simulador in production reads ``cgu-nfe-series.sqlite``: UF × year totals plus processing
+metadata. That file has no access keys, names, CPF/CNPJ or bronze ZIPs.
 """
 
 from __future__ import annotations
@@ -21,6 +24,8 @@ from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
+
+from sirta_api.domain.cgu_nfe import PROCESSING_VERSION, YearUfMeasures
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS meses (
@@ -125,6 +130,38 @@ CREATE TABLE IF NOT EXISTS duplicidades_meses (
 ) WITHOUT ROWID;
 """
 
+FULL_DB_NAME = "cgu-nfe.sqlite"
+SERIES_DB_NAME = "cgu-nfe-series.sqlite"
+
+SERIES_SCHEMA = """
+CREATE TABLE IF NOT EXISTS processamentos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  month TEXT NOT NULL,
+  arquivo_id INTEGER NOT NULL,
+  sha256 TEXT NOT NULL,
+  version TEXT NOT NULL,
+  started_at TEXT NOT NULL,
+  finished_at TEXT,
+  status TEXT NOT NULL,
+  counts TEXT,
+  detail TEXT,
+  run_id TEXT
+);
+CREATE TABLE IF NOT EXISTS series_uf_ano (
+  year INTEGER NOT NULL,
+  uf TEXT NOT NULL,
+  itens_bruto INTEGER NOT NULL,
+  valor_itens_bruto_cents INTEGER NOT NULL,
+  itens_cancelados INTEGER NOT NULL,
+  valor_itens_cancelados_cents INTEGER NOT NULL,
+  notas_bruto INTEGER NOT NULL,
+  valor_notas_bruto_cents INTEGER NOT NULL,
+  notas_canceladas INTEGER NOT NULL,
+  valor_notas_canceladas_cents INTEGER NOT NULL,
+  PRIMARY KEY (year, uf)
+) WITHOUT ROWID;
+"""
+
 MONTH_TABLES = (
     "agg_nota_mun",
     "agg_nota_uf_dest",
@@ -144,22 +181,101 @@ def now_iso() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def resolve_sqlite(root: Path) -> Path | None:
+    """Prefer the slim series file. The 1.7 GB lake stays local. Missing is missing."""
+    series = Path(root) / SERIES_DB_NAME
+    if series.is_file():
+        return series
+    full = Path(root) / FULL_DB_NAME
+    if full.is_file():
+        return full
+    return None
+
+
+def write_series_sqlite(
+    path: Path,
+    *,
+    measures: list[YearUfMeasures],
+    months: list[str],
+    run_id: str,
+    finished_at: str | None,
+    version: str = PROCESSING_VERSION,
+) -> Path:
+    """Write UF × year totals and processing metadata. No keys, names or bronze."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        path.unlink()
+    conn = sqlite3.connect(path)
+    try:
+        conn.executescript(SERIES_SCHEMA)
+        started = finished_at or now_iso()
+        for month in months:
+            conn.execute(
+                "INSERT INTO processamentos (month, arquivo_id, sha256, version, started_at, "
+                "finished_at, status, run_id) VALUES (?, 0, '', ?, ?, ?, 'CONCLUIDO', ?)",
+                (month, version, started, finished_at, run_id),
+            )
+        conn.executemany(
+            "INSERT INTO series_uf_ano (year, uf, itens_bruto, valor_itens_bruto_cents, "
+            "itens_cancelados, valor_itens_cancelados_cents, notas_bruto, valor_notas_bruto_cents, "
+            "notas_canceladas, valor_notas_canceladas_cents) VALUES (?,?,?,?,?,?,?,?,?,?)",
+            [
+                (
+                    row.year,
+                    row.uf,
+                    row.itens_bruto,
+                    row.valor_itens_bruto_cents,
+                    row.itens_cancelados,
+                    row.valor_itens_cancelados_cents,
+                    row.notas_bruto,
+                    row.valor_notas_bruto_cents,
+                    row.notas_canceladas,
+                    row.valor_notas_canceladas_cents,
+                )
+                for row in measures
+            ],
+        )
+        conn.commit()
+    finally:
+        conn.close()
+    return path
+
+
 class Store:
-    def __init__(self, root: Path, *, run_id: str = "") -> None:
+    def __init__(
+        self,
+        root: Path,
+        *,
+        run_id: str = "",
+        db_path: Path | None = None,
+        create_layout: bool = True,
+        read_only: bool = False,
+    ) -> None:
         self.run_id = run_id or uuid.uuid4().hex[:12]
         self.root = Path(root)
         self.bronze = self.root / "bronze"
         self.partial = self.bronze / ".partial"
         self.rejected = self.bronze / ".rejected"
         self.exports = self.root / "exports"
-        for folder in (self.bronze, self.partial, self.rejected, self.exports):
-            folder.mkdir(parents=True, exist_ok=True)
-        self.db_path = self.root / "cgu-nfe.sqlite"
+        if create_layout and not read_only:
+            for folder in (self.bronze, self.partial, self.rejected, self.exports):
+                folder.mkdir(parents=True, exist_ok=True)
+        self.db_path = Path(db_path) if db_path is not None else self.root / FULL_DB_NAME
+        if read_only:
+            uri = f"file:{self.db_path.resolve().as_posix()}?mode=ro"
+            self.conn = sqlite3.connect(uri, uri=True, timeout=60, check_same_thread=False)
+            self.conn.row_factory = sqlite3.Row
+            return
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(self.db_path, timeout=60, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
         self.conn.execute("PRAGMA journal_mode=WAL")
         self.conn.execute("PRAGMA synchronous=NORMAL")
-        self.conn.executescript(SCHEMA)
+        if self.db_path.name == SERIES_DB_NAME:
+            self.conn.executescript(SERIES_SCHEMA)
+        else:
+            self.conn.executescript(SCHEMA)
         self.conn.commit()
 
     def close(self) -> None:
@@ -338,6 +454,21 @@ class Store:
             "ORDER BY id DESC LIMIT 1",
             (version,),
         ).fetchone()
+
+    def has_series_table(self) -> bool:
+        row = self.conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='series_uf_ano'"
+        ).fetchone()
+        return row is not None
+
+    def series_year_uf(self) -> list[YearUfMeasures]:
+        rows = self.conn.execute(
+            "SELECT year, uf, itens_bruto, valor_itens_bruto_cents, itens_cancelados, "
+            "valor_itens_cancelados_cents, notas_bruto, valor_notas_bruto_cents, "
+            "notas_canceladas, valor_notas_canceladas_cents FROM series_uf_ano "
+            "ORDER BY year, uf"
+        )
+        return [YearUfMeasures(*row) for row in rows]
 
     def year_uf_item_rows(self, months: list[str]) -> list[tuple[str, str, str, int, int]]:
         return self._year_uf_sum(months, "agg_item", "itens")

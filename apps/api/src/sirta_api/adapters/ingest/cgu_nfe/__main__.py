@@ -7,6 +7,7 @@
     python -m sirta_api.adapters.ingest.cgu_nfe process
     python -m sirta_api.adapters.ingest.cgu_nfe audit
     python -m sirta_api.adapters.ingest.cgu_nfe export
+    python -m sirta_api.adapters.ingest.cgu_nfe export-series
     python -m sirta_api.adapters.ingest.cgu_nfe reconcile-reference
     python -m sirta_api.adapters.ingest.cgu_nfe resume
 
@@ -32,7 +33,7 @@ from sirta_api.adapters.ingest.cgu_nfe.inventory import (
 )
 from sirta_api.adapters.ingest.cgu_nfe.process import process_month
 from sirta_api.adapters.ingest.cgu_nfe.reference import load_reference, reconcile_reference
-from sirta_api.adapters.ingest.cgu_nfe.store import Store
+from sirta_api.adapters.ingest.cgu_nfe.store import Store, write_series_sqlite
 from sirta_api.config import get_settings
 from sirta_api.domain.cgu_nfe import (
     PROCESSING_VERSION,
@@ -41,6 +42,7 @@ from sirta_api.domain.cgu_nfe import (
     CguNfeError,
     is_month,
     requested_months,
+    roll_year_uf,
 )
 
 DEFAULT_REFERENCE_ZIP = Path("docs/data/CGU_2021_2025_Detalhamento_PARCIAL.zip")
@@ -267,6 +269,32 @@ def cmd_reconcile_reference(store: Store, args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_export_series(store: Store, args: argparse.Namespace) -> int:
+    """UF × year totals for the Simulador. No keys, names or bronze."""
+    months = store.processed_months_for_version(PROCESSING_VERSION)
+    if not months:
+        print("nada a exportar: nenhum mês processado", file=sys.stderr)
+        return 2
+    measures = roll_year_uf(
+        item_rows=store.year_uf_item_rows(months),
+        note_rows=store.year_uf_note_rows(months),
+    )
+    latest = store.latest_completed_run(PROCESSING_VERSION)
+    out = Path(args.out)
+    write_series_sqlite(
+        out,
+        measures=measures,
+        months=months,
+        run_id=str(latest["run_id"]) if latest and latest["run_id"] else store.run_id,
+        finished_at=str(latest["finished_at"]) if latest and latest["finished_at"] else None,
+    )
+    print(
+        f"{out}  linhas={len(measures)}  meses={len(months)}  "
+        f"bytes={out.stat().st_size}  PARCIAL={len(months)}/{len(requested_months())}"
+    )
+    return 0
+
+
 def cmd_resume(store: Store, args: argparse.Namespace) -> int:
     """Download what is pending, process what is validated, report what is missing."""
     status = cmd_download(store, args)
@@ -341,6 +369,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--prefix", default="CGU_NFE_2021_2025")
     p.add_argument("--out-dir")
     p.set_defaults(func=cmd_export)
+
+    p = sub.add_parser(
+        "export-series",
+        help="SQLite mínimo UF×ano para o Simulador (sem bronze, sem chave)",
+        parents=[common],
+    )
+    p.add_argument("--out", required=True, help="caminho do cgu-nfe-series.sqlite")
+    p.set_defaults(func=cmd_export_series)
 
     p = sub.add_parser("reconcile-reference", parents=[common])
     p.add_argument("--out")

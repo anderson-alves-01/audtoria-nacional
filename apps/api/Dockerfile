@@ -11,6 +11,7 @@ COPY pipelines ./pipelines
 COPY config ./config
 COPY contracts ./contracts
 COPY tests/fixtures/jwt ./var/oidc
+COPY apps/api/data/cgu-nfe-series.sqlite ./var/datalake/cgu-nfe/cgu-nfe-series.sqlite
 
 RUN pip install --no-cache-dir .
 

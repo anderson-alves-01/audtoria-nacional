@@ -6,7 +6,7 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
-from sirta_api.adapters.ingest.cgu_nfe.store import Store
+from sirta_api.adapters.ingest.cgu_nfe.store import Store, resolve_sqlite
 from sirta_api.application.audit import record_audit
 from sirta_api.application.indicator_reliability import reliability_for
 from sirta_api.config import get_settings
@@ -86,9 +86,9 @@ def list_cgu_nfe(
     page = max(page, 1)
     page_size = min(max(page_size, 1), MAX_PAGE_SIZE)
     lake = root if root is not None else cgu_nfe_root()
-    sqlite_path = lake / "cgu-nfe.sqlite"
+    sqlite_path = resolve_sqlite(lake)
     requested = requested_months()
-    if not sqlite_path.is_file():
+    if sqlite_path is None:
         body = _empty_body(
             page=page,
             page_size=page_size,
@@ -105,7 +105,7 @@ def list_cgu_nfe(
         )
         return body
 
-    store = Store(lake)
+    store = Store(lake, db_path=sqlite_path, create_layout=False, read_only=True)
     try:
         months = store.processed_months_for_version(PROCESSING_VERSION)
         coverage, missing = coverage_of(requested, months)
@@ -117,9 +117,13 @@ def list_cgu_nfe(
                 missing=missing,
             )
         else:
-            rows = roll_year_uf(
-                item_rows=store.year_uf_item_rows(months),
-                note_rows=store.year_uf_note_rows(months),
+            rows = (
+                store.series_year_uf()
+                if store.has_series_table()
+                else roll_year_uf(
+                    item_rows=store.year_uf_item_rows(months),
+                    note_rows=store.year_uf_note_rows(months),
+                )
             )
             if uf is not None:
                 rows = [row for row in rows if row.uf == uf]

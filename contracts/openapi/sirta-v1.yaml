@@ -719,7 +719,8 @@ paths:
         of items. valorItens is the sum of item cents excluding cancelled notes (valueKind=
         OBSERVED_DOCUMENT_CENTS). Not the whole market, not NFS-e, not payment. coverage is
         PARCIAL while any of the 60 requested months is missing, AUSENTE when the local SQLite
-        has no processed month, COMPLETO only with all 60. Reads var/datalake/cgu-nfe (no
+        has no processed month, COMPLETO only with all 60. Prefers cgu-nfe-series.sqlite
+        (UF x year totals) and falls back to cgu-nfe.sqlite under var/datalake/cgu-nfe (no
         Postgres, no bronze, no CPF/CNPJ). homologated remains false (not a tax credit).
         reliability lists cgu_nfe_itens_uf_ano, cgu_nfe_valor_itens_uf_ano and
         simulador_imposto_apurado_dados_publicos. The tax indicator stays NAO_CONFIAVEL because

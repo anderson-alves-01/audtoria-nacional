@@ -4341,7 +4341,7 @@ sources:
     parameters:
       cli_only: true
       command: python -m sirta_api.adapters.ingest.cgu_nfe
-      storage: SQLite local e arquivos em var/datalake/cgu-nfe (fora do Git e do Postgres)
+      storage: SQLite local em var/datalake/cgu-nfe; recorte UF x ano versionado em apps/api/data/cgu-nfe-series.sqlite (fora do Postgres e do bronze)
       tables: [NotaFiscal, NotaFiscalItem, NotaFiscalEvento]
       encoding: windows-1252
       delimiter: ";"

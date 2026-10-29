@@ -205,10 +205,14 @@ O que não está conferido: mercado inteiro, compras públicas totais, NFS-e, mu
 consumo/entrega, soma de quantidade entre unidades, valor da nota como pagamento, imposto apurado.
 Cobertura PARCIAL 53/60. O painel `/sped-operacoes` não muda e o SPED não alimenta o Simulador.
 
-Se o SQLite não existir, a API devolve `run: null`, `items: []` e `coverage: AUSENTE` — nunca
-zero inventado. Código publicado em 29/10/2026 (API 0.3.126, web 0.4.25). O SQLite não vai na
-imagem: em produção a cobertura fica AUSENTE até haver carga autorizada do agregado. Bronze e
-Postgres não foram tocados.
+Se nenhum dos dois SQLite existir, a API devolve `run: null`, `items: []` e `coverage: AUSENTE` —
+nunca zero inventado. A API prefere `cgu-nfe-series.sqlite` (UF × ano + metadados de processamento,
+sem chave, CPF/CNPJ ou bronze) e só então o `cgu-nfe.sqlite` completo. Exportar o recorte:
+`python -m sirta_api.adapters.ingest.cgu_nfe export-series --out apps/api/data/cgu-nfe-series.sqlite`.
+O slim versionado tem 32 KiB, sha256
+`d1f4ec38ef0dce4689500e2545297c67b63fdb10d9928dcf5ce195594c2dc475`, 135 linhas, 53 meses; SP 2024
+bate com o recorte local (1.823.805 itens / R$ 30.362.096.754,69). O arquivo de 1,7 GB e o bronze
+não entram na imagem. Bronze e Postgres não são tocados.
 
 ## Limites e dívida técnica
 
