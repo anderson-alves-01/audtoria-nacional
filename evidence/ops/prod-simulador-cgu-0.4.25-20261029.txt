@@ -1,0 +1,24 @@
+Publicação do Simulador com base pública CGU NF-e: API 0.3.126 e web 0.4.25
+Data: 2026-10-29
+authorization=usuário, nesta sessão ("push e publique")
+git=push feat/professional-ui-v1 8cbb8cd..85a55a4 (sem force, sem merge), depois evidência neste commit
+escopo=código da API e da web. Sem ingestão, sem SQLite em produção, sem bronze, sem Terraform, sem alteração de dados no Postgres. A execução SPED d25c890e-f93c-4b64-b307-247d64799e3f segue published=false, homologated=false, createsTaxCredit=false.
+
+api=sirta-prod-api:0.3.126, task definition :32 (anterior :31, 0.3.125), digest sha256:3501c8b1ef4f7381a8cef84537457c05a8adb814299152a05d3eebf267588188. Rollout PRIMARY COMPLETED 1/1.
+migrações=nenhuma nova; a partida confirma o head já em 0111.
+web=sirta-prod-web:0.4.25, task definition :33 (anterior :32, 0.4.24), digest sha256:04d9dcc1dc9756ba038a18dadaf1936fc69d4a3ffcd5fceea6451e0d07cca9e5, construída com --build-arg NGINX_CONF=nginx.prod.conf (0 proxy_pass). Rollout PRIMARY COMPLETED 1/1.
+ordem=API primeiro, web depois.
+
+verificação_antes=imagem da API: registro de confiabilidade com 14 indicadores; CONFERIDO só cgu_nfe_itens_uf_ano e cgu_nfe_valor_itens_uf_ano; imposto e SPED NAO_CONFIAVEL.
+verificação_ao_vivo (sem token, sem credencial forjada):
+  GET /health no ALB: 200 (implementationVersion 0.3.101 no binário)
+  GET /v1/cgu-nfe?pageSize=1 e GET /v1/sped-operacoes sem sessão: 401 (rotas protegidas, aplicação no ar)
+  GET /, /simulador, /sped-operacoes: 200
+  GET /ibge-municipios.json: 200
+  chunk-HYIDOSFQ.js (Simulador): contém /v1/cgu-nfe e "emitente"; não contém /v1/sped-operacoes
+não verificado ao vivo: respostas autenticadas de /v1/cgu-nfe (em produção o SQLite não está no container: coverage AUSENTE, run null). Nenhum token foi gerado.
+
+efeito_em_produção=o Simulador passa a chamar /v1/cgu-nfe. Os indicadores CGU de quantidade e valor estão CONFERIDO no YAML da imagem. Sem o SQLite, a série pública não aparece (run null, sem zeros inventados). O imposto estimado continua NAO_CONFIAVEL. O painel /sped-operacoes não muda.
+
+rollback_web=update-service para sirta-prod-web:32 (0.4.24). Seguro.
+rollback_api=update-service para sirta-prod-api:31 (0.3.125). Seguro: não há migration nova.

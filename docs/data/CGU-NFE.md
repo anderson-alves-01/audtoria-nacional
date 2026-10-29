@@ -206,7 +206,9 @@ consumo/entrega, soma de quantidade entre unidades, valor da nota como pagamento
 Cobertura PARCIAL 53/60. O painel `/sped-operacoes` não muda e o SPED não alimenta o Simulador.
 
 Se o SQLite não existir, a API devolve `run: null`, `items: []` e `coverage: AUSENTE` — nunca
-zero inventado. Não publicado em produção.
+zero inventado. Código publicado em 29/10/2026 (API 0.3.126, web 0.4.25). O SQLite não vai na
+imagem: em produção a cobertura fica AUSENTE até haver carga autorizada do agregado. Bronze e
+Postgres não foram tocados.
 
 ## Limites e dívida técnica
 

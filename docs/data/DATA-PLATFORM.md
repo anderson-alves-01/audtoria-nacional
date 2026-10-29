@@ -81,5 +81,7 @@ entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-
   alíquotas não estão CONFERIDO; `can_use_in_fiscal_calculation` do imposto segue fechado.
 - Interpretação na tela: cobertura PARCIAL 53/60, UF do emitente, valor de documento ≠ pagamento,
   imposto = valor × alíquota. Município e operação/CFOP não filtram a série pública nesta fatia.
-- Não é ingestão Gold. `real_data_ingestion` permanece BLOCKED para Postgres/produção. Evidência:
-  `evidence/ops/simulador-cgu-nfe-20261029.txt`.
+- Não é ingestão Gold. `real_data_ingestion` permanece BLOCKED para Postgres. Código publicado em
+  29/10/2026 (API 0.3.126, web 0.4.25); o SQLite local não foi copiado para produção, então a API
+  devolve `coverage: AUSENTE` até uma carga autorizada do agregado. Evidência:
+  `evidence/ops/simulador-cgu-nfe-20261029.txt`, `evidence/ops/prod-simulador-cgu-0.4.25-20261029.txt`.
