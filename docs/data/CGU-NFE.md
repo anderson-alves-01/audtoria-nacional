@@ -11,37 +11,33 @@ Código: `apps/api/src/sirta_api/adapters/ingest/cgu_nfe/` e regras puras em
 O pipeline é local e fora do Postgres: os agregados ficam em SQLite e os ZIPs em arquivos, sob
 `var/datalake/cgu-nfe/` (ignorado pelo Git). Nenhum dado é publicado nem enviado a terceiros.
 
-## Estado da execução de 28/10/2026
+## Estado da execução de 29/10/2026
 
-Veja `evidence/ops/cgu-nfe-*-20261028.*`. Resumo honesto:
+Veja `evidence/ops/cgu-nfe-*-20261029.*`. O WAF da rodada de 28/10 não se repetiu: os 28 meses
+ainda pendentes baixaram com HTTP 200 (`run_id=f1aec0539244`). Resumo honesto:
 
 | Item | Resultado |
 | --- | --- |
 | Meses pedidos | 60 (2021-01 a 2025-12) |
 | Listados no catálogo | 53 |
 | Não listados | 7 (jan, fev, mar, mai, jun, jul, ago de 2021; HEAD devolve 403) |
-| Baixados, validados e processados | 2 (202401 e 202402) |
-| Bloqueados por verificação humana (HTTP 405) | 3 registrados: 202403, 202104 e 202109 |
-| Listados sem ZIP e sem tentativa (disjuntor aberto) | 48 |
-| Arquivo final | `var/datalake/cgu-nfe/exports/CGU_NFE_2021_2025_PARCIAL.xlsx` e CSVs ao lado |
+| Baixados, validados e processados | 53 (todos os listados) |
+| Bloqueados por verificação humana | 0 nesta rodada |
+| Arquivo final | `var/datalake/cgu-nfe/exports/CGU_NFE_2021_2025_PARCIAL.xlsx` (sha256 `2e31b75b02d1f79641688c6e59603946ff1fdd17a132cbf838f9ebbb1330dd9b`) |
 
-Disponibilidade mudou em relação à extração anterior: nesta rodada os dois primeiros GETs
-passaram e os seguintes caíram na verificação humana (AWS WAF). O pipeline registra o bloqueio e
-não o contorna. O que falta, exatamente: os ZIPs oficiais dos 51 meses listados e ainda sem
-arquivo (3 barrados pelo WAF e 48 não tentados). Os 7 meses não listados não têm ZIP no catálogo
-e continuam sem fonte.
+O nome permanece `PARCIAL` porque 7 meses não existem no catálogo. Totais locais (53 meses):
+7.045.577 notas (R$ 329.592.242.391,61) e 25.261.747 itens (R$ 366.792.907.305,23). A
+reconciliação da exportação bateu com o banco. Quarentena: 0 linhas. Alerta recorrente:
+`ITEM_UNIDADE_AUSENTE` em 51 meses (itens mantidos com unidade vazia).
 
 Reprodução da extração anterior (`docs/data/CGU_2021_2025_*PARCIAL*`):
 
-- Mês 202401: mesmo SHA-256 do ZIP, 124.759 notas, 569.673 itens, valores das notas e dos itens
-  iguais ao da planilha anterior; total anual de 2024 do CSV de detalhe igual (569.673 itens,
-  R$ 5.242.437.388,07).
-- Consistência interna do pacote anterior: soma do manifesto 3.878.534 notas e 13.482.862 itens;
+- Os 30 meses da referência foram reproduzidos (mesmo SHA-256, mesmas contagens e mesmos
+  valores). Totais anuais de 2021, 2022, 2023 e 2024 do CSV de detalhe iguais.
+- Consistência interna do pacote anterior: 3.878.534 notas e 13.482.862 itens;
   969.885 combinações ano/UF/NCM/CFOP/unidade; itens R$ 196.845.092.168,69.
-- Os totais gerais **não foram reproduzidos**: só 1 dos 30 meses da referência tem ZIP local.
-  Não se alega reprodução da extração inteira.
-- Os valores mensais da planilha anterior só podem ser conferidos mês a mês, quando o ZIP de
-  cada mês estiver local (`reconcile-reference`).
+- Meses locais sem correspondente na referência: 202402 a 202512 (a referência parava em
+  202401).
 
 ## Comandos
 
@@ -130,9 +126,9 @@ data no mês), o processamento é recusado antes de gravar.
   (mesmo escopo da extração anterior). As colunas de canceladas e de exceto canceladas são
   separadas.
 - **Cancelamento.** Cancelada quando o evento mais recente da nota, ou algum evento da tabela de
-  eventos, contém `CANCEL` (cancelamento é terminal e a regra é a da extração anterior). A tabela
-  de eventos de 202401 e 202402 veio sem linhas e nenhuma nota saiu cancelada; isso não prova que
-  não houve cancelamentos, só que esses arquivos não trazem eventos. Nota sem
+  eventos, contém `CANCEL` (cancelamento é terminal e a regra é a da extração anterior). Em 202401
+  e 202402 a tabela de eventos veio vazia e nenhuma nota saiu cancelada. Em meses posteriores há
+  cancelamentos registrados (por exemplo 4.714 em 202111). Nota sem
   evento fica `SEM_EVENTO_INFORMADO` e não é chamada de autorizada. A regra não prova validade
   fiscal.
 - **Nota versus itens.** A soma dos itens não é forçada a igualar o valor da nota. Em 202401,
@@ -175,7 +171,7 @@ quarentena e a reconciliação entre leitura e agregados gravados (falha derruba
 transação). O detalhe da quarentena é limitado a 5.000 linhas por motivo e mês; a contagem total
 é sempre exata e o corte é declarado na auditoria.
 
-Alertas de 202401 e 202402: itens sem unidade (314 e 176). Foram mantidos com unidade vazia.
+Alerta `ITEM_UNIDADE_AUSENTE` em 51 dos 53 meses processados. Itens mantidos com unidade vazia.
 
 ## Testes
 
@@ -193,11 +189,10 @@ arquivos gerados.
 Desempenho medido com ZIP sintético de 150 mil notas e 450 mil itens: 40 s por mês no processamento.
 ## Limites e dívida técnica
 
-- O mapa de colunas foi confirmado só com 202401 e 202402. Meses antigos (2021) podem ter outro
-  cabeçalho: a falha é fechada e visível.
-- A tabela de eventos veio vazia nos dois meses reais; a regra de cancelamento pela tabela de
-  eventos só foi exercitada com dados sintéticos.
+- Os 53 meses listados processaram com o mapa de colunas atual (falha fechada se faltar coluna
+  obrigatória). Os 7 meses de 2021 não listados continuam sem fonte.
+- O alerta visível nos meses reais é `ITEM_UNIDADE_AUSENTE`. Cancelamentos pelos eventos aparecem
+  em vários meses a partir de 202110.
 - A diferença entre valor da nota e soma dos itens precisa de análise própria.
-- Antes de uma carga completa, importar os ZIPs restantes (navegador) e rodar `resume`.
 - Rollback: apagar `var/datalake/cgu-nfe/` (nada fora dele é alterado) ou `process --force` para
   refazer um mês a partir do bronze.
