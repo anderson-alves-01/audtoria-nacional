@@ -1,0 +1,30 @@
+Publicação web 0.4.26 (Simulador: Operação, textos ocultos, auto-preenchimento)
+Data: 2026-10-29
+authorization=usuário, nesta sessão ("publique")
+git=push feat/professional-ui-v1 bcbc460..e366dcb (código) e este commit de evidência (sem force, sem merge)
+escopo=somente web. API inalterada (0.3.127, sirta-prod-api:33). Sem ingestão, sem SQLite novo, sem bronze, sem Terraform, sem alteração de dados no Postgres.
+
+web=sirta-prod-web:0.4.26, task definition :34 (anterior :33, 0.4.25), digest sha256:e92009eda48c3d414015c2676d193dfc496596bd327fc396dd727a2a33a481fb, construída com --build-arg NGINX_CONF=nginx.prod.conf (0 proxy_pass). Rollout PRIMARY COMPLETED 1/1.
+imagem_local=sha256:2af97e660bf8ac08eba4d764fae2d8c9e07a319f69b073ced70e059601d67d2f
+bundle=main-DTBJJL56.js, chunk simulador=chunk-PMZ4ZLX7.js
+api=inalterada (sirta-prod-api:33, 0.3.127).
+
+testes_antes=ng test include=**/simulador*.spec.ts: 81 SUCCESS
+verificação_ao_vivo (sem token, sem credencial forjada):
+  GET /health no ALB: 200 (implementationVersion 0.3.101 no binário)
+  GET /: 200, main-DTBJJL56.js
+  GET /simulador: 200
+  GET /sped-operacoes: 200
+  GET /ibge-municipios.json: 200
+  GET /v1/cgu-nfe?pageSize=1 e GET /v1/sped-operacoes sem sessão: 401
+  chunk-PMZ4ZLX7.js: contém "Quantidade desejada"; não contém "Como é calculado" nem "ICMS (por UF)"
+browser_producao (sessão já autenticada do operador):
+  filtro inicial tem Operação (Vendas)
+  ICMS sem "(por UF)"; em SP mostra 18%
+  SP 2024, quantidade 1000 preencheu valor 16647666.15 e o imposto do cenário (ITCD R$ 998.859,97)
+  comparação ligada (Cenário × 2024 público)
+
+efeito_em_produção=o Simulador em produção passa a ter Operação no filtro, sem textos de regra na tela, ICMS sem "(por UF)" e auto-preenchimento de quantidade ou valor pela média pública do ano de comparação. A série pública continua UF × ano (operação não filtra a CGU). Imposto estimado continua NAO_CONFIAVEL. Alíquotas não homologadas.
+
+rollback_web=update-service para sirta-prod-web:33 (0.4.25). Seguro.
+rollback_api=não aplicável (API não mudou).

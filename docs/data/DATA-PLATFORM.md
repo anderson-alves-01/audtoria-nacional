@@ -87,8 +87,13 @@ entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-
   está em `apps/api/data/cgu-nfe-series.sqlite` (32 KiB, sha256
   `d1f4ec38ef0dce4689500e2545297c67b63fdb10d9928dcf5ce195594c2dc475`, 135 linhas, 53 meses).
   SP 2024: 1.823.805 itens / R$ 30.362.096.754,69. O arquivo de 1,7 GB e o bronze não entram na
-  imagem. Publicado na API 0.3.127 (`sirta-prod-api:33`); a web 0.4.25 não muda. Em produção
-  `GET /v1/cgu-nfe` preenche `run` e o Simulador liga a comparação. Evidência:
+  imagem. Publicado na API 0.3.127 (`sirta-prod-api:33`). Web 0.4.26 (`sirta-prod-web:34`):
+  Operação no filtro inicial, textos de regra ocultos, ICMS sem «(por UF)», quantidade ou valor
+  preenchidos pela média pública. Em produção `GET /v1/cgu-nfe` preenche `run` e o Simulador
+  liga a comparação. Evidência:
   `evidence/ops/simulador-cgu-nfe-20261029.txt`,
   `evidence/ops/prod-simulador-cgu-0.4.25-20261029.txt`,
-  `evidence/ops/prod-cgu-series-0.3.127-20261029.txt`.
+  `evidence/ops/prod-cgu-series-0.3.127-20261029.txt`,
+  `evidence/ops/prod-web-0.4.26-20261029.txt`.
+  Web 0.4.27 (`sirta-prod-web:35`): quantidade derivada da média pública arredonda a itens
+  inteiros. Evidência: `evidence/ops/prod-web-0.4.27-20261030.txt`.

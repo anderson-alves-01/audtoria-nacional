@@ -212,7 +212,9 @@ sem chave, CPF/CNPJ ou bronze) e só então o `cgu-nfe.sqlite` completo. Exporta
 O slim versionado tem 32 KiB, sha256
 `d1f4ec38ef0dce4689500e2545297c67b63fdb10d9928dcf5ce195594c2dc475`, 135 linhas, 53 meses; SP 2024
 bate com o recorte local (1.823.805 itens / R$ 30.362.096.754,69). O arquivo de 1,7 GB e o bronze
-não entram na imagem. Publicado na API 0.3.127 (`sirta-prod-api:33`); a web permanece 0.4.25.
+não entram na imagem. Publicado na API 0.3.127 (`sirta-prod-api:33`); a web 0.4.26
+(`sirta-prod-web:34`) traz Operação no filtro, textos de regra ocultos e auto-preenchimento
+de quantidade ou valor.
 Bronze e Postgres não são tocados. Evidência: `evidence/ops/prod-cgu-series-0.3.127-20261029.txt`.
 
 ## Limites e dívida técnica

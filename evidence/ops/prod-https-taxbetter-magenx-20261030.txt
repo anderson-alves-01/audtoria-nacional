@@ -1,0 +1,23 @@
+HTTPS em taxbetter.magenx.tech (Cloudflare + ACM + ALB :443)
+Data: 2026-10-30
+authorization=usuário (domínio no Cloudflare, depois "criado" para o CNAME de validação ACM)
+escopo=certificado ACM público e listener HTTPS no ALB existente. Sem Terraform apply, sem ingestão, sem mudança de imagem ECS.
+
+dns=taxbetter.magenx.tech CNAME proxied (Cloudflare A 104.21.10.143 e 172.67.131.129)
+cert=arn:aws:acm:sa-east-1:332380491162:certificate/a1d5a386-5c77-4765-a361-5584e8232515
+cert_status=ISSUED (validação DNS), NotAfter=2027-05-15
+validation_cname=_ee026d503c6be3a9539182ee008ceac6.taxbetter.magenx.tech -> _18010e142277a9eb28aaa1006aca281f.wzccmgtwzk.acm-validations.aws (DNS only)
+listener=sirta-prod-alb HTTPS :443, arn .../90bdc6d3b95d6bf9, policy ELBSecurityPolicy-TLS13-1-2-2021-06
+rule=priority 10 /health /docs /v1/* /openapi.json -> sirta-prod-api; default -> sirta-prod-web
+http_80=inalterado (forward web/api). Sem redirect 80->443 para não quebrar Flexible.
+
+verificação:
+  origem SNI taxbetter.magenx.tech:443 (IP ALB): GET / 200, GET /health 200
+  Cloudflare HTTPS: GET https://taxbetter.magenx.tech/ 200 (Server: cloudflare, CF-RAY GRU)
+  GET https://taxbetter.magenx.tech/simulador 200, bundle main-DTBJJL56.js (web 0.4.26)
+  GET https://taxbetter.magenx.tech/health 200
+  browser: https://taxbetter.magenx.tech/simulador redireciona a /entrar (cadeado, login)
+
+cloudflare=SSL/TLS pode ficar Full (strict): origem agora tem certificado ACM válido para o hostname
+rollback=delete-listener HTTPS :443; o HTTP :80 e o CNAME Cloudflare seguem. Certificado ACM pode permanecer ISSUED sem uso.
+terraform_drift=acm_certificate_arn continua vazio no código; o listener :443 foi criado via CLI. Próximo apply não o remove (fora do state); não passar o ARN no apply senão o Terraform tenta criar de novo.
