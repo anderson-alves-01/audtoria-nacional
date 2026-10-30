@@ -305,6 +305,13 @@ export function formatPublishedValue(value: number | null | undefined, unit: str
   if (unit === 'BRL') {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
+  if (unit === 'COUNT') {
+    const whole = Math.abs(value - Math.round(value)) < 1e-9;
+    return value.toLocaleString('pt-BR', {
+      maximumFractionDigits: whole ? 0 : 3,
+      minimumFractionDigits: 0,
+    });
+  }
   return value.toLocaleString('pt-BR');
 }
 

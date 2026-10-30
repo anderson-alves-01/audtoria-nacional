@@ -125,6 +125,11 @@ describe('simulador logic', () => {
     expect(completeFromAverage(null, 5000, 10, 'value')).toEqual({ quantity: 500, value: 5000 });
     expect(completeFromAverage(300, null, null, 'quantity')).toEqual({ quantity: 300, value: null });
     expect(completeFromAverage(300, 5000, 10, null)).toEqual({ quantity: 300, value: 5000 });
+    const average = 1_722_385_726.16 / 286_461;
+    const filled = completeFromAverage(null, 2_000_000, average, 'value');
+    expect(filled.value).toBe(2_000_000);
+    expect(filled.quantity).toBe(333);
+    expect(String(filled.quantity)).not.toContain('332.6328076796769');
   });
 
   it('reads CGU items by issuer UF and leaves a year without data empty', () => {

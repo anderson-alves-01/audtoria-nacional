@@ -406,6 +406,20 @@ describe('SimuladorPageComponent', () => {
       expect(page.simulatedTaxes().find((row) => row.tax === 'ITCD')?.simulated).toBe(300);
       http.verify();
     });
+
+    it('rounds derived quantity to whole items instead of a long float', () => {
+      const messy = [
+        { ano: 2025, uf: 'RJ', itens: 286461, valorItens: '1722385726.16', notas: 1, valorNotas: '1.00' },
+      ];
+      const { page, http } = opened(messy, [2025]);
+      page.uf.set('RJ');
+      page.referenceYearInput.set(2025);
+      page.setValue(2000000);
+      expect(page.quantityShown()).toBe(333);
+      expect(page.valueShown()).toBe(2000000);
+      expect(String(page.quantityShown())).not.toContain('332.6328076796769');
+      http.verify();
+    });
   });
 
   describe('hypothesis labelling', () => {

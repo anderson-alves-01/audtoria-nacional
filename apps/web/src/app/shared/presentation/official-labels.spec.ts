@@ -31,6 +31,9 @@ describe('official labels', () => {
     expect(humanizeSource('TESOURO-FPM-VALORES')).toBe('Tesouro Nacional — FPM publicado');
     expect(formatPublishedValue(1000, 'BRL')).toContain('R$');
     expect(formatPublishedValue(18642470, 'UNIT')).not.toContain('R$');
+    expect(formatPublishedValue(286461, 'COUNT')).toBe('286.461');
+    expect(formatPublishedValue(332.6328076796769, 'COUNT')).toBe('332,633');
+    expect(formatPublishedValue(-286128.367, 'COUNT')).toBe('-286.128,367');
     expect(compactPublishedValue(10943345420, 'Mil Reais')).toBe('10,9 bi');
     expect(compactPublishedValue(214211951, 'Pessoas')).toBe('214,2 mi');
     expect(compactPublishedValue(80600000, 'BRL')).toBe('R$ 80,6 mi');

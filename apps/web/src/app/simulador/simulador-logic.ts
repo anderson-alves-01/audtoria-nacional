@@ -197,6 +197,15 @@ export function roundCents(value: number): number | null {
   return (cents === 0 ? 0 : cents) / 100;
 }
 
+/** Itens da CGU são contagem: a quantidade derivada da média entra como inteiro, sem dízima. */
+export function roundQuantity(value: number): number | null {
+  if (!Number.isFinite(value) || value < 0) {
+    return null;
+  }
+  const rounded = Math.round(Number(value.toPrecision(15)));
+  return Number.isFinite(rounded) ? rounded + 0 : null;
+}
+
 /**
  * Completa quantidade ou valor com o valor médio público. Quem digita um campo não precisa
  * preencher o outro: a média preenche o resto. Sem média, cada campo vale só o que foi digitado.
@@ -222,8 +231,7 @@ export function completeFromAverage(
     if (value === null) {
       return { quantity: null, value: null };
     }
-    const derived = value / average;
-    return { quantity: Number.isFinite(derived) ? derived : null, value };
+    return { quantity: roundQuantity(value / average), value };
   }
   return { quantity, value };
 }
