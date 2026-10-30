@@ -1,0 +1,22 @@
+Publicação web 0.4.28 (KPIs compactos para valores grandes não quebrarem o grid)
+Data: 2026-10-30
+authorization=usuário, nesta sessão ("sim publique")
+git=push feat/professional-ui-v1 87ea86a..cb34d0e (código) e este commit de evidência (sem force, sem merge)
+escopo=somente web. API inalterada (0.3.127, sirta-prod-api:33). Sem ingestão, sem Terraform, sem mudança de dados.
+
+web=sirta-prod-web:0.4.28, task definition :36 (anterior :35, 0.4.27), digest sha256:feceaa02ef079aaef17017765059d8f3234f0a0eee553dd2252c73aeb0d1c4a6, construída com --build-arg NGINX_CONF=nginx.prod.conf (0 proxy_pass). Rollout PRIMARY COMPLETED 1/1.
+imagem_local=sha256:03739eb983efeb04ab10ede5b0c9f0ec785b23e13e12b51bdfcf7f05db8d6a1e
+bundle=main-NVNCQP3I.js, chunk simulador=chunk-XT74WPTY.js, labels=chunk-WQDLJ6WO.js
+api=inalterada (sirta-prod-api:33, 0.3.127). GET /health: implementationVersion 0.3.101 no binário.
+
+testes_antes=ng test include=**/simulador-page.component.spec.ts + dashboard-page.component.spec.ts + official-labels.spec.ts + ui-kit.spec.ts: 58 SUCCESS
+verificação_ao_vivo (sem token, sem credencial forjada):
+  GET https://taxbetter.magenx.tech/ 200, main-NVNCQP3I.js
+  GET https://taxbetter.magenx.tech/simulador 200
+  GET https://taxbetter.magenx.tech/health 200
+  chunk-XT74WPTY.js: KPI do cenário usa kpiMoney(simulated) e kpiMoney(published)
+  chunk-WQDLJ6WO.js: Math.abs(e)>=1e6 ? compact : format; sufixos " mi" / " bi"
+efeito=cenário de ~R$ 12 bi mostra ITCD R$ 721,5 mi, ITBI R$ 360,8 mi, ISS R$ 601,3 mi, ICMS R$ 2,4 bi, sem overflow entre cards. Valores abaixo de 1 milhão seguem por extenso.
+
+rollback_web=update-service para sirta-prod-web:35 (0.4.27). Seguro.
+rollback_api=não aplicável.

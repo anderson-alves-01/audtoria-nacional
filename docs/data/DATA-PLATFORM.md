@@ -97,3 +97,6 @@ entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-
   `evidence/ops/prod-web-0.4.26-20261029.txt`.
   Web 0.4.27 (`sirta-prod-web:35`): quantidade derivada da média pública arredonda a itens
   inteiros. Evidência: `evidence/ops/prod-web-0.4.27-20261030.txt`.
+  Web 0.4.28 (`sirta-prod-web:36`): KPIs do cenário compactam a partir de R$ 1 milhão
+  (`R$ 721,5 mi`, `R$ 2,4 bi`) para o número caber no card. Evidência:
+  `evidence/ops/prod-web-0.4.28-20261030.txt`.
