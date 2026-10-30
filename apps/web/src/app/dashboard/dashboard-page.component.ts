@@ -10,6 +10,7 @@ import { ChartCardComponent, ChartSeriesInput } from '../shared/charts/chart-car
 import { EvidenceDrawerComponent } from '../shared/evidence/evidence-drawer.component';
 import {
   formatPublishedValue,
+  kpiPublishedValue,
   humanizeAxis,
   humanizeHomologation,
   humanizeIndicator,
@@ -221,7 +222,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   }
 
   formatKpi(value: number, unit: string): string {
-    return formatPublishedValue(value, unit);
+    return unit === 'BRL' || unit === 'COUNT'
+      ? kpiPublishedValue(value, unit)
+      : formatPublishedValue(value, unit);
   }
 
   indicatorTitle(item: DashboardGoldItem): string {

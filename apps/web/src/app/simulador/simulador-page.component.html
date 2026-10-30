@@ -198,10 +198,10 @@
       @for (row of simulatedTaxes(); track row.tax) {
         <app-kpi-card
           [label]="row.tax + ' do cenário'"
-          [value]="money(row.simulated)"
+          [value]="kpiMoney(row.simulated)"
           [meta]="
             taxMeta(row.tax, row.resolved, scenarioYear()) +
-            (comparisonEnabled() ? ' · público ' + (reference()?.year ?? '—') + ': ' + money(row.published) : '')
+            (comparisonEnabled() ? ' · público ' + (reference()?.year ?? '—') + ': ' + kpiMoney(row.published) : '')
           "
           [kind]="hypothesisLabel"
           tone="warn"

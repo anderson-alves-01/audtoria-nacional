@@ -420,6 +420,19 @@ describe('SimuladorPageComponent', () => {
       expect(String(page.quantityShown())).not.toContain('332.6328076796769');
       http.verify();
     });
+
+    it('shows large scenario taxes in compact form so the KPI cards fit', () => {
+      const { page, fixture, el, http } = opened();
+      page.uf.set('SP');
+      page.setValue(12_025_272_033.33);
+      fixture.detectChanges();
+      const itcd = Array.from(el.querySelectorAll('app-kpi-card')).find((card) =>
+        card.textContent?.includes('ITCD do cenário'),
+      )?.textContent;
+      expect(itcd).toContain('R$ 721,5 mi');
+      expect(itcd).not.toContain('721.516.322');
+      http.verify();
+    });
   });
 
   describe('hypothesis labelling', () => {

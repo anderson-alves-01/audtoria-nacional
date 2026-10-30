@@ -29,6 +29,10 @@ import { Component, Input } from '@angular/core';
     </article>
   `,
   styles: `
+    :host {
+      display: block;
+      min-width: 0;
+    }
     .kpi-card {
       background: var(--surface);
       border: 1px solid var(--line);
@@ -37,6 +41,8 @@ import { Component, Input } from '@angular/core';
       padding: var(--sp-3) var(--sp-4);
       box-shadow: var(--shadow-1);
       min-height: 6.5rem;
+      min-width: 0;
+      overflow: hidden;
     }
     .kpi-card[data-tone='warn'] {
       border-left-color: var(--warn);
@@ -54,6 +60,7 @@ import { Component, Input } from '@angular/core';
       margin: 0;
       color: var(--muted);
       font-size: 0.78rem;
+      overflow-wrap: anywhere;
     }
     .kpi-label {
       text-transform: uppercase;
@@ -66,12 +73,16 @@ import { Component, Input } from '@angular/core';
       align-items: flex-end;
       justify-content: space-between;
       gap: var(--sp-3);
+      min-width: 0;
     }
     .kpi-value {
       margin: var(--sp-2) 0;
-      font-size: 1.6rem;
+      font-size: clamp(0.95rem, 2.4vw, 1.6rem);
       font-weight: 600;
       color: var(--text);
+      min-width: 0;
+      overflow-wrap: anywhere;
+      line-height: 1.15;
     }
     .spark {
       width: 5.5rem;

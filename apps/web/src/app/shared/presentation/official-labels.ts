@@ -315,6 +315,11 @@ export function formatPublishedValue(value: number | null | undefined, unit: str
   return value.toLocaleString('pt-BR');
 }
 
+/** KPI: compacta a partir de 1 milhão para o número caber no card; abaixo disso, valor completo. */
+export function kpiPublishedValue(value: number, unit: 'BRL' | 'COUNT' = 'BRL'): string {
+  return Math.abs(value) >= 1_000_000 ? compactPublishedValue(value, unit) : formatPublishedValue(value, unit);
+}
+
 export function compactPublishedValue(value: number, unit?: string | null): string {
   if (!Number.isFinite(value)) {
     return '';

@@ -10,7 +10,7 @@ import { EmptyStateComponent } from '../shared/states/empty-state.component';
 import { BadgeComponent } from '../shared/ui/badge.component';
 import { KpiCardComponent } from '../shared/ui/kpi-card.component';
 import { PanelComponent } from '../shared/ui/panel.component';
-import { compactPublishedValue, formatPublishedValue } from '../shared/presentation/official-labels';
+import { compactPublishedValue, formatPublishedValue, kpiPublishedValue } from '../shared/presentation/official-labels';
 import { PublicGate, ReliabilityBlock, publicDataGate } from '../shared/reliability/indicator-reliability';
 import { DEFAULT_OPERATION, EMPTY } from '../sped-operacoes/sped-logic';
 import {
@@ -331,6 +331,10 @@ export class SimuladorPageComponent implements OnInit {
 
   compact(value: number | null, unit: 'BRL' | 'COUNT'): string {
     return value === null ? EMPTY : compactPublishedValue(value, unit);
+  }
+
+  kpiMoney(value: number | null): string {
+    return value === null ? EMPTY : kpiPublishedValue(value, 'BRL');
   }
 
   cell(value: number | null, unit: 'BRL' | 'COUNT'): string {

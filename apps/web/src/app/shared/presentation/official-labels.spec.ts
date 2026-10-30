@@ -2,6 +2,7 @@ import {
   compactPublishedValue,
   describePublishedSeries,
   formatPublishedValue,
+  kpiPublishedValue,
   publishedYearSpan,
   humanizeContext,
   humanizeHomologation,
@@ -34,6 +35,11 @@ describe('official labels', () => {
     expect(formatPublishedValue(286461, 'COUNT')).toBe('286.461');
     expect(formatPublishedValue(332.6328076796769, 'COUNT')).toBe('332,633');
     expect(formatPublishedValue(-286128.367, 'COUNT')).toBe('-286.128,367');
+    expect(kpiPublishedValue(721_516_322, 'BRL')).toBe('R$ 721,5 mi');
+    expect(kpiPublishedValue(2_405_054_406, 'BRL')).toBe('R$ 2,4 bi');
+    expect(kpiPublishedValue(60, 'BRL')).toContain('R$');
+    expect(kpiPublishedValue(60, 'BRL')).toContain('60');
+    expect(kpiPublishedValue(60, 'BRL')).not.toContain('mi');
     expect(compactPublishedValue(10943345420, 'Mil Reais')).toBe('10,9 bi');
     expect(compactPublishedValue(214211951, 'Pessoas')).toBe('214,2 mi');
     expect(compactPublishedValue(80600000, 'BRL')).toBe('R$ 80,6 mi');
