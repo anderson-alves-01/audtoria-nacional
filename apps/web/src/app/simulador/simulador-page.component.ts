@@ -45,9 +45,10 @@ import {
   applyPercent,
   completeFromAverage,
   hypothesisChart,
+  parseDecimalInput,
   publicByYearFromCgu,
+  publicReference,
   referenceFallbackYear,
-  referenceYear,
   sanitize,
   scenarioComparison,
   simulatorChart,
@@ -131,6 +132,10 @@ export class SimuladorPageComponent implements OnInit {
   readonly percentOrigin = signal<ScenarioInput | null>(null);
   readonly driver = signal<ScenarioDriver>(null);
   readonly referenceYearInput = signal<number | null>(null);
+  readonly quantityEditing = signal(false);
+  readonly valueEditing = signal(false);
+  readonly quantityDraft = signal('');
+  readonly valueDraft = signal('');
 
   /** O simulador funciona sem dado publico: com o portao fechado, so a hipotese informada existe. */
   readonly hasPublic = computed(() => this.publicOpen() && this.view()?.run != null);
@@ -195,8 +200,10 @@ export class SimuladorPageComponent implements OnInit {
       (this.percentInput() !== null && sanitize(this.percentInput()) === null),
   );
 
-  readonly reference = computed(() =>
-    referenceYear(this.rows(), this.referenceYearInput() ?? this.latest()?.year ?? null),
+  readonly reference = computed(() => publicReference(this.rows(), this.referenceYearInput()));
+  readonly allYearsSelected = computed(() => this.referenceYearInput() === null);
+  readonly referenceLabel = computed(() =>
+    this.allYearsSelected() ? 'Todos' : String(this.reference()?.year ?? '—'),
   );
 
   readonly comparison = computed<Comparison[]>(() =>
@@ -335,13 +342,67 @@ export class SimuladorPageComponent implements OnInit {
   setQuantity(raw: unknown): void {
     this.clearPercentHelper();
     this.driver.set('quantity');
-    this.quantityInput.set(this.parse(raw));
+    this.quantityInput.set(parseDecimalInput(raw));
   }
 
   setValue(raw: unknown): void {
     this.clearPercentHelper();
     this.driver.set('value');
-    this.valueInput.set(this.parse(raw));
+    this.valueInput.set(parseDecimalInput(raw));
+  }
+
+  setReferenceYear(raw: unknown): void {
+    this.referenceYearInput.set(this.parse(raw));
+  }
+
+  quantityField(): string {
+    if (this.quantityEditing()) {
+      return this.quantityDraft();
+    }
+    const value = this.quantityShown();
+    return value === null ? '' : formatPublishedValue(value, 'COUNT');
+  }
+
+  valueField(): string {
+    if (this.valueEditing()) {
+      return this.valueDraft();
+    }
+    const value = this.valueShown();
+    return value === null ? '' : formatPublishedValue(value, 'BRL');
+  }
+
+  startQuantityEdit(): void {
+    const shown = this.quantityShown();
+    this.quantityDraft.set(shown === null ? '' : formatPublishedValue(shown, 'COUNT'));
+    this.quantityEditing.set(true);
+  }
+
+  onQuantityInput(raw: string): void {
+    this.quantityEditing.set(true);
+    this.quantityDraft.set(raw);
+    this.setQuantity(raw);
+  }
+
+  endQuantityEdit(): void {
+    this.quantityEditing.set(false);
+    this.quantityDraft.set('');
+  }
+
+  startValueEdit(): void {
+    const shown = this.valueShown();
+    this.valueDraft.set(shown === null ? '' : formatPublishedValue(shown, 'BRL'));
+    this.valueEditing.set(true);
+  }
+
+  onValueInput(raw: string): void {
+    this.valueEditing.set(true);
+    this.valueDraft.set(raw);
+    this.setValue(raw);
+  }
+
+  endValueEdit(): void {
+    this.valueEditing.set(false);
+    this.valueDraft.set('');
   }
 
   setPercent(raw: unknown): void {
@@ -361,6 +422,8 @@ export class SimuladorPageComponent implements OnInit {
     this.quantityInput.set(scaled.quantity);
     this.valueInput.set(scaled.value);
     this.driver.set(null);
+    this.endQuantityEdit();
+    this.endValueEdit();
   }
 
   private capturePercentOrigin(): ScenarioInput {

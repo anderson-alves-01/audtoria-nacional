@@ -257,6 +257,35 @@ export function sanitize(raw: number | null | undefined): number | null {
   return typeof raw === 'number' && Number.isFinite(raw) && raw >= 0 ? raw + 0 : null;
 }
 
+/**
+ * Lê quantidade ou valor digitados: aceita 4.06, 1.000, R$ 1.594.466.642,89.
+ * Não aplica sanitize: valor negativo permanece para o aviso de campo inválido.
+ */
+export function parseDecimalInput(raw: unknown): number | null {
+  if (raw === '' || raw === null || raw === undefined) {
+    return null;
+  }
+  if (typeof raw === 'number') {
+    return Number.isNaN(raw) ? null : raw;
+  }
+  const compact = String(raw)
+    .trim()
+    .replace(/R\$\s*/gi, '')
+    .replace(/[\s\u00a0]/g, '');
+  if (!compact) {
+    return null;
+  }
+  let parsed: number;
+  if (compact.includes(',')) {
+    parsed = Number(compact.replace(/\./g, '').replace(',', '.'));
+  } else if (/^-?\d{1,3}(\.\d{3})+$/.test(compact)) {
+    parsed = Number(compact.replace(/\./g, ''));
+  } else {
+    parsed = Number(compact);
+  }
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
 export interface Comparison {
   label: string;
   unit: 'COUNT' | 'BRL';
@@ -413,4 +442,27 @@ export function referenceYear(rows: PublicYear[], year: number | null): PublicYe
     return null;
   }
   return rows.find((row) => row.year === year) ?? rows[rows.length - 1];
+}
+
+/** Soma quantidade e valor de todos os anos. Ano no objeto é o último, só para a alíquota. */
+export function sumPublicYears(rows: PublicYear[]): PublicYear | null {
+  if (rows.length === 0) {
+    return null;
+  }
+  let quantity: number | null = null;
+  let value: number | null = null;
+  for (const row of rows) {
+    if (row.quantity !== null) {
+      quantity = (quantity ?? 0) + row.quantity;
+    }
+    if (row.value !== null) {
+      value = (value ?? 0) + row.value;
+    }
+  }
+  return { year: rows[rows.length - 1].year, quantity, value };
+}
+
+/** Ano nulo é Todos: soma o recorte. Ano desconhecido continua caindo no último. */
+export function publicReference(rows: PublicYear[], year: number | null): PublicYear | null {
+  return year === null ? sumPublicYears(rows) : referenceYear(rows, year);
 }

@@ -428,6 +428,18 @@ describe('SimuladorPageComponent', () => {
       http.verify();
     });
 
+    it('sums every year when comparison year is Todos', () => {
+      const { page, el, http } = opened();
+      page.uf.set('SP');
+      expect(page.referenceYearInput()).toBeNull();
+      const year = el.querySelector('select[name="ano"]') as HTMLSelectElement;
+      expect(year.options[0].text).toBe('Todos');
+      expect(year.value).toBe('');
+      expect(page.reference()?.quantity).toBe(300);
+      expect(page.reference()?.value).toBe(3000);
+      http.verify();
+    });
+
     it('fills value from public unit price when only quantity is typed', () => {
       const { page, http } = opened();
       page.uf.set('SP');
@@ -903,6 +915,32 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
     http.verify();
   });
 
+  it('puts comparison year first, then percent, with a short percent label', async () => {
+    const { http, el } = await start();
+    const names = Array.from(el.querySelectorAll('form.scenario [name]')).map((node) => node.getAttribute('name'));
+    expect(names.slice(0, 4)).toEqual(['ano', 'percent', 'qtd', 'valor']);
+    expect(el.textContent).toContain('Percentual (%)');
+    expect(el.textContent).not.toContain('Percentual da quantidade e do valor');
+    const year = el.querySelector('select[name="ano"]') as HTMLSelectElement;
+    expect(Array.from(year.options).map((option) => option.text)).toContain('Todos');
+    http.verify();
+  });
+
+  it('formats desired quantity and value after leaving the field and after the percent helper', async () => {
+    const { fixture, http, type, field } = await start();
+    await type('qtd', '1594466642');
+    await type('valor', '1594466642.89');
+    field<HTMLInputElement>('qtd').dispatchEvent(new Event('blur'));
+    field<HTMLInputElement>('valor').dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+    expect(field<HTMLInputElement>('qtd').value).toBe('1.594.466.642');
+    expect(field<HTMLInputElement>('valor').value.replace(/\u00a0/g, ' ')).toBe('R$ 1.594.466.642,89');
+    await type('percent', '10');
+    expect(field<HTMLInputElement>('qtd').value).toBe('159.446.664');
+    expect(field<HTMLInputElement>('valor').value.replace(/\u00a0/g, ' ')).toBe('R$ 159.446.664,29');
+    http.verify();
+  });
+
   it('uses percent to fill desired quantity and value, not the tax rate', async () => {
     const { http, page, type, kpi, el, choose } = await start();
     expect(el.textContent).not.toContain('Alíquota da hipótese');
@@ -945,7 +983,7 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
     fixture.detectChanges();
     const form = el.querySelector('form.filters') as HTMLElement;
     expect(form.getBoundingClientRect().width).toBeLessThanOrEqual(320);
-    for (const control of Array.from(el.querySelectorAll('select, input[type="number"]'))) {
+    for (const control of Array.from(el.querySelectorAll('select, input'))) {
       expect((control as HTMLElement).getBoundingClientRect().right).toBeLessThanOrEqual(321);
     }
     http.verify();

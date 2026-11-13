@@ -15,6 +15,8 @@ import {
   allowedParam,
   applyPercent,
   completeFromAverage,
+  parseDecimalInput,
+  publicReference,
   effectiveTaxes,
   filterByDirection,
   icmsBlockedForTransfer,
@@ -141,6 +143,18 @@ describe('simulador logic', () => {
     expect(sanitize(null)).toBeNull();
   });
 
+  it('parses typed quantity and value in Brazilian or plain decimal form', () => {
+    expect(parseDecimalInput('')).toBeNull();
+    expect(parseDecimalInput('1000')).toBe(1000);
+    expect(parseDecimalInput('1.000')).toBe(1000);
+    expect(parseDecimalInput('4.06')).toBe(4.06);
+    expect(parseDecimalInput('1234567.89')).toBe(1234567.89);
+    expect(parseDecimalInput('R$ 1.594.466.642,89')).toBe(1594466642.89);
+    expect(parseDecimalInput('1.594.466.642,89')).toBe(1594466642.89);
+    expect(parseDecimalInput('-100')).toBe(-100);
+    expect(parseDecimalInput('1e300')).toBe(1e300);
+  });
+
   it('derives the public unit value and completes the other scenario field', () => {
     expect(unitValue(200, 2000)).toBe(10);
     expect(unitValue(0, 2000)).toBeNull();
@@ -262,6 +276,13 @@ describe('simulador logic', () => {
     const rows = publicByYear(items, [2021, 2022], 'Vendas', 'SP');
     expect(referenceYear(rows, 1999)?.year).toBe(2022);
     expect(referenceYear([], 2021)).toBeNull();
+  });
+
+  it('sums every public year when the comparison year is Todos', () => {
+    const rows = publicByYear(items, [2021, 2022], 'Vendas', 'SP');
+    expect(publicReference(rows, 2021)).toEqual({ year: 2021, quantity: 100, value: 1000 });
+    expect(publicReference(rows, null)).toEqual({ year: 2022, quantity: 300, value: 1000 });
+    expect(publicReference([], null)).toBeNull();
   });
 
   it('builds the chart with all public data and adds the simulated category', () => {

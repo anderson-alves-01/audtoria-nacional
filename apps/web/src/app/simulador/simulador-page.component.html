@@ -144,33 +144,16 @@
   <h2 class="part" id="simule">Simule com a sua quantidade e valor</h2>
   <form class="filters scenario" aria-labelledby="simule" (submit)="$event.preventDefault()">
     <label>
-      Quantidade desejada
-      <input
-        type="number"
-        name="qtd"
-        min="0"
-        step="1"
-        inputmode="numeric"
-        placeholder="Ex.: 1000"
-        [ngModel]="quantityShown()"
-        (ngModelChange)="setQuantity($event)"
-      />
+      {{ publicOpen() ? 'Ano de comparação' : 'Ano da alíquota' }}
+      <select name="ano" [ngModel]="referenceYearInput() ?? ''" (ngModelChange)="setReferenceYear($event)">
+        <option value="">Todos</option>
+        @for (year of years(); track year) {
+          <option [value]="year">{{ year }}</option>
+        }
+      </select>
     </label>
     <label>
-      Valor desejado (R$)
-      <input
-        type="number"
-        name="valor"
-        min="0"
-        step="0.01"
-        inputmode="decimal"
-        placeholder="Ex.: 500000"
-        [ngModel]="valueShown()"
-        (ngModelChange)="setValue($event)"
-      />
-    </label>
-    <label>
-      Percentual da quantidade e do valor (%)
+      Percentual (%)
       <input
         type="number"
         name="percent"
@@ -183,16 +166,32 @@
       />
     </label>
     <label>
-      {{ publicOpen() ? 'Ano de comparação' : 'Ano da alíquota' }}
-      <select
-        name="ano"
-        [ngModel]="referenceYearInput() ?? latest()?.year ?? ''"
-        (ngModelChange)="referenceYearInput.set(parse($event))"
-      >
-        @for (year of years(); track year) {
-          <option [value]="year">{{ year }}</option>
-        }
-      </select>
+      Quantidade desejada
+      <input
+        type="text"
+        name="qtd"
+        inputmode="numeric"
+        autocomplete="off"
+        placeholder="Ex.: 1.000"
+        [value]="quantityField()"
+        (focus)="startQuantityEdit()"
+        (input)="onQuantityInput($any($event.target).value)"
+        (blur)="endQuantityEdit()"
+      />
+    </label>
+    <label>
+      Valor desejado (R$)
+      <input
+        type="text"
+        name="valor"
+        inputmode="decimal"
+        autocomplete="off"
+        placeholder="Ex.: R$ 500.000,00"
+        [value]="valueField()"
+        (focus)="startValueEdit()"
+        (input)="onValueInput($any($event.target).value)"
+        (blur)="endValueEdit()"
+      />
     </label>
     <label>
       Tipo de bem ou serviço
@@ -236,7 +235,7 @@
     @if (comparisonEnabled()) {
       <app-panel
         title="Comparação e diferença do imposto"
-        [subtitle]="'Cenário × ' + (reference()?.year ?? '—') + ' público'"
+        [subtitle]="'Cenário × ' + referenceLabel() + ' público'"
       >
         <div class="table-wrap">
           <table>
@@ -244,7 +243,7 @@
             <thead>
               <tr>
                 <th scope="col">Item</th>
-                <th scope="col" class="num">Público ({{ reference()?.year ?? '—' }})</th>
+                <th scope="col" class="num">Público ({{ referenceLabel() }})</th>
                 <th scope="col" class="num">Simulado</th>
                 <th scope="col" class="num">Diferença</th>
                 <th scope="col" class="num">Diferença %</th>
