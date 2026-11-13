@@ -108,3 +108,6 @@ entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-
   Web 0.4.31 (`sirta-prod-web:39`): ordem ano → percentual → quantidade → valor,
   item Todos no ano de comparação e máscara BRL nos campos desejados. Evidência:
   `evidence/ops/prod-web-0.4.31-20261113.txt`.
+  Web 0.4.32 (`sirta-prod-web:40`): o % aplica-se ao recorte corrente
+  (ano selecionado ou Todos); cards públicos acompanham o recorte. Evidência:
+  `evidence/ops/prod-web-0.4.32-20261113.txt`.

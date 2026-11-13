@@ -1,0 +1,22 @@
+Publicação web 0.4.32 (Simulador: % aplica-se ao recorte corrente)
+Data: 2026-11-13
+authorization=usuário, nesta sessão ("push e publique")
+git=push feat/professional-ui-v1 404befd..65c7aca (código) e este commit de evidência (sem force, sem merge)
+escopo=somente web. API inalterada (0.3.127, sirta-prod-api:33). Sem ingestão, sem Terraform, sem mudança de dados.
+
+web=sirta-prod-web:0.4.32, task definition :40 (anterior :39, 0.4.31), digest sha256:cc1cbfa62506032c72aac81eea8cee01af5243796251be3dc84bad080f6e8ef3, construída com --build-arg NGINX_CONF=nginx.prod.conf (0 proxy_pass). Rollout PRIMARY COMPLETED 1/1.
+imagem_local=sha256:6bd9862f02dccc54330d332485e0641fc6d95603ca9b0efbcdab463b990378b1
+bundle=main-6MUZQUEA.js, chunk simulador=chunk-2EUVNKPS.js, labels=chunk-WQDLJ6WO.js
+api=inalterada (sirta-prod-api:33, 0.3.127). GET /health: implementationVersion 0.3.101 no binário.
+
+testes_antes=ng test include=**/simulador-logic.spec.ts + simulador-page.component.spec.ts: 95 SUCCESS
+verificação_ao_vivo (sem token, sem credencial forjada):
+  GET https://taxbetter.magenx.tech/ 200, main-6MUZQUEA.js
+  GET https://taxbetter.magenx.tech/simulador 200
+  GET https://taxbetter.magenx.tech/health 200
+  GET https://taxbetter.magenx.tech/chunk-2EUVNKPS.js 200
+  chunk-2EUVNKPS.js: reapplyPercentToRecorte, applyPercentToRecorte, "Todos os anos", publicKpiMeta
+efeito=100% com ano 2025 preenche só a linha 2025. Trocar o ano com % ativo recaptura a origem. 100% com Todos compara com a soma (diferença 0). Cards públicos usam reference().
+
+rollback_web=update-service para sirta-prod-web:39 (0.4.31). Seguro.
+rollback_api=não aplicável.
