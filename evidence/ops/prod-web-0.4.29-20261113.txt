@@ -1,0 +1,24 @@
+Publicação web 0.4.29 (Simulador: recorte de tributo por operação e hipótese em %)
+Data: 2026-11-13
+authorization=usuário, nesta sessão ("push e publique")
+git=push feat/professional-ui-v1 bd52894..da7977b (código) e este commit de evidência (sem force, sem merge)
+escopo=somente web. API inalterada (0.3.127, sirta-prod-api:33). Sem ingestão, sem Terraform, sem mudança de dados.
+
+web=sirta-prod-web:0.4.29, task definition :37 (anterior :36, 0.4.28), digest sha256:8a529aaff02db7ebd45e552d6944127a940f65f553286e9a29cb814aa44d7d05, construída com --build-arg NGINX_CONF=nginx.prod.conf (0 proxy_pass). Rollout PRIMARY COMPLETED 1/1.
+imagem_local=sha256:bea7d3aa27148c349bb1b7ce644763b276c194241c0f396de729868237bf5bcd
+bundle=main-UMHFR5EY.js, chunk simulador=chunk-44GFINMG.js, labels=chunk-WQDLJ6WO.js
+api=inalterada (sirta-prod-api:33, 0.3.127). GET /health: implementationVersion 0.3.101 no binário.
+
+testes_antes=ng test include=**/simulador-page.component.spec.ts: 89 SUCCESS
+verificação_ao_vivo (sem token, sem credencial forjada):
+  GET https://taxbetter.magenx.tech/ 200, main-UMHFR5EY.js
+  GET https://taxbetter.magenx.tech/simulador 200
+  GET https://taxbetter.magenx.tech/health 200
+  GET https://taxbetter.magenx.tech/chunk-44GFINMG.js 200
+  chunk-44GFINMG.js: setPercent, hypothesisRate, "Todas as UFs", "Todas as operações", "Todos os municípios"; Doações/Transferências/Serviços presentes; "Outras Saídas" ausente
+efeito=filtro de operação restringe tributos (Compras/Vendas/Transferências→ICMS; Doações→ITCD+ITBI; Serviços Prestados/Tomados→ISS; vazio→os quatro). % é imposto sobre o valor desejado (10% de R$ 1.000.000 = R$ 100.000). Outras Saídas saiu só do Simulador.
+
+ops_nota=.dockerignore passou a excluir var/ (datalake local ~4 GiB). Sem isso o docker build envia o SQLite CGU no contexto e o daemon trava. Não altera a imagem.
+
+rollback_web=update-service para sirta-prod-web:36 (0.4.28). Seguro.
+rollback_api=não aplicável.

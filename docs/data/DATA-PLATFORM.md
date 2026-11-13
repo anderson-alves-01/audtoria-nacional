@@ -100,3 +100,6 @@ entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-
   Web 0.4.28 (`sirta-prod-web:36`): KPIs do cenário compactam a partir de R$ 1 milhão
   (`R$ 721,5 mi`, `R$ 2,4 bi`) para o número caber no card. Evidência:
   `evidence/ops/prod-web-0.4.28-20261030.txt`.
+  Web 0.4.29 (`sirta-prod-web:37`): Simulador filtra tributos pela operação e aceita
+  hipótese em % sobre o valor desejado; Outras Saídas sai só desta tela. Evidência:
+  `evidence/ops/prod-web-0.4.29-20261113.txt`.
