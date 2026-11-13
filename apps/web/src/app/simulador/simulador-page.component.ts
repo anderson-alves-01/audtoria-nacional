@@ -31,6 +31,7 @@ import {
   TaxId,
   fallbackVersions,
   resolveRate,
+  taxesForOperation,
 } from './simulador-aliquotas';
 import {
   CguNfeItem,
@@ -111,14 +112,19 @@ export class SimuladorPageComponent implements OnInit {
   readonly municipalityLabel = computed(() => municipalityName(this.municipalityCatalog(), this.municipalityOrNull()));
   readonly goods = signal<string>('');
   readonly operation = signal<string>(DEFAULT_OPERATION);
-  readonly selectedTaxes = signal<TaxId[]>(['ITCD', 'ITBI', 'ISS', 'ICMS']);
+  readonly selectedTaxes = signal<TaxId[]>(taxesForOperation(DEFAULT_OPERATION));
   readonly sourceLabel = 'NF-e CGU · UF do emitente';
+  /** Impostos permitidos para a operação (hipótese de tela, não incidência legal). */
+  readonly allowedTaxes = computed(() => taxesForOperation(this.operation()));
+  readonly visibleTaxes = computed(() => this.taxes.filter((def) => this.allowedTaxes().includes(def.id)));
   /** Impostos que entram em calculo e grafico. */
-  readonly activeTaxes = computed(() => this.selectedTaxes());
+  readonly activeTaxes = computed(() => this.selectedTaxes().filter((tax) => this.allowedTaxes().includes(tax)));
 
   // Cenario desejado (Parte B)
   readonly quantityInput = signal<number | null>(null);
   readonly valueInput = signal<number | null>(null);
+  /** Alíquota da hipótese em pontos percentuais. Nulo: usa o catálogo. */
+  readonly percentInput = signal<number | null>(null);
   readonly driver = signal<ScenarioDriver>(null);
   readonly referenceYearInput = signal<number | null>(null);
 
@@ -145,7 +151,7 @@ export class SimuladorPageComponent implements OnInit {
   );
 
   readonly taxRows = computed(() =>
-    this.selectedTaxes().map((tax) => {
+    this.activeTaxes().map((tax) => {
       const resolved = this.resolved(tax, this.latest()?.year ?? referenceFallbackYear);
       const blocked = this.isBlocked(tax);
       return {
@@ -178,10 +184,12 @@ export class SimuladorPageComponent implements OnInit {
     this.driver() === 'quantity' ? this.scenario().value : this.valueInput(),
   );
   readonly hasScenario = computed(() => this.scenario().quantity !== null || this.scenario().value !== null);
+  readonly hypothesisRate = computed(() => sanitize(this.percentInput()));
   readonly inputInvalid = computed(
     () =>
       (this.quantityInput() !== null && this.scenario().quantity === null) ||
-      (this.valueInput() !== null && this.scenario().value === null),
+      (this.valueInput() !== null && this.scenario().value === null) ||
+      (this.percentInput() !== null && this.hypothesisRate() === null),
   );
 
   readonly reference = computed(() =>
@@ -196,20 +204,22 @@ export class SimuladorPageComponent implements OnInit {
       this.ufOrNull(),
       this.book(),
       this.municipalityOrNull(),
+      this.hypothesisRate(),
     ),
   );
 
   /** Imposto do cenario informado, um por imposto escolhido. Nunca ha total entre impostos. */
   readonly simulatedTaxes = computed(() =>
-    this.selectedTaxes().map((tax) => {
+    this.activeTaxes().map((tax) => {
       const resolved = this.resolved(tax, this.scenarioYear());
       const blocked = this.isBlocked(tax);
+      const scenarioRate = this.hypothesisRate() !== null ? this.hypothesisRate() : resolved.rate;
       return {
         tax,
         resolved,
-        rate: resolved.rate,
+        rate: scenarioRate,
         blocked,
-        simulated: blocked ? null : taxAmount(this.scenario().value, resolved.rate),
+        simulated: blocked ? null : taxAmount(this.scenario().value, scenarioRate),
         published:
           this.comparisonEnabled() && !blocked ? taxAmount(this.reference()?.value ?? null, resolved.rate) : null,
       };
@@ -227,6 +237,7 @@ export class SimuladorPageComponent implements OnInit {
           this.book(),
           this.scenarioYear(),
           this.municipalityOrNull(),
+          this.hypothesisRate(),
         )
       : hypothesisChart(
           this.scenario(),
@@ -235,6 +246,7 @@ export class SimuladorPageComponent implements OnInit {
           this.book(),
           this.scenarioYear(),
           this.municipalityOrNull(),
+          this.hypothesisRate(),
         ),
   );
 
@@ -293,7 +305,7 @@ export class SimuladorPageComponent implements OnInit {
       return;
     }
     this.setUf(allowedParam(query.get('uf'), this.ufs(), ''));
-    this.operation.set(allowedParam(query.get('operacao'), this.operations, DEFAULT_OPERATION));
+    this.setOperation(allowedParam(query.get('operacao'), this.operations, DEFAULT_OPERATION));
   }
 
   isTaxSelected(tax: TaxId): boolean {
@@ -301,9 +313,19 @@ export class SimuladorPageComponent implements OnInit {
   }
 
   toggleTax(tax: TaxId, checked: boolean): void {
-    const current = this.selectedTaxes();
+    const allowed = this.allowedTaxes();
+    if (!allowed.includes(tax)) {
+      return;
+    }
+    const current = this.selectedTaxes().filter((id) => allowed.includes(id));
     const next = checked ? [...new Set([...current, tax])] : current.filter((entry) => entry !== tax);
-    this.selectedTaxes.set(TAXES.map((def) => def.id).filter((id) => next.includes(id)));
+    this.selectedTaxes.set(allowed.filter((id) => next.includes(id)));
+  }
+
+  setOperation(value: string): void {
+    const next = (this.operations as readonly string[]).includes(value) ? value : '';
+    this.operation.set(next);
+    this.selectedTaxes.set(taxesForOperation(next));
   }
 
   /** Numero do campo. Texto vazio vira nulo. */
@@ -319,6 +341,10 @@ export class SimuladorPageComponent implements OnInit {
   setValue(raw: unknown): void {
     this.driver.set('value');
     this.valueInput.set(this.parse(raw));
+  }
+
+  setPercent(raw: unknown): void {
+    this.percentInput.set(this.parse(raw));
   }
 
   money(value: number | null): string {
@@ -392,6 +418,18 @@ export class SimuladorPageComponent implements OnInit {
 
   taxMeta(_tax: TaxId, resolved: ResolvedRate, year: number | null): string {
     return this.rateMeta(resolved, year);
+  }
+
+  scenarioMeta(resolved: ResolvedRate, published: number | null): string {
+    const hypothesis = this.hypothesisRate();
+    const rate =
+      hypothesis !== null ? `${hypothesis.toLocaleString('pt-BR')}%` : this.rateMeta(resolved, this.scenarioYear());
+    return (
+      rate +
+      (this.comparisonEnabled()
+        ? ' · público ' + (this.reference()?.year ?? '—') + ': ' + this.kpiMoney(published)
+        : '')
+    );
   }
 
   /** Percentual da aliquota, ou o motivo de nao haver um. */

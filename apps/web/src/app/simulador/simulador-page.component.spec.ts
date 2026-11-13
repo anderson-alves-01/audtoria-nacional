@@ -166,6 +166,7 @@ describe('SimuladorPageComponent', () => {
     it('keeps the fields usable and labels every result as a manual hypothesis', async () => {
       const { fixture, page, el, http } = blocked();
       page.uf.set('SP');
+      page.setOperation('');
       fixture.detectChanges();
       await fixture.whenStable();
       expect(el.querySelector('input[name="qtd"]')).toBeTruthy();
@@ -188,6 +189,7 @@ describe('SimuladorPageComponent', () => {
     it('draws only the hypothesis, with no public series', () => {
       const { fixture, page, http } = blocked();
       page.uf.set('SP');
+      page.setOperation('');
       page.quantityInput.set(300);
       page.valueInput.set(5000);
       fixture.detectChanges();
@@ -228,27 +230,35 @@ describe('SimuladorPageComponent', () => {
     });
 
     it('offers the requested taxes, operations and goods types', () => {
-      const { el, http } = blocked();
+      const { el, http, page, fixture } = blocked();
       const text = el.textContent as string;
-      for (const label of ['ITCD', 'ITBI', 'ISS', 'ICMS']) {
-        expect(text).toContain(label);
-      }
+      expect(text).toContain('Todas as UFs');
+      expect(text).toContain('Todos os municípios');
+      expect(text).toContain('Todas as operações');
+      expect(text).toContain('Vendas');
+      expect(text).not.toContain('Outras Saídas');
+      expect(text).toContain('ICMS');
+      expect(el.querySelector('input[name="tax-ISS"]')).toBeNull();
       expect(text).not.toContain('ICMS (por UF)');
       expect(el.querySelector('select[name="operacao"]')).toBeTruthy();
-      expect(text).toContain('Vendas');
       for (const goods of ['Veículos', 'Imóveis', 'Eletrodomésticos', 'Alimentos e Bebidas', 'Outros Bens', 'Serviços Gerais']) {
         expect(text).toContain(goods);
       }
-      // O município depende da UF: sem UF, o campo existe mas fica desabilitado.
       const city = el.querySelector('select[name="municipio"]') as HTMLSelectElement;
       expect(city).toBeTruthy();
-      expect(city.disabled).toBeTrue();
-      expect(text).toContain('Escolha uma UF primeiro');
+      expect(city.disabled).toBeFalse();
+      expect(Array.from(city.options).map((option) => option.text)).toEqual(['Todos os municípios']);
+      page.setOperation('');
+      fixture.detectChanges();
+      expect(el.textContent).toContain('ITCD');
+      expect(el.textContent).toContain('ITBI');
+      expect(el.textContent).toContain('ISS');
       http.verify();
     });
 
     it('leaves ICMS empty when no UF is chosen, without an on-screen rule', () => {
       const { page, el, fixture, http } = blocked();
+      page.setOperation('');
       page.valueInput.set(1000);
       fixture.detectChanges();
       expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBeNull();
@@ -295,6 +305,27 @@ describe('SimuladorPageComponent', () => {
       page.uf.set('SP');
       page.valueInput.set(5000);
       expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(900);
+      http.verify();
+    });
+
+    it('shows only the taxes of the chosen operation', () => {
+      const { page, el, fixture, http } = blocked();
+      expect(page.selectedTaxes()).toEqual(['ICMS']);
+      expect(el.querySelector('input[name="tax-ICMS"]')).toBeTruthy();
+      expect(el.querySelector('input[name="tax-ITCD"]')).toBeNull();
+      page.setOperation('Doações / bonificações / brindes');
+      fixture.detectChanges();
+      expect(page.selectedTaxes()).toEqual(['ITCD', 'ITBI']);
+      expect(el.querySelector('input[name="tax-ISS"]')).toBeNull();
+      page.setOperation('Serviços Prestados');
+      fixture.detectChanges();
+      expect(page.selectedTaxes()).toEqual(['ISS']);
+      page.setOperation('Transferências');
+      fixture.detectChanges();
+      expect(page.selectedTaxes()).toEqual(['ICMS']);
+      page.setOperation('');
+      fixture.detectChanges();
+      expect(page.selectedTaxes()).toEqual(['ITCD', 'ITBI', 'ISS', 'ICMS']);
       http.verify();
     });
   });
@@ -365,6 +396,7 @@ describe('SimuladorPageComponent', () => {
       expect(publicAt).toBeGreaterThan(-1);
       expect(simulateAt).toBeGreaterThan(publicAt);
       page.uf.set('SP');
+      page.setOperation('');
       expect(page.latest()?.quantity).toBe(200);
       expect(page.latest()?.value).toBe(2000);
       expect(page.taxRows().find((row) => row.tax === 'ITCD')?.amount).toBe(120);
@@ -390,6 +422,7 @@ describe('SimuladorPageComponent', () => {
       const { page, http } = opened();
       page.uf.set('SP');
       page.referenceYearInput.set(2022);
+      page.setOperation('');
       page.setQuantity(300);
       expect(page.average()).toBe(10);
       expect(page.scenario()).toEqual({ quantity: 300, value: 3000 });
@@ -401,6 +434,7 @@ describe('SimuladorPageComponent', () => {
       const { page, http } = opened();
       page.uf.set('SP');
       page.referenceYearInput.set(2022);
+      page.setOperation('');
       page.setValue(5000);
       expect(page.scenario()).toEqual({ quantity: 500, value: 5000 });
       expect(page.simulatedTaxes().find((row) => row.tax === 'ITCD')?.simulated).toBe(300);
@@ -424,6 +458,7 @@ describe('SimuladorPageComponent', () => {
     it('shows large scenario taxes in compact form so the KPI cards fit', () => {
       const { page, fixture, el, http } = opened();
       page.uf.set('SP');
+      page.setOperation('Doações / bonificações / brindes');
       page.setValue(12_025_272_033.33);
       fixture.detectChanges();
       const itcd = Array.from(el.querySelectorAll('app-kpi-card')).find((card) =>
@@ -490,6 +525,7 @@ describe('SimuladorPageComponent', () => {
 
     it('marks the Acre modal rate as Validado and every other rate as pending legal validation', () => {
       const { fixture, page, el, http } = acreBlocked([2022, 2023, 2024]);
+      page.setOperation('');
       page.valueInput.set(1000);
       fixture.detectChanges();
       expect(page.resolved('ICMS', 2022)).toEqual(jasmine.objectContaining({ rate: 17, status: 'VALIDADO' }));
@@ -579,6 +615,7 @@ describe('SimuladorPageComponent opened from the SPED panel', () => {
     const { page, http } = open({ uf: 'SP', operacao: 'Compras' });
     expect(page.uf()).toBe('SP');
     expect(page.operation()).toBe('Compras');
+    expect(page.selectedTaxes()).toEqual(['ICMS']);
     http.expectOne('/ibge-municipios.json').flush({ municipios: [] });
     http.verify();
   });
@@ -587,6 +624,13 @@ describe('SimuladorPageComponent opened from the SPED panel', () => {
     const { page, http } = open({ uf: 'XX', operacao: '<img src=x>' });
     expect(page.uf()).toBe('');
     expect(page.operation()).toBe('Vendas');
+    http.verify();
+  });
+
+  it('falls back from Outras Saídas in the URL to Vendas', () => {
+    const { page, http } = open({ operacao: 'Outras Saídas' });
+    expect(page.operation()).toBe('Vendas');
+    expect(page.selectedTaxes()).toEqual(['ICMS']);
     http.verify();
   });
 });
@@ -779,10 +823,9 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
       'Veículos',
     ]);
     expect(page.scenario()).toEqual({ quantity: 3, value: 1000 });
-    // Cada imposto é calculado sobre o valor informado e nunca somado aos demais.
-    expect(kpi('ITCD')).toContain('R$ 60,00');
-    expect(kpi('ITBI')).toContain('R$ 30,00');
-    expect(kpi('ISS')).toContain('R$ 50,00');
+    expect(page.selectedTaxes()).toEqual(['ICMS']);
+    expect(kpi('ITCD')).toBe('');
+    expect(kpi('ISS')).toBe('');
     // O ano da alíquota padrão é 2022 (último ano da lista): o ICMS do Acre vigente era 17%.
     expect(kpi('ICMS')).toContain('R$ 170,00');
     expect(el.textContent).not.toMatch(/total dos impostos/i);
@@ -791,7 +834,8 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
   });
 
   it('updates the chart as soon as the value changes', async () => {
-    const { http, page, type } = await start();
+    const { http, page, type, choose } = await start();
+    await choose('operacao', 'Serviços Prestados');
     await type('valor', '1000');
     const before = page.chart().series?.find((series) => series.name === 'ISS (hipótese)')?.values;
     expect(before).toEqual([50]);
@@ -803,9 +847,9 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
   });
 
   it('keeps decimal precision typed in the field', async () => {
-    const { http, page, type, kpi } = await start();
+    const { http, page, type, kpi, choose } = await start();
+    await choose('operacao', 'Serviços Prestados');
     await type('valor', '4.06');
-    page.selectedTaxes.set(['ITCD', 'ITBI', 'ISS', 'ICMS']);
     expect(page.simulatedTaxes().find((row) => row.tax === 'ISS')?.simulated).toBe(0.2);
     await type('valor', '1234567.89');
     expect(kpi('ISS')).toContain('R$ 61.728,39');
@@ -813,7 +857,8 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
   });
 
   it('shows nothing for an empty field and treats zero as zero, not as missing', async () => {
-    const { http, page, type, kpi } = await start();
+    const { http, page, type, kpi, choose } = await start();
+    await choose('operacao', 'Serviços Prestados');
     await type('valor', '');
     expect(page.hasScenario()).toBeFalse();
     await type('valor', '0');
@@ -838,7 +883,8 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
   });
 
   it('handles very large quantities and values without scientific notation or infinity', async () => {
-    const { http, page, el, type } = await start();
+    const { http, page, el, type, choose } = await start();
+    await choose('operacao', 'Serviços Prestados');
     await type('qtd', '9007199254740991');
     await type('valor', '100000000000');
     expect(page.scenario()).toEqual({ quantity: 9007199254740991, value: 100000000000 });
@@ -847,8 +893,20 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
     http.verify();
   });
 
+  it('simulates the tax as a percent of the desired value', async () => {
+    const { http, page, type, kpi } = await start();
+    await type('valor', '1000000');
+    expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBeNull();
+    await type('percent', '10');
+    expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(100_000);
+    expect(kpi('ICMS')).toContain('R$ 100.000,00');
+    expect(kpi('ICMS')).toContain('10%');
+    http.verify();
+  });
+
   it('drops a taxes selection and recalculates without it', async () => {
-    const { http, page, type, kpi, fixture, el } = await start();
+    const { http, page, type, kpi, fixture, el, choose } = await start();
+    await choose('operacao', '');
     await type('valor', '1000');
     const iss = el.querySelector('input[name="tax-ISS"]') as HTMLInputElement;
     iss.checked = false;

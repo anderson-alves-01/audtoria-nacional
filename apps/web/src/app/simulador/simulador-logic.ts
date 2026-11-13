@@ -271,20 +271,22 @@ export function scenarioComparison(
   uf: string | null,
   book: RateVersion[],
   municipality: string | null = null,
+  hypothesisRate: number | null = null,
 ): Comparison[] {
   const rows: Comparison[] = [
     compare('Quantidade', 'COUNT', reference?.quantity ?? null, scenario.quantity),
     compare('Valor', 'BRL', reference?.value ?? null, scenario.value),
   ];
   for (const tax of taxes) {
-    // A aliquota e a vigente no ano de comparacao, para o publico e para o cenario.
+    // Publico: aliquota de catalogo. Cenario: % informado, se houver, senao o catalogo.
     const resolved = resolveRate(book, tax, uf, reference?.year ?? referenceFallbackYear, municipality);
+    const scenarioRate = hypothesisRate !== null ? hypothesisRate : resolved.rate;
     rows.push(
       compare(
         rateLabel(tax, resolved),
         'BRL',
         taxAmount(reference?.value ?? null, resolved.rate),
-        taxAmount(scenario.value, resolved.rate),
+        taxAmount(scenario.value, scenarioRate),
       ),
     );
   }
@@ -307,6 +309,7 @@ export function simulatorChart(
   book: RateVersion[],
   scenarioYear: number = referenceFallbackYear,
   municipality: string | null = null,
+  hypothesisRate: number | null = null,
 ): BiChartInput {
   const years = rows.map((row) => String(row.year));
   const withScenario = scenario !== null && (scenario.quantity !== null || scenario.value !== null);
@@ -342,9 +345,11 @@ export function simulatorChart(
       colorLike: 'Valor',
     });
     for (const tax of taxes) {
+      const catalog = resolveRate(book, tax, uf, scenarioYear, municipality).rate;
+      const rate = hypothesisRate !== null ? hypothesisRate : catalog;
       series.push({
         name: `${tax} simulado`,
-        values: simulatedOnly(size, taxAmount(scenario.value, resolveRate(book, tax, uf, scenarioYear, municipality).rate)),
+        values: simulatedOnly(size, taxAmount(scenario.value, rate)),
         axis: 'right',
         unit: 'BRL',
         dashed: true,
@@ -369,15 +374,18 @@ export function hypothesisChart(
   book: RateVersion[],
   year: number = referenceFallbackYear,
   municipality: string | null = null,
+  hypothesisRate: number | null = null,
 ): BiChartInput {
   const series: BiChartInput['series'] = [
     { name: 'Quantidade (hipótese)', values: [scenario.quantity], unit: 'COUNT', dashed: true },
     { name: 'Valor (hipótese)', values: [scenario.value], axis: 'right', unit: 'BRL', dashed: true },
   ];
   for (const tax of taxes) {
+    const catalog = resolveRate(book, tax, uf, year, municipality).rate;
+    const rate = hypothesisRate !== null ? hypothesisRate : catalog;
     series.push({
       name: `${tax} (hipótese)`,
-      values: [taxAmount(scenario.value, resolveRate(book, tax, uf, year, municipality).rate)],
+      values: [taxAmount(scenario.value, rate)],
       axis: 'right',
       unit: 'BRL',
       dashed: true,

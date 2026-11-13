@@ -15,7 +15,7 @@
     <label>
       UF
       <select name="uf" data-testid="uf" [ngModel]="uf()" (ngModelChange)="setUf($event)">
-        <option value="">Brasil (soma das UFs)</option>
+        <option value="">Todas as UFs</option>
         @for (item of ufs(); track item) {
           <option [value]="item">{{ item }}</option>
         }
@@ -28,9 +28,9 @@
         data-testid="municipality"
         [ngModel]="municipality()"
         (ngModelChange)="setMunicipality($event)"
-        [attr.disabled]="!uf() || municipalityState() !== 'ok' ? '' : null"
+        [attr.disabled]="uf() && municipalityState() === 'error' ? '' : null"
       >
-        <option value="">{{ uf() ? 'Todos os municípios da UF' : 'Escolha uma UF primeiro' }}</option>
+        <option value="">{{ uf() ? 'Todos os municípios da UF' : 'Todos os municípios' }}</option>
         @for (item of municipalityOptions(); track item.ibge) {
           <option [value]="item.ibge">{{ item.nome }}</option>
         }
@@ -38,7 +38,8 @@
     </label>
     <label>
       Operação
-      <select name="operacao" data-testid="operation" [ngModel]="operation()" (ngModelChange)="operation.set($event)">
+      <select name="operacao" data-testid="operation" [ngModel]="operation()" (ngModelChange)="setOperation($event)">
+        <option value="">Todas as operações</option>
         @for (item of operations; track item) {
           <option [value]="item">{{ item }}</option>
         }
@@ -46,7 +47,8 @@
     </label>
     <fieldset class="taxes">
       <legend>Impostos</legend>
-      @for (def of taxes; track def.id) {
+      <p class="hint">Filtro de hipótese do simulador, não incidência legal.</p>
+      @for (def of visibleTaxes(); track def.id) {
         <label class="check">
           <input
             type="checkbox"
@@ -117,7 +119,7 @@
               <th scope="col">Ano</th>
               <th scope="col" class="num">Itens</th>
               <th scope="col" class="num">Valor (R$)</th>
-              @for (tax of selectedTaxes(); track tax) {
+              @for (tax of activeTaxes(); track tax) {
                 <th scope="col" class="num">{{ tax }} estimado (R$)</th>
               }
             </tr>
@@ -128,7 +130,7 @@
                 <th scope="row">{{ row.year }}</th>
                 <td class="num tabular">{{ count(row.quantity) }}</td>
                 <td class="num tabular">{{ money(row.value) }}</td>
-                @for (tax of selectedTaxes(); track tax) {
+                @for (tax of activeTaxes(); track tax) {
                   <td class="num tabular">{{ money(amountOf(row, tax)) }}</td>
                 }
               </tr>
@@ -168,6 +170,19 @@
       />
     </label>
     <label>
+      Alíquota da hipótese (%)
+      <input
+        type="number"
+        name="percent"
+        min="0"
+        step="0.01"
+        inputmode="decimal"
+        placeholder="Ex.: 10"
+        [ngModel]="percentInput()"
+        (ngModelChange)="setPercent($event)"
+      />
+    </label>
+    <label>
       {{ publicOpen() ? 'Ano de comparação' : 'Ano da alíquota' }}
       <select
         name="ano"
@@ -199,10 +214,7 @@
         <app-kpi-card
           [label]="row.tax + ' do cenário'"
           [value]="kpiMoney(row.simulated)"
-          [meta]="
-            taxMeta(row.tax, row.resolved, scenarioYear()) +
-            (comparisonEnabled() ? ' · público ' + (reference()?.year ?? '—') + ': ' + kpiMoney(row.published) : '')
-          "
+          [meta]="scenarioMeta(row.resolved, row.published)"
           [kind]="hypothesisLabel"
           tone="warn"
         />

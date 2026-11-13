@@ -79,8 +79,24 @@ export const SPED_OPERATIONS = [
   'Doações / bonificações / brindes',
   'Serviços Prestados',
   'Serviços Tomados',
-  'Outras Saídas',
 ] as const;
+
+/**
+ * Impostos visíveis no Simulador para a operação escolhida. É filtro de hipótese da tela,
+ * não regra de incidência legal. Operação vazia (todas) devolve os quatro.
+ */
+export function taxesForOperation(operation: string): TaxId[] {
+  if (operation === 'Compras' || operation === 'Vendas' || operation === 'Transferências') {
+    return ['ICMS'];
+  }
+  if (operation === 'Doações / bonificações / brindes') {
+    return ['ITCD', 'ITBI'];
+  }
+  if (operation === 'Serviços Prestados' || operation === 'Serviços Tomados') {
+    return ['ISS'];
+  }
+  return TAXES.map((def) => def.id);
+}
 
 export const SPED_YEARS = [2021, 2022, 2023, 2024, 2025] as const;
 

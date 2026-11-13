@@ -3,9 +3,11 @@ import {
   GOODS_TYPES,
   ICMS_RATE_BY_UF,
   RateVersion,
+  SPED_OPERATIONS,
   TAXES,
   fallbackVersions,
   resolveRate,
+  taxesForOperation,
 } from './simulador-aliquotas';
 import {
   HYPOTHESIS_LABEL,
@@ -97,6 +99,27 @@ describe('simulador aliquotas', () => {
     expect(TAXES.map((tax) => tax.id)).toEqual(['ITCD', 'ITBI', 'ISS', 'ICMS']);
     expect(GOODS_TYPES.length).toBe(6);
   });
+
+  it('maps each operation to the taxes of the simulator hypothesis, not a legal incidence rule', () => {
+    expect(taxesForOperation('Compras')).toEqual(['ICMS']);
+    expect(taxesForOperation('Vendas')).toEqual(['ICMS']);
+    expect(taxesForOperation('Transferências')).toEqual(['ICMS']);
+    expect(taxesForOperation('Doações / bonificações / brindes')).toEqual(['ITCD', 'ITBI']);
+    expect(taxesForOperation('Serviços Prestados')).toEqual(['ISS']);
+    expect(taxesForOperation('Serviços Tomados')).toEqual(['ISS']);
+    expect(taxesForOperation('')).toEqual(['ITCD', 'ITBI', 'ISS', 'ICMS']);
+  });
+
+  it('does not offer Outras Saídas in the simulator operation list', () => {
+    expect([...SPED_OPERATIONS]).toEqual([
+      'Compras',
+      'Vendas',
+      'Transferências',
+      'Doações / bonificações / brindes',
+      'Serviços Prestados',
+      'Serviços Tomados',
+    ]);
+  });
 });
 
 describe('simulador logic', () => {
@@ -106,6 +129,7 @@ describe('simulador logic', () => {
     expect(taxAmount(null, 6)).toBeNull();
     expect(taxAmount(1000, null)).toBeNull();
     expect(taxAmount(0, 6)).toBe(0);
+    expect(taxAmount(1_000_000, 10)).toBe(100_000);
   });
 
   it('accepts only finite non-negative numbers', () => {
@@ -175,6 +199,21 @@ describe('simulador logic', () => {
     expect(table[2].simulated).toBe(120);
     expect(table[2].difference).toBe(60);
     expect(table[3].simulated).toBe(360);
+  });
+
+  it('uses a hypothesis percent on the scenario tax and keeps the public side on the catalog rate', () => {
+    const rows = publicByYear(items, [2021], 'Vendas', 'SP');
+    const table = scenarioComparison(
+      referenceYear(rows, 2021),
+      { quantity: 150, value: 2000 },
+      ['ICMS'],
+      'SP',
+      book,
+      null,
+      10,
+    );
+    expect(table[2].publicValue).toBe(180);
+    expect(table[2].simulated).toBe(200);
   });
 
   it('does not invent a difference when the public side is missing', () => {
