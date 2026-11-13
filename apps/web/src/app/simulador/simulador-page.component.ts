@@ -161,16 +161,21 @@ export class SimuladorPageComponent implements OnInit {
 
   readonly taxRows = computed(() =>
     this.activeTaxes().map((tax) => {
-      const resolved = this.resolved(tax, this.latest()?.year ?? referenceFallbackYear);
+      const year = this.scenarioYear();
+      const resolved = this.resolved(tax, year);
       const blocked = this.isBlocked(tax);
       return {
         tax,
         resolved,
         rate: resolved.rate,
         blocked,
-        amount: blocked ? null : taxAmount(this.latest()?.value ?? null, resolved.rate),
+        amount: blocked ? null : taxAmount(this.reference()?.value ?? null, resolved.rate),
       };
     }),
+  );
+
+  readonly publicKpiMeta = computed(() =>
+    this.allYearsSelected() ? 'Todos os anos' : `Ano ${this.reference()?.year ?? '—'}`,
   );
 
   readonly average = computed(() =>
@@ -299,7 +304,10 @@ export class SimuladorPageComponent implements OnInit {
   private loadPublicData(): void {
     const params = new HttpParams().set('pageSize', 1000);
     this.http.get<CguNfeView>('/v1/cgu-nfe', { params }).subscribe({
-      next: (body) => this.view.set(body),
+      next: (body) => {
+        this.view.set(body);
+        this.reapplyPercentToRecorte();
+      },
       error: () => this.state.set('error'),
     });
   }
@@ -353,6 +361,7 @@ export class SimuladorPageComponent implements OnInit {
 
   setReferenceYear(raw: unknown): void {
     this.referenceYearInput.set(this.parse(raw));
+    this.reapplyPercentToRecorte();
   }
 
   quantityField(): string {
@@ -416,7 +425,29 @@ export class SimuladorPageComponent implements OnInit {
       this.percentOrigin.set(null);
       return;
     }
-    const origin = this.percentOrigin() ?? this.capturePercentOrigin();
+    if (this.hasPublic()) {
+      this.percentOrigin.set(null);
+    }
+    this.applyPercentToRecorte();
+  }
+
+  /** Recalcula quantidade e valor a partir do recorte corrente. Sem dado público, preserva a origem. */
+  private reapplyPercentToRecorte(): void {
+    if (!this.hasPublic() || sanitize(this.percentInput()) === null) {
+      return;
+    }
+    this.percentOrigin.set(null);
+    this.applyPercentToRecorte();
+  }
+
+  private applyPercentToRecorte(): void {
+    const rate = sanitize(this.percentInput());
+    if (rate === null) {
+      return;
+    }
+    const origin = this.hasPublic()
+      ? this.capturePercentOrigin()
+      : (this.percentOrigin() ?? this.capturePercentOrigin());
     this.percentOrigin.set(origin);
     const scaled = applyPercent(origin, rate);
     this.quantityInput.set(scaled.quantity);
@@ -481,6 +512,7 @@ export class SimuladorPageComponent implements OnInit {
     if (value) {
       this.loadMunicipalities();
     }
+    this.reapplyPercentToRecorte();
   }
 
   setMunicipality(value: string): void {
@@ -516,7 +548,7 @@ export class SimuladorPageComponent implements OnInit {
     return (
       this.rateMeta(resolved, this.scenarioYear()) +
       (this.comparisonEnabled()
-        ? ' · público ' + (this.reference()?.year ?? '—') + ': ' + this.kpiMoney(published)
+        ? ' · público ' + this.referenceLabel() + ': ' + this.kpiMoney(published)
         : '')
     );
   }

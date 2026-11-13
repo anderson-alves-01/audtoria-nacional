@@ -80,18 +80,18 @@
 
   @if (publicOpen() && state() === 'ok' && view()?.run; as run) {
     <h2 class="part">Dados públicos e imposto estimado (simulação)</h2>
-    <section class="kpis" aria-label="Último ano com dado">
+    <section class="kpis" aria-label="Dados públicos do recorte">
       <app-kpi-card label="Fonte" [value]="sourceLabel" [meta]="territory() + ' · ' + coverage()" kind="CGU NF-e" />
       <app-kpi-card
         label="Quantidade (itens)"
-        [value]="compact(latest()?.quantity ?? null, 'COUNT')"
-        [meta]="'Ano ' + (latest()?.year ?? '—')"
+        [value]="compact(reference()?.quantity ?? null, 'COUNT')"
+        [meta]="publicKpiMeta()"
         kind="Observado"
       />
       <app-kpi-card
         label="Valor"
-        [value]="compact(latest()?.value ?? null, 'BRL')"
-        [meta]="'Ano ' + (latest()?.year ?? '—')"
+        [value]="compact(reference()?.value ?? null, 'BRL')"
+        [meta]="publicKpiMeta()"
         kind="Valor"
         tone="warn"
       />
@@ -99,7 +99,7 @@
         <app-kpi-card
           [label]="row.tax + ' estimado'"
           [value]="compact(row.amount, 'BRL')"
-          [meta]="taxMeta(row.tax, row.resolved, latest()?.year ?? null)"
+          [meta]="taxMeta(row.tax, row.resolved, reference()?.year ?? null)"
           kind="Simulado"
           tone="warn"
         />

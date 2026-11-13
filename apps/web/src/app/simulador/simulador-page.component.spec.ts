@@ -399,7 +399,8 @@ describe('SimuladorPageComponent', () => {
       page.setOperation('');
       expect(page.latest()?.quantity).toBe(200);
       expect(page.latest()?.value).toBe(2000);
-      expect(page.taxRows().find((row) => row.tax === 'ITCD')?.amount).toBe(120);
+      expect(page.reference()?.quantity).toBe(300);
+      expect(page.taxRows().find((row) => row.tax === 'ITCD')?.amount).toBe(180);
       http.verify();
     });
 
@@ -425,6 +426,46 @@ describe('SimuladorPageComponent', () => {
       page.setPercent('10');
       expect(page.scenario()).toEqual({ quantity: 20, value: 200 });
       expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(36);
+      http.verify();
+    });
+
+    it('fills 100 percent of the selected year, not the sum of every year', () => {
+      const { page, http } = opened();
+      page.uf.set('SP');
+      page.setReferenceYear('2022');
+      page.setPercent('100');
+      expect(page.scenario()).toEqual({ quantity: 200, value: 2000 });
+      expect(page.comparison().find((row) => row.label === 'Quantidade')?.difference).toBe(0);
+      expect(page.comparison().find((row) => row.label === 'Valor')?.difference).toBe(0);
+      expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(360);
+      http.verify();
+    });
+
+    it('recalculates the percent fill when the comparison year changes', () => {
+      const { page, http } = opened();
+      page.uf.set('SP');
+      page.setPercent('100');
+      expect(page.scenario()).toEqual({ quantity: 300, value: 3000 });
+      page.setReferenceYear('2022');
+      expect(page.percentInput()).toBe(100);
+      expect(page.scenario()).toEqual({ quantity: 200, value: 2000 });
+      page.setReferenceYear('');
+      expect(page.scenario()).toEqual({ quantity: 300, value: 3000 });
+      http.verify();
+    });
+
+    it('compares 100 percent of Todos with the summed public recorte', () => {
+      const { page, http } = opened();
+      page.uf.set('SP');
+      page.setPercent('100');
+      const quantity = page.comparison().find((row) => row.label === 'Quantidade');
+      const value = page.comparison().find((row) => row.label === 'Valor');
+      expect(quantity?.publicValue).toBe(300);
+      expect(quantity?.simulated).toBe(300);
+      expect(quantity?.difference).toBe(0);
+      expect(value?.publicValue).toBe(3000);
+      expect(value?.simulated).toBe(3000);
+      expect(value?.difference).toBe(0);
       http.verify();
     });
 
