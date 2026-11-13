@@ -40,7 +40,9 @@ import {
   HYPOTHESIS_LABEL,
   PublicYear,
   ScenarioDriver,
+  ScenarioInput,
   allowedParam,
+  applyPercent,
   completeFromAverage,
   hypothesisChart,
   publicByYearFromCgu,
@@ -123,8 +125,10 @@ export class SimuladorPageComponent implements OnInit {
   // Cenario desejado (Parte B)
   readonly quantityInput = signal<number | null>(null);
   readonly valueInput = signal<number | null>(null);
-  /** Alíquota da hipótese em pontos percentuais. Nulo: usa o catálogo. */
+  /** Percentual facilitador da quantidade e do valor desejados. Não é alíquota. */
   readonly percentInput = signal<number | null>(null);
+  /** Base sobre a qual o % é aplicado, para 10 → 20 não compor sobre o valor já reduzido. */
+  readonly percentOrigin = signal<ScenarioInput | null>(null);
   readonly driver = signal<ScenarioDriver>(null);
   readonly referenceYearInput = signal<number | null>(null);
 
@@ -184,12 +188,11 @@ export class SimuladorPageComponent implements OnInit {
     this.driver() === 'quantity' ? this.scenario().value : this.valueInput(),
   );
   readonly hasScenario = computed(() => this.scenario().quantity !== null || this.scenario().value !== null);
-  readonly hypothesisRate = computed(() => sanitize(this.percentInput()));
   readonly inputInvalid = computed(
     () =>
       (this.quantityInput() !== null && this.scenario().quantity === null) ||
       (this.valueInput() !== null && this.scenario().value === null) ||
-      (this.percentInput() !== null && this.hypothesisRate() === null),
+      (this.percentInput() !== null && sanitize(this.percentInput()) === null),
   );
 
   readonly reference = computed(() =>
@@ -204,7 +207,6 @@ export class SimuladorPageComponent implements OnInit {
       this.ufOrNull(),
       this.book(),
       this.municipalityOrNull(),
-      this.hypothesisRate(),
     ),
   );
 
@@ -213,13 +215,12 @@ export class SimuladorPageComponent implements OnInit {
     this.activeTaxes().map((tax) => {
       const resolved = this.resolved(tax, this.scenarioYear());
       const blocked = this.isBlocked(tax);
-      const scenarioRate = this.hypothesisRate() !== null ? this.hypothesisRate() : resolved.rate;
       return {
         tax,
         resolved,
-        rate: scenarioRate,
+        rate: resolved.rate,
         blocked,
-        simulated: blocked ? null : taxAmount(this.scenario().value, scenarioRate),
+        simulated: blocked ? null : taxAmount(this.scenario().value, resolved.rate),
         published:
           this.comparisonEnabled() && !blocked ? taxAmount(this.reference()?.value ?? null, resolved.rate) : null,
       };
@@ -237,7 +238,6 @@ export class SimuladorPageComponent implements OnInit {
           this.book(),
           this.scenarioYear(),
           this.municipalityOrNull(),
-          this.hypothesisRate(),
         )
       : hypothesisChart(
           this.scenario(),
@@ -246,7 +246,6 @@ export class SimuladorPageComponent implements OnInit {
           this.book(),
           this.scenarioYear(),
           this.municipalityOrNull(),
-          this.hypothesisRate(),
         ),
   );
 
@@ -334,17 +333,47 @@ export class SimuladorPageComponent implements OnInit {
   }
 
   setQuantity(raw: unknown): void {
+    this.clearPercentHelper();
     this.driver.set('quantity');
     this.quantityInput.set(this.parse(raw));
   }
 
   setValue(raw: unknown): void {
+    this.clearPercentHelper();
     this.driver.set('value');
     this.valueInput.set(this.parse(raw));
   }
 
   setPercent(raw: unknown): void {
-    this.percentInput.set(this.parse(raw));
+    const parsed = this.parse(raw);
+    this.percentInput.set(parsed);
+    const rate = sanitize(parsed);
+    if (parsed !== null && rate === null) {
+      return;
+    }
+    if (rate === null) {
+      this.percentOrigin.set(null);
+      return;
+    }
+    const origin = this.percentOrigin() ?? this.capturePercentOrigin();
+    this.percentOrigin.set(origin);
+    const scaled = applyPercent(origin, rate);
+    this.quantityInput.set(scaled.quantity);
+    this.valueInput.set(scaled.value);
+    this.driver.set(null);
+  }
+
+  private capturePercentOrigin(): ScenarioInput {
+    if (this.hasPublic()) {
+      const reference = this.reference();
+      return { quantity: reference?.quantity ?? null, value: reference?.value ?? null };
+    }
+    return { quantity: sanitize(this.quantityInput()), value: sanitize(this.valueInput()) };
+  }
+
+  private clearPercentHelper(): void {
+    this.percentInput.set(null);
+    this.percentOrigin.set(null);
   }
 
   money(value: number | null): string {
@@ -421,11 +450,8 @@ export class SimuladorPageComponent implements OnInit {
   }
 
   scenarioMeta(resolved: ResolvedRate, published: number | null): string {
-    const hypothesis = this.hypothesisRate();
-    const rate =
-      hypothesis !== null ? `${hypothesis.toLocaleString('pt-BR')}%` : this.rateMeta(resolved, this.scenarioYear());
     return (
-      rate +
+      this.rateMeta(resolved, this.scenarioYear()) +
       (this.comparisonEnabled()
         ? ' · público ' + (this.reference()?.year ?? '—') + ': ' + this.kpiMoney(published)
         : '')

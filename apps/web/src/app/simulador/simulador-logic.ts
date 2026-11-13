@@ -236,6 +236,21 @@ export function completeFromAverage(
   return { quantity, value };
 }
 
+/**
+ * Percentual como facilitador dos campos desejados: aplica % sobre a quantidade e o valor de
+ * origem. Não é alíquota. Sem percentual válido o resultado fica vazio (não escala).
+ */
+export function applyPercent(origin: ScenarioInput, percent: number | null): ScenarioInput {
+  const rate = sanitize(percent);
+  if (rate === null) {
+    return { quantity: null, value: null };
+  }
+  return {
+    quantity: origin.quantity === null ? null : roundQuantity((origin.quantity * rate) / 100),
+    value: origin.value === null ? null : roundCents((origin.value * rate) / 100),
+  };
+}
+
 /** Entrada valida: numero finito e nao negativo. Qualquer outra coisa e tratada como ausente. */
 export function sanitize(raw: number | null | undefined): number | null {
   // Somar 0 troca -0 por 0: o Intl mostraria "-R$ 0,00".
@@ -271,22 +286,19 @@ export function scenarioComparison(
   uf: string | null,
   book: RateVersion[],
   municipality: string | null = null,
-  hypothesisRate: number | null = null,
 ): Comparison[] {
   const rows: Comparison[] = [
     compare('Quantidade', 'COUNT', reference?.quantity ?? null, scenario.quantity),
     compare('Valor', 'BRL', reference?.value ?? null, scenario.value),
   ];
   for (const tax of taxes) {
-    // Publico: aliquota de catalogo. Cenario: % informado, se houver, senao o catalogo.
     const resolved = resolveRate(book, tax, uf, reference?.year ?? referenceFallbackYear, municipality);
-    const scenarioRate = hypothesisRate !== null ? hypothesisRate : resolved.rate;
     rows.push(
       compare(
         rateLabel(tax, resolved),
         'BRL',
         taxAmount(reference?.value ?? null, resolved.rate),
-        taxAmount(scenario.value, scenarioRate),
+        taxAmount(scenario.value, resolved.rate),
       ),
     );
   }
@@ -309,7 +321,6 @@ export function simulatorChart(
   book: RateVersion[],
   scenarioYear: number = referenceFallbackYear,
   municipality: string | null = null,
-  hypothesisRate: number | null = null,
 ): BiChartInput {
   const years = rows.map((row) => String(row.year));
   const withScenario = scenario !== null && (scenario.quantity !== null || scenario.value !== null);
@@ -345,8 +356,7 @@ export function simulatorChart(
       colorLike: 'Valor',
     });
     for (const tax of taxes) {
-      const catalog = resolveRate(book, tax, uf, scenarioYear, municipality).rate;
-      const rate = hypothesisRate !== null ? hypothesisRate : catalog;
+      const rate = resolveRate(book, tax, uf, scenarioYear, municipality).rate;
       series.push({
         name: `${tax} simulado`,
         values: simulatedOnly(size, taxAmount(scenario.value, rate)),
@@ -374,15 +384,13 @@ export function hypothesisChart(
   book: RateVersion[],
   year: number = referenceFallbackYear,
   municipality: string | null = null,
-  hypothesisRate: number | null = null,
 ): BiChartInput {
   const series: BiChartInput['series'] = [
     { name: 'Quantidade (hipótese)', values: [scenario.quantity], unit: 'COUNT', dashed: true },
     { name: 'Valor (hipótese)', values: [scenario.value], axis: 'right', unit: 'BRL', dashed: true },
   ];
   for (const tax of taxes) {
-    const catalog = resolveRate(book, tax, uf, year, municipality).rate;
-    const rate = hypothesisRate !== null ? hypothesisRate : catalog;
+    const rate = resolveRate(book, tax, uf, year, municipality).rate;
     series.push({
       name: `${tax} (hipótese)`,
       values: [taxAmount(scenario.value, rate)],

@@ -418,6 +418,16 @@ describe('SimuladorPageComponent', () => {
       http.verify();
     });
 
+    it('fills desired quantity and value as a percent of the public recorte', () => {
+      const { page, http } = opened();
+      page.uf.set('SP');
+      page.referenceYearInput.set(2022);
+      page.setPercent('10');
+      expect(page.scenario()).toEqual({ quantity: 20, value: 200 });
+      expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(36);
+      http.verify();
+    });
+
     it('fills value from public unit price when only quantity is typed', () => {
       const { page, http } = opened();
       page.uf.set('SP');
@@ -893,14 +903,22 @@ describe('SimuladorPageComponent functional flow through the DOM (homologação)
     http.verify();
   });
 
-  it('simulates the tax as a percent of the desired value', async () => {
-    const { http, page, type, kpi } = await start();
+  it('uses percent to fill desired quantity and value, not the tax rate', async () => {
+    const { http, page, type, kpi, el, choose } = await start();
+    expect(el.textContent).not.toContain('Alíquota da hipótese');
+    await type('qtd', '1000');
     await type('valor', '1000000');
-    expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBeNull();
     await type('percent', '10');
-    expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(100_000);
-    expect(kpi('ICMS')).toContain('R$ 100.000,00');
-    expect(kpi('ICMS')).toContain('10%');
+    expect(page.scenario()).toEqual({ quantity: 100, value: 100_000 });
+    expect(page.quantityShown()).toBe(100);
+    expect(page.valueShown()).toBe(100_000);
+    expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBeNull();
+    await choose('uf', 'AC');
+    http.expectOne('/ibge-municipios.json').flush({ municipios: CITIES });
+    expect(page.simulatedTaxes().find((row) => row.tax === 'ICMS')?.simulated).toBe(17_000);
+    expect(kpi('ICMS')).toContain('R$ 17.000,00');
+    expect(kpi('ICMS')).toContain('17%');
+    expect(kpi('ICMS')).not.toContain('10%');
     http.verify();
   });
 

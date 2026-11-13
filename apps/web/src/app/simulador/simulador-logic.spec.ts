@@ -13,6 +13,7 @@ import {
   HYPOTHESIS_LABEL,
   TRANSFER_OPERATION,
   allowedParam,
+  applyPercent,
   completeFromAverage,
   effectiveTaxes,
   filterByDirection,
@@ -156,6 +157,16 @@ describe('simulador logic', () => {
     expect(String(filled.quantity)).not.toContain('332.6328076796769');
   });
 
+  it('uses percent to scale desired quantity and value, not as a tax rate', () => {
+    expect(applyPercent({ quantity: 1000, value: 1_000_000 }, 10)).toEqual({ quantity: 100, value: 100_000 });
+    expect(applyPercent({ quantity: 333, value: 2_000_000 }, 50)).toEqual({ quantity: 167, value: 1_000_000 });
+    expect(applyPercent({ quantity: null, value: 1_000_000 }, 10)).toEqual({ quantity: null, value: 100_000 });
+    expect(applyPercent({ quantity: 1000, value: null }, 10)).toEqual({ quantity: 100, value: null });
+    expect(applyPercent({ quantity: 1000, value: 1_000_000 }, 0)).toEqual({ quantity: 0, value: 0 });
+    expect(applyPercent({ quantity: 1000, value: 1_000_000 }, null)).toEqual({ quantity: null, value: null });
+    expect(applyPercent({ quantity: 1000, value: 1_000_000 }, -10)).toEqual({ quantity: null, value: null });
+  });
+
   it('reads CGU items by issuer UF and leaves a year without data empty', () => {
     const cgu = [
       { ano: 2021, uf: 'SP', itens: 100, valorItens: '1000.00' },
@@ -201,19 +212,13 @@ describe('simulador logic', () => {
     expect(table[3].simulated).toBe(360);
   });
 
-  it('uses a hypothesis percent on the scenario tax and keeps the public side on the catalog rate', () => {
+  it('keeps catalog rates on the scenario tax after the percent helper scales the value', () => {
     const rows = publicByYear(items, [2021], 'Vendas', 'SP');
-    const table = scenarioComparison(
-      referenceYear(rows, 2021),
-      { quantity: 150, value: 2000 },
-      ['ICMS'],
-      'SP',
-      book,
-      null,
-      10,
-    );
+    const scaled = applyPercent({ quantity: 150, value: 2000 }, 10);
+    expect(scaled).toEqual({ quantity: 15, value: 200 });
+    const table = scenarioComparison(referenceYear(rows, 2021), scaled, ['ICMS'], 'SP', book);
     expect(table[2].publicValue).toBe(180);
-    expect(table[2].simulated).toBe(200);
+    expect(table[2].simulated).toBe(36);
   });
 
   it('does not invent a difference when the public side is missing', () => {
