@@ -103,3 +103,5 @@ entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-
   Web 0.4.29 (`sirta-prod-web:37`): Simulador filtra tributos pela operação e aceita
   hipótese em % sobre o valor desejado; Outras Saídas sai só desta tela. Evidência:
   `evidence/ops/prod-web-0.4.29-20261113.txt`.
+  Web 0.4.30 (`sirta-prod-web:38`): o % do Simulador preenche quantidade e valor
+  desejados; não é alíquota. Evidência: `evidence/ops/prod-web-0.4.30-20261113.txt`.

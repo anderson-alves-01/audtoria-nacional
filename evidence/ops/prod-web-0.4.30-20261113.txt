@@ -1,0 +1,22 @@
+Publicação web 0.4.30 (Simulador: % preenche quantidade e valor desejados, não é alíquota)
+Data: 2026-11-13
+authorization=usuário, nesta sessão ("push e publique")
+git=push feat/professional-ui-v1 8396937..fa5f61b (código) e este commit de evidência (sem force, sem merge)
+escopo=somente web. API inalterada (0.3.127, sirta-prod-api:33). Sem ingestão, sem Terraform, sem mudança de dados.
+
+web=sirta-prod-web:0.4.30, task definition :38 (anterior :37, 0.4.29), digest sha256:a9c1ad92fad0325d7d7bde54c67064c5ed0d13958560eab7077f524dd67c7b6e, construída com --build-arg NGINX_CONF=nginx.prod.conf (0 proxy_pass). Rollout PRIMARY COMPLETED 1/1.
+imagem_local=sha256:f6ff4047bd09e8c3675b9af01e95b1c6d23b202fef7760c536c8037e9a182521
+bundle=main-J4COC2FK.js, chunk simulador=chunk-YK5NDNXG.js, labels=chunk-WQDLJ6WO.js
+api=inalterada (sirta-prod-api:33, 0.3.127). GET /health: implementationVersion 0.3.101 no binário.
+
+testes_antes=ng test include=**/simulador-logic.spec.ts + simulador-page.component.spec.ts: 87 SUCCESS
+verificação_ao_vivo (sem token, sem credencial forjada):
+  GET https://taxbetter.magenx.tech/ 200, main-J4COC2FK.js
+  GET https://taxbetter.magenx.tech/simulador 200
+  GET https://taxbetter.magenx.tech/health 200
+  GET https://taxbetter.magenx.tech/chunk-YK5NDNXG.js 200
+  chunk-YK5NDNXG.js: setPercent, percentOrigin, "Percentual da quantidade"; "Alíquota da hipótese" e hypothesisRate ausentes; "Outras Saídas" ausente
+efeito=10% de 1.000 itens e R$ 1.000.000 preenche 100 itens e R$ 100.000. O imposto segue a alíquota do catálogo. Com dado público, o % aplica-se ao recorte do ano de comparação.
+
+rollback_web=update-service para sirta-prod-web:37 (0.4.29). Seguro.
+rollback_api=não aplicável.
