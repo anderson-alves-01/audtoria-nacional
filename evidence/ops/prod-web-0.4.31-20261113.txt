@@ -1,0 +1,22 @@
+Publicação web 0.4.31 (Simulador: ordem ano/%/quantidade/valor, Todos no ano, máscara BRL)
+Data: 2026-11-13
+authorization=usuário, nesta sessão ("push e publique")
+git=push feat/professional-ui-v1 14d1c2b..2f7bb04 (código) e este commit de evidência (sem force, sem merge)
+escopo=somente web. API inalterada (0.3.127, sirta-prod-api:33). Sem ingestão, sem Terraform, sem mudança de dados.
+
+web=sirta-prod-web:0.4.31, task definition :39 (anterior :38, 0.4.30), digest sha256:ce38aed0d9cf6b12ee236f00b0c92bf7ea9489fbce56d0701a482953ea5d1e8b, construída com --build-arg NGINX_CONF=nginx.prod.conf (0 proxy_pass). Rollout PRIMARY COMPLETED 1/1.
+imagem_local=sha256:ed80b620d38180371fe411a18e87af0e3834811a746952579245c40adc88de6f
+bundle=main-7QRRVFME.js, chunk simulador=chunk-BZGWENQU.js, labels=chunk-WQDLJ6WO.js
+api=inalterada (sirta-prod-api:33, 0.3.127). GET /health: implementationVersion 0.3.101 no binário.
+
+testes_antes=ng test include=**/simulador-logic.spec.ts + simulador-page.component.spec.ts: 92 SUCCESS
+verificação_ao_vivo (sem token, sem credencial forjada):
+  GET https://taxbetter.magenx.tech/ 200, main-7QRRVFME.js
+  GET https://taxbetter.magenx.tech/simulador 200
+  GET https://taxbetter.magenx.tech/health 200
+  GET https://taxbetter.magenx.tech/chunk-BZGWENQU.js 200
+  chunk-BZGWENQU.js: "Percentual (%)", "Todos", quantityField, valueField, startQuantityEdit; "Percentual da quantidade" ausente
+efeito=ordem ano → percentual → quantidade → valor. Ano padrão Todos soma o recorte. Quantidade e valor formatam ao sair do campo e após o %.
+
+rollback_web=update-service para sirta-prod-web:38 (0.4.30). Seguro.
+rollback_api=não aplicável.

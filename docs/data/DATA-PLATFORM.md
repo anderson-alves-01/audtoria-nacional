@@ -105,3 +105,6 @@ entram por `import-zip`. Detalhes, comandos, regras e limites em `docs/data/CGU-
   `evidence/ops/prod-web-0.4.29-20261113.txt`.
   Web 0.4.30 (`sirta-prod-web:38`): o % do Simulador preenche quantidade e valor
   desejados; não é alíquota. Evidência: `evidence/ops/prod-web-0.4.30-20261113.txt`.
+  Web 0.4.31 (`sirta-prod-web:39`): ordem ano → percentual → quantidade → valor,
+  item Todos no ano de comparação e máscara BRL nos campos desejados. Evidência:
+  `evidence/ops/prod-web-0.4.31-20261113.txt`.
